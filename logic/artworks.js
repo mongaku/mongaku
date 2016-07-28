@@ -46,6 +46,7 @@ module.exports = function(app) {
                             compare: false,
                             artworks: [artwork],
                             similar: artwork.similarArtworks,
+                            sources: Source.getSources(),
                         });
                     }
 
@@ -61,6 +62,7 @@ module.exports = function(app) {
                                 artworks: [artwork]
                                     .concat(artwork.similarArtworks
                                         .map((similar) => similar.artwork)),
+                                sources: Source.getSources(),
                             });
                         });
                 });

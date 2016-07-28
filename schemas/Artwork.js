@@ -124,11 +124,6 @@ const Artwork = new db.schema(Object.assign({
     }],
 }, modelProps));
 
-Artwork.virtual("date")
-    .get(function() {
-        return this.dates[0];
-    });
-
 Artwork.methods = {
     getURL(locale) {
         return models("Artwork").getURLFromID(locale, this._id);

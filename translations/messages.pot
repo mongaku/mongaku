@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-07-28 00:01+0000\n"
+"POT-Creation-Date: 2016-07-28 14:55+0000\n"
 
 #: logic/admin.js:25
 #: logic/admin.js:63
@@ -52,7 +52,7 @@ msgstr ""
 msgid "Not found."
 msgstr ""
 
-#: logic/artworks.js:89
+#: logic/artworks.js:91
 msgid "Source not found."
 msgstr ""
 
@@ -77,7 +77,7 @@ msgid "Uploaded image not found."
 msgstr ""
 
 #: logic/shared/facets.js:8
-#: views/Artwork.jsx:95
+#: views/Artwork.jsx:230
 #: views/Search.jsx:172
 msgid "Source"
 msgstr ""
@@ -118,39 +118,39 @@ msgstr ""
 msgid "Images must be a valid image file name. For example: `image.jpg`."
 msgstr ""
 
-#: schemas/Artwork.js:340
+#: schemas/Artwork.js:335
 msgid "Image file not found: %(fileName)s"
 msgstr ""
 
-#: schemas/Artwork.js:350
+#: schemas/Artwork.js:345
 msgid "Error accessing image data."
 msgstr ""
 
-#: schemas/Artwork.js:358
+#: schemas/Artwork.js:353
 msgid "No images found."
 msgstr ""
 
-#: schemas/Artwork.js:378
+#: schemas/Artwork.js:373
 msgid "There was an error with the data format."
 msgstr ""
 
-#: schemas/Artwork.js:404
+#: schemas/Artwork.js:399
 msgid "Unrecognized field `%(field)s`."
 msgstr ""
 
-#: schemas/Artwork.js:425
+#: schemas/Artwork.js:420
 msgid "`%(field)s` is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Artwork.js:443
+#: schemas/Artwork.js:438
 msgid "`%(field)s` value is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Artwork.js:496
+#: schemas/Artwork.js:491
 msgid "Required field `%(field)s` is empty."
 msgstr ""
 
-#: schemas/Artwork.js:500
+#: schemas/Artwork.js:495
 msgid "Recommended field `%(field)s` is empty."
 msgstr ""
 
@@ -362,38 +362,38 @@ msgstr ""
 msgid "%(name)s Admin Area"
 msgstr ""
 
-#: views/Artwork.jsx:68
+#: views/Artwork.jsx:82
 msgid "End Comparison"
 msgstr ""
 
-#: views/Artwork.jsx:88
-msgid "Details"
-msgstr ""
-
-#: views/Artwork.jsx:163
+#: views/Artwork.jsx:165
 #: views/Search.jsx:287
 msgid "Previous"
 msgstr ""
 
-#: views/Artwork.jsx:174
+#: views/Artwork.jsx:176
 #: views/Search.jsx:292
 msgid "Next"
 msgstr ""
 
-#: views/Artwork.jsx:210
+#: views/Artwork.jsx:211
+msgid "Details"
+msgstr ""
+
+#: views/Artwork.jsx:215
 msgid "More information..."
 msgstr ""
 
-#: views/Artwork.jsx:231
+#: views/Artwork.jsx:249
 msgid "Compare Images"
 msgstr ""
 
-#: views/Artwork.jsx:236
+#: views/Artwork.jsx:254
 #: views/Upload.jsx:52
 msgid "Similar Images"
 msgstr ""
 
-#: views/Artwork.jsx:261
+#: views/Artwork.jsx:279
 #: views/Upload.jsx:89
 msgid "Score: %(score)s"
 msgstr ""

@@ -48,10 +48,24 @@ const Artwork = React.createClass({
         gettext: React.PropTypes.func.isRequired,
         shortName: React.PropTypes.func.isRequired,
         similar: React.PropTypes.arrayOf(artworkType),
+        sources: React.PropTypes.arrayOf(
+            React.PropTypes.shape({
+                _id: React.PropTypes.string.isRequired,
+                name: React.PropTypes.string.isRequired,
+            })
+        ),
     },
 
     getTitle(artwork) {
         return options.recordTitle(artwork, this.props);
+    },
+
+    // Determine if at least one artwork has a value for this type
+    hasValue(type) {
+        return this.props.artworks.some((artwork) => {
+            const value = artwork[type];
+            return value && (!Array.isArray(value) || value.length > 0);
+        });
     },
 
     renderArtwork() {
@@ -83,20 +97,8 @@ const Artwork = React.createClass({
                     </thead>
                     <tbody>
                         {this.renderMetadata()}
-                        {(compare || artworks[0].url) && <tr>
-                            <th className="text-right">
-                                {this.props.gettext("Details")}
-                            </th>
-                            {artworks.map((artwork) =>
-                                this.renderDetails(artwork))}
-                        </tr>}
-                        <tr>
-                            <th className="text-right">
-                                {this.props.gettext("Source")}
-                            </th>
-                            {artworks.map((artwork) =>
-                                this.renderSource(artwork))}
-                        </tr>
+                        {this.renderDetails()}
+                        {this.renderSources()}
                     </tbody>
                 </table>
             </div>
@@ -183,14 +185,8 @@ const Artwork = React.createClass({
         return options.display.map((type) => {
             const typeSchema = metadata.model[type];
 
-            // Determine if at least one artwork has a value for this type
             // Hide if it there isn't at least one value to display
-            const hasValue = artworks.some((artwork) => {
-                const value = artwork[type];
-                return value && (!Array.isArray(value) || value.length > 0);
-            });
-
-            if (!hasValue) {
+            if (!this.hasValue(type)) {
                 return null;
             }
 
@@ -205,22 +201,44 @@ const Artwork = React.createClass({
         });
     },
 
-    renderDetails(artwork) {
-        const link = <a href={artwork.url}>
-            {this.props.gettext("More information...")}
-        </a>;
+    renderDetails() {
+        if (!this.hasValue("url")) {
+            return null;
+        }
 
-        return <td key={artwork._id}>{link}</td>;
+        return <tr>
+            <th className="text-right">
+                {this.props.gettext("Details")}
+            </th>
+            {this.props.artworks.map((artwork) => {
+                const link = <a href={artwork.url}>
+                    {this.props.gettext("More information...")}
+                </a>;
+
+                return <td key={artwork._id}>{link}</td>;
+            })}
+        </tr>;
     },
 
-    renderSource(artwork) {
-        const source = artwork.getSource();
+    renderSources() {
+        if (this.props.sources.length <= 1) {
+            return null;
+        }
 
-        return <td key={artwork._id}>
-            <a href={this.props.URL(source)}>
-                {this.props.fullName(source)}
-            </a>
-        </td>;
+        return <tr>
+            <th className="text-right">
+                {this.props.gettext("Source")}
+            </th>
+            {this.props.artworks.map((artwork) => {
+                const source = artwork.getSource();
+
+                return <td key={artwork._id}>
+                    <a href={this.props.URL(source)}>
+                        {this.props.fullName(source)}
+                    </a>
+                </td>;
+            })}
+        </tr>;
     },
 
     renderSimilar() {
