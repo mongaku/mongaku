@@ -1,0 +1,664 @@
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Mongaku\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-05-14 02:06+0000\n"
+"PO-Revision-Date: 2016-05-14 02:39+0000\n"
+"Last-Translator: jeresig <jeresig@gmail.com>\n"
+"Language-Team: German (http://www.transifex.com/mongaku/mongaku/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: logic/admin.js:25 logic/admin.js:63
+msgid "Import not found."
+msgstr "Import nicht gefunden."
+
+#: logic/admin.js:118
+msgid "Error retrieving records."
+msgstr "Fehler beim Abrufen der Datensätze."
+
+#: logic/admin.js:158
+msgid "Error processing zip file."
+msgstr "Fehler beim Verarbeiten der ZIP-Datei."
+
+#: logic/admin.js:165
+msgid "No zip file specified."
+msgstr "Keine ZIP-Datei festgelegt."
+
+#: logic/admin.js:178
+msgid "Error saving zip file."
+msgstr "Fehler beim Speichern der ZIP-Datei."
+
+#: logic/admin.js:198
+msgid "Error processing data files."
+msgstr "Fehler beim Verarbeiten der Datendateien."
+
+#: logic/admin.js:208
+msgid "No data files specified."
+msgstr "Keine Datendateien festgelegt."
+
+#: logic/admin.js:222 logic/admin.js:229
+msgid "Error saving data file."
+msgstr "Fehler beim Speichern der Datendatei."
+
+#: logic/admin.js:247
+msgid "Authorization required."
+msgstr "Autorisierung erforderlich."
+
+#: logic/artworks.js:24 logic/artworks.js:44
+msgid "Not found."
+msgstr "Nicht gefunden."
+
+#: logic/artworks.js:98
+msgid "Source not found."
+msgstr "Quelle nicht gefunden."
+
+#: logic/uploads.js:36
+msgid "Error processing image."
+msgstr "Fehler beim Verarbeiten des Bilds."
+
+#: logic/uploads.js:106
+msgid "No image URL specified."
+msgstr "Keine Bild-URL angegeben."
+
+#: logic/uploads.js:122
+msgid "Error processing upload."
+msgstr "Fehler beim Verarbeiten des Uploads."
+
+#: logic/uploads.js:132
+msgid "No image specified."
+msgstr "Kein Bild festgelegt."
+
+#: logic/uploads.js:144
+msgid "Uploaded image not found."
+msgstr "Hochgeladenes Bild nicht gefunden."
+
+#: logic/shared/facets.js:13 views/Artwork.jsx:157 views/Search.jsx:198
+msgid "Source"
+msgstr "Quelle"
+
+#: logic/shared/queries.js:28
+msgid "Query: '%(query)s'"
+msgstr "Abfrage: '%(query)s'"
+
+#: logic/shared/queries.js:56
+msgid "Similar to Any Artwork"
+msgstr "Ähnlichkeit zu irgendeinem Kunstwerk"
+
+#: logic/shared/queries.js:68
+msgid "Similar to an External Artwork"
+msgstr "Ähnlichkeit zu einem Externen Kunstwerk"
+
+#: logic/shared/queries.js:100
+msgid "Similar to an Internal Artwork"
+msgstr "Ähnlichkeit zu einem Internen Kunstwerk"
+
+#: logic/shared/search.js:121
+msgid "Search Results"
+msgstr "Suchergebnisse"
+
+#: logic/shared/search.js:128
+msgid "All Artworks"
+msgstr "Alle Kunstwerke"
+
+#: schemas/Artwork.js:40
+msgid "IDs can only contain letters, numbers, underscores, and hyphens."
+msgstr "IDs können nur Buchstaben, Nummern, Unterstriche und Bindestriche enthalten."
+
+#: schemas/Artwork.js:82
+msgid "`url` must be properly-formatted URL."
+msgstr "'url' muss eine passend formatierte URL sein."
+
+#: schemas/Artwork.js:97
+msgid "Images must be a valid image file name. For example: `image.jpg`."
+msgstr "Bilder müssen einen gültigen Dateinamen haben. Zum Beispiel: 'image.jpg'."
+
+#: schemas/Artwork.js:116
+msgid "Dimensions must have a unit specified and at least a width or height."
+msgstr "Für Maße muss eine Einheit und mindestens eine Breite oder Höhe angegeben werden."
+
+#: schemas/Artwork.js:126 schemas/Name.js:72
+msgid "Dates must have a start or end specified."
+msgstr "Daten müssen mit einem Anfang oder Ende angegeben werden."
+
+#: schemas/Artwork.js:145
+msgid "`objectType` must be one of the following types: %(types)s."
+msgstr "'objectType' muss einer der folgenden Typen sein: %(types)s."
+
+#: schemas/Artwork.js:161
+msgid "Locations must have a name or city specified."
+msgstr "Für Standorte muss ein Name oder eine Stadt angegeben werden."
+
+#: schemas/Artwork.js:238
+msgid "Artwork"
+msgstr "Kunstwerk"
+
+#: schemas/Artwork.js:435
+msgid "Image file not found: %(fileName)s"
+msgstr "Bilddatei nicht gefunden: %(fileName)s"
+
+#: schemas/Artwork.js:445
+msgid "Error accessing image data."
+msgstr "Fehler beim Zugreifen auf die Bilddaten."
+
+#: schemas/Artwork.js:453
+msgid "No images found."
+msgstr "Keine Bilder gefunden."
+
+#: schemas/Artwork.js:473
+msgid "There was an error with the data format."
+msgstr "Es gab einen Fehler beim Datenformat."
+
+#: schemas/Artwork.js:499
+msgid "Unrecognized field `%(field)s`."
+msgstr "Unerkanntes Feld '%(field)s'."
+
+#: schemas/Artwork.js:520
+msgid "`%(field)s` is the wrong type. Expected a %(type)s."
+msgstr "'%(field)s' ist der falsche Typ. Es wird ein %(type)s erwartet."
+
+#: schemas/Artwork.js:538
+msgid "`%(field)s` value is the wrong type. Expected a %(type)s."
+msgstr "Der Wert '%(field)s' ist der falsche Typ. Es wird ein %(type)s erwartet."
+
+#: schemas/Artwork.js:591
+msgid "Required field `%(field)s` is empty."
+msgstr "Erforderliches Feld '%(field)s' ist leer."
+
+#: schemas/Artwork.js:595
+msgid "Recommended field `%(field)s` is empty."
+msgstr "Empfohlenes Feld '%(field)s' ist leer."
+
+#: schemas/ArtworkImport.js:14 schemas/ImageImport.js:19
+msgid "Awaiting processing..."
+msgstr "Warte auf Verarbeitung ..."
+
+#: schemas/ArtworkImport.js:21 schemas/ImageImport.js:26
+msgid "Processing..."
+msgstr "Wird verarbeitet ..."
+
+#: schemas/ArtworkImport.js:25
+msgid "Confirmation required."
+msgstr "Bestätigung erforderlich."
+
+#: schemas/ArtworkImport.js:32
+msgid "Importing data..."
+msgstr "Daten werden importiert ..."
+
+#: schemas/ArtworkImport.js:36
+msgid "Awaiting similarity sync..."
+msgstr "Warte auf Synchronisation der Ähnlichkeit ..."
+
+#: schemas/ArtworkImport.js:43
+msgid "Syncing similarity..."
+msgstr "Ähnlichkeit wird synchronisiert ..."
+
+#: schemas/ArtworkImport.js:47 schemas/ArtworkImport.js:56
+#: schemas/ImageImport.js:30 schemas/ImageImport.js:39
+msgid "Completed."
+msgstr "Abgeschlossen."
+
+#: schemas/ArtworkImport.js:61
+msgid "Data import abandoned."
+msgstr "Datenimport abgebrochen."
+
+#: schemas/ArtworkImport.js:62
+msgid "Error reading data from provided data files."
+msgstr "Fehler beim Lesen der Daten aus den bereitgestellten Datendateien."
+
+#: schemas/ArtworkImport.js:64
+msgid "Error saving record."
+msgstr "Fehler beim Speichern des Datensatzes."
+
+#: schemas/ArtworkImport.js:65
+msgid "Error deleting existing record."
+msgstr "Fehler beim Löschen des bestehenden Datensatzes."
+
+#: schemas/ImageImport.js:44
+msgid "Error opening zip file."
+msgstr "Fehler beim Öffnen der ZIP-Datei."
+
+#: schemas/ImageImport.js:45
+msgid "Zip file has no images in it."
+msgstr "ZIP-Datei enthält keine Bilder."
+
+#: schemas/ImageImport.js:46
+msgid ""
+"There was an error processing the image. Perhaps it is malformed in some "
+"way."
+msgstr "Es gab einen Fehler beim Verarbeiten des Bilds. Vielleicht ist es irgendwie deformiert."
+
+#: schemas/ImageImport.js:48
+msgid "The image is empty."
+msgstr "Das Bild ist leer."
+
+#: schemas/ImageImport.js:49
+msgid "A new version of the image was uploaded, replacing the old one."
+msgstr "Eine neue Version des Bilds wurde hochgeladen und die alte dadurch ersetzt."
+
+#: schemas/ImageImport.js:51
+msgid ""
+"The image is too small to work with the image similarity algorithm. It must "
+"be at least 150px on each side."
+msgstr "Das Bild ist zu klein, um mit diesem Bildähnlichkeitsalgorithmus analysiert zu werden. Es muss auf jeder Seite aus mindestens 150 Pixeln bestehen."
+
+#: schemas/ImageImport.js:54
+msgid "Error saving image."
+msgstr "Fehler beim Speichern des Bilds."
+
+#: schemas/Import.js:66 views/Admin.jsx:104 views/Admin.jsx:202
+#: views/ImportData.jsx:124 views/ImportImages.jsx:74
+msgid "Error: %(error)s"
+msgstr "Fehler: %(error)s"
+
+#: schemas/Upload.js:78 views/Upload.jsx:31 views/Upload.jsx:35
+msgid "Uploaded Image"
+msgstr "Bild hochladen"
+
+#: server/routes.js:34
+msgid "Page Not Found"
+msgstr "Seite nicht gefunden"
+
+#: custom/facets.js:14 views/Artwork.jsx:115 views/Search.jsx:132
+msgid "Type"
+msgstr "Typ"
+
+#: custom/facets.js:55 views/Artwork.jsx:108 views/Search.jsx:138
+msgid "Date"
+msgstr "Datum"
+
+#: custom/facets.js:70 custom/model.js:10 views/Artwork.jsx:101
+#: views/Search.jsx:120
+msgid "Artist"
+msgstr "Künstler"
+
+#: custom/facets.js:98
+msgid "Width"
+msgstr "Breite"
+
+#: custom/facets.js:140
+msgid "Height"
+msgstr "Höhe"
+
+#: custom/model.js:11 views/Search.jsx:119
+msgid "Sample: Andrea del Sarto"
+msgstr "Beispiel: Andrea del Sarto"
+
+#: custom/queries.js:98
+msgid "Dates: %(range)s"
+msgstr "Daten: %(range)s"
+
+#: custom/queries.js:109
+msgid "Width: %(range)s"
+msgstr "Breite: %(range)s"
+
+#: custom/queries.js:120
+msgid "Height: %(range)s"
+msgstr "Höhe: %(range)s"
+
+#: custom/queries.js:127
+msgid "Location: '%(query)s'"
+msgstr "Standort: '%(query)s'"
+
+#: custom/queries.js:157
+msgid "Artist: %(artist)s"
+msgstr "Künstler: %(artist)s"
+
+#: custom/queries.js:171
+msgid "Medium: %(medium)s"
+msgstr "Medium: %(medium)s"
+
+#: custom/sitename.js:9
+msgid "Art Research Database"
+msgstr "Forschungsdatenbank für Kunst"
+
+#: custom/sorts.js:5
+msgid "Date, earliest first"
+msgstr "Datum, frühestes zuerst"
+
+#: custom/sorts.js:21
+msgid "Date, latest first"
+msgstr "Datum, letztes zuerst"
+
+#: custom/types.js:5
+msgid "Architecture"
+msgstr "Architektur"
+
+#: custom/types.js:9
+msgid "Decorative Arts"
+msgstr "Ornamentale Kunst"
+
+#: custom/types.js:13
+msgid "Drawing"
+msgstr "Zeichnung"
+
+#: custom/types.js:17
+msgid "Fresco"
+msgstr "Fresko"
+
+#: custom/types.js:21
+msgid "Medal"
+msgstr "Medaille"
+
+#: custom/types.js:25
+msgid "Miniature"
+msgstr "Miniatur"
+
+#: custom/types.js:29
+msgid "Mosaic"
+msgstr "Mosaikbild"
+
+#: custom/types.js:33
+msgid "Painting"
+msgstr "Gemälde"
+
+#: custom/types.js:37
+msgid "Photo"
+msgstr "Foto"
+
+#: custom/types.js:41
+msgid "Print"
+msgstr "Stich"
+
+#: custom/types.js:45
+msgid "Sculpture"
+msgstr "Skulptur"
+
+#: custom/types.js:49
+msgid "Stained Glass"
+msgstr "Buntglas"
+
+#: views/Admin.jsx:37
+msgid "Upload Images"
+msgstr "Bilder hochladen"
+
+#: views/Admin.jsx:47
+msgid "Upload a Zip file (.zip) of JPG images (.jpg or .jpeg)."
+msgstr "Laden Sie eine ZIP-Datei (.zip) oder JPG-Bilder (.jpg oder .jpeg) hoch."
+
+#: views/Admin.jsx:50
+msgid "Names of images should match the names provided in the metadata."
+msgstr "Die Namen von Bildern sollten mit den in den Metadaten bereitgestellten Namen übereinstimmen."
+
+#: views/Admin.jsx:53
+msgid ""
+"After you've uploaded a new batch of images they will be processed "
+"immediately but their similarity to other images will be computed in the "
+"background over the subsequent hours and days."
+msgstr "Nachdem Sie einen neuen Stapel Bilder hochgeladen haben, werden sie sofort verarbeitet, aber ihre Ähnlichkeit mit anderen Bildern wird in/an den nachfolgenden Stunden und Tagen im Hintergrund berechnet."
+
+#: views/Admin.jsx:68 views/Admin.jsx:164
+msgid "Upload"
+msgstr "Hochladen"
+
+#: views/Admin.jsx:82 views/Admin.jsx:177
+msgid "File Name"
+msgstr "Dateiname"
+
+#: views/Admin.jsx:83 views/Admin.jsx:178
+msgid "Last Updated"
+msgstr "Zuletzt aktualisiert"
+
+#: views/Admin.jsx:84 views/Admin.jsx:179
+msgid "Status"
+msgstr "Status"
+
+#: views/Admin.jsx:85 views/ImportImages.jsx:113
+msgid "Images"
+msgstr "Bilder"
+
+#: views/Admin.jsx:86 views/Admin.jsx:184 views/ImportData.jsx:161
+#: views/ImportImages.jsx:99
+msgid "Errors"
+msgstr "Fehler"
+
+#: views/Admin.jsx:87 views/Admin.jsx:185 views/ImportData.jsx:168
+#: views/ImportImages.jsx:106
+msgid "Warnings"
+msgstr "Warnungen"
+
+#: views/Admin.jsx:127
+msgid "Upload Metadata"
+msgstr "Metadaten hochladen"
+
+#: views/Admin.jsx:143
+msgid "You must upload some images before you can upload any metadata."
+msgstr "Sie müssen einige Bilder hochladen, bevor Sie irgendwelche Metadaten hochladen können."
+
+#: views/Admin.jsx:180
+msgid "Unprocessed"
+msgstr "Unverarbeitet"
+
+#: views/Admin.jsx:181 views/ImportData.jsx:185
+msgid "Created"
+msgstr "Erstellt"
+
+#: views/Admin.jsx:182
+msgid "Updated"
+msgstr "Aktualisiert"
+
+#: views/Admin.jsx:183 views/ImportData.jsx:194
+msgid "Deleted"
+msgstr "Gelöscht"
+
+#: views/Admin.jsx:211 views/ImportData.jsx:105
+msgid "Finalize Import"
+msgstr "Import abschließen"
+
+#: views/Admin.jsx:234
+msgid "%(name)s Admin Area"
+msgstr "%(name)s Admin-Bereich"
+
+#: views/Artwork.jsx:82
+msgid "End Comparison"
+msgstr "Vergleich beenden"
+
+#: views/Artwork.jsx:122
+msgid "Medium"
+msgstr "Medium"
+
+#: views/Artwork.jsx:129
+msgid "Dimensions"
+msgstr "Maße"
+
+#: views/Artwork.jsx:136
+msgid "Categories"
+msgstr "Kategorien"
+
+#: views/Artwork.jsx:143 views/Search.jsx:126
+msgid "Location"
+msgstr "Standort"
+
+#: views/Artwork.jsx:150
+msgid "Details"
+msgstr "Details"
+
+#: views/Artwork.jsx:225 views/Search.jsx:350
+msgid "Previous"
+msgstr "Vorher"
+
+#: views/Artwork.jsx:236 views/Search.jsx:355
+msgid "Next"
+msgstr "Weiter"
+
+#: views/Artwork.jsx:321
+msgid "More information..."
+msgstr "Weitere Informationen"
+
+#: views/Artwork.jsx:341
+msgid "Compare Images"
+msgstr "Bilder vergleichen"
+
+#: views/Artwork.jsx:346 views/Upload.jsx:52
+msgid "Similar Images"
+msgstr "Ähnliche Bilder"
+
+#: views/Artwork.jsx:371 views/Upload.jsx:89
+msgid "Score: %(score)s"
+msgstr "Punktzahl: %(score)s"
+
+#: views/Home.jsx:47
+msgid "Search %(artworkCount)s Artworks and %(imageCount)s Images:"
+msgstr "%(artworkCount)s Kunstwerke und %(imageCount)s Bilder durchsuchen:"
+
+#: views/Home.jsx:63 views/Home.jsx:68 views/Page.jsx:120 views/Page.jsx:125
+#: views/Search.jsx:244
+msgid "Search"
+msgstr "Suchen"
+
+#: views/Home.jsx:73 views/Page.jsx:107
+msgid "Browse All"
+msgstr "Alle durchsuchen"
+
+#: views/Home.jsx:81
+msgid "Search by Image:"
+msgstr "Nach Bild suchen:"
+
+#: views/Home.jsx:82
+msgid "Upload an image to find other similar images."
+msgstr "Laden Sie ein Bild hoch, um andere ähnliche Bilder zu finden."
+
+#: views/Home.jsx:88
+msgid "Upload an Image"
+msgstr "Ein Bild hochladen"
+
+#: views/Home.jsx:106 views/Home.jsx:133
+msgid "Search by Image"
+msgstr "Nach Bild suchen"
+
+#: views/Home.jsx:116
+msgid "Paste Image URL"
+msgstr "Bild-URL einfügen"
+
+#: views/Home.jsx:145
+msgid "Browse by Collection:"
+msgstr "Nach Sammlung durchsuchen:"
+
+#: views/Home.jsx:156
+msgid "%(artworkCount)s Artworks, %(imageCount)s Images"
+msgstr "%(artworkCount)s Kunstwerke, %(imageCount)s Bilder"
+
+#: views/ImportData.jsx:111
+msgid "Abandon Import"
+msgstr "Import abbrechen"
+
+#: views/ImportData.jsx:121
+msgid "Data Import: %(fileName)s"
+msgstr "Datenimport: %(fileName)s"
+
+#: views/ImportData.jsx:127 views/ImportImages.jsx:77
+msgid "Uploaded: %(date)s"
+msgstr "Hochgeladen: %(date)s"
+
+#: views/ImportData.jsx:129 views/ImportImages.jsx:79
+msgid "Last Updated: %(date)s"
+msgstr "Zuletzt aktualisiert: %(date)s"
+
+#: views/ImportData.jsx:142 views/ImportImages.jsx:87
+msgid "Return to Admin Page"
+msgstr "Zur Admin-Seite zurückkehren"
+
+#: views/ImportData.jsx:154
+msgid "To Be Processed"
+msgstr "Zu verarbeiten"
+
+#: views/ImportData.jsx:176
+msgid "Changed"
+msgstr "Geändert"
+
+#: views/ImportData.jsx:177
+msgid "Will Be Changed"
+msgstr "Wird geändert werden"
+
+#: views/ImportData.jsx:186
+msgid "Will Be Created"
+msgstr "Wird erstellt werden"
+
+#: views/ImportData.jsx:195
+msgid "Will Be Deleted"
+msgstr "Wird gelöscht werden"
+
+#: views/ImportImages.jsx:71
+msgid "Image Import: %(fileName)s"
+msgstr "Bildimport: %(fileName)s"
+
+#: views/ImportResult.jsx:22
+msgid "Show all %(count)s results..."
+msgstr "Alle %(count)s Ergebnisse anzeigen ..."
+
+#: views/Login.jsx:15 views/Login.jsx:35
+msgid "Login"
+msgstr "Anmeldung"
+
+#: views/Login.jsx:25
+msgid "Email Address:"
+msgstr "E-Mail-Adresse:"
+
+#: views/Login.jsx:30
+msgid "Password:"
+msgstr "Passwort:"
+
+#: views/Search.jsx:81
+msgid "%(numArtworks)s matches."
+msgstr "%(numArtworks)s Übereinstimmungen."
+
+#: views/Search.jsx:87
+msgid "Viewing %(start)s to %(end)s."
+msgstr "Anzeige von %(start)s bis %(end)s."
+
+#: views/Search.jsx:109
+msgid "Query"
+msgstr "Abfrage"
+
+#: views/Search.jsx:112
+msgid "Sample: christ or cristo"
+msgstr "Beispiel: Christ oder Christo"
+
+#: views/Search.jsx:125
+msgid "Sample: Louvre"
+msgstr "Beispiel: Louvre"
+
+#: views/Search.jsx:131
+msgid "Any Type"
+msgstr "Irgendein Typ"
+
+#: views/Search.jsx:158
+msgid "Width (%(unit)s)"
+msgstr "Breite (%(unit)s)"
+
+#: views/Search.jsx:178
+msgid "Height (%(unit)s)"
+msgstr "Höhe (%(unit)s)"
+
+#: views/Search.jsx:204
+msgid "Any Source"
+msgstr "Irgendeine Quelle"
+
+#: views/Search.jsx:214
+msgid "Similarity"
+msgstr "Ähnlichkeit"
+
+#: views/Search.jsx:230
+msgid "Sort"
+msgstr "Sortieren"
+
+#: views/Search.jsx:268
+msgid "Show %(count)s more..."
+msgstr "%(count)s weitere anzeigen ..."
+
+#: views/Search.jsx:318 views/Search.jsx:327
+msgid "Remove %(query)s"
+msgstr "%(query)s entfernen"
+
+#: views/Search.jsx:337
+msgid "No results found. Please refine your query."
+msgstr "Keine Ergebnisse gefunden. Bitte verfeinern Sie Ihre Abfrage."
+
+#: views/Upload.jsx:63
+msgid "No similar images were found."
+msgstr "Keine ähnlichen Bilder wurden gefunden."

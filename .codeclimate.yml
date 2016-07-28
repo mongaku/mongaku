@@ -1,0 +1,16 @@
+---
+engines:
+  csslint:
+    enabled: false
+  eslint:
+    enabled: true
+  fixme:
+    enabled: true
+ratings:
+  paths:
+  - "**.js"
+  - "**.jsx"
+exclude_paths:
+- config/**/*
+- public/**/*
+- locales/**/*

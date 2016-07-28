@@ -1,0 +1,369 @@
+"use strict";
+
+const React = require("react");
+
+const metadata = require("../lib/metadata");
+const options = require("../lib/options");
+
+const Page = require("./Page.jsx");
+
+const buckets = React.PropTypes.arrayOf(
+    React.PropTypes.shape({
+        count: React.PropTypes.number.isRequired,
+        text: React.PropTypes.string.isRequired,
+        url: React.PropTypes.string.isRequired,
+    })
+);
+
+const Search = React.createClass({
+    propTypes: {
+        URL: React.PropTypes.func.isRequired,
+        artworks: React.PropTypes.arrayOf(
+            React.PropTypes.any
+        ),
+        breadcrumbs: React.PropTypes.arrayOf(
+            React.PropTypes.shape({
+                name: React.PropTypes.string.isRequired,
+                url: React.PropTypes.string.isRequired,
+            })
+        ),
+        end: React.PropTypes.number,
+        facets: React.PropTypes.arrayOf(
+            React.PropTypes.shape({
+                name: React.PropTypes.string.isRequired,
+                buckets,
+                extra: buckets,
+            })
+        ),
+        format: React.PropTypes.func.isRequired,
+        getTitle: React.PropTypes.func.isRequired,
+        gettext: React.PropTypes.func.isRequired,
+        lang: React.PropTypes.string.isRequired,
+        next: React.PropTypes.string,
+        prev: React.PropTypes.string,
+        queries: React.PropTypes.any.isRequired,
+        sorts: React.PropTypes.arrayOf(
+            React.PropTypes.shape({
+                id: React.PropTypes.string.isRequired,
+                name: React.PropTypes.string.isRequired,
+            })
+        ),
+        sources: React.PropTypes.arrayOf(
+            React.PropTypes.shape({
+                _id: React.PropTypes.string.isRequired,
+                name: React.PropTypes.string.isRequired,
+            })
+        ),
+        start: React.PropTypes.number,
+        stringNum: React.PropTypes.func.isRequired,
+        title: React.PropTypes.string.isRequired,
+        total: React.PropTypes.number.isRequired,
+        url: React.PropTypes.string,
+        values: React.PropTypes.any.isRequired,
+    },
+
+    renderSidebar() {
+        return <div className="results-side col-sm-3 col-sm-push-9">
+            <div className="panel panel-default facet">
+                <div className="panel-heading">
+                    <strong>{this.props.format(
+                        this.props.gettext("%(numArtworks)s matches."),
+                            {numArtworks: this.props.stringNum(
+                                this.props.total)})}
+                    </strong>
+                    <br/>
+                    {this.props.end && <span>{this.props.format(
+                        this.props.gettext("Viewing %(start)s to %(end)s."),
+                        {
+                            start: this.props.stringNum(this.props.start),
+                            end: this.props.stringNum(this.props.end),
+                        }
+                    )}</span>}
+                </div>
+                <div className="panel-body search-form">
+                    {this.renderSearchForm()}
+                </div>
+            </div>
+            {this.renderFacets()}
+        </div>;
+    },
+
+    renderSorts() {
+        if (this.props.sorts.length === 0) {
+            return null;
+        }
+
+        return <div className="form-group">
+            <label htmlFor="source" className="control-label">
+                {this.props.gettext("Sort")}
+            </label>
+            <select name="sort" style={{width: "100%"}}
+                className="form-control"
+                defaultValue={this.props.values.sort}
+            >
+                {this.props.sorts.map((sort) =>
+                    <option value={sort.id} key={sort.id}>
+                        {sort.name}
+                    </option>
+                )}
+            </select>
+        </div>;
+    },
+
+    renderSearchForm() {
+        const similarity = this.props.queries.similar.filters;
+
+        return <form action={this.props.URL("/search")} method="GET">
+            <input type="hidden" name="lang" value={this.props.lang}/>
+            <div className="form-group">
+                <label htmlFor="filter" className="control-label">
+                    {this.props.gettext("Query")}
+                </label>
+                <input type="search" name="filter"
+                    placeholder={options.getSearchPlaceholder(this.props)}
+                    defaultValue={this.props.values.filter}
+                    className="form-control"
+                />
+            </div>
+            {this.renderFilters()}
+            {this.renderSourceFilter()}
+            <div className="form-group">
+                <label htmlFor="similar" className="control-label">
+                    {this.props.gettext("Similarity")}
+                </label>
+                <select name="similar" style={{width: "100%"}}
+                    className="form-control"
+                    defaultValue={this.props.values.similar}
+                >
+                    <option value=""></option>
+                    {Object.keys(similarity).map((id) =>
+                        <option value={id} key={id}>
+                            {this.props.getTitle(similarity[id])}
+                        </option>
+                    )}
+                </select>
+            </div>
+            {this.renderSorts()}
+            <div className="form-group">
+                <input type="submit" value={this.props.gettext("Search")}
+                    className="btn btn-primary"
+                />
+            </div>
+        </form>;
+    },
+
+    renderFilters() {
+        return options.filters.map((type) => {
+            const typeSchema = metadata.model[type];
+            return <div key={type}>
+                {typeSchema.renderFilter(this.props.values[type], this.props)}
+            </div>;
+        });
+    },
+
+    renderSourceFilter() {
+        // Don't show the source selection if there isn't more than one source
+        if (this.props.sources.length <= 1) {
+            return null;
+        }
+
+        return <div className="form-group">
+            <label htmlFor="source" className="control-label">
+                {this.props.gettext("Source")}
+            </label>
+            <select name="source" style={{width: "100%"}}
+                className="form-control"
+                defaultValue={this.props.values.source}
+            >
+                <option value="">{this.props.gettext("Any Source")}</option>
+                {this.props.sources.map((source) =>
+                    <option value={source._id} key={source._id}>
+                        {source.name}
+                    </option>
+                )}
+            </select>
+        </div>;
+    },
+
+    renderFacets() {
+        return <div className="hidden-xs hidden-sm">
+            {this.props.facets.map((facet) => this.renderFacet(facet))}
+        </div>;
+    },
+
+    renderFacet(facet) {
+        return <div className="panel panel-default facet" key={facet.name}>
+            <div className="panel-heading">{facet.name}</div>
+            <div className="panel-body">
+                <ul>
+                    {facet.buckets.map((bucket) => this.renderBucket(bucket))}
+                </ul>
+
+                {facet.extra && <div>
+                    <button className="btn btn-default btn-xs toggle-facets">
+                        {this.props.format(
+                            this.props.gettext("Show %(count)s more..."),
+                                {count: facet.extra.length})}
+                    </button>
+
+                    <div className="extra-facets">
+                        <ul>
+                            {facet.extra.map((bucket) =>
+                                this.renderBucket(bucket))}
+                        </ul>
+                    </div>
+                </div>}
+            </div>
+        </div>;
+    },
+
+    renderBucket(bucket) {
+        return <li key={bucket.url}>
+            <a href={bucket.url}>{bucket.text}</a>
+            {" "}({bucket.count})
+        </li>;
+    },
+
+    renderResults() {
+        return <div className="results-main col-sm-9 col-sm-pull-3">
+            {this.props.breadcrumbs.length > 0 && this.renderBreadcrumbs()}
+            {this.props.artworks.length === 0 && this.renderNoResults()}
+            {this.renderPagination()}
+            <div className="row">
+                {this.props.artworks.map((artwork) =>
+                    this.renderResult(artwork))}
+            </div>
+            {this.renderPagination()}
+        </div>;
+    },
+
+    renderBreadcrumbs() {
+        return <div className="row">
+            <div className="col-xs-12">
+                <div className="btn-group" role="group">
+                    {this.props.breadcrumbs.map((crumb) =>
+                        this.renderBreadcrumb(crumb))}
+                </div>
+            </div>
+        </div>;
+    },
+
+    renderBreadcrumb(crumb) {
+        return <a href={crumb.url}
+            className="btn btn-default btn-xs"
+            key={crumb.url}
+            title={this.props.format(this.props.gettext("Remove %(query)s"),
+                {query: crumb.name})}
+        >
+            <span className="glyphicon glyphicon-remove-sign"
+                style={{verticalAlign: -1}} aria-hidden="true"
+            ></span>
+            {" "}
+            <span aria-hidden="true">{crumb.name}</span>
+            <span className="sr-only">
+                {this.props.format(this.props.gettext("Remove %(query)s"),
+                    {query: crumb.name})}
+            </span>
+        </a>;
+    },
+
+    renderNoResults() {
+        return <div className="row">
+            <div className="col-xs-12">
+                <div className="alert alert-info" role="alert">
+                    {this.props.gettext(
+                        "No results found. Please refine your query.")}
+                </div>
+            </div>
+        </div>;
+    },
+
+    renderPagination() {
+        return <nav>
+            <ul className="pager">
+                {this.props.prev && <li className="previous">
+                    <a href={this.props.prev}>
+                        <span aria-hidden="true">&larr;</span>
+                        {this.props.gettext("Previous")}
+                    </a>
+                </li>}
+                {this.props.next && <li className="next">
+                    <a href={this.props.next}>
+                        {this.props.gettext("Next")}
+                        <span aria-hidden="true">&rarr;</span>
+                    </a>
+                </li>}
+            </ul>
+        </nav>;
+    },
+
+    renderResultFooter(artwork) {
+        if (options.views.resultFooter) {
+            return <div className="details">
+                <div className="wrap">
+                    <options.views.resultFooter
+                        {...this.props}
+                        artwork={artwork}
+                    />
+                </div>
+            </div>;
+        }
+
+        // Don't show the source selection if there isn't more than one source
+        if (this.props.sources.length <= 1) {
+            return null;
+        }
+
+        return <div className="details">
+            <div className="wrap">
+                <span>
+                    <a className="pull-right"
+                        href={this.props.URL(artwork.getSource())}
+                        title={artwork.getSource().getFullName(this.props.lang)}
+                    >
+                        {artwork.getSource().getShortName(this.props.lang)}
+                    </a>
+                </span>
+            </div>
+        </div>;
+    },
+
+    renderResult(artwork) {
+        return <div className="img col-xs-6 col-sm-4 col-md-3"
+            key={artwork._id}
+        >
+            <div className="img-wrap">
+                <a href={this.props.URL(artwork)}
+                    title={this.props.getTitle(artwork)}
+                >
+                    <img src={artwork.getThumbURL()}
+                        alt={this.props.getTitle(artwork)}
+                        title={this.props.getTitle(artwork)}
+                        className="img-responsive center-block"
+                    />
+                </a>
+            </div>
+            {this.renderResultFooter(artwork)}
+        </div>;
+    },
+
+    render() {
+        return <Page
+            {...this.props}
+        >
+            <div className="row">
+                <div className="col-xs-12">
+                    <h1>{this.props.title}</h1>
+                    {this.props.url &&
+                        <p><a href={this.props.url}>{this.props.url}</a></p>}
+                </div>
+            </div>
+            <div className="row results-wrap">
+                {this.renderSidebar()}
+                {this.renderResults()}
+            </div>
+        </Page>;
+    },
+});
+
+module.exports = Search;

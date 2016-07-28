@@ -1,0 +1,8 @@
+[main]
+host = https://www.transifex.com
+
+[mongaku.messages]
+file_filter = translations/<lang>/messages.po
+source_lang = en
+type = PO
+

@@ -1,0 +1,643 @@
+{
+   "messages": {
+      "": {
+         "Project-Id-Version": " Mongaku\nReport-Msgid-Bugs-To: \nPOT-Creation-Date: 2016-05-14 15:15+0000\nPO-Revision-Date: 2016-05-15 15:05+0000\nLast-Translator: jeresig <jeresig@gmail.com>\nLanguage-Team: Italian (http://www.transifex.com/mongaku/mongaku/language/it/)\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nLanguage: it\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
+      },
+      "Import not found.": [
+         null,
+         "File da importare non trovato."
+      ],
+      "Error retrieving records.": [
+         null,
+         "Errore nel recupero dei record"
+      ],
+      "Error processing zip file.": [
+         null,
+         "Errore durante l'apertura de file .zip."
+      ],
+      "No zip file specified.": [
+         null,
+         "Nessun file .zip specificato."
+      ],
+      "Error saving zip file.": [
+         null,
+         "Errore durante del file .zip."
+      ],
+      "Error processing data files.": [
+         null,
+         "Errore durante l'elaborazione del file."
+      ],
+      "No data files specified.": [
+         null,
+         "Nessun file specificato."
+      ],
+      "Error saving data file.": [
+         null,
+         "Errore nel salvataggio del file."
+      ],
+      "Authorization required.": [
+         null,
+         "Autorizzazione richiesta."
+      ],
+      "Not found.": [
+         null,
+         "Non trovato."
+      ],
+      "Source not found.": [
+         null,
+         "Fonte non trovata."
+      ],
+      "Error processing image.": [
+         null,
+         "Errore durante l'elaborazione dell'immagine."
+      ],
+      "No image URL specified.": [
+         null,
+         "Nessun URL dell'immagine specificato."
+      ],
+      "Error processing upload.": [
+         null,
+         "Errore durante l'elaborazione del caricamento."
+      ],
+      "No image specified.": [
+         null,
+         "Nessun immagine specificata"
+      ],
+      "Uploaded image not found.": [
+         null,
+         "Immagine caricata non trovata."
+      ],
+      "Source": [
+         null,
+         "Fonte"
+      ],
+      "Query: '%(query)s'": [
+         null,
+         "Quesito: '%(query)s'"
+      ],
+      "Similar to Any Artwork": [
+         null,
+         "Simile a Qualsiasi Opera d'Arte"
+      ],
+      "Similar to an External Artwork": [
+         null,
+         "Simile ad un'Opera d'Arte Esterna"
+      ],
+      "Similar to an Internal Artwork": [
+         null,
+         "Simile ad un'Opera d'Arte Interna"
+      ],
+      "Search Results": [
+         null,
+         "Risultati di Ricerca"
+      ],
+      "All Artworks": [
+         null,
+         "Tutte le Opere d'Arte"
+      ],
+      "IDs can only contain letters, numbers, underscores, and hyphens.": [
+         null,
+         "Gli ID possono contenere solo lettere, numeri, trattini bassi e trattini."
+      ],
+      "`url` must be properly-formatted URL.": [
+         null,
+         "`url` deve avere un formato URL corretto."
+      ],
+      "Images must be a valid image file name. For example: `image.jpg`.": [
+         null,
+         "Le immagini devono avere un nome valido, ad esempio: `immagine.jpg`."
+      ],
+      "Dimensions must have a unit specified and at least a width or height.": [
+         null,
+         "Le dimensioni devono avere un'unità di misura e almeno l'altezza o la larghezza."
+      ],
+      "Dates must have a start or end specified.": [
+         null,
+         "Le date devono avere un inizio o una fine specificata."
+      ],
+      "`objectType` must be one of the following types: %(types)s.": [
+         null,
+         "`objectType` deve essere uno dei tipi seguenti: %(types)s."
+      ],
+      "Locations must have a name or city specified.": [
+         null,
+         "Le località devono avere un nome o una città specificate."
+      ],
+      "Artwork": [
+         null,
+         "Opera d'arte"
+      ],
+      "Image file not found: %(fileName)s": [
+         null,
+         "File d'immagine non trovata: %(fileName)s"
+      ],
+      "Error accessing image data.": [
+         null,
+         "Errore nell'accesso ai dati dell'immagine."
+      ],
+      "No images found.": [
+         null,
+         "Nessuna immagine trovata."
+      ],
+      "There was an error with the data format.": [
+         null,
+         "Si è verificato un errore con il formato dei dati."
+      ],
+      "Unrecognized field `%(field)s`.": [
+         null,
+         "Campo`%(field)s` non riconosciuto."
+      ],
+      "`%(field)s` is the wrong type. Expected a %(type)s.": [
+         null,
+         "`%(field)s` non è il tipo corretto. Il tipo previsto è %(type)s."
+      ],
+      "`%(field)s` value is the wrong type. Expected a %(type)s.": [
+         null,
+         "Il valore`%(field)s` non è del tipo corretto. Tipo previsto: %(type)s."
+      ],
+      "Required field `%(field)s` is empty.": [
+         null,
+         "Il campo obbligatorio `%(field)s` è vuoto."
+      ],
+      "Recommended field `%(field)s` is empty.": [
+         null,
+         "Il campo consigliato `%(field)s` è vuoto."
+      ],
+      "Awaiting processing...": [
+         null,
+         "In attesa dell'elaborazione…"
+      ],
+      "Processing...": [
+         null,
+         "Elaborazione in corso…"
+      ],
+      "Confirmation required.": [
+         null,
+         "Conferma richiesta."
+      ],
+      "Importing data...": [
+         null,
+         "Importazione dati in corso…"
+      ],
+      "Awaiting similarity sync...": [
+         null,
+         "In attesa della sincronizzazione delle somiglianze…"
+      ],
+      "Syncing similarity...": [
+         null,
+         "Sincronizzazione somiglianze in corso…"
+      ],
+      "Completed.": [
+         null,
+         "Completato."
+      ],
+      "Data import abandoned.": [
+         null,
+         "Importazione dati annullata."
+      ],
+      "Error reading data from provided data files.": [
+         null,
+         "Errore nella lettura dei dati provenienti dai file forniti."
+      ],
+      "Error saving record.": [
+         null,
+         "Errore durante il salvataggio del record."
+      ],
+      "Error deleting existing record.": [
+         null,
+         "Errore nell'eliminazione del record esistente."
+      ],
+      "Error opening zip file.": [
+         null,
+         "Errore nell'apertura del file zip."
+      ],
+      "Zip file has no images in it.": [
+         null,
+         "Il file .zip non contiene alcuna immagine"
+      ],
+      "There was an error processing the image. Perhaps it is malformed in some way.": [
+         null,
+         "Si è verificato un errore durante l'elaborazione dell'immagine. É possibile che sia deformata."
+      ],
+      "The image is empty.": [
+         null,
+         "L'immagine è vuota."
+      ],
+      "A new version of the image was uploaded, replacing the old one.": [
+         null,
+         "Una nuova versione del file è stata caricata, sostituendo quella vecchia."
+      ],
+      "The image is too small to work with the image similarity algorithm. It must be at least 150px on each side.": [
+         null,
+         "L'immagine è troppo piccola per essere processata con l'algoritmo di similitudine. Deve essere larga almeno 150 px su ogni lato."
+      ],
+      "Error saving image.": [
+         null,
+         "Errore durante il salvataggio dell'immagine."
+      ],
+      "Error: %(error)s": [
+         null,
+         "Errore: %(error)s"
+      ],
+      "Uploaded Image": [
+         null,
+         "Immagine caricata"
+      ],
+      "Page Not Found": [
+         null,
+         "Pagina non trovata"
+      ],
+      "Type": [
+         null,
+         "Tipo"
+      ],
+      "Date": [
+         null,
+         "Data"
+      ],
+      "Artist": [
+         null,
+         "Artista"
+      ],
+      "Width": [
+         null,
+         "Larghezza"
+      ],
+      "Height": [
+         null,
+         "Altezza"
+      ],
+      "Sample: Andrea del Sarto": [
+         null,
+         "Esempio: Andrea del Sarto"
+      ],
+      "Dates: %(range)s": [
+         null,
+         "Date: %(range)s"
+      ],
+      "Width: %(range)s": [
+         null,
+         "Larghezza: %(range)s"
+      ],
+      "Height: %(range)s": [
+         null,
+         "Altezza: %(range)s"
+      ],
+      "Location: '%(query)s'": [
+         null,
+         "Località: '%(query)s'"
+      ],
+      "Artist: %(artist)s": [
+         null,
+         "Artista: %(artist)s"
+      ],
+      "Medium: %(medium)s": [
+         null,
+         "Mezzo: %(medium)s"
+      ],
+      "Art Research Database": [
+         null,
+         "Database Ricerca Arte"
+      ],
+      "Date, earliest first": [
+         null,
+         "Data, la meno recente per prima"
+      ],
+      "Date, latest first": [
+         null,
+         "Data, la più recente prima"
+      ],
+      "Architecture": [
+         null,
+         "Architettura"
+      ],
+      "Decorative Arts": [
+         null,
+         "Arti decorative"
+      ],
+      "Drawing": [
+         null,
+         "Disegno"
+      ],
+      "Fresco": [
+         null,
+         "Affresco"
+      ],
+      "Medal": [
+         null,
+         "Medaglia"
+      ],
+      "Miniature": [
+         null,
+         "Miniatura"
+      ],
+      "Mosaic": [
+         null,
+         "Mosaico"
+      ],
+      "Painting": [
+         null,
+         "Dipinto"
+      ],
+      "Photo": [
+         null,
+         "Foto"
+      ],
+      "Print": [
+         null,
+         "Stampa"
+      ],
+      "Sculpture": [
+         null,
+         "Scultura"
+      ],
+      "Stained Glass": [
+         null,
+         "Vetro colorato"
+      ],
+      "Upload Images": [
+         null,
+         "Carica immagini"
+      ],
+      "Upload a Zip file (.zip) of JPG images (.jpg or .jpeg).": [
+         null,
+         "Carica un file .zip delle immagini .jpg or .jpeg."
+      ],
+      "Names of images should match the names provided in the metadata.": [
+         null,
+         "I nomi delle immagini dovrebbero coincidere con quelli dei meta dati."
+      ],
+      "After you've uploaded a new batch of images they will be processed immediately but their similarity to other images will be computed in the background over the subsequent hours and days.": [
+         null,
+         "Una volta che hai caricato un nuovo gruppo d'immagini queste saranno subito elaborate. Le immagini simili invece saranno individuate automaticamente nel giro di qualche ora/giorno."
+      ],
+      "Upload": [
+         null,
+         "Caricamento"
+      ],
+      "File Name": [
+         null,
+         "Nome del file"
+      ],
+      "Last Updated": [
+         null,
+         "Ultimo aggiornamento"
+      ],
+      "Status": [
+         null,
+         "Stato"
+      ],
+      "Images": [
+         null,
+         "Immagini"
+      ],
+      "Errors": [
+         null,
+         "Errori"
+      ],
+      "Warnings": [
+         null,
+         "Avvisi"
+      ],
+      "Upload Metadata": [
+         null,
+         "Carica meta dati"
+      ],
+      "You must upload some images before you can upload any metadata.": [
+         null,
+         "Devi caricare alcune immagini prima che tu possa caricare dei meta dati."
+      ],
+      "Unprocessed": [
+         null,
+         "Non processato"
+      ],
+      "Created": [
+         null,
+         "Creato"
+      ],
+      "Updated": [
+         null,
+         "Aggiornato"
+      ],
+      "Deleted": [
+         null,
+         "Eliminato"
+      ],
+      "Finalize Import": [
+         null,
+         "Finalizza l'importazione"
+      ],
+      "%(name)s Admin Area": [
+         null,
+         "%(name)s Area amministrazione "
+      ],
+      "End Comparison": [
+         null,
+         "Termina comparazione"
+      ],
+      "Medium": [
+         null,
+         "Mezzo"
+      ],
+      "Dimensions": [
+         null,
+         "Dimensioni"
+      ],
+      "Categories": [
+         null,
+         "Categorie"
+      ],
+      "Location": [
+         null,
+         "Località"
+      ],
+      "Details": [
+         null,
+         "Dettagli"
+      ],
+      "Previous": [
+         null,
+         "Precedente"
+      ],
+      "Next": [
+         null,
+         "Successivo"
+      ],
+      "More information...": [
+         null,
+         "Maggiori informazioni…"
+      ],
+      "Compare Images": [
+         null,
+         "Confronta le immagini"
+      ],
+      "Similar Images": [
+         null,
+         "Immagini simili"
+      ],
+      "Score: %(score)s": [
+         null,
+         "Punteggio: %(score)s"
+      ],
+      "Search %(artworkCount)s Artworks and %(imageCount)s Images:": [
+         null,
+         "Ricerca %(artworkCount)s opere d'arte e %(imageCount)s immagini:"
+      ],
+      "Search": [
+         null,
+         "Ricerca"
+      ],
+      "Browse All": [
+         null,
+         "Visualizza tutti"
+      ],
+      "Search by Image:": [
+         null,
+         "Ricerca per immagini:"
+      ],
+      "Upload an image to find other similar images.": [
+         null,
+         "Carica un'immagine per trovarne altre simili."
+      ],
+      "Upload an Image": [
+         null,
+         "Carica un'immagine"
+      ],
+      "Search by Image": [
+         null,
+         "Ricerca per immagini"
+      ],
+      "Paste Image URL": [
+         null,
+         "Incolla l'URL dell'immagine"
+      ],
+      "Browse by Collection:": [
+         null,
+         "Visualizza per collezione:"
+      ],
+      "%(artworkCount)s Artworks, %(imageCount)s Images": [
+         null,
+         "%(artworkCount)s opere d'arte, %(imageCount)s immagini"
+      ],
+      "Abandon Import": [
+         null,
+         "Annulla l'importazione"
+      ],
+      "Data Import: %(fileName)s": [
+         null,
+         "Importazione file: %(fileName)s"
+      ],
+      "Uploaded: %(date)s": [
+         null,
+         "Caricato: %(date)s"
+      ],
+      "Last Updated: %(date)s": [
+         null,
+         "Ultimo aggiornamento: %(date)s"
+      ],
+      "Return to Admin Page": [
+         null,
+         "Ritorna alla pagina dell'amministrazione"
+      ],
+      "To Be Processed": [
+         null,
+         "Da processare"
+      ],
+      "Changed": [
+         null,
+         "Cambiato"
+      ],
+      "Will Be Changed": [
+         null,
+         "Sarà cambiato"
+      ],
+      "Will Be Created": [
+         null,
+         "Sarà creato"
+      ],
+      "Will Be Deleted": [
+         null,
+         "Sarà cancellato"
+      ],
+      "Image Import: %(fileName)s": [
+         null,
+         "Importazione immagine: %(fileName)s"
+      ],
+      "Show all %(count)s results...": [
+         null,
+         "Mostra tutti i %(count)s risultati..."
+      ],
+      "Login": [
+         null,
+         "Accesso"
+      ],
+      "Email Address:": [
+         null,
+         "Indirizzo email:"
+      ],
+      "Password:": [
+         null,
+         "Password:"
+      ],
+      "%(numArtworks)s matches.": [
+         null,
+         "%(numArtworks)s abbinamenti."
+      ],
+      "Viewing %(start)s to %(end)s.": [
+         null,
+         "Visualizzando da %(start)s a %(end)s."
+      ],
+      "Query": [
+         null,
+         "Ricerca"
+      ],
+      "Sample: christ or cristo": [
+         null,
+         "Esempio: christ or cristo"
+      ],
+      "Sample: Louvre": [
+         null,
+         "Esempio: Louvre"
+      ],
+      "Any Type": [
+         null,
+         "Ogni tipo"
+      ],
+      "Width (%(unit)s)": [
+         null,
+         "Larghezza (%(unit)s)"
+      ],
+      "Height (%(unit)s)": [
+         null,
+         "Altezza (%(unit)s)"
+      ],
+      "Any Source": [
+         null,
+         "Qualunque fonte"
+      ],
+      "Similarity": [
+         null,
+         "Somiglianza"
+      ],
+      "Sort": [
+         null,
+         "Ordina"
+      ],
+      "Show %(count)s more...": [
+         null,
+         "Mostrane altri %(count)s…"
+      ],
+      "Remove %(query)s": [
+         null,
+         "Rimosso %(query)s"
+      ],
+      "No results found. Please refine your query.": [
+         null,
+         "Nessun risultato trovato. Per favore raffina la tua ricerca."
+      ],
+      "No similar images were found.": [
+         null,
+         "Nessuna immagine simile trovata."
+      ]
+   }
+}

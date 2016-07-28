@@ -1,0 +1,9 @@
+node_modules
+data
+!tests/data
+.env
+logs
+naught.pid
+migrations/.migrate
+.nyc_output
+coverage
