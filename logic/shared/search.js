@@ -4,7 +4,6 @@ const sanitize = require("elasticsearch-sanitize");
 
 const models = require("../../lib/models");
 const urls = require("../../lib/urls");
-const config = require("../../lib/config");
 const options = require("../../lib/options");
 
 const facets = require("./facets");
@@ -167,8 +166,6 @@ module.exports = (req, res, tmplParams) => {
             breadcrumbs,
             sources: models("Source").getSources()
                 .filter((source) => source.numArtworks > 0),
-            minDate: config.DEFAULT_START_DATE,
-            maxDate: config.DEFAULT_END_DATE,
             values,
             queries,
             sorts: sortData,

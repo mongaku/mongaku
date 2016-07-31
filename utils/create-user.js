@@ -3,8 +3,6 @@
 const rl = require("readline-sync");
 const genPassword = require("password-generator");
 
-require("babel-register");
-
 const init = require("../lib/init");
 const models = require("../lib/models");
 

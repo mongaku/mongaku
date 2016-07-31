@@ -79,7 +79,7 @@ const UploadImage = new db.schema({
 });
 
 const getDirBase = function() {
-    return urls.genLocalFile(`data/${uploadName}`);
+    return urls.genLocalFile(uploadName);
 };
 
 UploadImage.methods = Object.assign({}, Image.methods, {

@@ -5,8 +5,6 @@
  *   curl -XDELETE 'http://127.0.0.1:9200/artworks'
  */
 
-require("babel-register");
-
 const init = require("../lib/init");
 const models = require("../lib/models");
 

@@ -2,7 +2,6 @@
 
 const React = require("react");
 
-const config = require("../lib/config");
 const options = require("../lib/options");
 
 const Page = React.createClass({
@@ -45,7 +44,7 @@ const Page = React.createClass({
         }
 
         // An option to disable indexing of this page
-        const noIndex = !!config.NO_INDEX || this.props.noIndex;
+        const noIndex = options.noIndex || this.props.noIndex;
 
         return <head>
             <meta httpEquiv="content-type" content="text/html; charset=utf-8"/>

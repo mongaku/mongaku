@@ -2,7 +2,6 @@
 
 const i18n = require("i18n-abide");
 
-const config = require("../lib/config");
 const options = require("../lib/options");
 
 const defaultLocale = Object.keys(options.locales)[0] || "en";
@@ -28,7 +27,7 @@ module.exports = (app) => {
 
         /* istanbul ignore next */
         const host = req.headers["x-forwarded-host"] || req.get("host");
-        let locale = config.USE_I18N_SUBDOMAIN === "1" ?
+        let locale = options.usei18nSubdomain ?
             // Set the locale based upon the subdomain
             /^\w*/.exec(host)[0] :
 

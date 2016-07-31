@@ -12,6 +12,7 @@ const pkg = require("../package.json");
 const args = minimist(process.argv.slice(2));
 
 const cmd = args._[0];
+const extraArgs = args._.slice(1);
 
 const localFile = (file) => path.resolve(__dirname, file);
 const getBinary = (bin) => {
@@ -32,7 +33,6 @@ if (args.v || args.version) {
     process.env.NODE_ENV = "production";
 
     const basePath = args.logs || "";
-    const serverLog = path.resolve(basePath, "mongaku-server.log");
     const stdoutLog = path.resolve(basePath, "mongaku-stdout.log");
     const stderrLog = path.resolve(basePath, "mongaku-stderr.log");
     const serverjs = localFile("../server.js");
@@ -41,19 +41,22 @@ if (args.v || args.version) {
         getBinary("naught"),
         "start",
         "--worker-count 2",
-        `--log ${serverLog}`,
+        `--ipc-file mongaku.ipc`,
+        `--pid-file mongaku.pid`,
+        `--log /dev/null`,
         `--stdout ${stdoutLog}`,
         `--stderr ${stderrLog}`,
         serverjs,
-    ].join(" ");
+    ].concat(extraArgs).join(" ");
 
     shell.exec(startCmd);
 
 } else if (cmd === "stop") {
-    shell.exec(`${getBinary("naught")} stop`);
+    shell.exec(`${getBinary("naught")} stop ` +
+        `--pid-file mongaku.pid mongaku.ipc`);
 
 } else if (cmd === "restart") {
-    shell.exec(`${getBinary("naught")} deploy`);
+    shell.exec(`${getBinary("naught")} deploy mongaku.ipc`);
 
 } else {
     console.log(`${pkg.name}: ${pkg.description}

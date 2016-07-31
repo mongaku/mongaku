@@ -14,9 +14,14 @@ const numRange = (bucket) => bucket.to ?
 
 const Dimension = function(options) {
     this.options = options;
+    this.defaultUnit = options.defaultUnit || "mm";
+    this.defaultSearchUnit = options.defaultSearchUnit || "cm";
+
     /*
     name
     searchName
+    defaultUnit
+    defaultSearchUnit
     title(i18n)
     widthTitle(i18n)
     heightTitle(i18n)
@@ -30,14 +35,12 @@ Dimension.prototype = {
     },
 
     value(query) {
-        const config = require("../../lib/config");
-
         const heightMin = query[`${this.searchName()}.heightMin`];
         const heightMax = query[`${this.searchName()}.heightMax`];
         const widthMin = query[`${this.searchName()}.widthMin`];
         const widthMax = query[`${this.searchName()}.widthMax`];
         const unit = query[`${this.searchName()}.unit`] ||
-            config.DEFAULT_SEARCH_UNIT || config.DEFAULT_UNIT;
+            this.defaultSearchUnit || this.defaultUnit;
 
         if (heightMin || heightMax || widthMin || widthMax) {
             return {heightMin, heightMax, widthMin, widthMax, unit};
@@ -45,11 +48,9 @@ Dimension.prototype = {
     },
 
     searchTitle(value, i18n) {
-        const config = require("../../lib/config");
-
-        const defaultUnit = config.DEFAULT_UNIT;
-        const unit = value.unit || config.DEFAULT_SEARCH_UNIT ||
-            config.DEFAULT_UNIT;
+        const defaultUnit = this.defaultUnit;
+        const unit = value.unit || this.defaultSearchUnit ||
+            this.defaultUnit;
         const title = [];
 
         if (value.heightMin || value.heightMax) {
@@ -76,10 +77,8 @@ Dimension.prototype = {
     },
 
     fields(value) {
-        const config = require("../../lib/config");
-
         const ret = {};
-        const defaultUnit = config.DEFAULT_SEARCH_UNIT || config.DEFAULT_UNIT;
+        const defaultUnit = this.defaultSearchUnit || this.defaultUnit;
 
         if (value.heightMin) {
             ret[`${this.searchName()}.heightMin`] = value.heightMin;
@@ -149,8 +148,6 @@ Dimension.prototype = {
     },
 
     filter(value) {
-        const config = require("../../lib/config");
-
         const filters = [];
 
         if (value.widthMin) {
@@ -159,7 +156,7 @@ Dimension.prototype = {
                     [`${this.options.name}.width`]: {
                         gte: pd.convertNumber(
                             parseFloat(value.widthMin), value.unit,
-                                config.DEFAULT_UNIT),
+                                this.defaultUnit),
                     },
                 },
             });
@@ -171,7 +168,7 @@ Dimension.prototype = {
                     [`${this.options.name}.width`]: {
                         lte: pd.convertNumber(
                             parseFloat(value.widthMax), value.unit,
-                                config.DEFAULT_UNIT),
+                                this.defaultUnit),
                     },
                 },
             });
@@ -183,7 +180,7 @@ Dimension.prototype = {
                     [`${this.options.name}.height`]: {
                         gte: pd.convertNumber(
                             parseFloat(value.heightMin), value.unit,
-                                config.DEFAULT_UNIT),
+                                this.defaultUnit),
                     },
                 },
             });
@@ -195,7 +192,7 @@ Dimension.prototype = {
                     [`${this.options.name}.height`]: {
                         lte: pd.convertNumber(
                             parseFloat(value.heightMax), value.unit,
-                                config.DEFAULT_UNIT),
+                                this.defaultUnit),
                     },
                 },
             });
@@ -205,10 +202,8 @@ Dimension.prototype = {
     },
 
     facet() {
-        const config = require("../../lib/config");
-
-        const defaultUnit = config.DEFAULT_UNIT;
-        const unit = config.DEFAULT_SEARCH_UNIT || config.DEFAULT_UNIT;
+        const defaultUnit = this.defaultUnit;
+        const unit = this.defaultSearchUnit || this.defaultUnit;
 
         const formatFacetBucket = (bucket) => {
             const text = numRange({
@@ -289,18 +284,14 @@ Dimension.prototype = {
     },
 
     renderView(value) {
-        const config = require("../../lib/config");
-
         return DimensionDisplay({
             name: this.options.name,
             value,
-            defaultUnit: config.DEFAULT_SEARCH_UNIT,
+            defaultUnit: this.defaultSearchUnit,
         });
     },
 
     schema(Schema) {
-        const config = require("../../lib/config");
-
         const DimensionSchema = new Schema({
             // An ID for the dimension, computed from the original +
             // width/height properties before validation.
@@ -339,8 +330,8 @@ Dimension.prototype = {
         return {
             type: [DimensionSchema],
             convert: (obj) => typeof obj === "string" ?
-                pd.parseDimension(obj, true, config.DEFAULT_UNIT) :
-                pd.convertDimension(obj, config.DEFAULT_UNIT),
+                pd.parseDimension(obj, true, this.defaultUnit) :
+                pd.convertDimension(obj, this.defaultUnit),
             validateArray: (val) => (val.width || val.height) && val.unit,
             validationMsg: (req) => req.gettext("Dimensions must have a " +
                 "unit specified and at least a width or height."),

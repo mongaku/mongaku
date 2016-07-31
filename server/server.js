@@ -2,8 +2,6 @@
 
 const express = require("express");
 
-require("babel-register");
-
 const init = require("../lib/init");
 const config = require("../lib/config");
 

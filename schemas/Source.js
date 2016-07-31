@@ -32,7 +32,7 @@ Source.methods = {
     },
 
     getDirBase() {
-        return urls.genLocalFile(`data/${this._id}`);
+        return urls.genLocalFile(this._id);
     },
 
     getFullName() {

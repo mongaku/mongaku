@@ -5,8 +5,6 @@ const path = require("path");
 
 const rl = require("readline-sync");
 
-require("babel-register");
-
 const init = require("../lib/init");
 const models = require("../lib/models");
 

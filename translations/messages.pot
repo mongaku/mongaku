@@ -8,43 +8,43 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-07-28 14:55+0000\n"
+"POT-Creation-Date: 2016-07-31 20:36+0000\n"
 
-#: logic/admin.js:25
-#: logic/admin.js:63
+#: logic/admin.js:24
+#: logic/admin.js:62
 msgid "Import not found."
 msgstr ""
 
-#: logic/admin.js:118
+#: logic/admin.js:117
 msgid "Error retrieving records."
 msgstr ""
 
-#: logic/admin.js:158
+#: logic/admin.js:156
 msgid "Error processing zip file."
 msgstr ""
 
-#: logic/admin.js:165
+#: logic/admin.js:163
 msgid "No zip file specified."
 msgstr ""
 
-#: logic/admin.js:178
+#: logic/admin.js:176
 msgid "Error saving zip file."
 msgstr ""
 
-#: logic/admin.js:198
+#: logic/admin.js:195
 msgid "Error processing data files."
 msgstr ""
 
-#: logic/admin.js:208
+#: logic/admin.js:205
 msgid "No data files specified."
 msgstr ""
 
-#: logic/admin.js:222
-#: logic/admin.js:229
+#: logic/admin.js:219
+#: logic/admin.js:226
 msgid "Error saving data file."
 msgstr ""
 
-#: logic/admin.js:247
+#: logic/admin.js:244
 msgid "Authorization required."
 msgstr ""
 
@@ -78,31 +78,32 @@ msgstr ""
 
 #: logic/shared/facets.js:8
 #: views/Artwork.jsx:230
+#: views/Edit.jsx:95
 #: views/Search.jsx:172
 msgid "Source"
 msgstr ""
 
-#: logic/shared/queries.js:33
+#: logic/shared/queries.js:32
 msgid "Query: '%(query)s'"
 msgstr ""
 
-#: logic/shared/queries.js:62
+#: logic/shared/queries.js:61
 msgid "Similar to Any Artwork"
 msgstr ""
 
-#: logic/shared/queries.js:74
+#: logic/shared/queries.js:73
 msgid "Similar to an External Artwork"
 msgstr ""
 
-#: logic/shared/queries.js:106
+#: logic/shared/queries.js:105
 msgid "Similar to an Internal Artwork"
 msgstr ""
 
-#: logic/shared/search.js:141
+#: logic/shared/search.js:140
 msgid "Search Results"
 msgstr ""
 
-#: logic/shared/search.js:162
+#: logic/shared/search.js:161
 msgid "All Artworks"
 msgstr ""
 
@@ -249,7 +250,7 @@ msgstr ""
 msgid "Uploaded Image"
 msgstr ""
 
-#: schemas/types/Dimension.js:345
+#: schemas/types/Dimension.js:336
 msgid "Dimensions must have a unit specified and at least a width or height."
 msgstr ""
 
@@ -363,37 +364,45 @@ msgid "%(name)s Admin Area"
 msgstr ""
 
 #: views/Artwork.jsx:82
+#: views/Edit.jsx:68
 msgid "End Comparison"
 msgstr ""
 
 #: views/Artwork.jsx:165
+#: views/Edit.jsx:163
 #: views/Search.jsx:287
 msgid "Previous"
 msgstr ""
 
 #: views/Artwork.jsx:176
+#: views/Edit.jsx:174
 #: views/Search.jsx:292
 msgid "Next"
 msgstr ""
 
 #: views/Artwork.jsx:211
+#: views/Edit.jsx:88
 msgid "Details"
 msgstr ""
 
 #: views/Artwork.jsx:215
+#: views/Edit.jsx:210
 msgid "More information..."
 msgstr ""
 
 #: views/Artwork.jsx:249
+#: views/Edit.jsx:231
 msgid "Compare Images"
 msgstr ""
 
 #: views/Artwork.jsx:254
+#: views/Edit.jsx:236
 #: views/Upload.jsx:52
 msgid "Similar Images"
 msgstr ""
 
 #: views/Artwork.jsx:279
+#: views/Edit.jsx:261
 #: views/Upload.jsx:89
 msgid "Score: %(score)s"
 msgstr ""
@@ -404,14 +413,14 @@ msgstr ""
 
 #: views/Home.jsx:48
 #: views/Home.jsx:53
-#: views/Page.jsx:139
-#: views/Page.jsx:144
+#: views/Page.jsx:138
+#: views/Page.jsx:143
 #: views/Search.jsx:148
 msgid "Search"
 msgstr ""
 
 #: views/Home.jsx:58
-#: views/Page.jsx:126
+#: views/Page.jsx:125
 msgid "Browse All"
 msgstr ""
 

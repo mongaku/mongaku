@@ -2,7 +2,6 @@
 
 const models = require("../../lib/models");
 const metadata = require("../../lib/metadata");
-const config = require("../../lib/config");
 const options = require("../../lib/options");
 
 const defaultSort = Object.keys(options.sorts)[0];
@@ -16,7 +15,7 @@ module.exports = Object.assign({
 
     rows: {
         value: (fields) => parseFloat(fields.rows),
-        defaultValue: () => parseFloat(config.DEFAULT_ROWS),
+        defaultValue: () => options.searchNumRecords,
         secondary: true,
     },
 

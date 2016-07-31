@@ -13,6 +13,7 @@ const urls = require("../lib/urls");
 const db = require("../lib/db");
 const similar = require("../lib/similar");
 const config = require("../lib/config");
+const options = require("../lib/options");
 
 // Add the ability to provide an explicit bath to the GM binary
 /* istanbul ignore if */
@@ -426,7 +427,7 @@ const images = {
     makeThumb(baseDir, fileName, callback) {
         const imageFile = path.resolve(baseDir, "images", fileName);
         const thumbFile = path.resolve(baseDir, "thumbs", fileName);
-        const size = this.parseSize(config.THUMB_SIZE);
+        const size = this.parseSize(options.imageThumbSize);
 
         this.convert(fs.createReadStream(imageFile), thumbFile, (img) => {
             return img.resize(size.width, size.height);
@@ -436,7 +437,7 @@ const images = {
     makeScaled(baseDir, fileName, callback) {
         const imageFile = path.resolve(baseDir, "images", fileName);
         const scaledFile = path.resolve(baseDir, "scaled", fileName);
-        const scaled = this.parseSize(config.SCALED_SIZE);
+        const scaled = this.parseSize(options.imageScaledSize);
 
         this.convert(fs.createReadStream(imageFile), scaledFile, (img) => {
             return img.resize(scaled.width, scaled.height, ">");

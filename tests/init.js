@@ -1,9 +1,5 @@
 "use strict";
 
-process.env.BASE_DATA_DIR = process.cwd();
-process.env.PASTEC_URL = "localhost:4212";
-process.env.ELASTICSEARCH_URL = "http://localhost:9200";
-
 const fs = require("fs");
 const path = require("path");
 
@@ -19,7 +15,10 @@ iconv.getCodec("utf8");
 // Force babel sub-modules to preload
 require("babel-preset-react");
 require("babel-helper-builder-react-jsx");
-require("babel-register");
+require("../lib/babel");
+
+// Load in global ENV
+process.env.BASE_DATA_DIR = path.resolve(process.cwd(), "data");
 
 const models = require("../lib/models");
 const similarity = require("../lib/similar");
@@ -62,7 +61,6 @@ let sandbox;
 
 // Root Files
 const pkgFile = fs.readFileSync(path.resolve(__dirname, "../package.json"));
-const babelrc = fs.readFileSync(path.resolve(__dirname, "../.babelrc"));
 
 // Files used for testing
 const testFiles = {};
@@ -914,7 +912,6 @@ const init = (done) => {
     ], () => {
         mockfs({
             "package.json": pkgFile,
-            ".babelrc": babelrc,
             "data": {
                 "test": {
                     "images": {},
