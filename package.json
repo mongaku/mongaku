@@ -3,12 +3,12 @@
   "version": "0.0.1",
   "description": "An image similarity search engine and database.",
   "main": "server.js",
+  "bin": {
+    "mongaku": "bin/mongaku.js"
+  },
   "scripts": {
     "lint": "eslint lib/*.js logic/*.js logic/shared/*.js schemas/*.js server/*.js server/*/*.js utils/*.js converters/*.js tests/*.js *.js views/*.jsx views/types/*/*.jsx",
     "test": "npm run lint && NODE_ENV=test tap --cov tests/schemas/*.js tests/logic/shared/*.js tests/logic/*.js",
-    "start": "NODE_ENV=production naught start --worker-count 2 --log ./logs/naught.log --stdout ./logs/node.log --stderr ./logs/node-error.log server.js options.jsx",
-    "restart": "naught deploy",
-    "stop": "naught stop",
     "dev": "supervisor -e js,jsx -i node_modules,old,locales,converters,sources,public -- server.js options.jsx",
     "dev-test": "NODE_ENV=test supervisor -e js,jsx -i node_modules,old,locales,converters,sources,public tests/server.js",
     "extract-i18n-js": "jsxgettext --keyword=format --keyword=gettext -L javascript --output-dir=./translations --output=messages.pot logic/*.js logic/*/*.js schemas/*.js schemas/*/*.js server/*.js lib/*.js views/*.jsx views/types/*/*.jsx",
@@ -57,6 +57,7 @@
     "libxmljs": "^0.17.1",
     "marcjs": "^0.1.12",
     "method-override": "^2.3.5",
+    "minimist": "^1.2.0",
     "moment": "^2.12.0",
     "mongoosastic": "^4.0.2",
     "mongoose": "^4.4.10",
@@ -75,6 +76,7 @@
     "request": "^2.67.0",
     "serve-favicon": "^2.3.0",
     "serve-static": "^1.10.2",
+    "shelljs": "^0.7.3",
     "unzip2": "^0.2.5",
     "valid-url": "^1.0.9",
     "yearrange": "0.0.5"
