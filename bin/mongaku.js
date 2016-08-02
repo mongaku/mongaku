@@ -32,6 +32,7 @@ if (args.v || args.version) {
 } else if (cmd === "start") {
     process.env.NODE_ENV = "production";
 
+    const workers = args.workers || 2;
     const basePath = args.logs || "";
     const stdoutLog = path.resolve(basePath, "mongaku-stdout.log");
     const stderrLog = path.resolve(basePath, "mongaku-stderr.log");
@@ -40,7 +41,7 @@ if (args.v || args.version) {
     const startCmd = [
         getBinary("naught"),
         "start",
-        "--worker-count 2",
+        `--worker-count ${workers}`,
         `--ipc-file mongaku.ipc`,
         `--pid-file mongaku.pid`,
         `--log /dev/null`,
@@ -58,6 +59,13 @@ if (args.v || args.version) {
 } else if (cmd === "restart") {
     shell.exec(`${getBinary("naught")} deploy mongaku.ipc`);
 
+} else if (cmd === "create") {
+    const name = extraArgs[0];
+    const logic = require(`../utils/create-${name}.js`);
+    const init = require("../lib/init");
+
+    init(logic);
+
 } else {
     console.log(`${pkg.name}: ${pkg.description}
 
@@ -67,6 +75,7 @@ Commands:
     install
     start
       --logs
+      --workers
     stop
     restart
 

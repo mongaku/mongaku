@@ -5,10 +5,9 @@ const path = require("path");
 
 const rl = require("readline-sync");
 
-const init = require("../lib/init");
 const models = require("../lib/models");
 
-init(() => {
+module.exports = () => {
     const _id = rl.question("Source ID (e.g. frick): ");
     const name = rl.question("Full Name (e.g. Frick Library): ");
     const shortName = rl.question("Short Name (e.g. Frick): ");
@@ -42,4 +41,4 @@ init(() => {
 
         process.exit();
     });
-});
+};
