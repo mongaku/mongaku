@@ -36,7 +36,7 @@ if (args.v || args.version) {
     const basePath = args.logs || "";
     const stdoutLog = path.resolve(basePath, "mongaku-stdout.log");
     const stderrLog = path.resolve(basePath, "mongaku-stderr.log");
-    const serverjs = localFile("../server.js");
+    const serverjs = localFile("../mongaku.js");
 
     const startCmd = [
         getBinary("naught"),
@@ -73,6 +73,7 @@ usage: mongaku <command>
 
 Commands:
     install
+    create source
     start
       --logs
       --workers
