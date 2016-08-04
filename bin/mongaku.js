@@ -64,7 +64,16 @@ if (args.v || args.version) {
     const logic = require(`../utils/create-${name}.js`);
     const init = require("../lib/init");
 
-    init(logic);
+    init(() => {
+        logic((err) => {
+            if (err) {
+                console.error(err);
+                process.exit(1);
+            } else {
+                process.exit(0);
+            }
+        });
+    });
 
 } else {
     console.log(`${pkg.name}: ${pkg.description}
@@ -73,6 +82,8 @@ usage: mongaku <command>
 
 Commands:
     install
+    create admin
+    create user
     create source
     start
       --logs

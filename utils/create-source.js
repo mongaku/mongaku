@@ -7,7 +7,7 @@ const rl = require("readline-sync");
 
 const models = require("../lib/models");
 
-module.exports = () => {
+module.exports = (callback) => {
     const _id = rl.question("Source ID (e.g. frick): ");
     const name = rl.question("Full Name (e.g. Frick Library): ");
     const shortName = rl.question("Short Name (e.g. Frick): ");
@@ -27,18 +27,18 @@ module.exports = () => {
 
     source.save((err) => {
         if (err) {
-            console.error(err);
-        } else {
-            // Create directories to hold images
-            const dir = source.getDirBase();
-            fs.mkdirSync(dir);
-            fs.mkdirSync(path.join(dir, "images"));
-            fs.mkdirSync(path.join(dir, "scaled"));
-            fs.mkdirSync(path.join(dir, "thumbs"));
-
-            console.log("CREATED");
+            return callback(err);
         }
 
-        process.exit();
+        // Create directories to hold images
+        const dir = source.getDirBase();
+        fs.mkdirSync(dir);
+        fs.mkdirSync(path.join(dir, "images"));
+        fs.mkdirSync(path.join(dir, "scaled"));
+        fs.mkdirSync(path.join(dir, "thumbs"));
+
+        console.log(`Source Created: ${_id}`);
+
+        callback();
     });
 };

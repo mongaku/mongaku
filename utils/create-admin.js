@@ -11,13 +11,12 @@ module.exports = (callback) => {
         defaultInput: genPassword(),
         hideEchoBack: true,
     });
-    const source = rl.question("Source Admin [Optional, Source ID]: ");
 
     const User = models("User");
     const user = new User({
         email,
         password,
-        sourceAdmin: source ? [source] : [],
+        siteAdmin: true,
     });
 
     user.save((err) => {
@@ -25,7 +24,7 @@ module.exports = (callback) => {
             return callback(err);
         }
 
-        console.log("User Created:");
+        console.log("Admin User Created:");
         console.log(`Email: ${email}`);
         console.log(`Password: ${password}`);
 
