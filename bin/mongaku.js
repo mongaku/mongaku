@@ -85,6 +85,7 @@ Commands:
     create admin
     create user
     create source
+    create index
     start
       --logs
       --workers
