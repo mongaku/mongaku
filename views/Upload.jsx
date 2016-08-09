@@ -18,7 +18,7 @@ const Upload = React.createClass({
         shortName: React.PropTypes.func.isRequired,
         similar: React.PropTypes.arrayOf(
             React.PropTypes.shape({
-                artwork: React.PropTypes.shape({
+                record: React.PropTypes.shape({
                     _id: React.PropTypes.string.isRequired,
                     source: React.PropTypes.string.isRequired,
                 }).isRequired,
@@ -68,17 +68,17 @@ const Upload = React.createClass({
     },
 
     renderMatch(match) {
-        const artwork = match.artwork;
-        const source = artwork.getSource();
+        const record = match.record;
+        const source = record.getSource();
 
         return <div className="img col-md-6 col-sm-4 col-xs-6"
-            key={artwork._id}
+            key={record._id}
         >
             <div className="img-wrap">
-                <a href={this.props.URL(artwork)}>
-                    <img src={artwork.getThumbURL()}
-                        alt={this.props.getTitle(artwork)}
-                        title={this.props.getTitle(artwork)}
+                <a href={this.props.URL(record)}>
+                    <img src={record.getThumbURL()}
+                        alt={this.props.getTitle(record)}
+                        title={this.props.getTitle(record)}
                         className="img-responsive center-block"
                     />
                 </a>

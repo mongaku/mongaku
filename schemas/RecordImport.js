@@ -13,7 +13,7 @@ const states = [
         id: "started",
         name: (req) => req.gettext("Awaiting processing..."),
         advance(batch, callback) {
-            batch.processArtworks(callback);
+            batch.processRecords(callback);
         },
     },
     {
@@ -25,7 +25,7 @@ const states = [
         name: (req) => req.gettext("Confirmation required."),
         // NOTE(jeresig): Do not auto-advance to importing the data
         // we want the user to make the call on the results.
-        // batch.importArtworks(callback);
+        // batch.importRecords(callback);
     },
     {
         id: "import.started",
@@ -73,7 +73,7 @@ const req = {
     lang: "en",
 };
 
-const ArtworkImport = Import.extend({
+const RecordImport = Import.extend({
     // The name of the original file (e.g. `foo.json`)
     fileName: {
         type: String,
@@ -81,14 +81,14 @@ const ArtworkImport = Import.extend({
     },
 });
 
-Object.assign(ArtworkImport.methods, {
+Object.assign(RecordImport.methods, {
     getURL(lang) {
         return urls.gen(lang,
-            `/source/${this.source}/admin?artworks=${this._id}`);
+            `/source/${this.source}/admin?records=${this._id}`);
     },
 
     getError(req) {
-        return models("ArtworkImport").getError(req, this.error);
+        return models("RecordImport").getError(req, this.error);
     },
 
     getStates() {
@@ -113,8 +113,8 @@ Object.assign(ArtworkImport.methods, {
         });
     },
 
-    processArtworks(callback) {
-        const Artwork = models("Artwork");
+    processRecords(callback) {
+        const Record = models("Record");
         const incomingIDs = {};
 
         async.eachLimit(this.results, 1, (result, callback) => {
@@ -122,10 +122,10 @@ Object.assign(ArtworkImport.methods, {
 
             /* istanbul ignore if */
             if (config.NODE_ENV !== "test") {
-                console.log("Processing Artwork:", data.id);
+                console.log("Processing Record:", data.id);
             }
 
-            Artwork.fromData(data, req, (err, artwork, warnings, isNew) => {
+            Record.fromData(data, req, (err, record, warnings, isNew) => {
                 result.state = "process.completed";
 
                 if (err) {
@@ -138,9 +138,9 @@ Object.assign(ArtworkImport.methods, {
                     result.result = "created";
 
                 } else {
-                    result.diff = artwork.diff;
-                    incomingIDs[artwork._id] = true;
-                    result.model = artwork._id;
+                    result.diff = record.diff;
+                    incomingIDs[record._id] = true;
+                    result.model = record._id;
                     result.result = result.diff ? "changed" : "unchanged";
                 }
 
@@ -150,11 +150,11 @@ Object.assign(ArtworkImport.methods, {
         }, () => {
             /* istanbul ignore if */
             if (config.NODE_ENV !== "test") {
-                console.log("Finding artworks to delete...");
+                console.log("Finding records to delete...");
             }
 
-            // Find artworks that need to be deleted
-            Artwork.find({source: this.source})
+            // Find records that need to be deleted
+            Record.find({source: this.source})
                 .lean().distinct("_id")
                 .exec((err, ids) => {
                     for (const id of ids) {
@@ -183,8 +183,8 @@ Object.assign(ArtworkImport.methods, {
                 return callback(err);
             }
 
-            // Delay the importing of the artworks to not block the UI
-            process.nextTick(() => this.importArtworks(() => {
+            // Delay the importing of the records to not block the UI
+            process.nextTick(() => this.importRecords(() => {
                 // Ignore the result, user doesn't care.
             }));
 
@@ -192,8 +192,8 @@ Object.assign(ArtworkImport.methods, {
         });
     },
 
-    importArtworks(callback) {
-        const Artwork = models("Artwork");
+    importRecords(callback) {
+        const Record = models("Record");
         const Source = models("Source");
 
         async.eachLimit(this.results, 1, (result, callback) => {
@@ -206,14 +206,14 @@ Object.assign(ArtworkImport.methods, {
 
             if (result.result === "created" ||
                     result.result === "changed") {
-                Artwork.fromData(result.data, req, (err, artwork) => {
-                    artwork.save((err) => {
+                Record.fromData(result.data, req, (err, record) => {
+                    record.save((err) => {
                         /* istanbul ignore if */
                         if (err) {
                             result.state = "error";
                             result.error = "ERROR_SAVING";
                         } else {
-                            result.model = artwork._id;
+                            result.model = record._id;
                             result.state = "import.completed";
                         }
 
@@ -222,7 +222,7 @@ Object.assign(ArtworkImport.methods, {
                 });
 
             } else if (result.result === "deleted") {
-                Artwork.findByIdAndRemove(result.model, (err) => {
+                Record.findByIdAndRemove(result.model, (err) => {
                     /* istanbul ignore if */
                     if (err) {
                         result.state = "error";
@@ -258,15 +258,15 @@ Object.assign(ArtworkImport.methods, {
     updateSimilarity(callback) {
         const results = this.getFilteredResults();
 
-        // No need to update the similarity if no artworks were created
+        // No need to update the similarity if no records were created
         // or deleted.
         if (results.created.length === 0 && results.deleted.length === 0) {
             return process.nextTick(callback);
         }
 
-        // Update the similarity on all artworks, including the ones that
+        // Update the similarity on all records, including the ones that
         // were just added.
-        models("Artwork").update(
+        models("Record").update(
             {},
             {needsSimilarUpdate: true},
             {multi: true},
@@ -296,10 +296,10 @@ Object.assign(ArtworkImport.methods, {
     },
 });
 
-Object.assign(ArtworkImport.statics, {
+Object.assign(RecordImport.statics, {
     fromFile(fileName, source) {
-        const ArtworkImport = models("ArtworkImport");
-        return new ArtworkImport({source, fileName});
+        const RecordImport = models("RecordImport");
+        return new RecordImport({source, fileName});
     },
 
     getError(req, error) {
@@ -308,4 +308,4 @@ Object.assign(ArtworkImport.statics, {
     },
 });
 
-module.exports = ArtworkImport;
+module.exports = RecordImport;

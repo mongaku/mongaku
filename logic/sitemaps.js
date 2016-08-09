@@ -6,11 +6,11 @@ const models = require("../lib/models");
 const urls = require("../lib/urls");
 
 module.exports = function(app) {
-    const Artwork = models("Artwork");
+    const Record = models("Record");
 
     return {
         index(req, res) {
-            Artwork.count({}, (err, total) => {
+            Record.count({}, (err, total) => {
                 const sitemaps = [];
 
                 for (let i = 0; i < total; i += NUM_PER_SITEMAP) {
@@ -30,8 +30,8 @@ ${sitemaps.join("\n")}
         },
 
         search(req, res) {
-            // Query for the artworks in Elasticsearch
-            Artwork.search({
+            // Query for the records in Elasticsearch
+            Record.search({
                 bool: {
                     must: [
                         {
@@ -53,7 +53,7 @@ ${sitemaps.join("\n")}
                 }
 
                 const sitemaps = results.hits.hits.map((item) =>
-                    Artwork.getURLFromID(req.lang, item._id))
+                    Record.getURLFromID(req.lang, item._id))
                     .map((url) => `<url><loc>${url}</loc></url>`);
 
                 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

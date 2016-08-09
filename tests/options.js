@@ -62,7 +62,7 @@ module.exports = {
     },
 
     model: {
-        // The title of the artwork.
+        // The title of the record.
         title: {
             type: "SimpleString",
             title: (i18n) => i18n.gettext("Title"),
@@ -77,7 +77,7 @@ module.exports = {
             placeholder: (i18n) => i18n.gettext("Sample: Andrea del Sarto"),
         },
 
-        // Date ranges when the artwork was created or modified.
+        // Date ranges when the record was created or modified.
         dates: {
             type: "YearRange",
             searchName: "date",
@@ -100,14 +100,14 @@ module.exports = {
             url: (value) => `/type/${value}`,
         },
 
-        // The medium of the artwork (e.g. "watercolor")
+        // The medium of the record (e.g. "watercolor")
         medium: {
             type: "SimpleString",
             title: (i18n) => i18n.gettext("Medium"),
             searchField: "filter",
         },
 
-        // The size of the artwork (e.g. 100mm x 200mm)
+        // The size of the record (e.g. 100mm x 200mm)
         dimensions: {
             type: "Dimension",
             title: (i18n) => i18n.gettext("Dimensions"),
@@ -119,7 +119,7 @@ module.exports = {
             }),
         },
 
-        // Locations where the artwork is stored
+        // Locations where the record is stored
         locations: {
             type: "Location",
             searchName: "location",
@@ -127,8 +127,8 @@ module.exports = {
             placeholder: (i18n) => i18n.gettext("Sample: Louvre"),
         },
 
-        // Categories classifying the artwork
-        // The medium of the artwork (e.g. "watercolor")
+        // Categories classifying the record
+        // The medium of the record (e.g. "watercolor")
         categories: {
             type: "SimpleString",
             title: (i18n) => i18n.gettext("Categories"),

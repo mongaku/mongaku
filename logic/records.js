@@ -6,7 +6,7 @@ const models = require("../lib/models");
 const options = require("../lib/options");
 
 module.exports = function(app) {
-    const Artwork = models("Artwork");
+    const Record = models("Record");
     const Source = models("Source");
 
     const cache = require("../server/middlewares/cache");
@@ -23,45 +23,45 @@ module.exports = function(app) {
 
         show(req, res) {
             const compare = ("compare" in req.query);
-            const id = `${req.params.source}/${req.params.artworkName}`;
+            const id = `${req.params.source}/${req.params.recordName}`;
 
-            Artwork.findById(id, (err, artwork) => {
-                if (err || !artwork) {
+            Record.findById(id, (err, record) => {
+                if (err || !record) {
                     return res.status(404).render("Error", {
                         title: req.gettext("Not found."),
                     });
                 }
 
-                artwork.loadImages(true, () => {
+                record.loadImages(true, () => {
                     // TODO: Handle error loading images?
-                    const title = artwork.getTitle(req);
+                    const title = record.getTitle(req);
 
-                    // Sort the similar artworks by score
-                    artwork.similarArtworks = artwork.similarArtworks
+                    // Sort the similar records by score
+                    record.similarRecords = record.similarRecords
                         .sort((a, b) => b.score - a.score);
 
                     if (!compare) {
-                        return res.render("Artwork", {
+                        return res.render("Record", {
                             title,
                             compare: false,
-                            artworks: [artwork],
-                            similar: artwork.similarArtworks,
+                            records: [record],
+                            similar: record.similarRecords,
                             sources: Source.getSources(),
                         });
                     }
 
-                    async.eachLimit(artwork.similarArtworks, 4,
+                    async.eachLimit(record.similarRecords, 4,
                         (similar, callback) => {
-                            similar.artwork.loadImages(false, callback);
+                            similar.record.loadImages(false, callback);
                         }, () => {
-                            res.render("Artwork", {
+                            res.render("Record", {
                                 title,
                                 compare: true,
                                 noIndex: true,
                                 similar: [],
-                                artworks: [artwork]
-                                    .concat(artwork.similarArtworks
-                                        .map((similar) => similar.artwork)),
+                                records: [record]
+                                    .concat(record.similarRecords
+                                        .map((similar) => similar.record)),
                                 sources: Source.getSources(),
                             });
                         });
@@ -71,7 +71,8 @@ module.exports = function(app) {
 
         routes() {
             app.get("/search", cache(1), this.search);
-            app.get("/artworks/:source/:artworkName", this.show);
+            // TODO(jeresig): Make this configurable
+            app.get("/artworks/:source/:recordName", this.show);
             app.get("/source/:source", cache(1), this.bySource);
 
             for (const path in options.searchURLs) {

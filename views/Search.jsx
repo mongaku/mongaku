@@ -18,9 +18,6 @@ const buckets = React.PropTypes.arrayOf(
 const Search = React.createClass({
     propTypes: {
         URL: React.PropTypes.func.isRequired,
-        artworks: React.PropTypes.arrayOf(
-            React.PropTypes.any
-        ),
         breadcrumbs: React.PropTypes.arrayOf(
             React.PropTypes.shape({
                 name: React.PropTypes.string.isRequired,
@@ -42,6 +39,9 @@ const Search = React.createClass({
         next: React.PropTypes.string,
         prev: React.PropTypes.string,
         queries: React.PropTypes.any.isRequired,
+        records: React.PropTypes.arrayOf(
+            React.PropTypes.any
+        ),
         sorts: React.PropTypes.arrayOf(
             React.PropTypes.shape({
                 id: React.PropTypes.string.isRequired,
@@ -67,8 +67,8 @@ const Search = React.createClass({
             <div className="panel panel-default facet">
                 <div className="panel-heading">
                     <strong>{this.props.format(
-                        this.props.gettext("%(numArtworks)s matches."),
-                            {numArtworks: this.props.stringNum(
+                        this.props.gettext("%(numRecords)s matches."),
+                            {numRecords: this.props.stringNum(
                                 this.props.total)})}
                     </strong>
                     <br/>
@@ -227,11 +227,11 @@ const Search = React.createClass({
     renderResults() {
         return <div className="results-main col-sm-9 col-sm-pull-3">
             {this.props.breadcrumbs.length > 0 && this.renderBreadcrumbs()}
-            {this.props.artworks.length === 0 && this.renderNoResults()}
+            {this.props.records.length === 0 && this.renderNoResults()}
             {this.renderPagination()}
             <div className="row">
-                {this.props.artworks.map((artwork) =>
-                    this.renderResult(artwork))}
+                {this.props.records.map((record) =>
+                    this.renderResult(record))}
             </div>
             {this.renderPagination()}
         </div>;
@@ -297,13 +297,13 @@ const Search = React.createClass({
         </nav>;
     },
 
-    renderResultFooter(artwork) {
+    renderResultFooter(record) {
         if (options.views.resultFooter) {
             return <div className="details">
                 <div className="wrap">
                     <options.views.resultFooter
                         {...this.props}
-                        artwork={artwork}
+                        record={record}
                     />
                 </div>
             </div>;
@@ -318,32 +318,32 @@ const Search = React.createClass({
             <div className="wrap">
                 <span>
                     <a className="pull-right"
-                        href={this.props.URL(artwork.getSource())}
-                        title={artwork.getSource().getFullName(this.props.lang)}
+                        href={this.props.URL(record.getSource())}
+                        title={record.getSource().getFullName(this.props.lang)}
                     >
-                        {artwork.getSource().getShortName(this.props.lang)}
+                        {record.getSource().getShortName(this.props.lang)}
                     </a>
                 </span>
             </div>
         </div>;
     },
 
-    renderResult(artwork) {
+    renderResult(record) {
         return <div className="img col-xs-6 col-sm-4 col-md-3"
-            key={artwork._id}
+            key={record._id}
         >
             <div className="img-wrap">
-                <a href={this.props.URL(artwork)}
-                    title={this.props.getTitle(artwork)}
+                <a href={this.props.URL(record)}
+                    title={this.props.getTitle(record)}
                 >
-                    <img src={artwork.getThumbURL()}
-                        alt={this.props.getTitle(artwork)}
-                        title={this.props.getTitle(artwork)}
+                    <img src={record.getThumbURL()}
+                        alt={this.props.getTitle(record)}
+                        title={this.props.getTitle(record)}
                         className="img-responsive center-block"
                     />
                 </a>
             </div>
-            {this.renderResultFooter(artwork)}
+            {this.renderResultFooter(record)}
         </div>;
     },
 

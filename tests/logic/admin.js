@@ -54,10 +54,10 @@ tap.test("Admin Page (Unauthorized User)", (t) => {
     });
 });
 
-tap.test("Artwork Import Page", (t) => {
+tap.test("Record Import Page", (t) => {
     adminLogin(() => {
         const url = "http://localhost:3000/source/test/admin" +
-            "?artworks=test/started";
+            "?records=test/started";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 200);
@@ -66,10 +66,10 @@ tap.test("Artwork Import Page", (t) => {
     });
 });
 
-tap.test("Artwork Import Page (Completed)", (t) => {
+tap.test("Record Import Page (Completed)", (t) => {
     adminLogin(() => {
         const url = "http://localhost:3000/source/test/admin" +
-            "?artworks=test/completed";
+            "?records=test/completed";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 200);
@@ -78,10 +78,10 @@ tap.test("Artwork Import Page (Completed)", (t) => {
     });
 });
 
-tap.test("Artwork Import Page (Error)", (t) => {
+tap.test("Record Import Page (Error)", (t) => {
     adminLogin(() => {
         const url = "http://localhost:3000/source/test/admin" +
-            "?artworks=test/error";
+            "?records=test/error";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 200);
@@ -90,10 +90,10 @@ tap.test("Artwork Import Page (Error)", (t) => {
     });
 });
 
-tap.test("Artwork Import Page (Missing)", (t) => {
+tap.test("Record Import Page (Missing)", (t) => {
     adminLogin(() => {
         const url = "http://localhost:3000/source/test/admin" +
-            "?artworks=test/foo";
+            "?records=test/foo";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 404);
@@ -102,10 +102,10 @@ tap.test("Artwork Import Page (Missing)", (t) => {
     });
 });
 
-tap.test("Artwork Import Finalize", (t) => {
+tap.test("Record Import Finalize", (t) => {
     adminLogin(() => {
         const url = "http://localhost:3000/source/test/admin" +
-            "?artworks=test/started&finalize=true";
+            "?records=test/started&finalize=true";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 200);
@@ -116,10 +116,10 @@ tap.test("Artwork Import Finalize", (t) => {
     });
 });
 
-tap.test("Artwork Import Abandon", (t) => {
+tap.test("Record Import Abandon", (t) => {
     adminLogin(() => {
         const url = "http://localhost:3000/source/test/admin" +
-            "?artworks=test/started&abandon=true";
+            "?records=test/started&abandon=true";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 200);

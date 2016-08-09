@@ -5,11 +5,11 @@ const models = require("../lib/models");
 
 exports.up = (next) => {
     init(() => {
-        models("Artwork").find({}, {}, {timeout: true}).stream()
-            .on("data", function(artwork) {
+        models("Record").find({}, {}, {timeout: true}).stream()
+            .on("data", function(record) {
                 this.pause();
 
-                console.log(`Migrating ${artwork._id}...`);
+                console.log(`Migrating ${record._id}...`);
 
                 this.resume();
             })

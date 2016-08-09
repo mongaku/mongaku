@@ -12,13 +12,13 @@ const urls = require("../lib/urls");
 
 module.exports = function(app) {
     const ImageImport = models("ImageImport");
-    const ArtworkImport = models("ArtworkImport");
+    const RecordImport = models("RecordImport");
 
-    const importArtworks = (req, res) => {
+    const importRecords = (req, res) => {
         const batchState = (batch) => batch.getCurState().name(req);
-        const batchError = (err) => ArtworkImport.getError(req, err);
+        const batchError = (err) => RecordImport.getError(req, err);
 
-        ArtworkImport.findById(req.query.artworks, (err, batch) => {
+        RecordImport.findById(req.query.records, (err, batch) => {
             if (err || !batch) {
                 return res.status(404).render("Error", {
                     title: req.gettext("Import not found."),
@@ -38,7 +38,7 @@ module.exports = function(app) {
 
             const adminURL = req.source.getAdminURL(req.lang);
 
-            res.render("ImportData", {
+            res.render("ImportRecords", {
                 batch,
                 results: batch.getFilteredResults(),
                 expanded: req.query.expanded,
@@ -100,7 +100,7 @@ module.exports = function(app) {
         async.parallel([
             (callback) => ImageImport.find({source: source._id}, null,
                 {sort: {created: "desc"}}, callback),
-            (callback) => ArtworkImport.find({source: source._id}, {
+            (callback) => RecordImport.find({source: source._id}, {
                 state: true,
                 fileName: true,
                 source: true,
@@ -132,8 +132,8 @@ module.exports = function(app) {
 
     return {
         admin(req, res, next) {
-            if (req.query.artworks) {
-                importArtworks(req, res, next);
+            if (req.query.records) {
+                importRecords(req, res, next);
 
             } else if (req.query.images) {
                 importImages(req, res, next);
@@ -210,7 +210,7 @@ module.exports = function(app) {
                 const inputStreams = inputFiles
                     .map((file) => fs.createReadStream(file.path));
 
-                const batch = ArtworkImport.fromFile(fileName, source._id);
+                const batch = RecordImport.fromFile(fileName, source._id);
 
                 batch.setResults(inputStreams, (err) => {
                     /* istanbul ignore if */

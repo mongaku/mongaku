@@ -30,11 +30,11 @@ tap.test("updateSimilarity", (t) => {
     const upload = init.getUpload();
     upload.updateSimilarity((err) => {
         t.error(err, "Error should be empty.");
-        t.equal(upload.similarArtworks.length, 1,
+        t.equal(upload.similarRecords.length, 1,
             "Correct number of matches.");
-        t.same(upload.similarArtworks[0].toJSON(), {
+        t.same(upload.similarRecords[0].toJSON(), {
             _id: "test/1235",
-            artwork: "test/1235",
+            record: "test/1235",
             score: 10,
             source: "test",
             images: ["test/bar.jpg"],
@@ -50,7 +50,7 @@ tap.test("updateSimilarity with no similar", (t) => {
 
     upload.updateSimilarity((err) => {
         t.error(err, "Error should be empty.");
-        t.equal(upload.similarArtworks.length, 0,
+        t.equal(upload.similarRecords.length, 0,
             "Correct number of matches.");
         t.end();
     });

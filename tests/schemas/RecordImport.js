@@ -7,23 +7,23 @@ const tap = require("tap");
 
 const init = require("../init");
 const req = init.req;
-const ArtworkImport = init.ArtworkImport;
+const RecordImport = init.RecordImport;
 
 tap.test("getURL", {autoend: true}, (t) => {
-    const batch = init.getArtworkBatch();
+    const batch = init.getRecordBatch();
     t.equal(batch.getURL(req.lang),
-        "/source/test/admin?artworks=test/started",
+        "/source/test/admin?records=test/started",
         "Get URL");
 });
 
 tap.test("getSource", {autoend: true}, (t) => {
-    const batch = init.getArtworkBatch();
+    const batch = init.getRecordBatch();
     const source = init.getSource();
     t.equal(batch.getSource(), source, "Get Source");
 });
 
 tap.test("getCurState", {autoend: true}, (t) => {
-    const batch = init.getArtworkBatch();
+    const batch = init.getRecordBatch();
     const state = batch.getCurState();
     t.equal(state.id, "started", "Get State ID");
     t.equal(state.name(req), "Awaiting processing...", "Get State Name");
@@ -36,30 +36,30 @@ tap.test("getCurState", {autoend: true}, (t) => {
 });
 
 tap.test("getNextState", {autoend: true}, (t) => {
-    const batch = init.getArtworkBatch();
+    const batch = init.getRecordBatch();
     const state = batch.getNextState();
     t.equal(state.id, "process.started", "Get State ID");
     t.equal(state.name(req), "Processing...", "Get State Name");
 });
 
 tap.test("canAdvance", {autoend: true}, (t) => {
-    const batch = init.getArtworkBatch();
+    const batch = init.getRecordBatch();
     t.equal(batch.canAdvance(), true, "Check if state can advance");
 });
 
 tap.test("getError", {autoend: true}, (t) => {
-    const batch = init.getArtworkBatch();
+    const batch = init.getRecordBatch();
     const errors = ["ABANDONED", "ERROR_READING_DATA", "ERROR_SAVING",
         "ERROR_DELETING"];
     for (const error of errors) {
         batch.error = error;
-        t.ok(ArtworkImport.getError(req, batch.error), error);
-        t.notEqual(ArtworkImport.getError(req, batch.error), error, error);
+        t.ok(RecordImport.getError(req, batch.error), error);
+        t.notEqual(RecordImport.getError(req, batch.error), error, error);
     }
 });
 
 tap.test("saveState", (t) => {
-    const batch = init.getArtworkBatch();
+    const batch = init.getRecordBatch();
     batch.saveState("process.started", () => {
         const state = batch.getCurState();
         t.equal(state.id, "process.started", "Get State ID");
@@ -69,7 +69,7 @@ tap.test("saveState", (t) => {
 });
 
 tap.test("abandon", (t) => {
-    const batch = init.getArtworkBatch();
+    const batch = init.getRecordBatch();
     batch.abandon(() => {
         t.equal(batch.state, "error", "Get State ID");
         t.equal(batch.error, "ABANDONED", "Get Error Message");
@@ -78,7 +78,7 @@ tap.test("abandon", (t) => {
 });
 
 tap.test("setResults", (t) => {
-    const batch = init.getArtworkBatch();
+    const batch = init.getRecordBatch();
     const dataFile = path.resolve(process.cwd(), "testData", "default.json");
     batch.setResults([fs.createReadStream(dataFile)], (err) => {
         t.error(err, "Error should be empty.");
@@ -100,7 +100,7 @@ tap.test("setResults (with error)", (t) => {
         "Expecting 'STRING', '}', got 'undefined'",
     ].join("\n");
 
-    const batch = init.getArtworkBatch();
+    const batch = init.getRecordBatch();
     const dataFile = path.resolve(process.cwd(), "testData",
         "default-error.json");
     batch.setResults([fs.createReadStream(dataFile)], (err) => {
@@ -113,8 +113,8 @@ tap.test("setResults (with error)", (t) => {
     });
 });
 
-tap.test("processArtworks", (t) => {
-    const batch = init.getArtworkBatch();
+tap.test("processRecords", (t) => {
+    const batch = init.getRecordBatch();
     const dataFile = path.resolve(process.cwd(), "testData", "default.json");
     const expected = [
         {model: "test/1234", result: "unchanged", warnings: []},
@@ -176,7 +176,7 @@ tap.test("processArtworks", (t) => {
     ];
     batch.setResults([fs.createReadStream(dataFile)], (err) => {
         t.error(err);
-        batch.processArtworks(() => {
+        batch.processRecords(() => {
             t.equal(batch.results.length, expected.length,
                 "Check number of results");
             expected.forEach((expected, i) => {
@@ -191,8 +191,8 @@ tap.test("processArtworks", (t) => {
     });
 });
 
-tap.test("importArtworks", (t) => {
-    const batch = init.getArtworkBatch();
+tap.test("importRecords", (t) => {
+    const batch = init.getRecordBatch();
     const dataFile = path.resolve(process.cwd(), "testData", "default.json");
     const expected = [
         {model: "test/1234", result: "unchanged", warnings: []},
@@ -220,8 +220,8 @@ tap.test("importArtworks", (t) => {
     ];
     batch.setResults([fs.createReadStream(dataFile)], (err) => {
         t.error(err);
-        batch.processArtworks(() => {
-            batch.importArtworks(() => {
+        batch.processRecords(() => {
+            batch.importRecords(() => {
                 t.equal(batch.results.length, expected.length,
                     "Check number of results");
                 expected.forEach((expected, i) => {
@@ -238,15 +238,15 @@ tap.test("importArtworks", (t) => {
 });
 
 tap.test("updateSimilarity (empty results)", (t) => {
-    const batch = init.getArtworkBatch();
+    const batch = init.getRecordBatch();
 
-    const artworkMap = init.getArtworks();
-    const artworks = Object.keys(artworkMap)
-        .map((id) => artworkMap[id]);
+    const recordMap = init.getRecords();
+    const records = Object.keys(recordMap)
+        .map((id) => recordMap[id]);
 
     batch.updateSimilarity(() => {
-        artworks.forEach((artwork) => {
-            t.equal(artwork.needsSimilarUpdate, false);
+        records.forEach((record) => {
+            t.equal(record.needsSimilarUpdate, false);
         });
 
         t.end();
@@ -254,19 +254,19 @@ tap.test("updateSimilarity (empty results)", (t) => {
 });
 
 tap.test("updateSimilarity", (t) => {
-    const batch = init.getArtworkBatch();
+    const batch = init.getRecordBatch();
     const dataFile = path.resolve(process.cwd(), "testData", "default.json");
 
-    const artworkMap = init.getArtworks();
-    const artworks = Object.keys(artworkMap)
-        .map((id) => artworkMap[id]);
+    const recordMap = init.getRecords();
+    const records = Object.keys(recordMap)
+        .map((id) => recordMap[id]);
 
     batch.setResults([fs.createReadStream(dataFile)], (err) => {
         t.error(err);
-        batch.processArtworks(() => {
+        batch.processRecords(() => {
             batch.updateSimilarity(() => {
-                artworks.forEach((artwork) => {
-                    t.equal(artwork.needsSimilarUpdate, true);
+                records.forEach((record) => {
+                    t.equal(record.needsSimilarUpdate, true);
                 });
 
                 t.end();
@@ -276,7 +276,7 @@ tap.test("updateSimilarity", (t) => {
 });
 
 tap.test("getFilteredResults", {autoend: true}, (t) => {
-    const results = init.getArtworkBatch().getFilteredResults();
+    const results = init.getRecordBatch().getFilteredResults();
     t.same(results, {
         "unprocessed": [],
         "created": [],
@@ -286,7 +286,7 @@ tap.test("getFilteredResults", {autoend: true}, (t) => {
         "warnings": [],
     });
 
-    const batch = new ArtworkImport({
+    const batch = new RecordImport({
         _id: "test/started",
         fileName: "data.json",
         source: "test",
@@ -372,7 +372,7 @@ tap.test("getFilteredResults", {autoend: true}, (t) => {
     });
 });
 
-tap.test("ArtworkImport.advance", (t) => {
+tap.test("RecordImport.advance", (t) => {
     const checkStates = (batches, states) => {
         t.equal(batches.length, states.length);
         for (const batch of batches) {
@@ -381,11 +381,11 @@ tap.test("ArtworkImport.advance", (t) => {
         }
     };
 
-    const batch = init.getArtworkBatch();
+    const batch = init.getRecordBatch();
     const dataFile = path.resolve(process.cwd(), "testData", "default.json");
 
     const getBatches = (callback) => {
-        ArtworkImport.find({}, "", {}, (err, batches) => {
+        RecordImport.find({}, "", {}, (err, batches) => {
             callback(null, batches.filter((batch) => (batch.state !== "error" &&
                 batch.state !== "completed")));
         });
@@ -403,27 +403,27 @@ tap.test("ArtworkImport.advance", (t) => {
         getBatches((err, batches) => {
             checkStates(batches, ["started"]);
 
-            ArtworkImport.advance((err) => {
+            RecordImport.advance((err) => {
                 t.error(err, "Error should be empty.");
 
                 getBatches((err, batches) => {
                     checkStates(batches, ["process.completed"]);
 
                     // Need to manually move to the next step
-                    batch.importArtworks((err) => {
+                    batch.importRecords((err) => {
                         t.error(err, "Error should be empty.");
 
                         getBatches((err, batches) => {
                             checkStates(batches, ["import.completed"]);
 
-                            ArtworkImport.advance((err) => {
+                            RecordImport.advance((err) => {
                                 t.error(err, "Error should be empty.");
 
                                 getBatches((err, batches) => {
                                     checkStates(batches,
                                         ["similarity.sync.completed"]);
 
-                                    ArtworkImport.advance((err) => {
+                                    RecordImport.advance((err) => {
                                         t.error(err, "Error should be empty.");
 
                                         t.ok(batch.getCurState().name(req));

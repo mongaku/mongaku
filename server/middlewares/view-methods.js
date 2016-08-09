@@ -26,6 +26,7 @@ module.exports = (req, res, next) => {
         },
 
         urlFromID(id) {
+            // TODO(jeresig): Make this configurable
             return urls.gen(req.lang, `/artworks/${id}`);
         },
 

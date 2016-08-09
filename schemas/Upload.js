@@ -6,7 +6,7 @@ const db = require("../lib/db");
 const models = require("../lib/models");
 const urls = require("../lib/urls");
 
-const Artwork = require("./Artwork");
+const Record = require("./Record");
 
 const Upload = new db.schema({
     // UUID of the image (Format: uploads/defaultImageHash)
@@ -31,7 +31,7 @@ const Upload = new db.schema({
         required: true,
     },
 
-    // A hash to use to render an image representing the artwork
+    // A hash to use to render an image representing the record
     defaultImageHash: {
         type: String,
         required: true,
@@ -44,12 +44,12 @@ const Upload = new db.schema({
     },
 
     // Computed by looking at the results of images.similarImages
-    similarArtworks: [{
+    similarRecords: [{
         _id: String,
 
-        artwork: {
+        record: {
             type: String,
-            ref: "Artwork",
+            ref: "Record",
             required: true,
         },
 
@@ -73,7 +73,7 @@ const Upload = new db.schema({
     }],
 });
 
-Upload.methods = Object.assign({}, Artwork.methods, {
+Upload.methods = Object.assign({}, Record.methods, {
     getTitle(req) {
         return req.gettext("Uploaded Image");
     },
@@ -92,7 +92,7 @@ Upload.methods = Object.assign({}, Artwork.methods, {
     },
 });
 
-Upload.statics = Object.assign({}, Artwork.statics, {
+Upload.statics = Object.assign({}, Record.statics, {
     fromImage(image, callback) {
         const Upload = models("Upload");
 

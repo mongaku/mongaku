@@ -9,11 +9,11 @@ const Page = require("./Page.jsx");
 const Home = React.createClass({
     propTypes: {
         URL: React.PropTypes.func.isRequired,
-        artworkTotal: React.PropTypes.number.isRequired,
         format: React.PropTypes.func.isRequired,
         gettext: React.PropTypes.func.isRequired,
         imageTotal: React.PropTypes.number.isRequired,
         lang: React.PropTypes.string.isRequired,
+        recordTotal: React.PropTypes.number.isRequired,
         sources: React.PropTypes.arrayOf(
             React.PropTypes.any
         ).isRequired,
@@ -27,12 +27,12 @@ const Home = React.createClass({
     },
 
     renderSearchForm() {
-        // TODO: Change to use a generic term
+        // TODO(jeresig): Make this configurable
         const title = this.props.format(
             this.props.gettext(
-                "Search %(artworkCount)s Artworks and %(imageCount)s Images:"),
+                "Search %(recordCount)s Artworks and %(imageCount)s Images:"),
             {
-                artworkCount: this.props.stringNum(this.props.artworkTotal),
+                recordCount: this.props.stringNum(this.props.recordTotal),
                 imageCount: this.props.stringNum(this.props.imageTotal),
             }
         );
@@ -140,12 +140,12 @@ const Home = React.createClass({
     },
 
     renderSource(source) {
-        // TODO: Switch to use generic term
+        // TODO(jeresig): Make this configurable
         const desc = this.props.format(
             this.props.gettext(
-                "%(artworkCount)s Artworks, %(imageCount)s Images"),
+                "%(recordCount)s Artworks, %(imageCount)s Images"),
             {
-                artworkCount: this.props.stringNum(source.numArtworks),
+                recordCount: this.props.stringNum(source.numRecords),
                 imageCount: this.props.stringNum(source.numImages),
             }
         );

@@ -118,7 +118,7 @@
 }
 
 /*
- * Styling for the artwork search form.
+ * Styling for the record search form.
  */
 
 .search-form {
@@ -191,7 +191,7 @@
 }
 
 /*
- * Styling for the import artwork view.
+ * Styling for the import record view.
  */
 pre.json {
     max-height: 200px;

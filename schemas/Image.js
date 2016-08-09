@@ -133,8 +133,8 @@ Image.methods = {
         return models("Source").getSource(this.source);
     },
 
-    relatedArtworks(callback) {
-        models("Artwork").find({images: this._id}, callback);
+    relatedRecords(callback) {
+        models("Record").find({images: this._id}, callback);
     },
 
     canIndex() {
@@ -202,21 +202,21 @@ Image.methods = {
         });
     },
 
-    updateRelatedArtworks(callback) {
-        this.relatedArtworks((err, artworks) => {
+    updateRelatedRecords(callback) {
+        this.relatedRecords((err, records) => {
             /* istanbul ignore if */
             if (err) {
                 return callback(err);
             }
 
-            async.eachLimit(artworks, 1, (artwork, callback) => {
-                artwork.updateSimilarity((err) => {
+            async.eachLimit(records, 1, (record, callback) => {
+                record.updateSimilarity((err) => {
                     /* istanbul ignore if */
                     if (err) {
                         return callback(err);
                     }
 
-                    artwork.save(callback);
+                    record.save(callback);
                 });
             }, callback);
         });
@@ -358,7 +358,7 @@ Image.statics = {
                         return callback(err);
                     }
 
-                    image.updateRelatedArtworks((err) => {
+                    image.updateRelatedRecords((err) => {
                         /* istanbul ignore if */
                         if (err) {
                             return callback(err);

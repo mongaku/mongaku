@@ -58,10 +58,10 @@ module.exports = Object.assign({
     similar: {
         filters: {
             any: {
-                getTitle: (i18n) => i18n.gettext("Similar to Any Artwork"),
+                getTitle: (i18n) => i18n.gettext("Similar to Any Record"),
                 match: () => ({
                     range: {
-                        "similarArtworks.score": {
+                        "similarRecords.score": {
                             gte: 1,
                         },
                     },
@@ -70,7 +70,7 @@ module.exports = Object.assign({
 
             external: {
                 getTitle: (i18n) =>
-                    i18n.gettext("Similar to an External Artwork"),
+                    i18n.gettext("Similar to an External Record"),
                 match: () => {
                     const sourceIDs = models("Source").getSources()
                         .map((source) => source._id);
@@ -84,7 +84,7 @@ module.exports = Object.assign({
                                 },
                                 {
                                     match: {
-                                        "similarArtworks.source": {
+                                        "similarRecords.source": {
                                             query: sourceIDs
                                                 .filter((id) => id !== sourceID)
                                                 .join(" "),
@@ -102,7 +102,7 @@ module.exports = Object.assign({
 
             internal: {
                 getTitle: (i18n) =>
-                    i18n.gettext("Similar to an Internal Artwork"),
+                    i18n.gettext("Similar to an Internal Record"),
                 match: () => {
                     const sourceIDs = models("Source").getSources()
                         .map((source) => source._id);
@@ -116,7 +116,7 @@ module.exports = Object.assign({
                                 },
                                 {
                                     match: {
-                                        "similarArtworks.source": {
+                                        "similarRecords.source": {
                                             query: sourceID,
                                             operator: "or",
                                         },

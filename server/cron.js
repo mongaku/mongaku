@@ -6,17 +6,17 @@ const QUERY_RATE = 5000;
 const models = require("../lib/models");
 
 module.exports = {
-    updateArtworkImport() {
-        const advance = () => models("ArtworkImport").advance(() =>
+    updateRecordImport() {
+        const advance = () => models("RecordImport").advance(() =>
             setTimeout(advance, QUERY_RATE));
 
         advance();
     },
 
-    updateArtworkSimilarity() {
-        const Artwork = models("Artwork");
+    updateRecordSimilarity() {
+        const Record = models("Record");
         const next = () => setTimeout(update, QUERY_RATE);
-        const update = () => Artwork.updateSimilarity((err, success) => {
+        const update = () => Record.updateSimilarity((err, success) => {
             // If nothing happened then we wait to try again
             if (err || !success) {
                 return next();
@@ -71,8 +71,8 @@ module.exports = {
     },
 
     start() {
-        this.updateArtworkImport();
-        this.updateArtworkSimilarity();
+        this.updateRecordImport();
+        this.updateRecordSimilarity();
         this.updateImageImport();
         this.updateImageSimilarity();
     },

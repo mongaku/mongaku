@@ -64,7 +64,7 @@ Source.methods = {
     },
 
     cacheTotals(callback) {
-        models("Artwork").aggregate([
+        models("Record").aggregate([
             {
                 $match: {
                     source: this._id,
@@ -79,10 +79,10 @@ Source.methods = {
             },
         ], (err, results) => {
             if (results && results[0]) {
-                this.numArtworks = results[0].total;
+                this.numRecords = results[0].total;
                 this.numImages = results[0].totalImages;
             } else {
-                this.numArtworks = 0;
+                this.numRecords = 0;
                 this.numImages = 0;
             }
             callback();

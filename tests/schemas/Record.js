@@ -4,43 +4,43 @@ const tap = require("tap");
 
 const init = require("../init");
 const req = init.req;
-const Artwork = init.Artwork;
+const Record = init.Record;
 
 tap.test("getURL", {autoend: true}, (t) => {
-    const artwork = init.getArtwork();
-    t.equal(artwork.getURL("en"),
+    const record = init.getRecord();
+    t.equal(record.getURL("en"),
         "/artworks/test/1234", "Check 'en' URL");
 
-    t.equal(artwork.getURL("de"),
+    t.equal(record.getURL("de"),
         "/artworks/test/1234?lang=de", "Check 'de' URL");
 });
 
 tap.test("getThumbURL", {autoend: true}, (t) => {
-    const artwork = init.getArtwork();
-    t.equal(artwork.getThumbURL(),
+    const record = init.getRecord();
+    t.equal(record.getThumbURL(),
         "/data/test/thumbs/4266906334.jpg",
         "Check Thumb URL");
 });
 
 tap.test("getTitle", {autoend: true}, (t) => {
-    const artwork = init.getArtwork();
-    t.equal(artwork.getTitle(req), "Test", "Check Title");
+    const record = init.getRecord();
+    t.equal(record.getTitle(req), "Test", "Check Title");
 
-    artwork.title = null;
-    t.equal(artwork.getTitle(req), null, "Check Title");
+    record.title = null;
+    t.equal(record.getTitle(req), null, "Check Title");
 
-    artwork.title = "Test";
+    record.title = "Test";
 });
 
 tap.test("getSource", {autoend: true}, (t) => {
-    const artwork = init.getArtwork();
+    const record = init.getRecord();
     const source = init.getSource();
-    t.equal(artwork.getSource(), source, "Get Source");
+    t.equal(record.getSource(), source, "Get Source");
 });
 
 tap.test("date", {autoend: true}, (t) => {
-    const artwork = init.getArtwork();
-    t.same(artwork.dates[0].toJSON(),
+    const record = init.getRecord();
+    t.same(record.dates[0].toJSON(),
         {
             _id: "ca. 1456-1457",
             start: 1456,
@@ -50,22 +50,22 @@ tap.test("date", {autoend: true}, (t) => {
         "Get Date");
 });
 
-tap.test("Artwork.fromData: Data error", (t) => {
-    Artwork.fromData({}, req, (err, value, warnings) => {
+tap.test("Record.fromData: Data error", (t) => {
+    Record.fromData({}, req, (err, value, warnings) => {
         t.equal(err.message, "Required field `id` is empty.",
             "Data error.");
-        t.equal(value, undefined, "No artwork should be returned.");
+        t.equal(value, undefined, "No record should be returned.");
         t.equal(warnings, undefined, "There should be no warnings.");
         t.end();
     });
 });
 
-tap.test("Artwork.fromData: Existing artwork", (t) => {
-    const artwork = init.getArtwork();
-    const artworkData = init.getArtworkData();
-    Artwork.fromData(artworkData, req, (err, value, warnings) => {
+tap.test("Record.fromData: Existing record", (t) => {
+    const record = init.getRecord();
+    const recordData = init.getRecordData();
+    Record.fromData(recordData, req, (err, value, warnings) => {
         t.error(err, "Error should be empty.");
-        t.equal(value, artwork, "Artwork should be returned.");
+        t.equal(value, record, "Record should be returned.");
         t.equal(value.defaultImageHash, "4266906334",
             "defaultImageHash is set.");
         t.equal(value.images.length, 1, "Images are set.");
@@ -75,16 +75,16 @@ tap.test("Artwork.fromData: Existing artwork", (t) => {
     });
 });
 
-tap.test("Artwork.fromData: New artwork", (t) => {
-    const artworkData = init.getArtworkData();
-    const newData = Object.assign({}, artworkData, {
+tap.test("Record.fromData: New record", (t) => {
+    const recordData = init.getRecordData();
+    const newData = Object.assign({}, recordData, {
         id: "4266906334",
     });
 
-    Artwork.fromData(newData, req, (err, value, warnings) => {
+    Record.fromData(newData, req, (err, value, warnings) => {
         t.error(err, "Error should be empty.");
         t.equal(value._id, "test/4266906334",
-            "New artwork should be returned.");
+            "New record should be returned.");
         t.equal(value.defaultImageHash, "4266906334",
             "defaultImageHash is set.");
         t.equal(value.images.length, 1, "Images are set.");
@@ -94,17 +94,17 @@ tap.test("Artwork.fromData: New artwork", (t) => {
     });
 });
 
-tap.test("Artwork.fromData: New artwork with warnings", (t) => {
-    const artworkData = init.getArtworkData();
-    const newData = Object.assign({}, artworkData, {
+tap.test("Record.fromData: New record with warnings", (t) => {
+    const recordData = init.getRecordData();
+    const newData = Object.assign({}, recordData, {
         id: "4266906334",
         batch: "batch",
     });
 
-    Artwork.fromData(newData, req, (err, value, warnings) => {
+    Record.fromData(newData, req, (err, value, warnings) => {
         t.error(err, "Error should be empty.");
         t.equal(value._id, "test/4266906334",
-            "New artwork should be returned.");
+            "New record should be returned.");
         t.equal(value.defaultImageHash, "4266906334",
             "defaultImageHash is set.");
         t.equal(value.images.length, 1, "Images are set.");
@@ -115,32 +115,32 @@ tap.test("Artwork.fromData: New artwork with warnings", (t) => {
     });
 });
 
-tap.test("Artwork.fromData: New artwork missing images", (t) => {
-    const artworkData = init.getArtworkData();
-    const newData = Object.assign({}, artworkData, {
+tap.test("Record.fromData: New record missing images", (t) => {
+    const recordData = init.getRecordData();
+    const newData = Object.assign({}, recordData, {
         id: "4266906334",
         images: ["missing.jpg"],
     });
 
-    Artwork.fromData(newData, req, (err, value, warnings) => {
+    Record.fromData(newData, req, (err, value, warnings) => {
         t.equal(err.message, "No images found.", "No images found.");
-        t.equal(value, undefined, "No artwork should be returned.");
+        t.equal(value, undefined, "No record should be returned.");
         t.equal(warnings, undefined, "There should be no warnings.");
         t.end();
     });
 });
 
-tap.test("Artwork.fromData: New artwork missing single image", (t) => {
-    const artworkData = init.getArtworkData();
-    const newData = Object.assign({}, artworkData, {
+tap.test("Record.fromData: New record missing single image", (t) => {
+    const recordData = init.getRecordData();
+    const newData = Object.assign({}, recordData, {
         id: "4266906334",
         images: ["missing.jpg", "foo.jpg"],
     });
 
-    Artwork.fromData(newData, req, (err, value, warnings) => {
+    Record.fromData(newData, req, (err, value, warnings) => {
         t.error(err, "Error should be empty.");
         t.equal(value._id, "test/4266906334",
-            "New artwork should be returned.");
+            "New record should be returned.");
         t.equal(value.defaultImageHash, "4266906334",
             "defaultImageHash is set.");
         t.equal(value.images.length, 1, "Images are set.");
@@ -152,60 +152,60 @@ tap.test("Artwork.fromData: New artwork missing single image", (t) => {
 });
 
 tap.test("updateSimilarity", (t) => {
-    const artwork = init.getArtwork();
-    artwork.updateSimilarity((err) => {
+    const record = init.getRecord();
+    record.updateSimilarity((err) => {
         t.error(err, "Error should be empty.");
-        t.equal(artwork.similarArtworks.length, 1,
+        t.equal(record.similarRecords.length, 1,
             "Correct number of matches.");
-        t.same(artwork.similarArtworks[0].toJSON(), {
+        t.same(record.similarRecords[0].toJSON(), {
             _id: "test/1235",
-            artwork: "test/1235",
+            record: "test/1235",
             score: 10,
             source: "test",
             images: ["test/bar.jpg"],
-        }, "Check similar artwork result");
+        }, "Check similar record result");
         t.end();
     });
 });
 
 tap.test("updateSimilarity with two matches", (t) => {
-    const artworks = init.getArtworks();
-    const artwork = artworks["test/1235"];
-    artwork.updateSimilarity((err) => {
+    const records = init.getRecords();
+    const record = records["test/1235"];
+    record.updateSimilarity((err) => {
         t.error(err, "Error should be empty.");
-        t.equal(artwork.similarArtworks.length, 2,
+        t.equal(record.similarRecords.length, 2,
             "Correct number of matches.");
-        t.same(artwork.similarArtworks[0].toJSON(), {
+        t.same(record.similarRecords[0].toJSON(), {
             _id: "test/1236",
-            artwork: "test/1236",
+            record: "test/1236",
             score: 17,
             source: "test",
             images: ["test/new1.jpg", "test/new2.jpg"],
-        }, "Check similar artwork result");
-        t.same(artwork.similarArtworks[1].toJSON(), {
+        }, "Check similar record result");
+        t.same(record.similarRecords[1].toJSON(), {
             _id: "test/1234",
-            artwork: "test/1234",
+            record: "test/1234",
             score: 10,
             source: "test",
             images: ["test/foo.jpg"],
-        }, "Check similar artwork result");
+        }, "Check similar record result");
         t.end();
     });
 });
 
 tap.test("updateSimilarity with no similar", (t) => {
-    const artworks = init.getArtworks();
-    const artwork = artworks["test/1237"];
-    artwork.updateSimilarity((err) => {
+    const records = init.getRecords();
+    const record = records["test/1237"];
+    record.updateSimilarity((err) => {
         t.error(err, "Error should be empty.");
-        t.equal(artwork.similarArtworks.length, 0,
+        t.equal(record.similarRecords.length, 0,
             "Correct number of matches.");
         t.end();
     });
 });
 
-tap.test("Artwork.lintData: Unknown Fields", {autoend: true}, (t) => {
-    t.same(Artwork.lintData({
+tap.test("Record.lintData: Unknown Fields", {autoend: true}, (t) => {
+    t.same(Record.lintData({
         batch: "test",
     }, req), {
         "error": "Required field `id` is empty.",
@@ -214,7 +214,7 @@ tap.test("Artwork.lintData: Unknown Fields", {autoend: true}, (t) => {
         ],
     }, "Known field");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         random: "test",
     }, req), {
         "error": "Required field `id` is empty.",
@@ -224,27 +224,27 @@ tap.test("Artwork.lintData: Unknown Fields", {autoend: true}, (t) => {
     }, "Unknown field");
 });
 
-tap.test("Artwork.lintData: Required Fields", {autoend: true}, (t) => {
-    t.same(Artwork.lintData({}, req), {
+tap.test("Record.lintData: Required Fields", {autoend: true}, (t) => {
+    t.same(Record.lintData({}, req), {
         "error": "Required field `id` is empty.",
         "warnings": [],
     }, "ID");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "",
     }, req), {
         "error": "Required field `id` is empty.",
         "warnings": [],
     }, "ID Empty String");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
     }, req), {
         "error": "Required field `source` is empty.",
         "warnings": [],
     }, "Source");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "",
     }, req), {
@@ -252,7 +252,7 @@ tap.test("Artwork.lintData: Required Fields", {autoend: true}, (t) => {
         "warnings": [],
     }, "Source Empty String");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
     }, req), {
@@ -260,7 +260,7 @@ tap.test("Artwork.lintData: Required Fields", {autoend: true}, (t) => {
         "warnings": [],
     }, "Lang");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "",
@@ -269,7 +269,7 @@ tap.test("Artwork.lintData: Required Fields", {autoend: true}, (t) => {
         "warnings": [],
     }, "Lang Empty String");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -278,7 +278,7 @@ tap.test("Artwork.lintData: Required Fields", {autoend: true}, (t) => {
         "warnings": [],
     }, "URL");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -288,7 +288,7 @@ tap.test("Artwork.lintData: Required Fields", {autoend: true}, (t) => {
         "warnings": [],
     }, "URL Empty String");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -298,7 +298,7 @@ tap.test("Artwork.lintData: Required Fields", {autoend: true}, (t) => {
         "warnings": [],
     }, "Images");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -310,8 +310,8 @@ tap.test("Artwork.lintData: Required Fields", {autoend: true}, (t) => {
     }, "Images Empty Array");
 });
 
-tap.test("Artwork.lintData: Recommended Fields", {autoend: true}, (t) => {
-    t.same(Artwork.lintData({
+tap.test("Record.lintData: Recommended Fields", {autoend: true}, (t) => {
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -331,7 +331,7 @@ tap.test("Artwork.lintData: Recommended Fields", {autoend: true}, (t) => {
         ],
     }, "Title and objectType recommended.");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -353,7 +353,7 @@ tap.test("Artwork.lintData: Recommended Fields", {autoend: true}, (t) => {
         ],
     }, "Title and objectType recommended.");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -374,7 +374,7 @@ tap.test("Artwork.lintData: Recommended Fields", {autoend: true}, (t) => {
         ],
     }, "objectType recommended.");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -396,7 +396,7 @@ tap.test("Artwork.lintData: Recommended Fields", {autoend: true}, (t) => {
         ],
     }, "objectType recommended.");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -418,8 +418,8 @@ tap.test("Artwork.lintData: Recommended Fields", {autoend: true}, (t) => {
     }, "No recommended.");
 });
 
-tap.test("Artwork.lintData: Type checking", {autoend: true}, (t) => {
-    t.same(Artwork.lintData({
+tap.test("Record.lintData: Type checking", {autoend: true}, (t) => {
+    t.same(Record.lintData({
         id: 1234,
         source: "nga",
         lang: "en",
@@ -434,7 +434,7 @@ tap.test("Artwork.lintData: Type checking", {autoend: true}, (t) => {
         ],
     }, "ID");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: 1234,
         lang: "en",
@@ -449,7 +449,7 @@ tap.test("Artwork.lintData: Type checking", {autoend: true}, (t) => {
         ],
     }, "Source");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: true,
@@ -464,7 +464,7 @@ tap.test("Artwork.lintData: Type checking", {autoend: true}, (t) => {
         ],
     }, "Lang");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -479,7 +479,7 @@ tap.test("Artwork.lintData: Type checking", {autoend: true}, (t) => {
         ],
     }, "URL");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -494,7 +494,7 @@ tap.test("Artwork.lintData: Type checking", {autoend: true}, (t) => {
         ],
     }, "Images");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -523,7 +523,7 @@ tap.test("Artwork.lintData: Type checking", {autoend: true}, (t) => {
         ],
     }, "Date Start");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -552,7 +552,7 @@ tap.test("Artwork.lintData: Type checking", {autoend: true}, (t) => {
         ],
     }, "Date Circa");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -576,7 +576,7 @@ tap.test("Artwork.lintData: Type checking", {autoend: true}, (t) => {
         ],
     }, "Categories");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -601,8 +601,8 @@ tap.test("Artwork.lintData: Type checking", {autoend: true}, (t) => {
     }, "Categories Values");
 });
 
-tap.test("Artwork.lintData: Validation", {autoend: true}, (t) => {
-    t.same(Artwork.lintData({
+tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
+    t.same(Record.lintData({
         id: "1234/456",
         source: "nga",
         lang: "en",
@@ -617,7 +617,7 @@ tap.test("Artwork.lintData: Validation", {autoend: true}, (t) => {
         ],
     }, "ID");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "",
@@ -630,7 +630,7 @@ tap.test("Artwork.lintData: Validation", {autoend: true}, (t) => {
         "warnings": [],
     }, "Lang");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -645,7 +645,7 @@ tap.test("Artwork.lintData: Validation", {autoend: true}, (t) => {
         ],
     }, "URL");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -660,7 +660,7 @@ tap.test("Artwork.lintData: Validation", {autoend: true}, (t) => {
         ],
     }, "Images");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -685,7 +685,7 @@ tap.test("Artwork.lintData: Validation", {autoend: true}, (t) => {
         ],
     }, "objectType");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -709,7 +709,7 @@ tap.test("Artwork.lintData: Validation", {autoend: true}, (t) => {
         ],
     }, "artists");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -736,7 +736,7 @@ tap.test("Artwork.lintData: Validation", {autoend: true}, (t) => {
         ],
     }, "dimensions");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -763,7 +763,7 @@ tap.test("Artwork.lintData: Validation", {autoend: true}, (t) => {
         ],
     }, "dimensions");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -791,7 +791,7 @@ tap.test("Artwork.lintData: Validation", {autoend: true}, (t) => {
         ],
     }, "dates");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -821,7 +821,7 @@ tap.test("Artwork.lintData: Validation", {autoend: true}, (t) => {
         ],
     }, "dates in artists");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -851,7 +851,7 @@ tap.test("Artwork.lintData: Validation", {autoend: true}, (t) => {
         ],
     }, "locations");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -881,8 +881,8 @@ tap.test("Artwork.lintData: Validation", {autoend: true}, (t) => {
     }, "All pass");
 });
 
-tap.test("Artwork.lintData: Conversion", {autoend: true}, (t) => {
-    t.same(Artwork.lintData({
+tap.test("Record.lintData: Conversion", {autoend: true}, (t) => {
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -911,7 +911,7 @@ tap.test("Artwork.lintData: Conversion", {autoend: true}, (t) => {
         "warnings": [],
     }, "Artists");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -945,7 +945,7 @@ tap.test("Artwork.lintData: Conversion", {autoend: true}, (t) => {
         "warnings": [],
     }, "Dimensions");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -976,7 +976,7 @@ tap.test("Artwork.lintData: Conversion", {autoend: true}, (t) => {
         ],
     }, "Dimensions produce warnings");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -1010,7 +1010,7 @@ tap.test("Artwork.lintData: Conversion", {autoend: true}, (t) => {
         "warnings": [],
     }, "Dates");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",
@@ -1040,7 +1040,7 @@ tap.test("Artwork.lintData: Conversion", {autoend: true}, (t) => {
         ],
     }, "Dates produce warnings");
 
-    t.same(Artwork.lintData({
+    t.same(Record.lintData({
         id: "1234",
         source: "nga",
         lang: "en",

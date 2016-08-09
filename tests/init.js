@@ -26,10 +26,10 @@ const server = require("../server/server");
 
 // Models used for testing
 const Image = models("Image");
-const Artwork = models("Artwork");
+const Record = models("Record");
 const Source = models("Source");
 const ImageImport = models("ImageImport");
-const ArtworkImport = models("ArtworkImport");
+const RecordImport = models("RecordImport");
 const UploadImage = models("UploadImage");
 const Upload = models("Upload");
 const User = models("User");
@@ -39,8 +39,8 @@ let source;
 let sources;
 let batch;
 let batches;
-let artworkBatch;
-let artworkBatches;
+let recordBatch;
+let recordBatches;
 let imageResultsData;
 let images;
 let image;
@@ -48,9 +48,9 @@ let uploads;
 let upload;
 let uploadImages;
 let uploadImage;
-let artworks;
-let artwork;
-let artworkData;
+let records;
+let record;
+let recordData;
 let similar;
 let similarAdded;
 let user;
@@ -116,7 +116,7 @@ for (const dir of fs.readdirSync(publicDir)) {
 }
 
 const genData = () => {
-    artworkData = {
+    recordData = {
         id: "1234",
         source: "test",
         lang: "en",
@@ -144,30 +144,30 @@ const genData = () => {
         locations: [{city: "New York City"}],
     };
 
-    artworks = {
-        "test/1234": new Artwork(Object.assign({}, artworkData, {
+    records = {
+        "test/1234": new Record(Object.assign({}, recordData, {
             _id: "test/1234",
             id: "1234",
             images: ["test/foo.jpg"],
             defaultImageHash: "4266906334",
         })),
 
-        "test/1235": new Artwork(Object.assign({}, artworkData, {
+        "test/1235": new Record(Object.assign({}, recordData, {
             _id: "test/1235",
             id: "1235",
             images: ["test/bar.jpg"],
             defaultImageHash: "2508884691",
-            similarArtworks: [
+            similarRecords: [
                 {
                     _id: "test/1236",
-                    artwork: "test/1236",
+                    record: "test/1236",
                     score: 17,
                     source: "test",
                     images: ["test/new1.jpg", "test/new2.jpg"],
                 },
                 {
                     _id: "test/1234",
-                    artwork: "test/1234",
+                    record: "test/1234",
                     score: 10,
                     source: "test",
                     images: ["test/foo.jpg"],
@@ -175,29 +175,29 @@ const genData = () => {
             ],
         })),
 
-        "test/1236": new Artwork(Object.assign({}, artworkData, {
+        "test/1236": new Record(Object.assign({}, recordData, {
             _id: "test/1236",
             id: "1236",
             images: ["test/new1.jpg", "test/new2.jpg", "test/new3.jpg"],
             defaultImageHash: "2533156274",
         })),
 
-        "test/1237": new Artwork(Object.assign({}, artworkData, {
+        "test/1237": new Record(Object.assign({}, recordData, {
             _id: "test/1237",
             id: "1237",
             images: ["test/nosimilar.jpg"],
             defaultImageHash: "4246873662",
-            similarArtworks: [],
+            similarRecords: [],
         })),
     };
 
-    for (const id in artworks) {
-        const artwork = artworks[id];
-        artwork.validateSync();
-        artwork.isNew = false;
+    for (const id in records) {
+        const record = records[id];
+        record.validateSync();
+        record.isNew = false;
     }
 
-    artwork = artworks["test/1234"];
+    record = records["test/1234"];
 
     sources = [
         new Source({
@@ -349,15 +349,15 @@ const genData = () => {
 
     batch = batches[0];
 
-    artworkBatches = [
-        new ArtworkImport({
+    recordBatches = [
+        new RecordImport({
             _id: "test/started",
             created: new Date(),
             modified: new Date(),
             fileName: "data.json",
             source: "test",
         }),
-        new ArtworkImport({
+        new RecordImport({
             _id: "test/completed",
             created: new Date(),
             modified: new Date(),
@@ -366,7 +366,7 @@ const genData = () => {
             state: "completed",
             results: [],
         }),
-        new ArtworkImport({
+        new RecordImport({
             _id: "test/error",
             created: new Date(),
             modified: new Date(),
@@ -378,11 +378,11 @@ const genData = () => {
         }),
     ];
 
-    for (const artworkBatch of artworkBatches) {
-        sinon.stub(artworkBatch, "save", process.nextTick);
+    for (const recordBatch of recordBatches) {
+        sinon.stub(recordBatch, "save", process.nextTick);
     }
 
-    artworkBatch = artworkBatches[0];
+    recordBatch = recordBatches[0];
 
     images = {
         "test/foo.jpg": new Image({
@@ -536,50 +536,50 @@ const genData = () => {
 const bindStubs = () => {
     sandbox = sinon.sandbox.create();
 
-    sandbox.stub(Artwork, "findById", (id, callback) => {
-        if (artworks[id]) {
-            process.nextTick(() => callback(null, artworks[id]));
+    sandbox.stub(Record, "findById", (id, callback) => {
+        if (records[id]) {
+            process.nextTick(() => callback(null, records[id]));
         } else {
             process.nextTick(() => callback(
-                new Error("Artwork not found.")));
+                new Error("Record not found.")));
         }
     });
 
-    sandbox.stub(Artwork, "findByIdAndRemove", (id, callback) => {
-        delete artworks[id];
+    sandbox.stub(Record, "findByIdAndRemove", (id, callback) => {
+        delete records[id];
         process.nextTick(callback);
     });
 
-    sandbox.stub(Artwork, "find", (query, callback, extra) => {
+    sandbox.stub(Record, "find", (query, callback, extra) => {
         let matches = [];
 
         if (query.$or) {
             const imageIds = query.$or.map((query) => query.images);
 
-            for (const id in artworks) {
-                const artwork = artworks[id];
+            for (const id in records) {
+                const record = records[id];
 
                 if (query._id.$ne === id) {
                     continue;
                 }
 
                 for (const imageId of imageIds) {
-                    if (artwork.images.indexOf(imageId) >= 0) {
-                        matches.push(artwork);
+                    if (record.images.indexOf(imageId) >= 0) {
+                        matches.push(record);
                         break;
                     }
                 }
             }
         } else if (query.source) {
-            matches = Object.keys(artworks).filter((id) =>
-                artworks[id].source === query.source)
-                .map((id) => artworks[id]);
+            matches = Object.keys(records).filter((id) =>
+                records[id].source === query.source)
+                .map((id) => records[id]);
         } else if (query.images) {
-            matches = Object.keys(artworks).filter((id) =>
-                artworks[id].images.indexOf(query.images) >= 0)
-                .map((id) => artworks[id]);
+            matches = Object.keys(records).filter((id) =>
+                records[id].images.indexOf(query.images) >= 0)
+                .map((id) => records[id]);
         } else {
-            matches = Object.keys(artworks).map((id) => artworks[id]);
+            matches = Object.keys(records).map((id) => records[id]);
         }
 
         if (!callback || extra) {
@@ -620,8 +620,8 @@ const bindStubs = () => {
         process.nextTick(() => callback(null, matches));
     });
 
-    sandbox.stub(Artwork, "search", (query, options, callback) => {
-        const matches = Object.keys(artworks).map((id) => artworks[id]);
+    sandbox.stub(Record, "search", (query, options, callback) => {
+        const matches = Object.keys(records).map((id) => records[id]);
         const aggregations = {
             source: {
                 buckets: [{key: "test", doc_count: 2}],
@@ -652,24 +652,24 @@ const bindStubs = () => {
         }));
     });
 
-    sandbox.stub(Artwork, "update", (query, update, options, callback) => {
-        Object.keys(artworks).forEach((id) => {
-            artworks[id].needsSimilarUpdate = true;
+    sandbox.stub(Record, "update", (query, update, options, callback) => {
+        Object.keys(records).forEach((id) => {
+            records[id].needsSimilarUpdate = true;
         });
         process.nextTick(callback);
     });
 
-    sandbox.stub(Artwork, "count", (query, callback) => {
-        const count = Object.keys(artworks).filter((id) =>
-            !query.source || artworks[id].source === query.source).length;
+    sandbox.stub(Record, "count", (query, callback) => {
+        const count = Object.keys(records).filter((id) =>
+            !query.source || records[id].source === query.source).length;
 
         process.nextTick(() => callback(null, count));
     });
 
-    sandbox.stub(Artwork, "aggregate", (query, callback) => {
+    sandbox.stub(Record, "aggregate", (query, callback) => {
         const source = query[0].$match.source;
-        const count = Object.keys(artworks).filter((id) =>
-            artworks[id].source === source).length;
+        const count = Object.keys(records).filter((id) =>
+            records[id].source === source).length;
 
         process.nextTick(() => callback(null, [{
             total: count,
@@ -677,22 +677,22 @@ const bindStubs = () => {
         }]));
     });
 
-    const fromData = Artwork.fromData;
+    const fromData = Record.fromData;
 
-    sandbox.stub(Artwork, "fromData", (tmpData, req, callback) => {
-        fromData.call(Artwork, tmpData, req,
-            (err, artwork, warnings, creating) => {
-                if (artwork && !artwork.save.restore) {
-                    sandbox.stub(artwork, "save", (callback) => {
-                        if (!(artwork._id in artworks)) {
-                            artworks[artwork._id] = artwork;
+    sandbox.stub(Record, "fromData", (tmpData, req, callback) => {
+        fromData.call(Record, tmpData, req,
+            (err, record, warnings, creating) => {
+                if (record && !record.save.restore) {
+                    sandbox.stub(record, "save", (callback) => {
+                        if (!(record._id in records)) {
+                            records[record._id] = record;
                         }
 
                         process.nextTick(callback);
                     });
                 }
 
-                callback(err, artwork, warnings, creating);
+                callback(err, record, warnings, creating);
             });
     });
 
@@ -726,22 +726,22 @@ const bindStubs = () => {
         return batch;
     });
 
-    sandbox.stub(ArtworkImport, "find", (query, select, options, callback) => {
+    sandbox.stub(RecordImport, "find", (query, select, options, callback) => {
         process.nextTick(() => {
-            callback(null, artworkBatches);
+            callback(null, recordBatches);
         });
     });
 
-    sandbox.stub(ArtworkImport, "findById", (id, callback) => {
+    sandbox.stub(RecordImport, "findById", (id, callback) => {
         process.nextTick(() => {
-            callback(null, artworkBatches.find((batch) => batch._id === id));
+            callback(null, recordBatches.find((batch) => batch._id === id));
         });
     });
 
-    const artworkImportFromFile = ArtworkImport.fromFile;
+    const recordImportFromFile = RecordImport.fromFile;
 
-    sandbox.stub(ArtworkImport, "fromFile", (fileName, source) => {
-        const batch = artworkImportFromFile.call(ArtworkImport, fileName,
+    sandbox.stub(RecordImport, "fromFile", (fileName, source) => {
+        const batch = recordImportFromFile.call(RecordImport, fileName,
             source);
         if (!batch.save.restore) {
             sandbox.stub(batch, "save", (callback) => batch.validate((err) => {
@@ -751,7 +751,7 @@ const bindStubs = () => {
                 }
 
                 batch.modified = new Date();
-                artworkBatches.push(batch);
+                recordBatches.push(batch);
                 callback(null, batch);
             }));
         }
@@ -897,8 +897,8 @@ const init = (done) => {
     async.parallel([
         (callback) => {
             Source.cacheSources(() => {
-                async.each(Object.keys(artworks), (id, callback) => {
-                    artworks[id].validate(callback);
+                async.each(Object.keys(records), (id, callback) => {
+                    records[id].validate(callback);
                 }, callback);
             });
         },
@@ -953,12 +953,12 @@ tap.afterEach((done) => {
 module.exports = {
     getBatch: () => batch,
     getBatches: () => batches,
-    getArtworkBatch: () => artworkBatch,
+    getRecordBatch: () => recordBatch,
     getImage: () => image,
     getSource: () => source,
-    getArtwork: () => artwork,
-    getArtworks: () => artworks,
-    getArtworkData: () => artworkData,
+    getRecord: () => record,
+    getRecords: () => records,
+    getRecordData: () => recordData,
     getImageResultsData: () => imageResultsData,
     getUpload: () => upload,
     getUploads: () => uploads,
@@ -966,9 +966,9 @@ module.exports = {
     getUser: () => user,
     req,
     Image,
-    Artwork,
+    Record,
     ImageImport,
-    ArtworkImport,
+    RecordImport,
     UploadImage,
     User,
     Source,

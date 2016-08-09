@@ -47,7 +47,7 @@ tap.test("getExpectedFiles", {autoend: true}, (t) => {
 tap.test("cacheTotals", (t) => {
     const source = init.getSource();
     source.cacheTotals(() => {
-        t.equal(source.numArtworks, 4);
+        t.equal(source.numRecords, 4);
         t.equal(source.numImages, 4);
         t.end();
     });
@@ -55,8 +55,8 @@ tap.test("cacheTotals", (t) => {
 
 tap.test("Source.cacheSources", (t) => {
     Source.cacheSources((err, sources) => {
-        t.equal(sources[0].numArtworks, 4);
-        t.equal(sources[1].numArtworks, 0);
+        t.equal(sources[0].numRecords, 4);
+        t.equal(sources[1].numRecords, 0);
         t.end();
     });
 });

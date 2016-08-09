@@ -58,8 +58,8 @@ module.exports = (req, res, tmplParams) => {
         sort = queries[sortParts[0]].sort()[sortParts[1]];
     }
 
-    // Query for the artworks in Elasticsearch
-    models("Artwork").search({
+    // Query for the records in Elasticsearch
+    models("Record").search({
         bool: {
             must: filters,
         },
@@ -158,6 +158,7 @@ module.exports = (req, res, tmplParams) => {
             title = query.searchTitle(values[name], req);
 
         } else {
+            // TODO(jeresig): Make this configurable
             title = req.gettext("All Artworks");
         }
 
@@ -165,12 +166,12 @@ module.exports = (req, res, tmplParams) => {
             title,
             breadcrumbs,
             sources: models("Source").getSources()
-                .filter((source) => source.numArtworks > 0),
+                .filter((source) => source.numRecords > 0),
             values,
             queries,
             sorts: sortData,
             facets: facetData,
-            artworks: results.hits.hits,
+            records: results.hits.hits,
             total: results.hits.total,
             start: (results.hits.total > 0 ? values.start + 1 : 0),
             end,

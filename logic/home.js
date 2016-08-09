@@ -10,18 +10,18 @@ module.exports = (app) => {
     return {
         index(req, res) {
             const sources = Source.getSources()
-                .filter((source) => source.numArtworks > 0);
-            let artworkTotal = 0;
+                .filter((source) => source.numRecords > 0);
+            let recordTotal = 0;
             let imageTotal = 0;
 
             for (const source of sources) {
-                artworkTotal += source.numArtworks;
+                recordTotal += source.numRecords;
                 imageTotal += source.numImages;
             }
 
             res.render("Home", {
                 sources,
-                artworkTotal,
+                recordTotal,
                 imageTotal,
             });
         },

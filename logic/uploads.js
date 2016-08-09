@@ -146,13 +146,13 @@ module.exports = (app) => {
                 }
 
                 upload.loadImages(true, () => {
-                    async.eachLimit(upload.similarArtworks, 4,
+                    async.eachLimit(upload.similarRecords, 4,
                         (similar, callback) => {
-                            similar.artwork.loadImages(false, callback);
+                            similar.record.loadImages(false, callback);
                         }, () => {
                             res.render("Upload", {
                                 title: upload.getTitle(req),
-                                similar: upload.similarArtworks,
+                                similar: upload.similarRecords,
                                 image: upload.images[0],
                                 noIndex: true,
                             });

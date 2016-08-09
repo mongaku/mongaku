@@ -50,7 +50,7 @@ tap.test("By Source Missing", (t) => {
     });
 });
 
-tap.test("Artwork", (t) => {
+tap.test("Record", (t) => {
     const url = "http://localhost:3000/artworks/test/1234";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
@@ -59,7 +59,7 @@ tap.test("Artwork", (t) => {
     });
 });
 
-tap.test("Artwork (Similar Images)", (t) => {
+tap.test("Record (Similar Images)", (t) => {
     const url = "http://localhost:3000/artworks/test/1235";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
@@ -68,7 +68,7 @@ tap.test("Artwork (Similar Images)", (t) => {
     });
 });
 
-tap.test("Artwork Compare", (t) => {
+tap.test("Record Compare", (t) => {
     const url = "http://localhost:3000/artworks/test/1235?compare";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
@@ -77,7 +77,7 @@ tap.test("Artwork Compare", (t) => {
     });
 });
 
-tap.test("Artwork Missing", (t) => {
+tap.test("Record Missing", (t) => {
     const url = "http://localhost:3000/artworks/test/foo";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");

@@ -7,7 +7,7 @@ const options = require("../lib/options");
 
 const Page = require("./Page.jsx");
 
-const artworkType = React.PropTypes.shape({
+const recordType = React.PropTypes.shape({
     artists: React.PropTypes.arrayOf(
         React.PropTypes.shape({
             _id: React.PropTypes.string,
@@ -37,17 +37,17 @@ const artworkType = React.PropTypes.shape({
     title: React.PropTypes.string,
 });
 
-const Artwork = React.createClass({
+const Record = React.createClass({
     propTypes: {
         URL: React.PropTypes.func.isRequired,
-        artworks: React.PropTypes.arrayOf(artworkType),
         compare: React.PropTypes.bool.isRequired,
         format: React.PropTypes.func.isRequired,
         fullName: React.PropTypes.func.isRequired,
         getTitle: React.PropTypes.func.isRequired,
         gettext: React.PropTypes.func.isRequired,
+        records: React.PropTypes.arrayOf(recordType),
         shortName: React.PropTypes.func.isRequired,
-        similar: React.PropTypes.arrayOf(artworkType),
+        similar: React.PropTypes.arrayOf(recordType),
         sources: React.PropTypes.arrayOf(
             React.PropTypes.shape({
                 _id: React.PropTypes.string.isRequired,
@@ -56,27 +56,27 @@ const Artwork = React.createClass({
         ),
     },
 
-    getTitle(artwork) {
-        return options.recordTitle(artwork, this.props);
+    getTitle(record) {
+        return options.recordTitle(record, this.props);
     },
 
-    // Determine if at least one artwork has a value for this type
+    // Determine if at least one record has a value for this type
     hasValue(type) {
-        return this.props.artworks.some((artwork) => {
-            const value = artwork[type];
+        return this.props.records.some((record) => {
+            const value = record[type];
             return value && (!Array.isArray(value) || value.length > 0);
         });
     },
 
-    renderArtwork() {
+    renderRecord() {
         const compare = this.props.compare;
-        const artworks = this.props.artworks;
-        const artworkWidth = this.props.similar.length > 0 ?
+        const records = this.props.records;
+        const recordWidth = this.props.similar.length > 0 ?
             "col-md-9" : "col-md-12";
 
-        return <div className={`${artworkWidth} imageholder`}>
-            {(compare || artworks.length > 1) &&
-                <a href={this.props.URL(artworks[0])}
+        return <div className={`${recordWidth} imageholder`}>
+            {(compare || records.length > 1) &&
+                <a href={this.props.URL(records[0])}
                     className="btn btn-success"
                 >
                     &laquo; {this.props.gettext("End Comparison")}
@@ -86,13 +86,13 @@ const Artwork = React.createClass({
                     <thead>
                         <tr className="plain">
                             <th></th>
-                            {artworks.map((artwork) =>
-                                this.renderTitle(artwork))}
+                            {records.map((record) =>
+                                this.renderTitle(record))}
                         </tr>
                         <tr className="plain">
                             <td></td>
-                            {artworks.map((artwork) =>
-                                this.renderImages(artwork))}
+                            {records.map((record) =>
+                                this.renderImages(record))}
                         </tr>
                     </thead>
                     <tbody>
@@ -105,50 +105,50 @@ const Artwork = React.createClass({
         </div>;
     },
 
-    renderTitle(artwork) {
-        const size = Math.max(Math.round(12 / this.props.artworks.length), 3);
-        const title = this.getTitle(artwork);
+    renderTitle(record) {
+        const size = Math.max(Math.round(12 / this.props.records.length), 3);
+        const title = this.getTitle(record);
 
-        return <th className={`col-xs-${size} text-center`} key={artwork._id}>
+        return <th className={`col-xs-${size} text-center`} key={record._id}>
             <h1 className="panel-title">{title}</h1>
         </th>;
     },
 
-    renderImages(artwork) {
-        const carouselId = artwork._id.replace("/", "-");
+    renderImages(record) {
+        const carouselId = record._id.replace("/", "-");
 
-        return <td key={artwork._id}>
+        return <td key={record._id}>
             <div id={carouselId} className="carousel" data-interval="0">
                 <div className="carousel-inner" role="listbox">
-                    {artwork.images.map((image, i) =>
-                        this.renderImage(artwork, image, i))}
+                    {record.images.map((image, i) =>
+                        this.renderImage(record, image, i))}
                 </div>
 
-                {artwork.images.length > 1 && this.renderCarousel(artwork)}
+                {record.images.length > 1 && this.renderCarousel(record)}
             </div>
         </td>;
     },
 
-    renderImage(artwork, image, i) {
+    renderImage(record, image, i) {
         const active = i === 0 ? "active" : "";
 
         return <div className={`item ${active}`} key={image._id}>
             <a href={image.getOriginalURL()}>
                 <img src={image.getScaledURL()}
-                    alt={this.props.getTitle(artwork)}
-                    title={this.props.getTitle(artwork)}
+                    alt={this.props.getTitle(record)}
+                    title={this.props.getTitle(record)}
                     className="img-responsive center-block"
                 />
             </a>
         </div>;
     },
 
-    renderCarousel(artwork) {
-        const carouselId = artwork._id.replace("/", "-");
+    renderCarousel(record) {
+        const carouselId = record._id.replace("/", "-");
 
         return <div>
             <ol className="carousel-indicators">
-                {artwork.images.map((image, i) =>
+                {record.images.map((image, i) =>
                     <li data-target={`#${carouselId}`} data-slide-to={i}
                         className={i === 0 ? "active" : ""} key={`img${i}`}
                     ></li>
@@ -180,7 +180,7 @@ const Artwork = React.createClass({
     },
 
     renderMetadata() {
-        const artworks = this.props.artworks;
+        const records = this.props.records;
 
         return options.display.map((type) => {
             const typeSchema = metadata.model[type];
@@ -194,8 +194,8 @@ const Artwork = React.createClass({
                 <th className="text-right">
                     {typeSchema.options.title(this.props)}
                 </th>
-                {artworks.map((artwork) => <td key={artwork._id}>
-                    {typeSchema.renderView(artwork[type], this.props)}
+                {records.map((record) => <td key={record._id}>
+                    {typeSchema.renderView(record[type], this.props)}
                 </td>)}
             </tr>;
         });
@@ -210,12 +210,12 @@ const Artwork = React.createClass({
             <th className="text-right">
                 {this.props.gettext("Details")}
             </th>
-            {this.props.artworks.map((artwork) => {
-                const link = <a href={artwork.url}>
+            {this.props.records.map((record) => {
+                const link = <a href={record.url}>
                     {this.props.gettext("More information...")}
                 </a>;
 
-                return <td key={artwork._id}>{link}</td>;
+                return <td key={record._id}>{link}</td>;
             })}
         </tr>;
     },
@@ -229,10 +229,10 @@ const Artwork = React.createClass({
             <th className="text-right">
                 {this.props.gettext("Source")}
             </th>
-            {this.props.artworks.map((artwork) => {
-                const source = artwork.getSource();
+            {this.props.records.map((record) => {
+                const source = record.getSource();
 
-                return <td key={artwork._id}>
+                return <td key={record._id}>
                     <a href={this.props.URL(source)}>
                         {this.props.fullName(source)}
                     </a>
@@ -262,15 +262,15 @@ const Artwork = React.createClass({
     },
 
     renderSimilarMatch(match) {
-        if (!match.artwork) {
+        if (!match.record) {
             return null;
         }
 
         return <div className="img col-md-12 col-xs-6 col-sm-4" key={match._id}>
-            <a href={this.props.URL(match.artwork)}>
-                <img src={match.artwork.getThumbURL()}
-                    alt={this.props.getTitle(match.artwork)}
-                    title={this.props.getTitle(match.artwork)}
+            <a href={this.props.URL(match.record)}>
+                <img src={match.record.getThumbURL()}
+                    alt={this.props.getTitle(match.record)}
+                    title={this.props.getTitle(match.record)}
                     className="img-responsive center-block"
                 />
             </a>
@@ -280,10 +280,10 @@ const Artwork = React.createClass({
                         "Score: %(score)s"), {score: match.score})}</span>
 
                     <a className="pull-right"
-                        href={this.props.URL(match.artwork.getSource())}
-                        title={this.props.fullName(match.artwork.getSource())}
+                        href={this.props.URL(match.record.getSource())}
+                        title={this.props.fullName(match.record.getSource())}
                     >
-                        {this.props.shortName(match.artwork.getSource())}
+                        {this.props.shortName(match.record.getSource())}
                     </a>
                 </div>
             </div>
@@ -301,12 +301,12 @@ const Artwork = React.createClass({
     },
 
     render() {
-        const artwork = this.props.artworks[0];
-        const title = this.getTitle(artwork);
+        const record = this.props.records[0];
+        const title = this.getTitle(record);
         const social = {
-            imgURL: artwork.getOriginalURL(),
+            imgURL: record.getOriginalURL(),
             title,
-            url: this.props.URL(artwork),
+            url: this.props.URL(record),
         };
 
         return <Page
@@ -316,11 +316,11 @@ const Artwork = React.createClass({
             social={social}
         >
             <div className="row">
-                {this.renderArtwork()}
+                {this.renderRecord()}
                 {this.props.similar.length > 0 && this.renderSimilar()}
             </div>
         </Page>;
     },
 });
 
-module.exports = Artwork;
+module.exports = Record;

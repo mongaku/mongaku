@@ -278,7 +278,7 @@ YearRange.prototype = {
             },
         };
 
-        // We generate a list of years in which the artwork exists, in order
+        // We generate a list of years in which the record exists, in order
         // to improve querying inside Elasticsearch
         YearRangeSchema.pre("validate", function(next) {
             if (!this.start || !this.end || this.start > this.end) {

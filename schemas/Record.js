@@ -15,7 +15,7 @@ const options = require("../lib/options");
 
 const modelProps = metadata.schemas();
 
-const Artwork = new db.schema(Object.assign({
+const Record = new db.schema(Object.assign({
     // UUID of the image (Format: SOURCE/ID)
     _id: {
         type: String,
@@ -41,10 +41,10 @@ const Artwork = new db.schema(Object.assign({
     // The date that this item was updated
     modified: Date,
 
-    // The most recent batch in which the artwork data was uploaded
+    // The most recent batch in which the record data was uploaded
     batch: {
         type: String,
-        ref: "ArtworkImport",
+        ref: "RecordImport",
     },
 
     // The source of the image.
@@ -63,7 +63,7 @@ const Artwork = new db.schema(Object.assign({
         required: true,
     },
 
-    // A link to the artwork at its source
+    // A link to the record at its source
     url: {
         type: String,
         required: true,
@@ -72,13 +72,13 @@ const Artwork = new db.schema(Object.assign({
             "formatted URL."),
     },
 
-    // A hash to use to render an image representing the artwork
+    // A hash to use to render an image representing the record
     defaultImageHash: {
         type: String,
         required: true,
     },
 
-    // The images associated with the artwork
+    // The images associated with the record
     images: {
         type: [{type: String, ref: "Image"}],
         required: true,
@@ -88,19 +88,19 @@ const Artwork = new db.schema(Object.assign({
         convert: (name, data) => `${data.source}/${name}`,
     },
 
-    // Keep track of if the artwork needs to update its artwork similarity
+    // Keep track of if the record needs to update its record similarity
     needsSimilarUpdate: {
         type: Boolean,
         default: false,
     },
 
     // Computed by looking at the results of images.similarImages
-    similarArtworks: [{
+    similarRecords: [{
         _id: String,
 
-        artwork: {
+        record: {
             type: String,
-            ref: "Artwork",
+            ref: "Record",
             required: true,
         },
 
@@ -124,9 +124,9 @@ const Artwork = new db.schema(Object.assign({
     }],
 }, modelProps));
 
-Artwork.methods = {
+Record.methods = {
     getURL(locale) {
-        return models("Artwork").getURLFromID(locale, this._id);
+        return models("Record").getURLFromID(locale, this._id);
     },
 
     getOriginalURL() {
@@ -168,7 +168,7 @@ Artwork.methods = {
                 return callback(err);
             }
 
-            // Calculate artwork matches before saving
+            // Calculate record matches before saving
             const matches = images
                 .map((image) => image.similarImages)
                 .reduce((a, b) => a.concat(b), []);
@@ -187,16 +187,16 @@ Artwork.methods = {
                 images: match._id,
             }));
 
-            models("Artwork").find({
+            models("Record").find({
                 $or: query,
                 _id: {$ne: this._id},
-            }, (err, artworks) => {
+            }, (err, records) => {
                 /* istanbul ignore if */
                 if (err) {
                     return callback(err);
                 }
 
-                this.similarArtworks = artworks
+                this.similarRecords = records
                     .map((similar) => {
                         const score = similar.images
                             .map((image) => scores[image] || 0)
@@ -204,7 +204,7 @@ Artwork.methods = {
 
                         return {
                             _id: similar._id,
-                            artwork: similar._id,
+                            record: similar._id,
                             images: similar.images
                                 .filter((id) => matchIds.indexOf(id) >= 0),
                             score,
@@ -220,7 +220,7 @@ Artwork.methods = {
         });
     },
 
-    loadImages(loadSimilarArtworks, callback) {
+    loadImages(loadSimilarRecords, callback) {
         async.parallel([
             (callback) => {
                 this.getImages((err, images) => {
@@ -233,32 +233,32 @@ Artwork.methods = {
             },
 
             (callback) => {
-                if (!loadSimilarArtworks) {
+                if (!loadSimilarRecords) {
                     return process.nextTick(callback);
                 }
 
-                async.mapLimit(this.similarArtworks, 4,
+                async.mapLimit(this.similarRecords, 4,
                     (similar, callback) => {
-                        if (typeof similar.artwork !== "string") {
+                        if (typeof similar.record !== "string") {
                             return process.nextTick(() =>
                                 callback(null, similar));
                         }
 
-                        models("Artwork").findById(similar.artwork,
-                            (err, artwork) => {
+                        models("Record").findById(similar.record,
+                            (err, record) => {
                                 /* istanbul ignore if */
-                                if (err || !artwork) {
+                                if (err || !record) {
                                     return callback();
                                 }
 
-                                similar.artwork = artwork;
+                                similar.record = record;
                                 callback(null, similar);
                             });
                     }, (err, similar) => {
-                        // We filter out any invalid/un-found artworks
+                        // We filter out any invalid/un-found records
                         // TODO: We should log out some details on when this
                         // happens (hopefully never).
-                        this.similarArtworks =
+                        this.similarRecords =
                             similar.filter((similar) => !!similar);
                         callback();
                     });
@@ -306,13 +306,14 @@ const stripProp = (obj, name) => {
     return obj;
 };
 
-Artwork.statics = {
+Record.statics = {
     getURLFromID(locale, id) {
+        // TODO(jeresig): Make this configurable
         return urls.gen(locale, `/artworks/${id}`);
     },
 
     fromData(tmpData, req, callback) {
-        const Artwork = models("Artwork");
+        const Record = models("Record");
         const Image = models("Image");
 
         const lint = this.lintData(tmpData, req);
@@ -323,10 +324,10 @@ Artwork.statics = {
         }
 
         const data = lint.data;
-        const artworkId = `${data.source}/${data.id}`;
+        const recordId = `${data.source}/${data.id}`;
 
-        Artwork.findById(artworkId, (err, artwork) => {
-            const creating = !artwork;
+        Record.findById(recordId, (err, record) => {
+            const creating = !record;
 
             async.mapLimit(data.images, 2, (imageId, callback) => {
                 Image.findById(imageId, (err, image) => {
@@ -357,11 +358,11 @@ Artwork.statics = {
                 data.defaultImageHash = filteredImages[0].hash;
                 data.images = filteredImages.map((image) => image._id);
 
-                let model = artwork;
+                let model = record;
                 let original;
 
                 if (creating) {
-                    model = new Artwork(data);
+                    model = new Record(data);
                 } else {
                     original = model.toJSON();
                     model.set(data);
@@ -386,7 +387,7 @@ Artwork.statics = {
     },
 
     lintData(data, req, optionalSchema) {
-        const schema = optionalSchema || Artwork;
+        const schema = optionalSchema || Record;
 
         const cleaned = {};
         const warnings = [];
@@ -509,21 +510,21 @@ Artwork.statics = {
     },
 
     updateSimilarity(callback) {
-        models("Artwork").findOne({
+        models("Record").findOne({
             needsSimilarUpdate: true,
-        }, (err, artwork) => {
-            if (err || !artwork) {
+        }, (err, record) => {
+            if (err || !record) {
                 return callback(err);
             }
 
-            artwork.updateSimilarity((err) => {
+            record.updateSimilarity((err) => {
                 /* istanbul ignore if */
                 if (err) {
                     console.error(err);
                     return callback(err);
                 }
 
-                artwork.save((err) => {
+                record.save((err) => {
                     /* istanbul ignore if */
                     if (err) {
                         return callback(err);
@@ -537,7 +538,7 @@ Artwork.statics = {
 };
 
 // Dynamically generate the _id attribute
-Artwork.pre("validate", function(next) {
+Record.pre("validate", function(next) {
     if (!this._id) {
         this._id = `${this.source}/${this.id}`;
     }
@@ -545,10 +546,10 @@ Artwork.pre("validate", function(next) {
 });
 
 /* istanbul ignore next */
-Artwork.pre("save", function(next) {
+Record.pre("save", function(next) {
     // Always updated the modified time on every save
     this.modified = new Date();
     next();
 });
 
-module.exports = Artwork;
+module.exports = Record;
