@@ -70,9 +70,11 @@ const ImportData = React.createClass({
             <h4><a href={this.props.urlFromID(result.model)}>
                 {result.model}
             </a></h4>
-            <div className="diff" dangerouslySetInnerHTML={
-                {__html: this.props.diff(result.diff)}}
-            ></div>
+            <div className="diff"
+                dangerouslySetInnerHTML={{
+                    __html: this.props.diff(result.diff),
+                }}
+            />
         </div>;
     },
 

@@ -108,9 +108,9 @@ const Page = React.createClass({
                         data-target="#header-navbar"
                     >
                         <span className="sr-only">Toggle Navigation</span>
-                        <span className="icon-bar"></span>
-                        <span className="icon-bar"></span>
-                        <span className="icon-bar"></span>
+                        <span className="icon-bar"/>
+                        <span className="icon-bar"/>
+                        <span className="icon-bar"/>
                     </button>
                     <a className="navbar-brand" href={URL("/")}>
                         {this.renderLogo()}
@@ -166,7 +166,7 @@ const Page = React.createClass({
                 />
                 {" "}
                 {options.locales[this.props.lang]}
-                <span className="caret"></span>
+                <span className="caret"/>
             </a>
             <ul className="dropdown-menu" role="menu">
                 {Object.keys(options.locales)

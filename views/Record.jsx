@@ -85,12 +85,12 @@ const Record = React.createClass({
                 <table className="table table-hover">
                     <thead>
                         <tr className="plain">
-                            <th></th>
+                            <th/>
                             {records.map((record) =>
                                 this.renderTitle(record))}
                         </tr>
                         <tr className="plain">
-                            <td></td>
+                            <td/>
                             {records.map((record) =>
                                 this.renderImages(record))}
                         </tr>
@@ -151,7 +151,7 @@ const Record = React.createClass({
                 {record.images.map((image, i) =>
                     <li data-target={`#${carouselId}`} data-slide-to={i}
                         className={i === 0 ? "active" : ""} key={`img${i}`}
-                    ></li>
+                    />
                 )}
             </ol>
             <a className="left carousel-control"
@@ -160,7 +160,7 @@ const Record = React.createClass({
             >
                 <span className="glyphicon glyphicon-chevron-left"
                     aria-hidden="true"
-                ></span>
+                />
                 <span className="sr-only">
                     {this.props.gettext("Previous")}
                 </span>
@@ -171,7 +171,7 @@ const Record = React.createClass({
             >
                 <span className="glyphicon glyphicon-chevron-right"
                     aria-hidden="true"
-                ></span>
+                />
                 <span className="sr-only">
                     {this.props.gettext("Next")}
                 </span>

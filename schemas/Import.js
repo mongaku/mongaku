@@ -3,10 +3,11 @@
 const async = require("async");
 
 const models = require("../lib/models");
-const db = require("../lib/db");
 const config = require("../lib/config");
 
-const Import = new db.schema({
+const Import = {};
+
+Import.schema = {
     // An ID for the import, based on the source and time
     _id: String,
 
@@ -39,7 +40,7 @@ const Import = new db.schema({
 
     // The results of the import
     results: [{}],
-});
+};
 
 Import.methods = {
     getSource() {
@@ -154,22 +155,5 @@ Import.statics = {
         });
     },
 };
-
-Import.pre("validate", function(next) {
-    // Create the ID if one hasn't been set before
-    if (!this._id) {
-        this._id = `${this.source}/${Date.now()}`;
-    }
-
-    next();
-});
-
-/* istanbul ignore next */
-Import.pre("save", function(next) {
-    // Always updated the modified time on every save
-    this.modified = new Date();
-
-    next();
-});
 
 module.exports = Import;

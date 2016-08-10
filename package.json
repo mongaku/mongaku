@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/mongaku/mongaku",
   "dependencies": {
-    "async": "^1.5.2",
+    "async": "^2.0.1",
     "babel-preset-es2015": "^6.6.0",
     "babel-preset-react": "^6.5.0",
     "babel-register": "^6.7.2",
@@ -53,7 +53,7 @@
     "imageinfo": "^1.0.4",
     "jsondiffpatch": "^0.1.38",
     "jsonlint": "^1.6.2",
-    "kerberos": "0.0.19",
+    "kerberos": "0.0.21",
     "libxmljs": "^0.18.0",
     "marcjs": "^0.1.12",
     "method-override": "^2.3.5",
@@ -61,7 +61,6 @@
     "moment": "^2.12.0",
     "mongoosastic": "^4.0.2",
     "mongoose": "^4.4.10",
-    "mongoose-schema-extend": "0.2.0",
     "mongoose-version": "^1.0.0",
     "morgan": "^1.7.0",
     "naught": "^1.6.0",
@@ -82,14 +81,14 @@
     "yearrange": "0.0.5"
   },
   "devDependencies": {
-    "eslint": "^2.5.1",
-    "eslint-plugin-react": "^4.3.0",
+    "eslint": "^3.3.0",
+    "eslint-plugin-react": "^6.0.0",
     "jsxgettext": "^0.9.0",
     "migrate": "^0.2.2",
     "mock-fs": "^3.11.0",
     "pre-commit": "^1.1.2",
     "sinon": "^1.17.3",
-    "tap": "^5.8.0"
+    "tap": "^6.3.2"
   },
   "pre-commit": [
     "test",

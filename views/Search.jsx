@@ -135,7 +135,7 @@ const Search = React.createClass({
                     className="form-control"
                     defaultValue={this.props.values.similar}
                 >
-                    <option value=""></option>
+                    <option value=""/>
                     {Object.keys(similarity).map((id) =>
                         <option value={id} key={id}>
                             {this.props.getTitle(similarity[id])}
@@ -257,7 +257,7 @@ const Search = React.createClass({
         >
             <span className="glyphicon glyphicon-remove-sign"
                 style={{verticalAlign: -1}} aria-hidden="true"
-            ></span>
+            />
             {" "}
             <span aria-hidden="true">{crumb.name}</span>
             <span className="sr-only">

@@ -33,12 +33,13 @@ const YearRangeView = React.createClass({
         const searchURL = require("../../../logic/shared/search-url");
 
         return <span key={date._id}>
-            <a href={searchURL(this.props, {
-                [this.props.name]: {
-                    start: date.start,
-                    end: date.end,
-                },
-            })}
+            <a
+                href={searchURL(this.props, {
+                    [this.props.name]: {
+                        start: date.start,
+                        end: date.end,
+                    },
+                })}
             >
                 {getDate(date)}
             </a><br/>

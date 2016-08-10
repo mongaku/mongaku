@@ -3,6 +3,7 @@
 const async = require("async");
 
 const models = require("../lib/models");
+const db = require("../lib/db");
 const urls = require("../lib/urls");
 const config = require("../lib/config");
 
@@ -73,15 +74,15 @@ const req = {
     lang: "en",
 };
 
-const RecordImport = Import.extend({
+const RecordImport = new db.schema(Object.assign({}, Import.schema, {
     // The name of the original file (e.g. `foo.json`)
     fileName: {
         type: String,
         required: true,
     },
-});
+}));
 
-Object.assign(RecordImport.methods, {
+Object.assign(RecordImport.methods, Import.methods, {
     getURL(lang) {
         return urls.gen(lang,
             `/source/${this.source}/admin?records=${this._id}`);
@@ -296,7 +297,7 @@ Object.assign(RecordImport.methods, {
     },
 });
 
-Object.assign(RecordImport.statics, {
+Object.assign(RecordImport.statics, Import.statics, {
     fromFile(fileName, source) {
         const RecordImport = models("RecordImport");
         return new RecordImport({source, fileName});
@@ -306,6 +307,23 @@ Object.assign(RecordImport.statics, {
         const msg = errors[error];
         return msg ? msg(req) : error;
     },
+});
+
+RecordImport.pre("validate", function(next) {
+    // Create the ID if one hasn't been set before
+    if (!this._id) {
+        this._id = `${this.source}/${Date.now()}`;
+    }
+
+    next();
+});
+
+/* istanbul ignore next */
+RecordImport.pre("save", function(next) {
+    // Always updated the modified time on every save
+    this.modified = new Date();
+
+    next();
 });
 
 module.exports = RecordImport;

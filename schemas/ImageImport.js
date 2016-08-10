@@ -8,6 +8,7 @@ const async = require("async");
 const unzip = require("unzip2");
 
 const models = require("../lib/models");
+const db = require("../lib/db");
 const urls = require("../lib/urls");
 const config = require("../lib/config");
 
@@ -54,7 +55,7 @@ const errors = {
     ERROR_SAVING: (req) => req.gettext("Error saving image."),
 };
 
-const ImageImport = Import.extend({
+const ImageImport = new db.schema(Object.assign({}, Import.schema, {
     // The location of the uploaded zip file
     // (temporary, deleted after processing)
     zipFile: {
@@ -67,9 +68,9 @@ const ImageImport = Import.extend({
         type: String,
         required: true,
     },
-});
+}));
 
-Object.assign(ImageImport.methods, {
+Object.assign(ImageImport.methods, Import.methods, {
     getURL(lang) {
         return urls.gen(lang,
             `/source/${this.source}/admin?images=${this._id}`);
@@ -221,7 +222,7 @@ Object.assign(ImageImport.methods, {
     },
 });
 
-Object.assign(ImageImport.statics, {
+Object.assign(ImageImport.statics, Import.statics, {
     fromFile(fileName, source) {
         const ImageImport = models("ImageImport");
         return new ImageImport({source, fileName});
@@ -231,6 +232,23 @@ Object.assign(ImageImport.statics, {
         const msg = errors[error];
         return msg ? msg(req) : error;
     },
+});
+
+ImageImport.pre("validate", function(next) {
+    // Create the ID if one hasn't been set before
+    if (!this._id) {
+        this._id = `${this.source}/${Date.now()}`;
+    }
+
+    next();
+});
+
+/* istanbul ignore next */
+ImageImport.pre("save", function(next) {
+    // Always updated the modified time on every save
+    this.modified = new Date();
+
+    next();
 });
 
 module.exports = ImageImport;
