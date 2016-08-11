@@ -1,10 +1,14 @@
 "use strict";
 
+const url = require("url");
+
 const async = require("async");
 const validUrl = require("valid-url");
 const jdp = require("jsondiffpatch").create({
     objectHash: (obj) => obj._id,
 });
+const mongoosastic = require("mongoosastic");
+const versioner = require("mongoose-version");
 
 const models = require("../lib/models");
 const db = require("../lib/db");
@@ -536,6 +540,24 @@ Record.statics = {
         });
     },
 };
+
+const es = url.parse(config.ELASTICSEARCH_URL);
+
+const mongoosasticServer = {
+    host: es.hostname,
+    auth: es.auth,
+    port: es.port,
+    // Trim the trailing ":" from the protocol
+    protocol: es.protocol.slice(0, -1),
+};
+
+Record.plugin(mongoosastic, mongoosasticServer);
+Record.plugin(versioner, {
+    collection: "record_versions",
+    suppressVersionIncrement: false,
+    strategy: "collection",
+    mongoose: db.mongoose,
+});
 
 // Dynamically generate the _id attribute
 Record.pre("validate", function(next) {

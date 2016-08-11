@@ -7,6 +7,7 @@ const farmhash = require("farmhash");
 const imageinfo = require("imageinfo");
 let gm = require("gm");
 const async = require("async");
+const versioner = require("mongoose-version");
 
 const models = require("../lib/models");
 const urls = require("../lib/urls");
@@ -512,5 +513,12 @@ const images = {
         });
     },
 };
+
+Image.plugin(versioner, {
+    collection: "image_versions",
+    suppressVersionIncrement: false,
+    strategy: "collection",
+    mongoose: db.mongoose,
+});
 
 module.exports = Image;
