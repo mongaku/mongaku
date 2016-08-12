@@ -75,6 +75,12 @@ const req = {
 };
 
 const RecordImport = new db.schema(Object.assign({}, Import.schema, {
+    // The type of the record
+    type:  {
+        type: String,
+        required: true,
+    },
+
     // The name of the original file (e.g. `foo.json`)
     fileName: {
         type: String,
@@ -119,7 +125,10 @@ Object.assign(RecordImport.methods, Import.methods, {
         const incomingIDs = {};
 
         async.eachLimit(this.results, 1, (result, callback) => {
-            const data = Object.assign(result.data, {source: this.source});
+            const data = Object.assign(result.data, {
+                source: this.source,
+                type: this.type,
+            });
 
             /* istanbul ignore if */
             if (config.NODE_ENV !== "test") {
@@ -298,9 +307,9 @@ Object.assign(RecordImport.methods, Import.methods, {
 });
 
 Object.assign(RecordImport.statics, Import.statics, {
-    fromFile(fileName, source) {
+    fromFile(fileName, source, type) {
         const RecordImport = models("RecordImport");
-        return new RecordImport({source, fileName});
+        return new RecordImport({source, fileName, type});
     },
 
     getError(req, error) {

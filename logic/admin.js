@@ -210,7 +210,8 @@ module.exports = function(app) {
                 const inputStreams = inputFiles
                     .map((file) => fs.createReadStream(file.path));
 
-                const batch = RecordImport.fromFile(fileName, source._id);
+                const batch = RecordImport.fromFile(fileName, source._id,
+                    source.type);
 
                 batch.setResults(inputStreams, (err) => {
                     /* istanbul ignore if */

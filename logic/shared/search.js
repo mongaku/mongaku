@@ -11,8 +11,6 @@ const queries = require("./queries");
 const searchURL = require("./search-url");
 const paramFilter = require("./param-filter");
 
-const sorts = options.sorts;
-
 module.exports = (req, res, tmplParams) => {
     // Collect all the values from the request to construct
     // the search URL and matches later
@@ -23,12 +21,18 @@ module.exports = (req, res, tmplParams) => {
     const aggregations = {};
     const fields = Object.assign({}, req.query, req.params);
 
+    if (fields.type && !(fields.type in options.types)) {
+        return res.status(404).render("Error", {
+            title: req.gettext("Page Not Found"),
+        });
+    }
+
     for (const name in queries) {
         const query = queries[name];
         let value = query.value(fields);
 
         if (!value && queries[name].defaultValue) {
-            value = queries[name].defaultValue();
+            value = queries[name].defaultValue(fields);
         }
 
         if (value !== undefined) {
@@ -130,6 +134,7 @@ module.exports = (req, res, tmplParams) => {
 
         // Construct a list of the possible sorts, their translated
         // names and their selected state, for the template.
+        const sorts = options.types[values.type].sorts;
         const sortData = Object.keys(sorts).map((id) => ({
             id: id,
             name: sorts[id](req),
@@ -169,6 +174,7 @@ module.exports = (req, res, tmplParams) => {
                 .filter((source) => source.numRecords > 0),
             values,
             queries,
+            type: values.type,
             sorts: sortData,
             facets: facetData,
             records: results.hits.hits,

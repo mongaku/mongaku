@@ -240,12 +240,29 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, (t) => {
     t.same(Record.lintData({
         id: "1234",
     }, req), {
+        "error": "Required field `type` is empty.",
+        "warnings": [],
+    }, "Type");
+
+    t.same(Record.lintData({
+        id: "1234",
+        type: "",
+    }, req), {
+        "error": "Required field `type` is empty.",
+        "warnings": [],
+    }, "Type Empty String");
+
+    t.same(Record.lintData({
+        id: "1234",
+        type: "artworks",
+    }, req), {
         "error": "Required field `source` is empty.",
         "warnings": [],
     }, "Source");
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "",
     }, req), {
         "error": "Required field `source` is empty.",
@@ -254,6 +271,7 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
     }, req), {
         "error": "Required field `lang` is empty.",
@@ -262,6 +280,7 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "",
     }, req), {
@@ -271,6 +290,7 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
     }, req), {
@@ -280,6 +300,7 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "",
@@ -290,6 +311,7 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com/",
@@ -300,6 +322,7 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com/",
@@ -313,6 +336,7 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, (t) => {
 tap.test("Record.lintData: Recommended Fields", {autoend: true}, (t) => {
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com/",
@@ -320,6 +344,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com/",
@@ -333,6 +358,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com/",
@@ -342,6 +368,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com/",
@@ -355,6 +382,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com/",
@@ -363,6 +391,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com/",
@@ -376,6 +405,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com/",
@@ -385,6 +415,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com/",
@@ -398,6 +429,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com/",
@@ -407,6 +439,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com/",
@@ -421,6 +454,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, (t) => {
 tap.test("Record.lintData: Type checking", {autoend: true}, (t) => {
     t.same(Record.lintData({
         id: 1234,
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com/",
@@ -436,6 +470,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: 1234,
         lang: "en",
         url: "http://google.com/",
@@ -451,6 +486,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: true,
         url: "http://google.com/",
@@ -466,6 +502,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: {},
@@ -481,6 +518,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com/",
@@ -496,6 +534,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com/",
@@ -508,6 +547,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com/",
@@ -525,6 +565,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com/",
@@ -537,6 +578,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com/",
@@ -554,6 +596,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com/",
@@ -564,6 +607,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com/",
@@ -578,6 +622,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com/",
@@ -588,6 +633,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com/",
@@ -604,6 +650,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, (t) => {
 tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
     t.same(Record.lintData({
         id: "1234/456",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com/",
@@ -619,6 +666,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "",
         url: "http://google.com/",
@@ -632,6 +680,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http//google.com",
@@ -647,6 +696,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com",
@@ -662,6 +712,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com",
@@ -671,6 +722,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com",
@@ -687,6 +739,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com",
@@ -697,6 +750,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com",
@@ -711,6 +765,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com",
@@ -722,6 +777,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com",
@@ -738,6 +794,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com",
@@ -749,6 +806,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com",
@@ -765,6 +823,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com",
@@ -777,6 +836,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com",
@@ -793,6 +853,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com",
@@ -807,6 +868,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com",
@@ -823,6 +885,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com",
@@ -836,6 +899,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com",
@@ -853,6 +917,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com",
@@ -866,6 +931,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com",
@@ -884,6 +950,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
 tap.test("Record.lintData: Conversion", {autoend: true}, (t) => {
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com",
@@ -897,6 +964,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com",
@@ -913,6 +981,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com",
@@ -926,6 +995,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com",
@@ -947,6 +1017,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com",
@@ -960,6 +1031,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com",
@@ -978,6 +1050,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com",
@@ -991,6 +1064,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com",
@@ -1012,6 +1086,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com",
@@ -1025,6 +1100,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com",
@@ -1042,6 +1118,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, (t) => {
 
     t.same(Record.lintData({
         id: "1234",
+        type: "artworks",
         source: "nga",
         lang: "en",
         url: "http://google.com",
@@ -1058,6 +1135,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, (t) => {
     }, req), {
         data: {
             id: "1234",
+            type: "artworks",
             source: "nga",
             lang: "en",
             url: "http://google.com",

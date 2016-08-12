@@ -4,9 +4,16 @@ const models = require("../../lib/models");
 const metadata = require("../../lib/metadata");
 const options = require("../../lib/options");
 
-const defaultSort = Object.keys(options.sorts)[0];
+const getCurType = (fields) => fields.type ||
+    Object.keys(options.types)[0];
 
 module.exports = Object.assign({
+    type: {
+        value: (fields) => fields.type,
+        defaultValue: getCurType,
+        secondary: true,
+    },
+
     start: {
         value: (fields) => parseFloat(fields.start),
         defaultValue: () => 0,
@@ -15,13 +22,15 @@ module.exports = Object.assign({
 
     rows: {
         value: (fields) => parseFloat(fields.rows),
-        defaultValue: () => options.searchNumRecords,
+        defaultValue: (fields) =>
+            options.types[getCurType(fields)].searchNumRecords,
         secondary: true,
     },
 
     sort: {
         value: (fields) => fields.sort,
-        defaultValue: () => defaultSort,
+        defaultValue: (fields) =>
+            Object.keys(options.types[getCurType(fields)].sorts)[0],
         secondary: true,
     },
 

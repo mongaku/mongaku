@@ -254,7 +254,8 @@ tap.test("uploadData: Default File", (t) => {
         request.post({
             url,
             formData,
-        }, (err, res) => {
+        }, (err, res, body) => {
+            console.log(body);
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 302);
             t.match(res.headers.location, "/source/test/admin");

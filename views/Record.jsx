@@ -8,33 +8,8 @@ const options = require("../lib/options");
 const Page = require("./Page.jsx");
 
 const recordType = React.PropTypes.shape({
-    artists: React.PropTypes.arrayOf(
-        React.PropTypes.shape({
-            _id: React.PropTypes.string,
-            name: React.PropTypes.string.isRequired,
-            pseudonym: React.PropTypes.string,
-        })
-    ),
-    dates: React.PropTypes.arrayOf(
-        React.PropTypes.shape({
-            _id: React.PropTypes.string,
-            original: React.PropTypes.string,
-            circa: React.PropTypes.bool,
-            end: React.PropTypes.number,
-            start: React.PropTypes.number,
-        })
-    ),
-    dimensions: React.PropTypes.arrayOf(
-        React.PropTypes.shape({
-            _id: React.PropTypes.string,
-            height: React.PropTypes.number,
-            width: React.PropTypes.number,
-        })
-    ),
+    type: React.PropTypes.string,
     images: React.PropTypes.arrayOf(React.PropTypes.any),
-    medium: React.PropTypes.string,
-    objectType: React.PropTypes.string,
-    title: React.PropTypes.string,
 });
 
 const Record = React.createClass({
@@ -57,7 +32,8 @@ const Record = React.createClass({
     },
 
     getTitle(record) {
-        return options.recordTitle(record, this.props);
+        return options.types[record.type]
+            .recordTitle(record, this.props);
     },
 
     // Determine if at least one record has a value for this type
@@ -181,8 +157,16 @@ const Record = React.createClass({
 
     renderMetadata() {
         const records = this.props.records;
+        const firstRecord = records[0];
 
-        return options.display.map((type) => {
+        if (!firstRecord) {
+            return null;
+        }
+
+        // We assume that all the records are the same type
+        const type = records[0].type;
+
+        return options.types[type].display.map((type) => {
             const typeSchema = metadata.model[type];
 
             // Hide if it there isn't at least one value to display

@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-07-31 20:36+0000\n"
+"POT-Creation-Date: 2016-08-14 20:33+0000\n"
 
 #: logic/admin.js:24
 #: logic/admin.js:62
@@ -39,20 +39,20 @@ msgstr ""
 msgid "No data files specified."
 msgstr ""
 
-#: logic/admin.js:219
-#: logic/admin.js:226
+#: logic/admin.js:220
+#: logic/admin.js:227
 msgid "Error saving data file."
 msgstr ""
 
-#: logic/admin.js:244
+#: logic/admin.js:245
 msgid "Authorization required."
 msgstr ""
 
-#: logic/artworks.js:31
+#: logic/records.js:31
 msgid "Not found."
 msgstr ""
 
-#: logic/artworks.js:91
+#: logic/records.js:98
 msgid "Source not found."
 msgstr ""
 
@@ -77,171 +77,176 @@ msgid "Uploaded image not found."
 msgstr ""
 
 #: logic/shared/facets.js:8
-#: views/Artwork.jsx:230
 #: views/Edit.jsx:95
-#: views/Search.jsx:172
+#: views/Record.jsx:214
+#: views/Search.jsx:175
 msgid "Source"
 msgstr ""
 
-#: logic/shared/queries.js:32
+#: logic/shared/queries.js:41
 msgid "Query: '%(query)s'"
 msgstr ""
 
-#: logic/shared/queries.js:61
-msgid "Similar to Any Artwork"
+#: logic/shared/queries.js:70
+msgid "Similar to Any Record"
 msgstr ""
 
-#: logic/shared/queries.js:73
-msgid "Similar to an External Artwork"
+#: logic/shared/queries.js:82
+msgid "Similar to an External Record"
 msgstr ""
 
-#: logic/shared/queries.js:105
-msgid "Similar to an Internal Artwork"
+#: logic/shared/queries.js:114
+msgid "Similar to an Internal Record"
 msgstr ""
 
-#: logic/shared/search.js:140
+#: logic/shared/search.js:26
+#: server/routes.js:34
+msgid "Page Not Found"
+msgstr ""
+
+#: logic/shared/search.js:145
 msgid "Search Results"
 msgstr ""
 
-#: logic/shared/search.js:161
+#: logic/shared/search.js:167
 msgid "All Artworks"
 msgstr ""
 
-#: schemas/Artwork.js:29
-msgid "IDs can only contain letters, numbers, underscores, and hyphens."
-msgstr ""
-
-#: schemas/Artwork.js:71
-msgid "`url` must be properly-formatted URL."
-msgstr ""
-
-#: schemas/Artwork.js:86
-msgid "Images must be a valid image file name. For example: `image.jpg`."
-msgstr ""
-
-#: schemas/Artwork.js:335
-msgid "Image file not found: %(fileName)s"
-msgstr ""
-
-#: schemas/Artwork.js:345
-msgid "Error accessing image data."
-msgstr ""
-
-#: schemas/Artwork.js:353
-msgid "No images found."
-msgstr ""
-
-#: schemas/Artwork.js:373
-msgid "There was an error with the data format."
-msgstr ""
-
-#: schemas/Artwork.js:399
-msgid "Unrecognized field `%(field)s`."
-msgstr ""
-
-#: schemas/Artwork.js:420
-msgid "`%(field)s` is the wrong type. Expected a %(type)s."
-msgstr ""
-
-#: schemas/Artwork.js:438
-msgid "`%(field)s` value is the wrong type. Expected a %(type)s."
-msgstr ""
-
-#: schemas/Artwork.js:491
-msgid "Required field `%(field)s` is empty."
-msgstr ""
-
-#: schemas/Artwork.js:495
-msgid "Recommended field `%(field)s` is empty."
-msgstr ""
-
-#: schemas/ArtworkImport.js:14
-#: schemas/ImageImport.js:19
+#: schemas/ImageImport.js:20
+#: schemas/RecordImport.js:15
 msgid "Awaiting processing..."
 msgstr ""
 
-#: schemas/ArtworkImport.js:21
-#: schemas/ImageImport.js:26
+#: schemas/ImageImport.js:27
+#: schemas/RecordImport.js:22
 msgid "Processing..."
 msgstr ""
 
-#: schemas/ArtworkImport.js:25
-msgid "Confirmation required."
-msgstr ""
-
-#: schemas/ArtworkImport.js:32
-msgid "Importing data..."
-msgstr ""
-
-#: schemas/ArtworkImport.js:36
-msgid "Awaiting similarity sync..."
-msgstr ""
-
-#: schemas/ArtworkImport.js:43
-msgid "Syncing similarity..."
-msgstr ""
-
-#: schemas/ArtworkImport.js:47
-#: schemas/ArtworkImport.js:56
-#: schemas/ImageImport.js:30
-#: schemas/ImageImport.js:39
+#: schemas/ImageImport.js:31
+#: schemas/ImageImport.js:40
+#: schemas/RecordImport.js:48
+#: schemas/RecordImport.js:57
 msgid "Completed."
 msgstr ""
 
-#: schemas/ArtworkImport.js:61
-msgid "Data import abandoned."
-msgstr ""
-
-#: schemas/ArtworkImport.js:62
-msgid "Error reading data from provided data files."
-msgstr ""
-
-#: schemas/ArtworkImport.js:64
-msgid "Error saving record."
-msgstr ""
-
-#: schemas/ArtworkImport.js:65
-msgid "Error deleting existing record."
-msgstr ""
-
-#: schemas/ImageImport.js:44
+#: schemas/ImageImport.js:45
 msgid "Error opening zip file."
 msgstr ""
 
-#: schemas/ImageImport.js:45
+#: schemas/ImageImport.js:46
 msgid "Zip file has no images in it."
 msgstr ""
 
-#: schemas/ImageImport.js:46
+#: schemas/ImageImport.js:47
 msgid ""
 "There was an error processing the image. Perhaps it is malformed in some "
 "way."
 msgstr ""
 
-#: schemas/ImageImport.js:48
+#: schemas/ImageImport.js:49
 msgid "The image is empty."
 msgstr ""
 
-#: schemas/ImageImport.js:49
+#: schemas/ImageImport.js:50
 msgid "A new version of the image was uploaded, replacing the old one."
 msgstr ""
 
-#: schemas/ImageImport.js:51
+#: schemas/ImageImport.js:52
 msgid ""
 "The image is too small to work with the image similarity algorithm. It must "
 "be at least 150px on each side."
 msgstr ""
 
-#: schemas/ImageImport.js:54
+#: schemas/ImageImport.js:55
 msgid "Error saving image."
 msgstr ""
 
-#: schemas/Import.js:66
+#: schemas/Import.js:67
 #: views/Admin.jsx:104
 #: views/Admin.jsx:202
-#: views/ImportData.jsx:124
 #: views/ImportImages.jsx:74
+#: views/ImportRecords.jsx:126
 msgid "Error: %(error)s"
+msgstr ""
+
+#: schemas/Record.js:33
+msgid "IDs can only contain letters, numbers, underscores, and hyphens."
+msgstr ""
+
+#: schemas/Record.js:82
+msgid "`url` must be properly-formatted URL."
+msgstr ""
+
+#: schemas/Record.js:97
+msgid "Images must be a valid image file name. For example: `image.jpg`."
+msgstr ""
+
+#: schemas/Record.js:347
+msgid "Image file not found: %(fileName)s"
+msgstr ""
+
+#: schemas/Record.js:357
+msgid "Error accessing image data."
+msgstr ""
+
+#: schemas/Record.js:365
+msgid "No images found."
+msgstr ""
+
+#: schemas/Record.js:385
+msgid "There was an error with the data format."
+msgstr ""
+
+#: schemas/Record.js:411
+msgid "Unrecognized field `%(field)s`."
+msgstr ""
+
+#: schemas/Record.js:432
+msgid "`%(field)s` is the wrong type. Expected a %(type)s."
+msgstr ""
+
+#: schemas/Record.js:450
+msgid "`%(field)s` value is the wrong type. Expected a %(type)s."
+msgstr ""
+
+#: schemas/Record.js:503
+msgid "Required field `%(field)s` is empty."
+msgstr ""
+
+#: schemas/Record.js:507
+msgid "Recommended field `%(field)s` is empty."
+msgstr ""
+
+#: schemas/RecordImport.js:26
+msgid "Confirmation required."
+msgstr ""
+
+#: schemas/RecordImport.js:33
+msgid "Importing data..."
+msgstr ""
+
+#: schemas/RecordImport.js:37
+msgid "Awaiting similarity sync..."
+msgstr ""
+
+#: schemas/RecordImport.js:44
+msgid "Syncing similarity..."
+msgstr ""
+
+#: schemas/RecordImport.js:62
+msgid "Data import abandoned."
+msgstr ""
+
+#: schemas/RecordImport.js:63
+msgid "Error reading data from provided data files."
+msgstr ""
+
+#: schemas/RecordImport.js:65
+msgid "Error saving record."
+msgstr ""
+
+#: schemas/RecordImport.js:66
+msgid "Error deleting existing record."
 msgstr ""
 
 #: schemas/Upload.js:78
@@ -264,10 +269,6 @@ msgstr ""
 
 #: schemas/types/YearRange.js:311
 msgid "Dates must have a start or end specified."
-msgstr ""
-
-#: server/routes.js:34
-msgid "Page Not Found"
 msgstr ""
 
 #: views/Admin.jsx:37
@@ -316,15 +317,15 @@ msgstr ""
 
 #: views/Admin.jsx:86
 #: views/Admin.jsx:184
-#: views/ImportData.jsx:161
 #: views/ImportImages.jsx:99
+#: views/ImportRecords.jsx:163
 msgid "Errors"
 msgstr ""
 
 #: views/Admin.jsx:87
 #: views/Admin.jsx:185
-#: views/ImportData.jsx:168
 #: views/ImportImages.jsx:106
+#: views/ImportRecords.jsx:170
 msgid "Warnings"
 msgstr ""
 
@@ -341,7 +342,7 @@ msgid "Unprocessed"
 msgstr ""
 
 #: views/Admin.jsx:181
-#: views/ImportData.jsx:185
+#: views/ImportRecords.jsx:187
 msgid "Created"
 msgstr ""
 
@@ -350,12 +351,12 @@ msgid "Updated"
 msgstr ""
 
 #: views/Admin.jsx:183
-#: views/ImportData.jsx:194
+#: views/ImportRecords.jsx:196
 msgid "Deleted"
 msgstr ""
 
 #: views/Admin.jsx:211
-#: views/ImportData.jsx:105
+#: views/ImportRecords.jsx:107
 msgid "Finalize Import"
 msgstr ""
 
@@ -363,59 +364,59 @@ msgstr ""
 msgid "%(name)s Admin Area"
 msgstr ""
 
-#: views/Artwork.jsx:82
 #: views/Edit.jsx:68
+#: views/Record.jsx:58
 msgid "End Comparison"
 msgstr ""
 
-#: views/Artwork.jsx:165
-#: views/Edit.jsx:163
-#: views/Search.jsx:287
-msgid "Previous"
-msgstr ""
-
-#: views/Artwork.jsx:176
-#: views/Edit.jsx:174
-#: views/Search.jsx:292
-msgid "Next"
-msgstr ""
-
-#: views/Artwork.jsx:211
 #: views/Edit.jsx:88
+#: views/Record.jsx:195
 msgid "Details"
 msgstr ""
 
-#: views/Artwork.jsx:215
+#: views/Edit.jsx:163
+#: views/Record.jsx:141
+#: views/Search.jsx:290
+msgid "Previous"
+msgstr ""
+
+#: views/Edit.jsx:174
+#: views/Record.jsx:152
+#: views/Search.jsx:295
+msgid "Next"
+msgstr ""
+
 #: views/Edit.jsx:210
+#: views/Record.jsx:199
 msgid "More information..."
 msgstr ""
 
-#: views/Artwork.jsx:249
 #: views/Edit.jsx:231
+#: views/Record.jsx:233
 msgid "Compare Images"
 msgstr ""
 
-#: views/Artwork.jsx:254
 #: views/Edit.jsx:236
+#: views/Record.jsx:238
 #: views/Upload.jsx:52
 msgid "Similar Images"
 msgstr ""
 
-#: views/Artwork.jsx:279
 #: views/Edit.jsx:261
+#: views/Record.jsx:263
 #: views/Upload.jsx:89
 msgid "Score: %(score)s"
 msgstr ""
 
 #: views/Home.jsx:32
-msgid "Search %(artworkCount)s Artworks and %(imageCount)s Images:"
+msgid "Search %(recordCount)s Artworks and %(imageCount)s Images:"
 msgstr ""
 
 #: views/Home.jsx:48
 #: views/Home.jsx:53
 #: views/Page.jsx:138
 #: views/Page.jsx:143
-#: views/Search.jsx:148
+#: views/Search.jsx:151
 msgid "Search"
 msgstr ""
 
@@ -450,54 +451,54 @@ msgid "Browse by Collection:"
 msgstr ""
 
 #: views/Home.jsx:145
-msgid "%(artworkCount)s Artworks, %(imageCount)s Images"
-msgstr ""
-
-#: views/ImportData.jsx:111
-msgid "Abandon Import"
-msgstr ""
-
-#: views/ImportData.jsx:121
-msgid "Data Import: %(fileName)s"
-msgstr ""
-
-#: views/ImportData.jsx:127
-#: views/ImportImages.jsx:77
-msgid "Uploaded: %(date)s"
-msgstr ""
-
-#: views/ImportData.jsx:129
-#: views/ImportImages.jsx:79
-msgid "Last Updated: %(date)s"
-msgstr ""
-
-#: views/ImportData.jsx:142
-#: views/ImportImages.jsx:87
-msgid "Return to Admin Page"
-msgstr ""
-
-#: views/ImportData.jsx:154
-msgid "To Be Processed"
-msgstr ""
-
-#: views/ImportData.jsx:176
-msgid "Changed"
-msgstr ""
-
-#: views/ImportData.jsx:177
-msgid "Will Be Changed"
-msgstr ""
-
-#: views/ImportData.jsx:186
-msgid "Will Be Created"
-msgstr ""
-
-#: views/ImportData.jsx:195
-msgid "Will Be Deleted"
+msgid "%(recordCount)s Artworks, %(imageCount)s Images"
 msgstr ""
 
 #: views/ImportImages.jsx:71
 msgid "Image Import: %(fileName)s"
+msgstr ""
+
+#: views/ImportImages.jsx:77
+#: views/ImportRecords.jsx:129
+msgid "Uploaded: %(date)s"
+msgstr ""
+
+#: views/ImportImages.jsx:79
+#: views/ImportRecords.jsx:131
+msgid "Last Updated: %(date)s"
+msgstr ""
+
+#: views/ImportImages.jsx:87
+#: views/ImportRecords.jsx:144
+msgid "Return to Admin Page"
+msgstr ""
+
+#: views/ImportRecords.jsx:113
+msgid "Abandon Import"
+msgstr ""
+
+#: views/ImportRecords.jsx:123
+msgid "Data Import: %(fileName)s"
+msgstr ""
+
+#: views/ImportRecords.jsx:156
+msgid "To Be Processed"
+msgstr ""
+
+#: views/ImportRecords.jsx:178
+msgid "Changed"
+msgstr ""
+
+#: views/ImportRecords.jsx:179
+msgid "Will Be Changed"
+msgstr ""
+
+#: views/ImportRecords.jsx:188
+msgid "Will Be Created"
+msgstr ""
+
+#: views/ImportRecords.jsx:197
+msgid "Will Be Deleted"
 msgstr ""
 
 #: views/ImportResult.jsx:22
@@ -517,40 +518,40 @@ msgstr ""
 msgid "Password:"
 msgstr ""
 
-#: views/Search.jsx:70
-msgid "%(numArtworks)s matches."
+#: views/Search.jsx:71
+msgid "%(numRecords)s matches."
 msgstr ""
 
-#: views/Search.jsx:76
+#: views/Search.jsx:77
 msgid "Viewing %(start)s to %(end)s."
 msgstr ""
 
-#: views/Search.jsx:98
+#: views/Search.jsx:99
 msgid "Sort"
 msgstr ""
 
-#: views/Search.jsx:120
+#: views/Search.jsx:123
 msgid "Query"
 msgstr ""
 
-#: views/Search.jsx:132
+#: views/Search.jsx:135
 msgid "Similarity"
 msgstr ""
 
-#: views/Search.jsx:178
+#: views/Search.jsx:181
 msgid "Any Source"
 msgstr ""
 
-#: views/Search.jsx:205
+#: views/Search.jsx:208
 msgid "Show %(count)s more..."
 msgstr ""
 
-#: views/Search.jsx:255
-#: views/Search.jsx:264
+#: views/Search.jsx:258
+#: views/Search.jsx:267
 msgid "Remove %(query)s"
 msgstr ""
 
-#: views/Search.jsx:274
+#: views/Search.jsx:277
 msgid "No results found. Please refine your query."
 msgstr ""
 

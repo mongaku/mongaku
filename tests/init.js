@@ -118,6 +118,7 @@ for (const dir of fs.readdirSync(publicDir)) {
 const genData = () => {
     recordData = {
         id: "1234",
+        type: "artworks",
         source: "test",
         lang: "en",
         url: "http://google.com",
@@ -202,12 +203,14 @@ const genData = () => {
     sources = [
         new Source({
             _id: "test",
+            type: "artworks",
             url: "http://test.com/",
             name: "Test Source",
             shortName: "Test",
         }),
         new Source({
             _id: "test2",
+            type: "artworks",
             url: "http://test2.com/",
             name: "Test Source 2",
             shortName: "Test2",
@@ -356,6 +359,7 @@ const genData = () => {
             modified: new Date(),
             fileName: "data.json",
             source: "test",
+            type: "artworks",
         }),
         new RecordImport({
             _id: "test/completed",
@@ -363,6 +367,7 @@ const genData = () => {
             modified: new Date(),
             fileName: "data.json",
             source: "test",
+            type: "artworks",
             state: "completed",
             results: [],
         }),
@@ -372,6 +377,7 @@ const genData = () => {
             modified: new Date(),
             fileName: "data.json",
             source: "test",
+            type: "artworks",
             state: "error",
             error: "ABANDONED",
             results: [],
@@ -715,7 +721,7 @@ const bindStubs = () => {
             sandbox.stub(batch, "save", (callback) => batch.validate((err) => {
                 /* istanbul ignore if */
                 if (err) {
-                    callback(err);
+                    return callback(err);
                 }
 
                 batch.modified = new Date();
@@ -740,14 +746,14 @@ const bindStubs = () => {
 
     const recordImportFromFile = RecordImport.fromFile;
 
-    sandbox.stub(RecordImport, "fromFile", (fileName, source) => {
+    sandbox.stub(RecordImport, "fromFile", (fileName, source, type) => {
         const batch = recordImportFromFile.call(RecordImport, fileName,
-            source);
+            source, type);
         if (!batch.save.restore) {
             sandbox.stub(batch, "save", (callback) => batch.validate((err) => {
                 /* istanbul ignore if */
                 if (err) {
-                    callback(err);
+                    return callback(err);
                 }
 
                 batch.modified = new Date();

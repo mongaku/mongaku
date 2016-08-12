@@ -71,14 +71,20 @@ module.exports = function(app) {
 
         routes() {
             app.get("/search", cache(1), this.search);
-            // TODO(jeresig): Make this configurable
-            app.get("/artworks/:source/:recordName", this.show);
+            app.get("/:type/search", cache(1), this.search);
             app.get("/source/:source", cache(1), this.bySource);
+            app.get("/:type/source/:source", cache(1), this.bySource);
 
-            for (const path in options.searchURLs) {
-                app.get(path, cache(1), (req, res) =>
-                    options.searchURLs[path](req, res, search));
+            for (const typeName in options.types) {
+                const searchURLs = options.types[typeName].searchURLs;
+                for (const path in searchURLs) {
+                    app.get(`/:type${path}`, cache(1), (req, res) =>
+                        searchURLs[path](req, res, search));
+                }
             }
+
+            // Handle this last as it'll catch almost anything
+            app.get("/:type/:source/:recordName", this.show);
 
             // NOTE(jeresig): This is also used by the source admin pages
             // to extract the source from the URL.

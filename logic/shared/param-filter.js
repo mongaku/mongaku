@@ -22,7 +22,7 @@ const paramFilter = (values, keepSecondary) => {
         }
 
         // Ignore params which are the same as the default value
-        if (query.defaultValue && query.defaultValue() === value) {
+        if (query.defaultValue && query.defaultValue(values) === value) {
             continue;
         }
 

@@ -58,6 +58,7 @@ const Search = React.createClass({
         stringNum: React.PropTypes.func.isRequired,
         title: React.PropTypes.string.isRequired,
         total: React.PropTypes.number.isRequired,
+        type: React.PropTypes.string.isRequired,
         url: React.PropTypes.string,
         values: React.PropTypes.any.isRequired,
     },
@@ -112,6 +113,8 @@ const Search = React.createClass({
 
     renderSearchForm() {
         const similarity = this.props.queries.similar.filters;
+        const placeholder = options.types[this.props.type]
+            .getSearchPlaceholder(this.props);
 
         return <form action={this.props.URL("/search")} method="GET">
             <input type="hidden" name="lang" value={this.props.lang}/>
@@ -120,7 +123,7 @@ const Search = React.createClass({
                     {this.props.gettext("Query")}
                 </label>
                 <input type="search" name="filter"
-                    placeholder={options.getSearchPlaceholder(this.props)}
+                    placeholder={placeholder}
                     defaultValue={this.props.values.filter}
                     className="form-control"
                 />
@@ -153,7 +156,7 @@ const Search = React.createClass({
     },
 
     renderFilters() {
-        return options.filters.map((type) => {
+        return options.types[this.props.type].filters.map((type) => {
             const typeSchema = metadata.model[type];
             return <div key={type}>
                 {typeSchema.renderFilter(this.props.values[type], this.props)}
@@ -298,10 +301,13 @@ const Search = React.createClass({
     },
 
     renderResultFooter(record) {
-        if (options.views.resultFooter) {
+        const resultFooter = options.types[this.props.type]
+            .views.resultFooter;
+
+        if (resultFooter) {
             return <div className="details">
                 <div className="wrap">
-                    <options.views.resultFooter
+                    <resultFooter
                         {...this.props}
                         record={record}
                     />

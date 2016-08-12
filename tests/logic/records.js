@@ -15,7 +15,7 @@ tap.test("Search", (t) => {
 });
 
 tap.test("By Type", (t) => {
-    const url = "http://localhost:3000/type/painting";
+    const url = "http://localhost:3000/artworks/type/painting";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
@@ -24,7 +24,7 @@ tap.test("By Type", (t) => {
 });
 
 tap.test("By Type Missing", (t) => {
-    const url = "http://localhost:3000/type/foo";
+    const url = "http://localhost:3000/artworks/type/foo";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 404);

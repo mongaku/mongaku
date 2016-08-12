@@ -36,6 +36,13 @@ const Record = new db.schema(Object.assign({
         es_indexed: true,
     },
 
+    // The type of the record
+    type:  {
+        type: String,
+        required: true,
+        es_indexed: true,
+    },
+
     // The date that this item was created
     created: {
         type: Date,
@@ -130,7 +137,8 @@ const Record = new db.schema(Object.assign({
 
 Record.methods = {
     getURL(locale) {
-        return models("Record").getURLFromID(locale, this._id);
+        return models("Record").getURLFromID(locale, this._id,
+            this.type);
     },
 
     getOriginalURL() {
@@ -144,7 +152,7 @@ Record.methods = {
     },
 
     getTitle(i18n) {
-        return options.recordTitle(this, i18n);
+        return options.types[this.type].recordTitle(this, i18n);
     },
 
     getSource() {
@@ -311,9 +319,8 @@ const stripProp = (obj, name) => {
 };
 
 Record.statics = {
-    getURLFromID(locale, id) {
-        // TODO(jeresig): Make this configurable
-        return urls.gen(locale, `/artworks/${id}`);
+    getURLFromID(locale, id, type) {
+        return urls.gen(locale, `/${type}/${id}`);
     },
 
     fromData(tmpData, req, callback) {

@@ -10,16 +10,36 @@ const defaultConverter = require("../lib/default-converter");
 
 let sourceCache = [];
 
-const converters = Object.assign({
-    default: defaultConverter,
-}, options.converters);
-
 const Source = new db.schema({
+    // A short ID (e.g. "frick")
     _id: String,
+
+    // The type of the record
+    type:  {
+        type: String,
+        required: true,
+    },
+
+    // The URL to associate with the source
     url: String,
-    name: String,
-    shortName: String,
-    converter: String,
+
+    // The full name of the source (e.g. "Frick Art Reference Library")
+    name: {
+        type: String,
+        required: true,
+    },
+
+    // A short name (e.g. "Frick")
+    shortName: {
+        type: String,
+        required: true,
+    },
+
+    // The name of the converter to use on the data when importing
+    converter: {
+        type: String,
+        default: "default",
+    },
 });
 
 Source.methods = {
@@ -45,6 +65,9 @@ Source.methods = {
 
     getConverter() {
         const converter = this.converter || "default";
+        const converters = Object.assign({
+            default: defaultConverter,
+        }, options.types[this.type].converters);
 
         /* istanbul ignore if */
         if (!converters[converter]) {

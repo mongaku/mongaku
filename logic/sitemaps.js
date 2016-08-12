@@ -53,7 +53,7 @@ ${sitemaps.join("\n")}
                 }
 
                 const sitemaps = results.hits.hits.map((item) =>
-                    Record.getURLFromID(req.lang, item._id))
+                    Record.getURLFromID(req.lang, item._id, item.type))
                     .map((url) => `<url><loc>${url}</loc></url>`);
 
                 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
