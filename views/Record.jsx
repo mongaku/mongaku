@@ -247,15 +247,15 @@ const Record = React.createClass({
     },
 
     renderSimilarMatch(match) {
-        if (!match.record) {
+        if (!match.recordModel) {
             return null;
         }
 
         return <div className="img col-md-12 col-xs-6 col-sm-4" key={match._id}>
-            <a href={this.props.URL(match.record)}>
-                <img src={match.record.getThumbURL()}
-                    alt={this.props.getTitle(match.record)}
-                    title={this.props.getTitle(match.record)}
+            <a href={this.props.URL(match.recordModel)}>
+                <img src={match.recordModel.getThumbURL()}
+                    alt={this.props.getTitle(match.recordModel)}
+                    title={this.props.getTitle(match.recordModel)}
                     className="img-responsive center-block"
                 />
             </a>
@@ -265,10 +265,11 @@ const Record = React.createClass({
                         "Score: %(score)s"), {score: match.score})}</span>
 
                     <a className="pull-right"
-                        href={this.props.URL(match.record.getSource())}
-                        title={this.props.fullName(match.record.getSource())}
+                        href={this.props.URL(match.recordModel.getSource())}
+                        title={this.props.fullName(
+                            match.recordModel.getSource())}
                     >
-                        {this.props.shortName(match.record.getSource())}
+                        {this.props.shortName(match.recordModel.getSource())}
                     </a>
                 </div>
             </div>

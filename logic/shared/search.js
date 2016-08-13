@@ -2,6 +2,7 @@
 
 const sanitize = require("elasticsearch-sanitize");
 
+const record = require("../../lib/record");
 const models = require("../../lib/models");
 const urls = require("../../lib/urls");
 const options = require("../../lib/options");
@@ -67,7 +68,7 @@ module.exports = (req, res, tmplParams) => {
     }
 
     // Query for the records in Elasticsearch
-    models("Record").search({
+    record(values.type).search({
         bool: {
             must: filters,
         },

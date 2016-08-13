@@ -1,28 +1,45 @@
 "use strict";
 
-const NUM_PER_SITEMAP = 1000;
+const async = require("async");
 
-const models = require("../lib/models");
+const options = require("../lib/options");
+const record = require("../lib/record");
 const urls = require("../lib/urls");
 
-module.exports = function(app) {
-    const Record = models("Record");
+const NUM_PER_SITEMAP = 1000;
 
+module.exports = function(app) {
     return {
         index(req, res) {
-            Record.count({}, (err, total) => {
-                const sitemaps = [];
+            const sitemaps = [];
 
-                for (let i = 0; i < total; i += NUM_PER_SITEMAP) {
-                    const url = urls.gen(req.lang, `/sitemap-search-${i}.xml`);
-                    sitemaps.push(`<sitemap><loc>${url}</loc></sitemap>`);
+            async.each(Object.keys(options.types), (type, callback) => {
+                const Record = record(type);
+                Record.count({}, (err, total) => {
+                    if (err) {
+                        return callback(err);
+                    }
+
+                    for (let i = 0; i < total; i += NUM_PER_SITEMAP) {
+                        const url = urls.gen(req.lang,
+                            `/sitemap-${type}-${i}.xml`);
+                        sitemaps.push(`<sitemap><loc>${url}</loc></sitemap>`);
+                    }
+
+                    callback();
+                });
+            }, (err) => {
+                if (err) {
+                    return res.status(500).render("Error", {
+                        title: err.message,
+                    });
                 }
 
                 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${sitemaps.join("\n")}
-</sitemapindex>
-`;
+    <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    ${sitemaps.join("\n")}
+    </sitemapindex>
+    `;
 
                 res.header("Content-Type", "application/xml");
                 res.status(200).send(sitemap);
@@ -31,6 +48,7 @@ ${sitemaps.join("\n")}
 
         search(req, res) {
             // Query for the records in Elasticsearch
+            const Record = record(req.params.type);
             Record.search({
                 bool: {
                     must: [
@@ -53,7 +71,7 @@ ${sitemaps.join("\n")}
                 }
 
                 const sitemaps = results.hits.hits.map((item) =>
-                    Record.getURLFromID(req.lang, item._id, item.type))
+                    Record.getURLFromID(req.lang, item._id))
                     .map((url) => `<url><loc>${url}</loc></url>`);
 
                 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -69,7 +87,7 @@ ${sitemaps.join("\n")}
 
         routes() {
             app.get("/sitemap.xml", this.index);
-            app.get("/sitemap-search-:start.xml", this.search);
+            app.get("/sitemap-:type-:start.xml", this.search);
         },
     };
 };

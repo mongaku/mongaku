@@ -148,7 +148,7 @@ module.exports = (app) => {
                 upload.loadImages(true, () => {
                     async.eachLimit(upload.similarRecords, 4,
                         (similar, callback) => {
-                            similar.record.loadImages(false, callback);
+                            similar.recordModel.loadImages(false, callback);
                         }, () => {
                             res.render("Upload", {
                                 title: upload.getTitle(req),

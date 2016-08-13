@@ -15,6 +15,12 @@ const Upload = new db.schema({
         es_indexed: true,
     },
 
+    // The type of the upload
+    type:  {
+        type: String,
+        required: true,
+    },
+
     // The date that this item was created
     created: {
         type: Date,

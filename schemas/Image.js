@@ -9,6 +9,7 @@ let gm = require("gm");
 const async = require("async");
 const versioner = require("mongoose-version");
 
+const record = require("../lib/record");
 const models = require("../lib/models");
 const urls = require("../lib/urls");
 const db = require("../lib/db");
@@ -135,7 +136,16 @@ Image.methods = {
     },
 
     relatedRecords(callback) {
-        models("Record").find({images: this._id}, callback);
+        async.map(Object.keys(options.types), (type, callback) => {
+            record(type).find({images: this._id}, callback);
+        }, (err, recordsList) => {
+            if (err) {
+                return callback(err);
+            }
+
+            callback(null, recordsList.reduce(
+                (all, records) => all.concat(records)));
+        });
     },
 
     canIndex() {

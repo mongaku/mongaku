@@ -2,6 +2,7 @@
 
 const async = require("async");
 
+const record = require("../lib/record");
 const models = require("../lib/models");
 const db = require("../lib/db");
 const urls = require("../lib/urls");
@@ -87,7 +88,7 @@ Source.methods = {
     },
 
     cacheTotals(callback) {
-        models("Record").aggregate([
+        record(this.type).aggregate([
             {
                 $match: {
                     source: this._id,

@@ -68,7 +68,7 @@ const Upload = React.createClass({
     },
 
     renderMatch(match) {
-        const record = match.record;
+        const record = match.recordModel;
         const source = record.getSource();
 
         return <div className="img col-md-6 col-sm-4 col-xs-6"

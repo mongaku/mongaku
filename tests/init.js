@@ -20,19 +20,23 @@ require("../lib/babel");
 // Load in global ENV
 process.env.BASE_DATA_DIR = path.resolve(process.cwd(), "data");
 
+const record = require("../lib/record");
 const models = require("../lib/models");
+const options = require("../lib/options");
 const similarity = require("../lib/similar");
 const server = require("../server/server");
 
 // Models used for testing
 const Image = models("Image");
-const Record = models("Record");
 const Source = models("Source");
 const ImageImport = models("ImageImport");
 const RecordImport = models("RecordImport");
 const UploadImage = models("UploadImage");
 const Upload = models("Upload");
 const User = models("User");
+
+// Use the single default record
+const Record = record(Object.keys(options.types)[0]);
 
 // Data used for testing
 let source;
@@ -49,7 +53,7 @@ let upload;
 let uploadImages;
 let uploadImage;
 let records;
-let record;
+let primaryRecord;
 let recordData;
 let similar;
 let similarAdded;
@@ -198,7 +202,7 @@ const genData = () => {
         record.isNew = false;
     }
 
-    record = records["test/1234"];
+    primaryRecord = records["test/1234"];
 
     sources = [
         new Source({
@@ -484,6 +488,7 @@ const genData = () => {
     uploads = {
         "uploads/4266906334": new Upload({
             _id: "uploads/4266906334",
+            type: "artworks",
             images: ["uploads/4266906334.jpg"],
             defaultImageHash: "4266906334",
         }),
@@ -962,7 +967,7 @@ module.exports = {
     getRecordBatch: () => recordBatch,
     getImage: () => image,
     getSource: () => source,
-    getRecord: () => record,
+    getRecord: () => primaryRecord,
     getRecords: () => records,
     getRecordData: () => recordData,
     getImageResultsData: () => imageResultsData,

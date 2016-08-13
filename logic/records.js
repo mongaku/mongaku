@@ -2,11 +2,11 @@
 
 const async = require("async");
 
+const record = require("../lib/record");
 const models = require("../lib/models");
 const options = require("../lib/options");
 
 module.exports = function(app) {
-    const Record = models("Record");
     const Source = models("Source");
 
     const cache = require("../server/middlewares/cache");
@@ -22,6 +22,7 @@ module.exports = function(app) {
         },
 
         show(req, res) {
+            const Record = record(req.params.type);
             const compare = ("compare" in req.query);
             const id = `${req.params.source}/${req.params.recordName}`;
 
@@ -52,7 +53,7 @@ module.exports = function(app) {
 
                     async.eachLimit(record.similarRecords, 4,
                         (similar, callback) => {
-                            similar.record.loadImages(false, callback);
+                            similar.recordModel.loadImages(false, callback);
                         }, () => {
                             res.render("Record", {
                                 title,
@@ -61,7 +62,7 @@ module.exports = function(app) {
                                 similar: [],
                                 records: [record]
                                     .concat(record.similarRecords
-                                        .map((similar) => similar.record)),
+                                        .map((similar) => similar.recordModel)),
                                 sources: Source.getSources(),
                             });
                         });

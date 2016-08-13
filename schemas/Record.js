@@ -1,26 +1,20 @@
 "use strict";
 
-const url = require("url");
-
 const async = require("async");
 const validUrl = require("valid-url");
 const jdp = require("jsondiffpatch").create({
     objectHash: (obj) => obj._id,
 });
-const mongoosastic = require("mongoosastic");
-const versioner = require("mongoose-version");
 
+const recordModel = require("../lib/record");
 const models = require("../lib/models");
-const db = require("../lib/db");
 const urls = require("../lib/urls");
 const config = require("../lib/config");
-const metadata = require("../lib/metadata");
 const options = require("../lib/options");
 
-// TODO(jeresig): Change this when Record is generated dynamically
-const modelProps = metadata.schemas(Object.keys(options.types)[0]);
+const Record = {};
 
-const Record = new db.schema(Object.assign({
+Record.schema = {
     // UUID of the image (Format: SOURCE/ID)
     _id: {
         type: String,
@@ -112,7 +106,6 @@ const Record = new db.schema(Object.assign({
 
         record: {
             type: String,
-            ref: "Record",
             required: true,
         },
 
@@ -134,12 +127,11 @@ const Record = new db.schema(Object.assign({
             min: 1,
         },
     }],
-}, modelProps));
+};
 
 Record.methods = {
     getURL(locale) {
-        return models("Record").getURLFromID(locale, this._id,
-            this.type);
+        return recordModel(this.type).getURLFromID(locale, this._id);
     },
 
     getOriginalURL() {
@@ -200,7 +192,7 @@ Record.methods = {
                 images: match._id,
             }));
 
-            models("Record").find({
+            recordModel(this.type).find({
                 $or: query,
                 _id: {$ne: this._id},
             }, (err, records) => {
@@ -252,19 +244,19 @@ Record.methods = {
 
                 async.mapLimit(this.similarRecords, 4,
                     (similar, callback) => {
-                        if (typeof similar.record !== "string") {
+                        if (similar.recordModel) {
                             return process.nextTick(() =>
                                 callback(null, similar));
                         }
 
-                        models("Record").findById(similar.record,
+                        recordModel(this.type).findById(similar.record,
                             (err, record) => {
                                 /* istanbul ignore if */
                                 if (err || !record) {
                                     return callback();
                                 }
 
-                                similar.record = record;
+                                similar.recordModel = record;
                                 callback(null, similar);
                             });
                     }, (err, similar) => {
@@ -320,12 +312,13 @@ const stripProp = (obj, name) => {
 };
 
 Record.statics = {
-    getURLFromID(locale, id, type) {
+    getURLFromID(locale, id) {
+        const type = this.getType();
         return urls.gen(locale, `/${type}/${id}`);
     },
 
     fromData(tmpData, req, callback) {
-        const Record = models("Record");
+        const Record = recordModel(this.getType());
         const Image = models("Image");
 
         const lint = this.lintData(tmpData, req);
@@ -399,7 +392,8 @@ Record.statics = {
     },
 
     lintData(data, req, optionalSchema) {
-        const schema = optionalSchema || Record;
+        const schema = optionalSchema ||
+            recordModel(this.getType()).schema;
 
         const cleaned = {};
         const warnings = [];
@@ -522,7 +516,7 @@ Record.statics = {
     },
 
     updateSimilarity(callback) {
-        models("Record").findOne({
+        recordModel(this.getType()).findOne({
             needsSimilarUpdate: true,
         }, (err, record) => {
             if (err || !record) {
@@ -548,38 +542,5 @@ Record.statics = {
         });
     },
 };
-
-const es = url.parse(config.ELASTICSEARCH_URL);
-
-const mongoosasticServer = {
-    host: es.hostname,
-    auth: es.auth,
-    port: es.port,
-    // Trim the trailing ":" from the protocol
-    protocol: es.protocol.slice(0, -1),
-};
-
-Record.plugin(mongoosastic, mongoosasticServer);
-Record.plugin(versioner, {
-    collection: "record_versions",
-    suppressVersionIncrement: false,
-    strategy: "collection",
-    mongoose: db.mongoose,
-});
-
-// Dynamically generate the _id attribute
-Record.pre("validate", function(next) {
-    if (!this._id) {
-        this._id = `${this.source}/${this.id}`;
-    }
-    next();
-});
-
-/* istanbul ignore next */
-Record.pre("save", function(next) {
-    // Always updated the modified time on every save
-    this.modified = new Date();
-    next();
-});
 
 module.exports = Record;

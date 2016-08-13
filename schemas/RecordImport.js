@@ -2,6 +2,7 @@
 
 const async = require("async");
 
+const record = require("../lib/record");
 const models = require("../lib/models");
 const db = require("../lib/db");
 const urls = require("../lib/urls");
@@ -121,7 +122,7 @@ Object.assign(RecordImport.methods, Import.methods, {
     },
 
     processRecords(callback) {
-        const Record = models("Record");
+        const Record = record(this.type);
         const incomingIDs = {};
 
         async.eachLimit(this.results, 1, (result, callback) => {
@@ -203,7 +204,7 @@ Object.assign(RecordImport.methods, Import.methods, {
     },
 
     importRecords(callback) {
-        const Record = models("Record");
+        const Record = record(this.type);
         const Source = models("Source");
 
         async.eachLimit(this.results, 1, (result, callback) => {
@@ -276,7 +277,7 @@ Object.assign(RecordImport.methods, Import.methods, {
 
         // Update the similarity on all records, including the ones that
         // were just added.
-        models("Record").update(
+        record(this.type).update(
             {},
             {needsSimilarUpdate: true},
             {multi: true},

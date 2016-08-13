@@ -3,7 +3,9 @@
 // How often queries should be performed
 const QUERY_RATE = 5000;
 
+const record = require("../lib/record");
 const models = require("../lib/models");
+const options = require("../lib/options");
 
 module.exports = {
     updateRecordImport() {
@@ -14,20 +16,22 @@ module.exports = {
     },
 
     updateRecordSimilarity() {
-        const Record = models("Record");
-        const next = () => setTimeout(update, QUERY_RATE);
-        const update = () => Record.updateSimilarity((err, success) => {
-            // If nothing happened then we wait to try again
-            if (err || !success) {
-                return next();
-            }
+        for (const typeName in options.types) {
+            const Record = record(typeName);
+            const next = () => setTimeout(update, QUERY_RATE);
+            const update = () => Record.updateSimilarity((err, success) => {
+                // If nothing happened then we wait to try again
+                if (err || !success) {
+                    return next();
+                }
 
-            // If it worked immediately attempt to index or update
-            // another image.
-            process.nextTick(update);
-        });
+                // If it worked immediately attempt to index or update
+                // another image.
+                process.nextTick(update);
+            });
 
-        update();
+            update();
+        }
     },
 
     updateImageImport() {
