@@ -11,6 +11,7 @@ const Location = function(options) {
     this.options = options;
     /*
     name
+    type
     searchName
     title(i18n)
     placeholder(i18n)
@@ -64,6 +65,7 @@ Location.prototype = {
     renderView(value) {
         return LocationDisplay({
             name: this.options.name,
+            type: this.options.type,
             value,
         });
     },

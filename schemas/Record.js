@@ -17,7 +17,8 @@ const config = require("../lib/config");
 const metadata = require("../lib/metadata");
 const options = require("../lib/options");
 
-const modelProps = metadata.schemas();
+// TODO(jeresig): Change this when Record is generated dynamically
+const modelProps = metadata.schemas(Object.keys(options.types)[0]);
 
 const Record = new db.schema(Object.assign({
     // UUID of the image (Format: SOURCE/ID)

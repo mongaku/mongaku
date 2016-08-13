@@ -5,6 +5,7 @@ const React = require("react");
 const FixedStringView = React.createClass({
     propTypes: {
         name: React.PropTypes.string.isRequired,
+        type: React.PropTypes.string.isRequired,
         value: React.PropTypes.oneOfType([
             React.PropTypes.string,
             React.PropTypes.arrayOf(
@@ -40,8 +41,12 @@ const FixedStringView = React.createClass({
 
         const searchURL = require("../../../logic/shared/search-url");
         const title = this.getTitle(value);
+        const url = searchURL(this.props, {
+            [this.props.name]: value,
+            type: this.props.type,
+        });
 
-        return <a href={searchURL(this.props, {[this.props.name]: value})}>
+        return <a href={url}>
             {title}
         </a>;
     },

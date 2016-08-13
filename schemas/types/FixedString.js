@@ -11,6 +11,7 @@ const FixedString = function(options) {
     this.options = options;
     /*
     name
+    type
     searchName
     allowUnknown: Bool
     values: {Key: title(i18n)}
@@ -97,6 +98,7 @@ FixedString.prototype = {
     renderView(value, i18n) {
         return FixedStringDisplay({
             name: this.options.name,
+            type: this.options.type,
             value,
             values: this.getValueArray(i18n),
             searchField: this.options.searchField,

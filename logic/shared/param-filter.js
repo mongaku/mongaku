@@ -1,14 +1,18 @@
 "use strict";
 
+const options = require("../../lib/options");
+
 const queries = require("./queries");
 
 const paramFilter = (values, keepSecondary) => {
     const all = {};
     const primary = [];
     const secondary = {};
+    const type = values.type || Object.keys(options.types)[0];
+    const typeQueries = queries(type);
 
     for (const name in values) {
-        const query = queries[name];
+        const query = typeQueries[name];
         const value = values[name];
 
         if (!query) {

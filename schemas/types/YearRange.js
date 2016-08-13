@@ -16,6 +16,7 @@ const YearRange = function(options) {
     this.options = options;
     /*
     name
+    type
     searchName
     title(i18n)
     placeholder(i18n)
@@ -235,6 +236,7 @@ YearRange.prototype = {
     renderView(value) {
         return YearRangeDisplay({
             name: this.options.name,
+            type: this.options.type,
             value,
         });
     },

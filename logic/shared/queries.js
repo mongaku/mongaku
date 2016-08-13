@@ -7,7 +7,7 @@ const options = require("../../lib/options");
 const getCurType = (fields) => fields.type ||
     Object.keys(options.types)[0];
 
-module.exports = Object.assign({
+const defaultQueries = {
     type: {
         value: (fields) => fields.type,
         defaultValue: getCurType,
@@ -148,4 +148,9 @@ module.exports = Object.assign({
             return this.filters[value].match();
         },
     },
-}, metadata.model);
+};
+
+module.exports = (type) => {
+    return Object.assign({}, defaultQueries,
+        metadata.model(type));
+};

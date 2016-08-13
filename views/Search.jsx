@@ -156,8 +156,11 @@ const Search = React.createClass({
     },
 
     renderFilters() {
-        return options.types[this.props.type].filters.map((type) => {
-            const typeSchema = metadata.model[type];
+        const type = this.props.type;
+        const model = metadata.model(type);
+
+        return options.types[type].filters.map((type) => {
+            const typeSchema = model[type];
             return <div key={type}>
                 {typeSchema.renderFilter(this.props.values[type], this.props)}
             </div>;

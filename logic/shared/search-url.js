@@ -9,12 +9,14 @@ const paramFilter = require("./param-filter");
 const searchURL = (req, query, keepSecondary) => {
     const params = paramFilter(query, keepSecondary);
     const primary = params.primary;
+    const type = query.type;
+    const typeQueries = queries(type);
     let queryString = qs.stringify(params.all);
     let url = urls.gen(req.lang, "/search");
 
-    if (primary.length === 1 && queries[primary[0]].url) {
+    if (primary.length === 1 && typeQueries[primary[0]].url) {
         queryString = qs.stringify(params.secondary);
-        url = queries[primary[0]].url(query[primary[0]]);
+        url = typeQueries[primary[0]].url(query[primary[0]]);
         if (url.getURL) {
             url = url.getURL(req.lang);
         } else {

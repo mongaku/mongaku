@@ -20,19 +20,23 @@ module.exports = (req, res, tmplParams) => {
     const filters = [];
     const aggregations = {};
     const fields = Object.assign({}, req.query, req.params);
+    const type = fields.type || Object.keys(options.types)[0];
 
-    if (fields.type && !(fields.type in options.types)) {
+    if (type && !options.types[type]) {
         return res.status(404).render("Error", {
             title: req.gettext("Page Not Found"),
         });
     }
 
-    for (const name in queries) {
-        const query = queries[name];
+    const typeFacets = facets(type);
+    const typeQueries = queries(type);
+
+    for (const name in typeQueries) {
+        const query = typeQueries[name];
         let value = query.value(fields);
 
-        if (!value && queries[name].defaultValue) {
-            value = queries[name].defaultValue(fields);
+        if (!value && typeQueries[name].defaultValue) {
+            value = typeQueries[name].defaultValue(fields);
         }
 
         if (value !== undefined) {
@@ -44,8 +48,8 @@ module.exports = (req, res, tmplParams) => {
         }
     }
 
-    for (const name in facets) {
-        aggregations[name] = facets[name].facet();
+    for (const name in typeFacets) {
+        aggregations[name] = typeFacets[name].facet();
     }
 
     const curURL = urls.gen(req.lang, req.originalUrl);
@@ -59,7 +63,7 @@ module.exports = (req, res, tmplParams) => {
 
     if (values.sort) {
         const sortParts = values.sort.split(".");
-        sort = queries[sortParts[0]].sort()[sortParts[1]];
+        sort = typeQueries[sortParts[0]].sort()[sortParts[1]];
     }
 
     // Query for the records in Elasticsearch
@@ -102,7 +106,7 @@ module.exports = (req, res, tmplParams) => {
 
         for (const name in aggregations) {
             const aggregation = results.aggregations[name];
-            const facet = facets[name];
+            const facet = typeFacets[name];
             const buckets = facet.formatBuckets(aggregation.buckets, req)
                 .filter((bucket) => {
                     bucket.url = searchURL(req,
@@ -152,14 +156,14 @@ module.exports = (req, res, tmplParams) => {
                 delete rmValues[param];
 
                 return {
-                    name: queries[param].searchTitle(values[param], req),
+                    name: typeQueries[param].searchTitle(values[param], req),
                     url: searchURL(req, rmValues),
                 };
             }).filter((crumb) => crumb.name);
 
         } else if (primary.length === 1) {
             const name = primary[0];
-            const query = queries[name];
+            const query = typeQueries[name];
             title = query.searchTitle(values[name], req);
 
         } else {
@@ -173,7 +177,7 @@ module.exports = (req, res, tmplParams) => {
             sources: models("Source").getSources()
                 .filter((source) => source.numRecords > 0),
             values,
-            queries,
+            queries: typeQueries,
             type: values.type,
             sorts: sortData,
             facets: facetData,

@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-08-14 20:33+0000\n"
+"POT-Creation-Date: 2016-08-14 23:06+0000\n"
 
 #: logic/admin.js:24
 #: logic/admin.js:62
@@ -78,8 +78,8 @@ msgstr ""
 
 #: logic/shared/facets.js:8
 #: views/Edit.jsx:95
-#: views/Record.jsx:214
-#: views/Search.jsx:175
+#: views/Record.jsx:215
+#: views/Search.jsx:178
 msgid "Source"
 msgstr ""
 
@@ -99,16 +99,16 @@ msgstr ""
 msgid "Similar to an Internal Record"
 msgstr ""
 
-#: logic/shared/search.js:26
+#: logic/shared/search.js:27
 #: server/routes.js:34
 msgid "Page Not Found"
 msgstr ""
 
-#: logic/shared/search.js:145
+#: logic/shared/search.js:149
 msgid "Search Results"
 msgstr ""
 
-#: logic/shared/search.js:167
+#: logic/shared/search.js:171
 msgid "All Artworks"
 msgstr ""
 
@@ -169,51 +169,51 @@ msgstr ""
 msgid "Error: %(error)s"
 msgstr ""
 
-#: schemas/Record.js:33
+#: schemas/Record.js:34
 msgid "IDs can only contain letters, numbers, underscores, and hyphens."
 msgstr ""
 
-#: schemas/Record.js:82
+#: schemas/Record.js:83
 msgid "`url` must be properly-formatted URL."
 msgstr ""
 
-#: schemas/Record.js:97
+#: schemas/Record.js:98
 msgid "Images must be a valid image file name. For example: `image.jpg`."
 msgstr ""
 
-#: schemas/Record.js:347
+#: schemas/Record.js:348
 msgid "Image file not found: %(fileName)s"
 msgstr ""
 
-#: schemas/Record.js:357
+#: schemas/Record.js:358
 msgid "Error accessing image data."
 msgstr ""
 
-#: schemas/Record.js:365
+#: schemas/Record.js:366
 msgid "No images found."
 msgstr ""
 
-#: schemas/Record.js:385
+#: schemas/Record.js:386
 msgid "There was an error with the data format."
 msgstr ""
 
-#: schemas/Record.js:411
+#: schemas/Record.js:412
 msgid "Unrecognized field `%(field)s`."
 msgstr ""
 
-#: schemas/Record.js:432
+#: schemas/Record.js:433
 msgid "`%(field)s` is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Record.js:450
+#: schemas/Record.js:451
 msgid "`%(field)s` value is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Record.js:503
+#: schemas/Record.js:504
 msgid "Required field `%(field)s` is empty."
 msgstr ""
 
-#: schemas/Record.js:507
+#: schemas/Record.js:508
 msgid "Recommended field `%(field)s` is empty."
 msgstr ""
 
@@ -255,19 +255,19 @@ msgstr ""
 msgid "Uploaded Image"
 msgstr ""
 
-#: schemas/types/Dimension.js:336
+#: schemas/types/Dimension.js:338
 msgid "Dimensions must have a unit specified and at least a width or height."
 msgstr ""
 
-#: schemas/types/FixedString.js:120
+#: schemas/types/FixedString.js:122
 msgid "`%(name)s` must be one of the following types: %(types)s."
 msgstr ""
 
-#: schemas/types/Location.js:94
+#: schemas/types/Location.js:96
 msgid "Locations must have a name or city specified."
 msgstr ""
 
-#: schemas/types/YearRange.js:311
+#: schemas/types/YearRange.js:313
 msgid "Dates must have a start or end specified."
 msgstr ""
 
@@ -370,40 +370,40 @@ msgid "End Comparison"
 msgstr ""
 
 #: views/Edit.jsx:88
-#: views/Record.jsx:195
+#: views/Record.jsx:196
 msgid "Details"
 msgstr ""
 
 #: views/Edit.jsx:163
 #: views/Record.jsx:141
-#: views/Search.jsx:290
+#: views/Search.jsx:293
 msgid "Previous"
 msgstr ""
 
 #: views/Edit.jsx:174
 #: views/Record.jsx:152
-#: views/Search.jsx:295
+#: views/Search.jsx:298
 msgid "Next"
 msgstr ""
 
 #: views/Edit.jsx:210
-#: views/Record.jsx:199
+#: views/Record.jsx:200
 msgid "More information..."
 msgstr ""
 
 #: views/Edit.jsx:231
-#: views/Record.jsx:233
+#: views/Record.jsx:234
 msgid "Compare Images"
 msgstr ""
 
 #: views/Edit.jsx:236
-#: views/Record.jsx:238
+#: views/Record.jsx:239
 #: views/Upload.jsx:52
 msgid "Similar Images"
 msgstr ""
 
 #: views/Edit.jsx:261
-#: views/Record.jsx:263
+#: views/Record.jsx:264
 #: views/Upload.jsx:89
 msgid "Score: %(score)s"
 msgstr ""
@@ -538,20 +538,20 @@ msgstr ""
 msgid "Similarity"
 msgstr ""
 
-#: views/Search.jsx:181
+#: views/Search.jsx:184
 msgid "Any Source"
 msgstr ""
 
-#: views/Search.jsx:208
+#: views/Search.jsx:211
 msgid "Show %(count)s more..."
 msgstr ""
 
-#: views/Search.jsx:258
-#: views/Search.jsx:267
+#: views/Search.jsx:261
+#: views/Search.jsx:270
 msgid "Remove %(query)s"
 msgstr ""
 
-#: views/Search.jsx:277
+#: views/Search.jsx:280
 msgid "No results found. Please refine your query."
 msgstr ""
 

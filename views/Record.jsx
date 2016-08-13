@@ -165,9 +165,10 @@ const Record = React.createClass({
 
         // We assume that all the records are the same type
         const type = records[0].type;
+        const model = metadata.model(type);
 
         return options.types[type].display.map((type) => {
-            const typeSchema = metadata.model[type];
+            const typeSchema = model[type];
 
             // Hide if it there isn't at least one value to display
             if (!this.hasValue(type)) {

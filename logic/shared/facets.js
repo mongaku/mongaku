@@ -3,7 +3,7 @@
 const models = require("../../lib/models");
 const metadata = require("../../lib/metadata");
 
-const facets = {
+const defaultFacets = {
     source: {
         title: (i18n) => i18n.gettext("Source"),
 
@@ -21,12 +21,17 @@ const facets = {
     },
 };
 
-for (const name in metadata.model) {
-    const model = metadata.model[name];
+module.exports = (type) => {
+    const facets = Object.assign({}, defaultFacets);
+    const model = metadata.model(type);
 
-    if (model.facet) {
-        Object.assign(facets, model.facet());
+    for (const name in model) {
+        const typeModel = model[name];
+
+        if (typeModel.facet) {
+            Object.assign(facets, typeModel.facet());
+        }
     }
-}
 
-module.exports = facets;
+    return facets;
+};

@@ -19,6 +19,7 @@ const Dimension = function(options) {
 
     /*
     name
+    type
     searchName
     defaultUnit
     defaultSearchUnit
@@ -286,6 +287,7 @@ Dimension.prototype = {
     renderView(value) {
         return DimensionDisplay({
             name: this.options.name,
+            type: this.options.type,
             value,
             defaultUnit: this.defaultSearchUnit,
         });
