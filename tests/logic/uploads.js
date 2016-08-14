@@ -9,7 +9,7 @@ const request = require("request").defaults({jar: true});
 require("../init");
 
 tap.test("Upload New Image", (t) => {
-    const url = "http://localhost:3000/file-upload";
+    const url = "http://localhost:3000/artworks/file-upload";
     const file = "bar.jpg";
     const formData = {
         file: {
@@ -25,13 +25,13 @@ tap.test("Upload New Image", (t) => {
     }, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 302);
-        t.match(res.headers.location, "/uploads/2508884691");
+        t.match(res.headers.location, "/artworks/uploads/2508884691");
         t.end();
     });
 });
 
 tap.test("Upload Existing Image", (t) => {
-    const url = "http://localhost:3000/file-upload";
+    const url = "http://localhost:3000/artworks/file-upload";
     const file = "foo.jpg";
     const formData = {
         file: {
@@ -47,13 +47,13 @@ tap.test("Upload Existing Image", (t) => {
     }, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 302);
-        t.match(res.headers.location, "/uploads/4266906334");
+        t.match(res.headers.location, "/artworks/uploads/4266906334");
         t.end();
     });
 });
 
 tap.test("Upload Corrupted Image", (t) => {
-    const url = "http://localhost:3000/file-upload";
+    const url = "http://localhost:3000/artworks/file-upload";
     const file = "corrupted.jpg";
     const formData = {
         file: {
@@ -74,7 +74,7 @@ tap.test("Upload Corrupted Image", (t) => {
 });
 
 tap.test("Upload No Image", (t) => {
-    const url = "http://localhost:3000/file-upload";
+    const url = "http://localhost:3000/artworks/file-upload";
     const formData = {};
     request.post({
         url,
@@ -90,7 +90,7 @@ tap.test("Upload New Image From URL", (t) => {
     // TODO(jeresig): Change this to a local URL
     const uploadURL = encodeURIComponent(
         "http://data.ukiyo-e.org/met/thumbs/2011_138_Strm1.jpg");
-    const url = `http://localhost:3000/url-upload?url=${uploadURL}`;
+    const url = `http://localhost:3000/artworks/url-upload?url=${uploadURL}`;
 
     request.get({
         url,
@@ -98,14 +98,14 @@ tap.test("Upload New Image From URL", (t) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
         t.match(res.request.uri.href,
-            "http://localhost:3000/uploads/516463693");
+            "http://localhost:3000/artworks/uploads/516463693");
         t.end();
     });
 });
 
 tap.test("Upload No Image From URL", (t) => {
     const uploadURL = encodeURIComponent("http://");
-    const url = `http://localhost:3000/url-upload?url=${uploadURL}`;
+    const url = `http://localhost:3000/artworks/url-upload?url=${uploadURL}`;
 
     request.get({
         url,
@@ -118,7 +118,7 @@ tap.test("Upload No Image From URL", (t) => {
 
 tap.test("Upload Missing Image From URL", (t) => {
     const uploadURL = encodeURIComponent("http://localhost:3000/foo.jpg");
-    const url = `http://localhost:3000/url-upload?url=${uploadURL}`;
+    const url = `http://localhost:3000/artworks/url-upload?url=${uploadURL}`;
 
     request.get({
         url,
@@ -130,7 +130,7 @@ tap.test("Upload Missing Image From URL", (t) => {
 });
 
 tap.test("View Upload", (t) => {
-    const url = "http://localhost:3000/uploads/4266906334";
+    const url = "http://localhost:3000/artworks/uploads/4266906334";
     request.get({
         url,
     }, (err, res) => {
@@ -141,7 +141,7 @@ tap.test("View Upload", (t) => {
 });
 
 tap.test("View Missing Upload", (t) => {
-    const url = "http://localhost:3000/uploads/foo";
+    const url = "http://localhost:3000/artworks/uploads/foo";
     request.get({
         url,
     }, (err, res) => {

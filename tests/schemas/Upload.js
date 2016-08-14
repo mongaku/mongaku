@@ -8,10 +8,10 @@ const req = init.req;
 tap.test("getURL", {autoend: true}, (t) => {
     const upload = init.getUpload();
     t.equal(upload.getURL("en"),
-        "/uploads/4266906334", "Check 'en' URL");
+        "/artworks/uploads/4266906334", "Check 'en' URL");
 
     t.equal(upload.getURL("de"),
-        "/uploads/4266906334?lang=de", "Check 'de' URL");
+        "/artworks/uploads/4266906334?lang=de", "Check 'de' URL");
 });
 
 tap.test("getThumbURL", {autoend: true}, (t) => {

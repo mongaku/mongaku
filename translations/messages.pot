@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-08-14 23:06+0000\n"
+"POT-Creation-Date: 2016-08-15 15:58+0000\n"
 
 #: logic/admin.js:24
 #: logic/admin.js:62
@@ -48,11 +48,8 @@ msgstr ""
 msgid "Authorization required."
 msgstr ""
 
-#: logic/records.js:31
-msgid "Not found."
-msgstr ""
-
-#: logic/records.js:98
+#: logic/admin.js:261
+#: logic/records.js:26
 msgid "Source not found."
 msgstr ""
 
@@ -99,33 +96,33 @@ msgstr ""
 msgid "Similar to an Internal Record"
 msgstr ""
 
-#: logic/shared/search.js:27
+#: logic/shared/search.js:28
 #: server/routes.js:34
 msgid "Page Not Found"
 msgstr ""
 
-#: logic/shared/search.js:149
+#: logic/shared/search.js:150
 msgid "Search Results"
 msgstr ""
 
-#: logic/shared/search.js:171
+#: logic/shared/search.js:172
 msgid "All Artworks"
 msgstr ""
 
 #: schemas/ImageImport.js:20
-#: schemas/RecordImport.js:15
+#: schemas/RecordImport.js:16
 msgid "Awaiting processing..."
 msgstr ""
 
 #: schemas/ImageImport.js:27
-#: schemas/RecordImport.js:22
+#: schemas/RecordImport.js:23
 msgid "Processing..."
 msgstr ""
 
 #: schemas/ImageImport.js:31
 #: schemas/ImageImport.js:40
-#: schemas/RecordImport.js:48
-#: schemas/RecordImport.js:57
+#: schemas/RecordImport.js:49
+#: schemas/RecordImport.js:58
 msgid "Completed."
 msgstr ""
 
@@ -169,87 +166,87 @@ msgstr ""
 msgid "Error: %(error)s"
 msgstr ""
 
-#: schemas/Record.js:34
+#: schemas/Record.js:28
 msgid "IDs can only contain letters, numbers, underscores, and hyphens."
 msgstr ""
 
-#: schemas/Record.js:83
+#: schemas/Record.js:77
 msgid "`url` must be properly-formatted URL."
 msgstr ""
 
-#: schemas/Record.js:98
+#: schemas/Record.js:92
 msgid "Images must be a valid image file name. For example: `image.jpg`."
 msgstr ""
 
-#: schemas/Record.js:348
+#: schemas/Record.js:341
 msgid "Image file not found: %(fileName)s"
 msgstr ""
 
-#: schemas/Record.js:358
+#: schemas/Record.js:351
 msgid "Error accessing image data."
 msgstr ""
 
-#: schemas/Record.js:366
+#: schemas/Record.js:359
 msgid "No images found."
 msgstr ""
 
-#: schemas/Record.js:386
+#: schemas/Record.js:379
 msgid "There was an error with the data format."
 msgstr ""
 
-#: schemas/Record.js:412
+#: schemas/Record.js:406
 msgid "Unrecognized field `%(field)s`."
 msgstr ""
 
-#: schemas/Record.js:433
+#: schemas/Record.js:427
 msgid "`%(field)s` is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Record.js:451
+#: schemas/Record.js:445
 msgid "`%(field)s` value is the wrong type. Expected a %(type)s."
 msgstr ""
 
-#: schemas/Record.js:504
+#: schemas/Record.js:498
 msgid "Required field `%(field)s` is empty."
 msgstr ""
 
-#: schemas/Record.js:508
+#: schemas/Record.js:502
 msgid "Recommended field `%(field)s` is empty."
 msgstr ""
 
-#: schemas/RecordImport.js:26
+#: schemas/RecordImport.js:27
 msgid "Confirmation required."
 msgstr ""
 
-#: schemas/RecordImport.js:33
+#: schemas/RecordImport.js:34
 msgid "Importing data..."
 msgstr ""
 
-#: schemas/RecordImport.js:37
+#: schemas/RecordImport.js:38
 msgid "Awaiting similarity sync..."
 msgstr ""
 
-#: schemas/RecordImport.js:44
+#: schemas/RecordImport.js:45
 msgid "Syncing similarity..."
 msgstr ""
 
-#: schemas/RecordImport.js:62
+#: schemas/RecordImport.js:63
 msgid "Data import abandoned."
 msgstr ""
 
-#: schemas/RecordImport.js:63
+#: schemas/RecordImport.js:64
 msgid "Error reading data from provided data files."
 msgstr ""
 
-#: schemas/RecordImport.js:65
+#: schemas/RecordImport.js:66
 msgid "Error saving record."
 msgstr ""
 
-#: schemas/RecordImport.js:66
+#: schemas/RecordImport.js:67
 msgid "Error deleting existing record."
 msgstr ""
 
-#: schemas/Upload.js:78
+#: schemas/Upload.js:84
 #: views/Upload.jsx:31
 #: views/Upload.jsx:35
 msgid "Uploaded Image"

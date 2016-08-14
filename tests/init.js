@@ -837,8 +837,8 @@ const bindStubs = () => {
 
     const fromImage = Upload.fromImage;
 
-    sandbox.stub(Upload, "fromImage", (image, callback) => {
-        fromImage.call(Upload, image, (err, upload) => {
+    sandbox.stub(Upload, "fromImage", (image, type, callback) => {
+        fromImage.call(Upload, image, type, (err, upload) => {
             if (upload && !upload.save.restore) {
                 sandbox.stub(upload, "save", (callback) => {
                     if (!(upload._id in uploads)) {

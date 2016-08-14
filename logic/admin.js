@@ -249,9 +249,25 @@ module.exports = function(app) {
                 })(req, res, next);
             };
 
-            app.get("/source/:source/admin", auth, this.admin);
-            app.post("/source/:source/upload-images", auth, this.uploadImages);
-            app.post("/source/:source/upload-data", auth, this.uploadData);
+            const source = (req, res, next) => {
+                const Source = models("Source");
+
+                try {
+                    req.source = Source.getSource(req.params.source);
+                    next();
+
+                } catch (e) {
+                    return res.status(404).render("Error", {
+                        title: req.gettext("Source not found."),
+                    });
+                }
+            };
+
+            app.get("/source/:source/admin", auth, source, this.admin);
+            app.post("/source/:source/upload-images", auth, source,
+                this.uploadImages);
+            app.post("/source/:source/upload-data", auth, source,
+                this.uploadData);
         },
     };
 };

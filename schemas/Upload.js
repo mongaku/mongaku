@@ -85,7 +85,7 @@ Upload.methods = Object.assign({}, Record.methods, {
     },
 
     getURL(locale) {
-        return urls.gen(locale, `/${this._id}`);
+        return urls.gen(locale, `/${this.type}/${this._id}`);
     },
 
     getImages(callback) {
@@ -99,7 +99,7 @@ Upload.methods = Object.assign({}, Record.methods, {
 });
 
 Upload.statics = Object.assign({}, Record.statics, {
-    fromImage(image, callback) {
+    fromImage(image, type, callback) {
         const Upload = models("Upload");
 
         const _id = image._id.replace(/\.jpg$/, "");
@@ -118,6 +118,7 @@ Upload.statics = Object.assign({}, Record.statics, {
 
             const upload = new Upload({
                 _id,
+                type,
                 images: [image._id],
                 defaultImageHash: image.hash,
             });

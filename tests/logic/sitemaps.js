@@ -15,7 +15,7 @@ tap.test("Sitemap Index", (t) => {
 });
 
 tap.test("Sitemap Search Page", (t) => {
-    const url = "http://localhost:3000/sitemap-search-0.xml";
+    const url = "http://localhost:3000/sitemap-artworks-0.xml";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);

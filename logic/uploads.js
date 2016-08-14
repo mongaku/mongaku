@@ -36,7 +36,7 @@ module.exports = (app) => {
                 return next(new Error(req.gettext("Error processing image.")));
             }
 
-            Upload.fromImage(image, (err, upload) => {
+            Upload.fromImage(image, req.params.type, (err, upload) => {
                 /* istanbul ignore if */
                 if (err) {
                     return next(err);
@@ -162,9 +162,9 @@ module.exports = (app) => {
         },
 
         routes() {
-            app.get("/uploads/:upload", this.show);
-            app.get("/url-upload", this.urlUpload);
-            app.post("/file-upload", this.fileUpload);
+            app.get("/:type/uploads/:upload", this.show);
+            app.get("/:type/url-upload", this.urlUpload);
+            app.post("/:type/file-upload", this.fileUpload);
         },
     };
 };

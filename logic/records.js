@@ -16,21 +16,28 @@ module.exports = function(app) {
         search,
 
         bySource(req, res) {
-            search(req, res, {
-                url: req.source.url,
-            });
+            try {
+                search(req, res, {
+                    url: Source.getSource(req.params.source).url,
+                });
+
+            } catch (e) {
+                return res.status(404).render("Error", {
+                    title: req.gettext("Source not found."),
+                });
+            }
         },
 
-        show(req, res) {
+        show(req, res, next) {
             const Record = record(req.params.type);
             const compare = ("compare" in req.query);
             const id = `${req.params.source}/${req.params.recordName}`;
 
             Record.findById(id, (err, record) => {
                 if (err || !record) {
-                    return res.status(404).render("Error", {
-                        title: req.gettext("Not found."),
-                    });
+                    // We don't return a 404 here to allow this to pass
+                    // through to other handlers
+                    return next();
                 }
 
                 record.loadImages(true, () => {
@@ -86,20 +93,6 @@ module.exports = function(app) {
 
             // Handle this last as it'll catch almost anything
             app.get("/:type/:source/:recordName", this.show);
-
-            // NOTE(jeresig): This is also used by the source admin pages
-            // to extract the source from the URL.
-            app.param("source", (req, res, next, id) => {
-                try {
-                    req.source = Source.getSource(id);
-                    next();
-
-                } catch (e) {
-                    return res.status(404).render("Error", {
-                        title: req.gettext("Source not found."),
-                    });
-                }
-            });
         },
     };
 };
