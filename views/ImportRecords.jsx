@@ -2,6 +2,8 @@
 
 const React = require("react");
 
+const record = require("../lib/record");
+
 const Page = require("./Page.jsx");
 const ImportResult = require("./ImportResult.jsx");
 
@@ -13,6 +15,7 @@ const batchType = React.PropTypes.shape({
     getFilteredResults: React.PropTypes.func.isRequired,
     modified: React.PropTypes.instanceOf(Date).isRequired,
     state: React.PropTypes.string.isRequired,
+    type: React.PropTypes.string.isRequired,
 });
 
 const ImportData = React.createClass({
@@ -30,7 +33,11 @@ const ImportData = React.createClass({
         gettext: React.PropTypes.func.isRequired,
         lang: React.PropTypes.string.isRequired,
         relativeDate: React.PropTypes.func.isRequired,
-        urlFromID: React.PropTypes.func.isRequired,
+    },
+
+    getURLFromID(id) {
+        const Record = record(this.props.batch.type);
+        return Record.getURLFromID(this.props.lang, id);
     },
 
     renderUnprocessedResult(result, i) {
@@ -67,7 +74,7 @@ const ImportData = React.createClass({
 
     renderChangedResult(result, i) {
         return <div key={`item${i}`}>
-            <h4><a href={this.props.urlFromID(result.model)}>
+            <h4><a href={this.getURLFromID(result.model)}>
                 {result.model}
             </a></h4>
             <div className="diff"
@@ -80,7 +87,7 @@ const ImportData = React.createClass({
 
     renderCreatedResult(result, i) {
         const title = this.props.batch.state === "completed" ?
-            <a href={this.props.urlFromID(result.model)}>{result.model}</a> :
+            <a href={this.getURLFromID(result.model)}>{result.model}</a> :
             result.model;
 
         return <div key={`item${i}`}>
@@ -93,7 +100,7 @@ const ImportData = React.createClass({
 
     renderDeletedResult(result, i) {
         const title = this.props.batch.state === "completed" ?
-            <a href={this.props.urlFromID(result.model)}>{result.model}</a> :
+            <a href={this.getURLFromID(result.model)}>{result.model}</a> :
             result.model;
 
         return <div key={`item${i}`}>{title}</div>;

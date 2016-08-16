@@ -25,11 +25,6 @@ module.exports = (req, res, next) => {
             return url;
         },
 
-        urlFromID(id) {
-            // TODO(jeresig): Make this configurable
-            return urls.gen(req.lang, `/artworks/${id}`);
-        },
-
         fullName(item) {
             const locale = req.lang;
             return item.getFullName ?
