@@ -8,7 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-08-15 15:58+0000\n"
+"POT-Creation-Date: 2016-08-17 03:51+0000\n"
 
 #: logic/admin.js:24
 #: logic/admin.js:62
@@ -162,7 +162,7 @@ msgstr ""
 #: views/Admin.jsx:104
 #: views/Admin.jsx:202
 #: views/ImportImages.jsx:74
-#: views/ImportRecords.jsx:126
+#: views/ImportRecords.jsx:133
 msgid "Error: %(error)s"
 msgstr ""
 
@@ -315,14 +315,14 @@ msgstr ""
 #: views/Admin.jsx:86
 #: views/Admin.jsx:184
 #: views/ImportImages.jsx:99
-#: views/ImportRecords.jsx:163
+#: views/ImportRecords.jsx:170
 msgid "Errors"
 msgstr ""
 
 #: views/Admin.jsx:87
 #: views/Admin.jsx:185
 #: views/ImportImages.jsx:106
-#: views/ImportRecords.jsx:170
+#: views/ImportRecords.jsx:177
 msgid "Warnings"
 msgstr ""
 
@@ -339,7 +339,7 @@ msgid "Unprocessed"
 msgstr ""
 
 #: views/Admin.jsx:181
-#: views/ImportRecords.jsx:187
+#: views/ImportRecords.jsx:194
 msgid "Created"
 msgstr ""
 
@@ -348,12 +348,12 @@ msgid "Updated"
 msgstr ""
 
 #: views/Admin.jsx:183
-#: views/ImportRecords.jsx:196
+#: views/ImportRecords.jsx:203
 msgid "Deleted"
 msgstr ""
 
 #: views/Admin.jsx:211
-#: views/ImportRecords.jsx:107
+#: views/ImportRecords.jsx:114
 msgid "Finalize Import"
 msgstr ""
 
@@ -422,32 +422,32 @@ msgstr ""
 msgid "Browse All"
 msgstr ""
 
-#: views/Home.jsx:66
+#: views/Home.jsx:69
 msgid "Search by Image:"
 msgstr ""
 
-#: views/Home.jsx:67
+#: views/Home.jsx:70
 msgid "Upload an image to find other similar images."
 msgstr ""
 
-#: views/Home.jsx:73
+#: views/Home.jsx:76
 msgid "Upload an Image"
 msgstr ""
 
-#: views/Home.jsx:91
-#: views/Home.jsx:118
+#: views/Home.jsx:94
+#: views/Home.jsx:121
 msgid "Search by Image"
 msgstr ""
 
-#: views/Home.jsx:101
+#: views/Home.jsx:104
 msgid "Paste Image URL"
 msgstr ""
 
-#: views/Home.jsx:134
+#: views/Home.jsx:140
 msgid "Browse by Collection:"
 msgstr ""
 
-#: views/Home.jsx:145
+#: views/Home.jsx:151
 msgid "%(recordCount)s Artworks, %(imageCount)s Images"
 msgstr ""
 
@@ -456,45 +456,45 @@ msgid "Image Import: %(fileName)s"
 msgstr ""
 
 #: views/ImportImages.jsx:77
-#: views/ImportRecords.jsx:129
+#: views/ImportRecords.jsx:136
 msgid "Uploaded: %(date)s"
 msgstr ""
 
 #: views/ImportImages.jsx:79
-#: views/ImportRecords.jsx:131
+#: views/ImportRecords.jsx:138
 msgid "Last Updated: %(date)s"
 msgstr ""
 
 #: views/ImportImages.jsx:87
-#: views/ImportRecords.jsx:144
+#: views/ImportRecords.jsx:151
 msgid "Return to Admin Page"
 msgstr ""
 
-#: views/ImportRecords.jsx:113
+#: views/ImportRecords.jsx:120
 msgid "Abandon Import"
 msgstr ""
 
-#: views/ImportRecords.jsx:123
+#: views/ImportRecords.jsx:130
 msgid "Data Import: %(fileName)s"
 msgstr ""
 
-#: views/ImportRecords.jsx:156
+#: views/ImportRecords.jsx:163
 msgid "To Be Processed"
 msgstr ""
 
-#: views/ImportRecords.jsx:178
+#: views/ImportRecords.jsx:185
 msgid "Changed"
 msgstr ""
 
-#: views/ImportRecords.jsx:179
+#: views/ImportRecords.jsx:186
 msgid "Will Be Changed"
 msgstr ""
 
-#: views/ImportRecords.jsx:188
+#: views/ImportRecords.jsx:195
 msgid "Will Be Created"
 msgstr ""
 
-#: views/ImportRecords.jsx:197
+#: views/ImportRecords.jsx:204
 msgid "Will Be Deleted"
 msgstr ""
 

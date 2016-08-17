@@ -26,7 +26,7 @@ const Home = React.createClass({
         }
     },
 
-    renderSearchForm() {
+    renderSearchForm(type) {
         // TODO(jeresig): Make this configurable
         const title = this.props.format(
             this.props.gettext(
@@ -39,7 +39,7 @@ const Home = React.createClass({
 
         return <div>
             <h3>{title}</h3>
-            <form action={this.props.URL("/search")} method="GET"
+            <form action={this.props.URL(`/${type}/search`)} method="GET"
                 className="form-search search form-inline"
             >
                 <div className="form-group">
@@ -61,7 +61,10 @@ const Home = React.createClass({
         </div>;
     },
 
-    renderImageUploadForms() {
+    renderImageUploadForms(type) {
+        const fileUploadURL = this.props.URL(`/${type}/file-upload`);
+        const urlUploadURL = this.props.URL(`/${type}/url-upload`);
+
         return <div>
             <h3>{this.props.gettext("Search by Image:")}</h3>
             <p>{this.props.gettext("Upload an image to find other " +
@@ -74,7 +77,7 @@ const Home = React.createClass({
                     </h3>
                 </div>
                 <div className="panel-body">
-                    <form action={this.props.URL("/file-upload")} method="POST"
+                    <form action={fileUploadURL} method="POST"
                         encType="multipart/form-data"
                     >
                         <input type="hidden" name="lang"
@@ -102,7 +105,7 @@ const Home = React.createClass({
                     </h3>
                 </div>
                 <div className="panel-body">
-                    <form action={this.props.URL("/url-upload")} method="GET">
+                    <form action={urlUploadURL} method="GET">
                         <input type="hidden" name="lang"
                             value={this.props.lang}
                         />
@@ -125,8 +128,11 @@ const Home = React.createClass({
         </div>;
     },
 
-    renderSources() {
-        if (this.props.sources.length <= 1) {
+    renderSources(type) {
+        const sources = this.props.sources
+            .filter((source) => source.type === type);
+
+        if (sources.length <= 1) {
             return null;
         }
 
@@ -134,7 +140,7 @@ const Home = React.createClass({
             <h3>{this.props.gettext("Browse by Collection:")}</h3>
 
             <div className="sources">
-                {this.props.sources.map((source) => this.renderSource(source))}
+                {sources.map((source) => this.renderSource(source))}
             </div>
         </div>;
     },
@@ -158,16 +164,22 @@ const Home = React.createClass({
         </div>;
     },
 
+    renderType(type) {
+        return <div key={type} className="col-sm-8 col-sm-offset-2 upload-box">
+            {this.renderSearchForm(type)}
+            {this.renderImageUploadForms(type)}
+            {this.renderSources(type)}
+        </div>;
+    },
+
     render() {
+        const types = Object.keys(options.types);
+
         return <Page
             {...this.props}
             splash={this.renderSplash()}
         >
-            <div className="col-sm-8 col-sm-offset-2 upload-box">
-                {this.renderSearchForm()}
-                {this.renderImageUploadForms()}
-                {this.renderSources()}
-            </div>
+            {types.map((type) => this.renderType(type))}
         </Page>;
     },
 });
