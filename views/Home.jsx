@@ -27,15 +27,7 @@ const Home = React.createClass({
     },
 
     renderSearchForm(type) {
-        // TODO(jeresig): Make this configurable
-        const title = this.props.format(
-            this.props.gettext(
-                "Search %(recordCount)s Artworks and %(imageCount)s Images:"),
-            {
-                recordCount: this.props.stringNum(this.props.recordTotal),
-                imageCount: this.props.stringNum(this.props.imageTotal),
-            }
-        );
+        const title = options.getTitle(this.props);
 
         return <div>
             <h3>{title}</h3>
@@ -140,21 +132,15 @@ const Home = React.createClass({
             <h3>{this.props.gettext("Browse by Collection:")}</h3>
 
             <div className="sources">
-                {sources.map((source) => this.renderSource(source))}
+                {sources.map((source) => this.renderSource(source, type))}
             </div>
         </div>;
     },
 
-    renderSource(source) {
-        // TODO(jeresig): Make this configurable
-        const desc = this.props.format(
-            this.props.gettext(
-                "%(recordCount)s Artworks, %(imageCount)s Images"),
-            {
-                recordCount: this.props.stringNum(source.numRecords),
-                imageCount: this.props.stringNum(source.numImages),
-            }
-        );
+    renderSource(source, type) {
+        const typeName = options.types[type].name(this.props);
+        const recordCount = this.props.stringNum(source.numRecords);
+        const desc = `${recordCount} ${typeName}`;
 
         return <div key={source._id}>
             <h4><a href={source.getURL(this.props.lang)}>

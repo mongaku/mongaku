@@ -168,8 +168,7 @@ module.exports = (req, res, tmplParams) => {
             title = query.searchTitle(values[name], req);
 
         } else {
-            // TODO(jeresig): Make this configurable
-            title = req.gettext("All Artworks");
+            title = options.types[values.type].name(req);
         }
 
         res.render("Search", Object.assign({
