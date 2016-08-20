@@ -7,7 +7,7 @@ const rl = require("readline-sync");
 
 const models = require("../lib/models");
 
-module.exports = (callback) => {
+module.exports = (args, callback) => {
     const _id = rl.question("Source ID (e.g. frick): ");
     const name = rl.question("Full Name (e.g. Frick Library): ");
     const shortName = rl.question("Short Name (e.g. Frick): ");

@@ -7,7 +7,7 @@ const config = require("../lib/config");
 const record = require("../lib/record");
 const options = require("../lib/options");
 
-module.exports = (callback) => {
+module.exports = (args, callback) => {
     async.eachLimit(Object.keys(options.types), 1, (type, callback) => {
         const Record = record(type);
 

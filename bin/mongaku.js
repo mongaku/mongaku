@@ -59,13 +59,16 @@ if (args.v || args.version) {
 } else if (cmd === "restart") {
     shell.exec(`${getBinary("naught")} deploy mongaku.ipc`);
 
-} else if (cmd === "create") {
-    const name = extraArgs[0];
-    const logic = require(`../utils/create-${name}.js`);
+} else if (cmd === "create" || cmd === "convert") {
+    const [name, configFile] = extraArgs;
+
+    process.env.MONGAKU_OPTIONS = configFile;
+
+    const logic = require(`../utils/${cmd}-${name}.js`);
     const init = require("../lib/init");
 
     init(() => {
-        logic((err) => {
+        logic(extraArgs.slice(2), (err) => {
             if (err) {
                 console.error(err);
                 process.exit(1);
@@ -86,6 +89,7 @@ Commands:
     create user
     create source
     create index
+    convert data
     start
       --logs
       --workers

@@ -5,7 +5,7 @@ const genPassword = require("password-generator");
 
 const models = require("../lib/models");
 
-module.exports = (callback) => {
+module.exports = (args, callback) => {
     const email = rl.questionEMail("Email: ");
     const password = rl.question("Password [auto-gen]: ", {
         defaultInput: genPassword(),
