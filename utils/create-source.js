@@ -16,7 +16,7 @@ module.exports = (args, callback) => {
     const shortName = rl.question("Short Name (e.g. Frick): ");
     const url = rl.question("URL (http://...): ");
     const type = rl.question(`Data Type (${types.join(", ")}): `);
-    const convertor = rl.question("Data Convertor [default]: ", {
+    const converter = rl.question("Data Convertor [default]: ", {
         defaultInput: "default",
     });
 
@@ -27,7 +27,7 @@ module.exports = (args, callback) => {
         shortName,
         url,
         type,
-        convertor,
+        converter,
     });
 
     source.save((err) => {

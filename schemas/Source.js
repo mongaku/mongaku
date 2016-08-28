@@ -68,7 +68,7 @@ Source.methods = {
         const converter = this.converter || "default";
         const converters = Object.assign({
             default: defaultConverter,
-        }, options.types[this.type].converters);
+        }, options.converters);
 
         /* istanbul ignore if */
         if (!converters[converter]) {

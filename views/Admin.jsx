@@ -2,6 +2,8 @@
 
 const React = require("react");
 
+const options = require("../lib/options");
+
 const Page = require("./Page.jsx");
 
 const importsType = React.PropTypes.arrayOf(
@@ -30,7 +32,15 @@ module.exports = React.createClass({
         source: React.PropTypes.any.isRequired,
     },
 
+    hasImages() {
+        return options.types[this.props.source.type].hasImages();
+    },
+
     renderUploadImagesForm() {
+        if (!this.hasImages()) {
+            return null;
+        }
+
         return <div className="panel panel-default">
             <div className="panel-heading">
                 <h3 className="panel-title">
@@ -138,7 +148,7 @@ module.exports = React.createClass({
         const imagesImported = this.props.imageImport.some((batch) =>
             batch.state === "completed");
 
-        if (!imagesImported) {
+        if (!imagesImported && this.hasImages()) {
             return <p>
                 {this.props.gettext("You must upload some images " +
                     "before you can upload any metadata.")}

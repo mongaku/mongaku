@@ -80,13 +80,11 @@ Record.schema = {
     // A hash to use to render an image representing the record
     defaultImageHash: {
         type: String,
-        required: true,
     },
 
     // The images associated with the record
     images: {
         type: [{type: String, ref: "Image"}],
-        required: true,
         validateArray: (v) => /^\w+\/[a-z0-9_-]+\.jpe?g$/i.test(v),
         validationMsg: (req) => req.gettext("Images must be a valid " +
             "image file name. For example: `image.jpg`."),
@@ -351,16 +349,18 @@ Record.statics = {
                         "Error accessing image data.")));
                 }
 
-                // Filter out any missing images
-                const filteredImages = images.filter((image) => !!image);
+                if (options.types[this.getType()].hasImages()) {
+                    // Filter out any missing images
+                    const filteredImages = images.filter((image) => !!image);
 
-                if (filteredImages.length === 0) {
-                    return callback(new Error(req.gettext(
-                        "No images found.")));
+                    if (filteredImages.length === 0) {
+                        return callback(new Error(req.gettext(
+                            "No images found.")));
+                    }
+
+                    data.defaultImageHash = filteredImages[0].hash;
+                    data.images = filteredImages.map((image) => image._id);
                 }
-
-                data.defaultImageHash = filteredImages[0].hash;
-                data.images = filteredImages.map((image) => image._id);
 
                 let model = record;
                 let original;
