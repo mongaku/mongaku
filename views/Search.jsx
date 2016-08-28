@@ -73,7 +73,7 @@ const Search = React.createClass({
                                 this.props.total)})}
                     </strong>
                     <br/>
-                    {this.props.end && <span>{this.props.format(
+                    {!!this.props.end && <span>{this.props.format(
                         this.props.gettext("Viewing %(start)s to %(end)s."),
                         {
                             start: this.props.stringNum(this.props.start),
@@ -86,6 +86,31 @@ const Search = React.createClass({
                 </div>
             </div>
             {this.renderFacets()}
+        </div>;
+    },
+
+    renderSimilarityFilter() {
+        if (!options.types[this.props.type].hasImageSearch()) {
+            return null;
+        }
+
+        const similarity = this.props.queries.similar.filters;
+
+        return <div className="form-group">
+            <label htmlFor="similar" className="control-label">
+                {this.props.gettext("Similarity")}
+            </label>
+            <select name="similar" style={{width: "100%"}}
+                className="form-control"
+                defaultValue={this.props.values.similar}
+            >
+                <option value=""/>
+                {Object.keys(similarity).map((id) =>
+                    <option value={id} key={id}>
+                        {this.props.getTitle(similarity[id])}
+                    </option>
+                )}
+            </select>
         </div>;
     },
 
@@ -112,7 +137,6 @@ const Search = React.createClass({
     },
 
     renderSearchForm() {
-        const similarity = this.props.queries.similar.filters;
         const placeholder = options.types[this.props.type]
             .getSearchPlaceholder(this.props);
 
@@ -130,22 +154,7 @@ const Search = React.createClass({
             </div>
             {this.renderFilters()}
             {this.renderSourceFilter()}
-            <div className="form-group">
-                <label htmlFor="similar" className="control-label">
-                    {this.props.gettext("Similarity")}
-                </label>
-                <select name="similar" style={{width: "100%"}}
-                    className="form-control"
-                    defaultValue={this.props.values.similar}
-                >
-                    <option value=""/>
-                    {Object.keys(similarity).map((id) =>
-                        <option value={id} key={id}>
-                            {this.props.getTitle(similarity[id])}
-                        </option>
-                    )}
-                </select>
-            </div>
+            {this.renderSimilarityFilter()}
             {this.renderSorts()}
             <div className="form-group">
                 <input type="submit" value={this.props.gettext("Search")}
@@ -161,6 +170,11 @@ const Search = React.createClass({
 
         return options.types[type].filters.map((type) => {
             const typeSchema = model[type];
+
+            if (!typeSchema.renderFilter) {
+                return null;
+            }
+
             return <div key={type}>
                 {typeSchema.renderFilter(this.props.values[type], this.props)}
             </div>;

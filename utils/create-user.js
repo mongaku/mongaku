@@ -17,7 +17,7 @@ module.exports = (args, callback) => {
     const user = new User({
         email,
         password,
-        sourceAdmin: source ? [source] : [],
+        sourceAdmin: source ? source.split(/,\s*/) : [],
     });
 
     user.save((err) => {

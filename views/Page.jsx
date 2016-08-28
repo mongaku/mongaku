@@ -4,6 +4,8 @@ const React = require("react");
 
 const options = require("../lib/options");
 
+const multipleTypes = Object.keys(options.types).length > 1;
+
 const Page = React.createClass({
     propTypes: {
         URL: React.PropTypes.func.isRequired,
@@ -96,6 +98,31 @@ const Page = React.createClass({
         </span>;
     },
 
+    renderSearchForm() {
+        if (multipleTypes) {
+            return null;
+        }
+
+        const gettext = this.props.gettext;
+        const URL = this.props.URL;
+
+        return <form action={URL("/search")} method="GET"
+            className={"navbar-form navbar-right search " +
+                "form-inline hidden-xs"}
+        >
+            <div className="form-group">
+                <input name="filter" type="text"
+                    className="form-control search-query"
+                    placeholder={gettext("Search")}
+                />
+            </div>
+            {" "}
+            <input type="submit" className="btn btn-primary"
+                value={gettext("Search")}
+            />
+        </form>;
+    },
+
     renderHeader() {
         const gettext = this.props.gettext;
         const URL = this.props.URL;
@@ -120,29 +147,15 @@ const Page = React.createClass({
 
                 <div id="header-navbar" className="collapse navbar-collapse">
                     <ul className="nav navbar-nav">
-                        <li>
+                        {!multipleTypes && <li>
                             <a href={URL("/search")}>
                                 {gettext("Browse All")}
                             </a>
-                        </li>
+                        </li>}
                         {this.renderLocaleMenu()}
                     </ul>
 
-                    <form action={URL("/search")} method="GET"
-                        className={"navbar-form navbar-right search " +
-                            "form-inline hidden-xs"}
-                    >
-                        <div className="form-group">
-                            <input name="filter" type="text"
-                                className="form-control search-query"
-                                placeholder={gettext("Search")}
-                            />
-                        </div>
-                        {" "}
-                        <input type="submit" className="btn btn-primary"
-                            value={gettext("Search")}
-                        />
-                    </form>
+                    {this.renderSearchForm()}
                 </div>
             </div>
         </div>;

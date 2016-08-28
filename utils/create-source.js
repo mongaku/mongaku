@@ -6,12 +6,16 @@ const path = require("path");
 const rl = require("readline-sync");
 
 const models = require("../lib/models");
+const options = require("../lib/options");
 
 module.exports = (args, callback) => {
+    const types = Object.keys(options.types);
+
     const _id = rl.question("Source ID (e.g. frick): ");
     const name = rl.question("Full Name (e.g. Frick Library): ");
     const shortName = rl.question("Short Name (e.g. Frick): ");
     const url = rl.question("URL (http://...): ");
+    const type = rl.question(`Data Type (${types.join(", ")}): `);
     const convertor = rl.question("Data Convertor [default]: ", {
         defaultInput: "default",
     });
@@ -22,6 +26,7 @@ module.exports = (args, callback) => {
         name,
         shortName,
         url,
+        type,
         convertor,
     });
 

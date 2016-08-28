@@ -27,11 +27,12 @@ const Home = React.createClass({
     },
 
     renderSearchForm(type) {
-        const title = options.getTitle(this.props);
+        const title = options.types[type].name(this.props);
+        const searchURL = this.props.URL(`/${type}/search`);
 
         return <div>
             <h3>{title}</h3>
-            <form action={this.props.URL(`/${type}/search`)} method="GET"
+            <form action={searchURL} method="GET"
                 className="form-search search form-inline"
             >
                 <div className="form-group">
@@ -46,7 +47,7 @@ const Home = React.createClass({
                     className="btn btn-primary"
                 />
                 {" "}
-                <a href={this.props.URL("/search")} className="btn btn-default">
+                <a href={searchURL} className="btn btn-default">
                     {this.props.gettext("Browse All")}
                 </a>
             </form>
@@ -54,6 +55,10 @@ const Home = React.createClass({
     },
 
     renderImageUploadForms(type) {
+        if (!options.types[type].hasImageSearch()) {
+            return null;
+        }
+
         const fileUploadURL = this.props.URL(`/${type}/file-upload`);
         const urlUploadURL = this.props.URL(`/${type}/url-upload`);
 
