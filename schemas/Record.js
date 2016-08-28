@@ -72,7 +72,6 @@ Record.schema = {
     // A link to the record at its source
     url: {
         type: String,
-        required: true,
         validate: (v) => validUrl.isHttpsUri(v) || validUrl.isHttpUri(v),
         validationMsg: (req) => req.gettext("`url` must be properly-" +
             "formatted URL."),

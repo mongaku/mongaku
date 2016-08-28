@@ -64,8 +64,8 @@ if (args.v || args.version) {
 
     process.env.MONGAKU_OPTIONS = configFile;
 
-    const logic = require(`../utils/${cmd}-${name}.js`);
     const init = require("../lib/init");
+    const logic = require(`../utils/${cmd}-${name}.js`);
 
     init(() => {
         logic(extraArgs.slice(2), (err) => {
