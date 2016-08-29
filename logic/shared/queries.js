@@ -55,7 +55,7 @@ const defaultQueries = {
         url: (value) => models("Source").getSource(value),
         filter: (value) => ({
             match: {
-                source: {
+                "source.name": {
                     query: escape(value),
                     operator: "or",
                     zero_terms_query: "all",

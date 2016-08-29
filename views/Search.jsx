@@ -137,10 +137,11 @@ const Search = React.createClass({
     },
 
     renderSearchForm() {
+        const searchURL = this.props.URL(`/${this.props.type}/search`);
         const placeholder = options.types[this.props.type]
             .getSearchPlaceholder(this.props);
 
-        return <form action={this.props.URL("/search")} method="GET">
+        return <form action={searchURL} method="GET">
             <input type="hidden" name="lang" value={this.props.lang}/>
             <div className="form-group">
                 <label htmlFor="filter" className="control-label">
@@ -351,7 +352,7 @@ const Search = React.createClass({
         </div>;
     },
 
-    renderResult(record) {
+    renderImageResult(record) {
         return <div className="img col-xs-6 col-sm-4 col-md-3"
             key={record._id}
         >
@@ -368,6 +369,26 @@ const Search = React.createClass({
             </div>
             {this.renderResultFooter(record)}
         </div>;
+    },
+
+    renderTextResult(record) {
+        return <div className="col-xs-12"
+            key={record._id}
+        >
+            <a href={this.props.URL(record)}
+                title={this.props.getTitle(record)}
+            >
+                {this.props.getTitle(record)}
+            </a>
+        </div>;
+    },
+
+    renderResult(record) {
+        if (options.types[this.props.type].hasImages()) {
+            return this.renderImageResult(record);
+        }
+
+        return this.renderTextResult(record);
     },
 
     render() {

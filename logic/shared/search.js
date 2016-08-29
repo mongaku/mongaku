@@ -91,15 +91,17 @@ module.exports = (req, res, tmplParams) => {
 
         // The link to the previous page of search results
         const prevStart = values.start - values.rows;
-        const prevLink = (values.start > 0 ? searchURL(req, {
-            start: (prevStart > 0 ? prevStart : ""),
-        }, true) : "");
+        const prevLink = (values.start > 0 ? searchURL(req,
+            Object.assign({}, values, {
+                start: (prevStart > 0 ? prevStart : ""),
+            }), true) : "");
 
         // The link to the next page of the search results
         const nextStart = values.start + values.rows;
-        const nextLink = (end < results.hits.total ? searchURL(req, {
-            start: nextStart,
-        }, true) : "");
+        const nextLink = (end < results.hits.total ? searchURL(req,
+            Object.assign({}, values, {
+                start: nextStart,
+            }), true) : "");
 
         // Construct a nicer form of the facet data to feed in to
         // the templates

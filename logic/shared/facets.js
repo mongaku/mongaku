@@ -9,7 +9,7 @@ const defaultFacets = {
 
         facet: () => ({
             terms: {
-                field: "source",
+                field: "source.raw",
             },
         }),
 
