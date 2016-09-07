@@ -6,6 +6,8 @@ const FixedStringFilter = React.createFactory(
     require("../../views/types/filter/FixedString.jsx"));
 const FixedStringDisplay = React.createFactory(
     require("../../views/types/view/FixedString.jsx"));
+const FixedStringEdit = React.createFactory(
+    require("../../views/types/edit/FixedString.jsx"));
 
 const FixedString = function(options) {
     this.options = options;
@@ -97,6 +99,16 @@ FixedString.prototype = {
 
     renderView(value, i18n) {
         return FixedStringDisplay({
+            name: this.options.name,
+            type: this.options.type,
+            value,
+            values: this.getValueArray(i18n),
+            searchField: this.options.searchField,
+        });
+    },
+
+    renderEdit(value) {
+        return FixedStringEdit({
             name: this.options.name,
             type: this.options.type,
             value,

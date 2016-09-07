@@ -97,6 +97,14 @@ Name.prototype = {
         });
     },
 
+    renderEdit(value) {
+        return NameDisplay({
+            name: this.options.name,
+            type: this.options.type,
+            value,
+        });
+    },
+
     schema(Schema) {
         const NameSchema = new Schema({
             // An ID for the name, computed from the original + name properties

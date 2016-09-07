@@ -190,6 +190,10 @@
     background: #fff;
 }
 
+.table td {
+    white-space: pre-line;
+}
+
 /*
  * Styling for the import record view.
  */

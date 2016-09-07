@@ -77,6 +77,25 @@ module.exports = function(app) {
             });
         },
 
+        edit(req, res, next) {
+            const Record = record(req.params.type);
+            const id = `${req.params.source}/${req.params.recordName}`;
+
+            Record.findById(id, (err, record) => {
+                if (err || !record) {
+                    // We don't return a 404 here to allow this to pass
+                    // through to other handlers
+                    return next();
+                }
+
+                record.loadImages(true, () => {
+                    res.render("EditRecord", {
+                        record,
+                    });
+                });
+            });
+        },
+
         routes() {
             app.get("/search", cache(1), this.search);
             app.get("/:type/search", cache(1), this.search);
@@ -91,7 +110,8 @@ module.exports = function(app) {
                 }
             }
 
-            // Handle this last as it'll catch almost anything
+            // Handle these last as they'll catch almost anything
+            app.get("/:type/:source/:recordName/edit", this.edit);
             app.get("/:type/:source/:recordName", this.show);
         },
     };
