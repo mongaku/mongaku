@@ -194,6 +194,10 @@
     white-space: pre-line;
 }
 
+.table td textarea {
+    height: 100px;
+}
+
 /*
  * Styling for the import record view.
  */

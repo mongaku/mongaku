@@ -9,10 +9,14 @@ const Page = require("./Page.jsx");
 
 const EditRecord = React.createClass({
     propTypes: {
+        gettext: React.PropTypes.func.isRequired,
+
+        lang: React.PropTypes.string.isRequired,
+
         record: React.PropTypes.shape({
-            type: React.PropTypes.string,
+            type: React.PropTypes.string.isRequired,
             images: React.PropTypes.arrayOf(React.PropTypes.any),
-        }),
+        }).isRequired,
     },
 
     getTitle(record) {
@@ -24,23 +28,26 @@ const EditRecord = React.createClass({
         const record = this.props.record;
 
         return <div className="col-md-12 imageholder">
-            <div className="responsive-table">
-                <table className="table table-hover">
-                    <thead>
-                        <tr className="plain">
-                            <th/>
-                            {this.renderTitle(record)}
-                        </tr>
-                        <tr className="plain">
-                            <td/>
-                            {this.renderImages(record)}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.renderMetadata()}
-                    </tbody>
-                </table>
-            </div>
+            <form action={record.getEditURL(this.props.lang)} method="POST">
+                <div className="responsive-table">
+                    <table className="table table-hover">
+                        <thead>
+                            <tr className="plain">
+                                <th/>
+                                {this.renderTitle(record)}
+                            </tr>
+                            <tr className="plain">
+                                <td/>
+                                {this.renderImages(record)}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.renderMetadata()}
+                            {this.renderSubmitButton()}
+                        </tbody>
+                    </table>
+                </div>
+            </form>
         </div>;
     },
 
@@ -92,6 +99,19 @@ const EditRecord = React.createClass({
                 </td>
             </tr>;
         });
+    },
+
+    renderSubmitButton() {
+        return <tr>
+            <th/>
+            <td>
+                <input
+                    type="submit"
+                    value={this.props.gettext("Submit")}
+                    className="btn btn-primary"
+                />
+            </td>
+        </tr>;
     },
 
     render() {

@@ -137,6 +137,10 @@ Record.methods = {
         return recordModel(this.type).getURLFromID(locale, this._id);
     },
 
+    getEditURL(locale) {
+        return `${this.getURL(locale)}/edit`;
+    },
+
     getOriginalURL() {
         return urls.genData(
             `/${this.source}/images/${this.defaultImageHash}.jpg`);

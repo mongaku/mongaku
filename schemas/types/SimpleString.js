@@ -38,6 +38,7 @@ SimpleString.prototype = {
             name: this.options.name,
             type: this.options.type,
             value,
+            multiline: this.options.multiline,
         });
     },
 
@@ -46,6 +47,7 @@ SimpleString.prototype = {
             name: this.options.name,
             type: this.options.type,
             value,
+            multiline: this.options.multiline,
         });
     },
 

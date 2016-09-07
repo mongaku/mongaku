@@ -4,6 +4,7 @@ const React = require("react");
 
 const FixedStringEdit = React.createClass({
     propTypes: {
+        multiline: React.PropTypes.bool,
         name: React.PropTypes.string.isRequired,
         type: React.PropTypes.string.isRequired,
         value: React.PropTypes.oneOfType([
@@ -37,9 +38,18 @@ const FixedStringEdit = React.createClass({
     renderValue(value) {
         const defaultValue = this.getValue(value);
 
+        if (this.props.multiline) {
+            return <textarea
+                name={this.props.name}
+                className="form-control"
+                defaultValue={defaultValue}
+            />;
+        }
+
         return <input
             name={this.props.name}
             type="text"
+            className="form-control"
             defaultValue={defaultValue}
         />;
     },

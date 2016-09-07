@@ -77,15 +77,15 @@ module.exports = function(app) {
             });
         },
 
-        edit(req, res, next) {
+        edit(req, res) {
             const Record = record(req.params.type);
             const id = `${req.params.source}/${req.params.recordName}`;
 
             Record.findById(id, (err, record) => {
                 if (err || !record) {
-                    // We don't return a 404 here to allow this to pass
-                    // through to other handlers
-                    return next();
+                    return res.status(404).render("Error", {
+                        title: req.gettext("Not found."),
+                    });
                 }
 
                 record.loadImages(true, () => {
@@ -93,6 +93,25 @@ module.exports = function(app) {
                         record,
                     });
                 });
+            });
+        },
+
+        update(req, res) {
+            const Record = record(req.params.type);
+            const id = `${req.params.source}/${req.params.recordName}`;
+
+            Record.findById(id, (err, record) => {
+                if (err || !record) {
+                    return res.status(404).render("Error", {
+                        title: req.gettext("Not found."),
+                    });
+                }
+
+                for (const prop in req.body) {
+                    record[prop] = req.body[prop];
+                }
+
+                record.save(() => res.redirect(req.originalUrl));
             });
         },
 
@@ -112,6 +131,7 @@ module.exports = function(app) {
 
             // Handle these last as they'll catch almost anything
             app.get("/:type/:source/:recordName/edit", this.edit);
+            app.post("/:type/:source/:recordName/edit", this.update);
             app.get("/:type/:source/:recordName", this.show);
         },
     };
