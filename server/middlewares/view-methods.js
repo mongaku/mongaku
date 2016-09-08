@@ -62,6 +62,8 @@ module.exports = (req, res, next) => {
         fixedDate(date) {
             return moment(date).locale(req.lang).format("LLL");
         },
+
+        currentUser: () => req.user,
     };
 
     Object.assign(res.locals, methods);

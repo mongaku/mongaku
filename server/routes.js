@@ -3,9 +3,25 @@
 const fs = require("fs");
 const path = require("path");
 
+const options = require("../lib/options");
+
 const basePath = path.resolve(__dirname, "../logic/");
 
 module.exports = function(app) {
+    if (options.authRequired) {
+        const auth = require(path.join(basePath, "shared", "auth.js"));
+
+        app.use((req, res, next) => {
+            const url = req.path;
+
+            if (url === "/login" || url === "/logout") {
+                return next();
+            }
+
+            auth(req, res, next);
+        });
+    }
+
     // Import all the logic routes
     fs.readdirSync(basePath).forEach((file) => {
         if (file.endsWith(".js")) {

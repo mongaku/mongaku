@@ -11,6 +11,7 @@ module.exports = function(app) {
 
     const cache = require("../server/middlewares/cache");
     const search = require("./shared/search");
+    const auth = require("./shared/auth");
 
     return {
         search,
@@ -29,7 +30,13 @@ module.exports = function(app) {
         },
 
         show(req, res, next) {
-            const Record = record(req.params.type);
+            const typeName = req.params.type;
+
+            if (options.types[typeName].alwaysEdit) {
+                return res.redirect(`${req.originalUrl}/edit`);
+            }
+
+            const Record = record(typeName);
             const compare = ("compare" in req.query);
             const id = `${req.params.source}/${req.params.recordName}`;
 
@@ -130,8 +137,8 @@ module.exports = function(app) {
             }
 
             // Handle these last as they'll catch almost anything
-            app.get("/:type/:source/:recordName/edit", this.edit);
-            app.post("/:type/:source/:recordName/edit", this.update);
+            app.get("/:type/:source/:recordName/edit", auth, this.edit);
+            app.post("/:type/:source/:recordName/edit", auth, this.update);
             app.get("/:type/:source/:recordName", this.show);
         },
     };

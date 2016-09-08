@@ -10,6 +10,7 @@ const Page = React.createClass({
     propTypes: {
         URL: React.PropTypes.func.isRequired,
         children: React.PropTypes.any,
+        currentUser: React.PropTypes.func.isRequired,
         getOtherURL: React.PropTypes.func.isRequired,
         getShortTitle: React.PropTypes.func.isRequired,
         getTitle: React.PropTypes.func.isRequired,
@@ -98,6 +99,18 @@ const Page = React.createClass({
         </span>;
     },
 
+    renderLogoutLink() {
+        if (!this.props.currentUser()) {
+            return null;
+        }
+
+        return <li>
+            <a href={this.props.URL("/logout")}>
+                {this.props.gettext("Logout")}
+            </a>
+        </li>;
+    },
+
     renderSearchForm() {
         if (multipleTypes) {
             return null;
@@ -152,6 +165,7 @@ const Page = React.createClass({
                                 {gettext("Browse All")}
                             </a>
                         </li>}
+                        {this.renderLogoutLink()}
                         {this.renderLocaleMenu()}
                     </ul>
 

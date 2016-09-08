@@ -5,14 +5,14 @@ const fs = require("fs");
 const async = require("async");
 const formidable = require("formidable");
 const jdp = require("jsondiffpatch");
-const passport = require("passport");
 
 const models = require("../lib/models");
-const urls = require("../lib/urls");
 
 module.exports = function(app) {
     const ImageImport = models("ImageImport");
     const RecordImport = models("RecordImport");
+
+    const auth = require("./shared/auth");
 
     const importRecords = (req, res) => {
         const batchState = (batch) => batch.getCurState().name(req);
@@ -234,21 +234,6 @@ module.exports = function(app) {
         },
 
         routes() {
-            // Only allow certain users to access these pages
-            const auth = (req, res, next) => {
-                passport.authenticate("local", () => {
-                    if (!req.user) {
-                        req.session.redirectTo = req.originalUrl;
-                        res.redirect(urls.gen(req.lang, "/login"));
-                    } else if (!req.user.siteAdmin && req.user.sourceAdmin
-                            .indexOf(req.params.source) < 0) {
-                        next(new Error(req.gettext("Authorization required.")));
-                    } else {
-                        next();
-                    }
-                })(req, res, next);
-            };
-
             const source = (req, res, next) => {
                 const Source = models("Source");
 
