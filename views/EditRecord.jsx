@@ -107,7 +107,7 @@ const EditRecord = React.createClass({
             <td>
                 <input
                     type="submit"
-                    value={this.props.gettext("Submit")}
+                    value={this.props.gettext("Update")}
                     className="btn btn-primary"
                 />
             </td>

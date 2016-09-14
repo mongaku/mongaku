@@ -122,11 +122,41 @@ module.exports = function(app) {
             });
         },
 
+        createView(req, res) {
+            res.render("CreateRecord", {
+                type: req.params.type,
+            });
+        },
+
+        create(req, res) {
+            // TODO: Figure out a way to get an id
+            const options = {};
+
+            for (const prop in req.body) {
+                options[prop] = req.body[prop];
+            }
+
+            const Record = record(req.params.type);
+            const newRecord = new Record(options);
+
+            newRecord.save((err) => {
+                if (err) {
+                    return res.status(404).render("Error", {
+                        title: req.gettext("Error saving record."),
+                    });
+                }
+
+                res.redirect(newRecord.getURL(req.lang));
+            });
+        },
+
         routes() {
             app.get("/search", cache(1), this.search);
             app.get("/:type/search", cache(1), this.search);
             app.get("/source/:source", cache(1), this.bySource);
             app.get("/:type/source/:source", cache(1), this.bySource);
+            app.get("/:type/:source/create", auth, this.createView);
+            app.post("/:type/:source/create", auth, this.create);
 
             for (const typeName in options.types) {
                 const searchURLs = options.types[typeName].searchURLs;
