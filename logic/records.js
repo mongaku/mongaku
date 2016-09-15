@@ -2,9 +2,11 @@
 
 const async = require("async");
 
+const db = require("../lib/db");
 const record = require("../lib/record");
 const models = require("../lib/models");
 const options = require("../lib/options");
+const metadata = require("../lib/metadata");
 
 module.exports = function(app) {
     const Source = models("Source");
@@ -129,15 +131,28 @@ module.exports = function(app) {
         },
 
         create(req, res) {
-            // TODO: Figure out a way to get an id
-            const options = {};
+            const props = {};
+            const type = req.params.type;
+            const model = metadata.model(type);
 
-            for (const prop in req.body) {
-                options[prop] = req.body[prop];
+            for (const prop in model) {
+                props[prop] = req.body[prop];
             }
 
-            const Record = record(req.params.type);
-            const newRecord = new Record(options);
+            if (options.types[type].autoID) {
+                props.id = db.mongoose.Types.ObjectId().toString();
+            } else {
+                props.id = req.body.id;
+            }
+
+            Object.assign(props, {
+                lang: req.lang,
+                source: req.params.source,
+                type,
+            });
+
+            const Record = record(type);
+            const newRecord = new Record(props);
 
             newRecord.save((err) => {
                 if (err) {

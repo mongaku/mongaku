@@ -66,6 +66,10 @@ const CreateRecord = React.createClass({
     },
 
     renderIDForm() {
+        if (options.types[this.props.type].autoID) {
+            return null;
+        }
+
         return <tr>
             <th className="text-right">
                 {this.props.gettext("ID")}
