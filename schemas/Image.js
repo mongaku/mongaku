@@ -239,7 +239,8 @@ Image.statics = {
         const Image = models("Image");
         const Source = models("Source");
 
-        const fileName = path.basename(file);
+        const filePath = file.path || file;
+        const fileName = file.name || path.basename(filePath);
         const source = batch.source;
         const _id = `${source}/${fileName}`;
         const sourceDir = Source.getSource(source).getDirBase();
@@ -253,7 +254,7 @@ Image.statics = {
 
             const creating = !image;
 
-            this.processImage(file, sourceDir, (err, hash) => {
+            this.processImage(filePath, sourceDir, (err, hash) => {
                 if (err) {
                     return callback(new Error("MALFORMED_IMAGE"));
                 }
@@ -263,7 +264,7 @@ Image.statics = {
                     return callback(null, image, warnings);
                 }
 
-                this.getSize(file, (err, size) => {
+                this.getSize(filePath, (err, size) => {
                     /* istanbul ignore if */
                     if (err) {
                         return callback(new Error("MALFORMED_IMAGE"));
@@ -380,6 +381,27 @@ Image.statics = {
                 });
             });
         });
+    },
+
+    queueBatchSimilarityUpdate(batchID, callback) {
+        this.update(
+            {batch: batchID},
+            {needsSimilarIndex: true},
+            {multi: true},
+            (err) => {
+                /* istanbul ignore if */
+                if (err) {
+                    return callback(err);
+                }
+
+                this.update(
+                    {batch: {$ne: batchID}},
+                    {needsSimilarUpdate: true},
+                    {multi: true},
+                    callback
+                );
+            }
+        );
     },
 };
 

@@ -176,17 +176,23 @@ module.exports = function(app) {
                         req.gettext("Error saving record.")));
                 }
 
+                const mockBatch = {
+                    _id: db.mongoose.Types.ObjectId().toString(),
+                    source: newRecord.source,
+                };
+
                 const images = Array.isArray(files.images) ?
                     files.images :
-                    [files.images];
+                    files.images ?
+                        [files.images] :
+                        [];
 
                 async.mapSeries(images, (file, callback) => {
                     if (!file.path || file.size <= 0) {
                         return process.nextTick(callback);
                     }
 
-                    const mockBatch = {source: newRecord.source};
-                    Image.fromFile(mockBatch, file.path, (err, image) => {
+                    Image.fromFile(mockBatch, file, (err, image) => {
                         // TODO: Display better error message
                         if (err) {
                             return callback(
@@ -208,7 +214,7 @@ module.exports = function(app) {
                         return next(err);
                     }
 
-                    props.images = unfilteredImages
+                    newRecord.images = unfilteredImages
                         .filter((image) => image)
                         .map((image) => image._id);
 
@@ -218,7 +224,17 @@ module.exports = function(app) {
                                 req.gettext("Error saving record.")));
                         }
 
-                        res.redirect(newRecord.getURL(req.lang));
+                        const finish = () =>
+                            res.redirect(newRecord.getURL(req.lang));
+
+                        if (newRecord.images.length === 0) {
+                            return finish();
+                        }
+
+                        // If new images were added then we need to update
+                        // their similarity and the similarity of all other
+                        // images, as well.
+                        Image.queueBatchSimilarityUpdate(mockBatch._id, finish);
                     });
                 });
             });

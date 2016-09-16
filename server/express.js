@@ -31,7 +31,7 @@ module.exports = (app) => {
     // Configure all the paths for serving the static content on the site
     app.use(serveFavicon(`${rootPath}/public/images/favicon.png`));
     app.use(serveStatic(`${rootPath}/public`));
-    app.use("/data", serveStatic(`${rootPath}/data`));
+    app.use("/data", serveStatic(config.BASE_DATA_DIR));
 
     // Configure how the views are handled (with React)
     app.engine("jsx", reactViews.createEngine({

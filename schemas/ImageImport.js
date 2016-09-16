@@ -151,25 +151,7 @@ Object.assign(ImageImport.methods, Import.methods, {
 
     setSimilarityState(callback) {
         const Image = models("Image");
-
-        Image.update(
-            {batch: this._id},
-            {needsSimilarIndex: true},
-            {multi: true},
-            (err) => {
-                /* istanbul ignore if */
-                if (err) {
-                    return callback(err);
-                }
-
-                Image.update(
-                    {batch: {$ne: this._id}},
-                    {needsSimilarUpdate: true},
-                    {multi: true},
-                    callback
-                );
-            }
-        );
+        Image.queueBatchSimilarityUpdate(this._id, callback);
     },
 
     addResult(file, callback) {
