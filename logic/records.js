@@ -136,6 +136,7 @@ module.exports = function(app) {
             const props = {};
             const type = req.params.type;
             const model = metadata.model(type);
+            const hasImageSearch = options.types[type].hasImageSearch();
 
             const form = new formidable.IncomingForm();
             form.encoding = "utf-8";
@@ -227,7 +228,7 @@ module.exports = function(app) {
                         const finish = () =>
                             res.redirect(newRecord.getURL(req.lang));
 
-                        if (newRecord.images.length === 0) {
+                        if (newRecord.images.length === 0 || !hasImageSearch) {
                             return finish();
                         }
 
