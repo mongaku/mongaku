@@ -1,6 +1,7 @@
 "use strict";
 
 const async = require("async");
+const formidable = require("formidable");
 
 const db = require("../lib/db");
 const record = require("../lib/record");
@@ -10,6 +11,7 @@ const metadata = require("../lib/metadata");
 
 module.exports = function(app) {
     const Source = models("Source");
+    const Image = models("Image");
 
     const cache = require("../server/middlewares/cache");
     const search = require("./shared/search");
@@ -130,38 +132,95 @@ module.exports = function(app) {
             });
         },
 
-        create(req, res) {
+        create(req, res, next) {
             const props = {};
             const type = req.params.type;
             const model = metadata.model(type);
 
-            for (const prop in model) {
-                props[prop] = req.body[prop];
-            }
+            const form = new formidable.IncomingForm();
+            form.encoding = "utf-8";
+            form.maxFieldsSize = options.maxUploadSize;
+            form.multiples = true;
 
-            if (options.types[type].autoID) {
-                props.id = db.mongoose.Types.ObjectId().toString();
-            } else {
-                props.id = req.body.id;
-            }
-
-            Object.assign(props, {
-                lang: req.lang,
-                source: req.params.source,
-                type,
-            });
-
-            const Record = record(type);
-            const newRecord = new Record(props);
-
-            newRecord.save((err) => {
+            form.parse(req, (err, fields, files) => {
+                /* istanbul ignore if */
                 if (err) {
-                    return res.status(404).render("Error", {
-                        title: req.gettext("Error saving record."),
-                    });
+                    return next(new Error(
+                        req.gettext("Error processing upload.")));
                 }
 
-                res.redirect(newRecord.getURL(req.lang));
+                req.lang = fields.lang;
+
+                for (const prop in model) {
+                    props[prop] = fields[prop];
+                }
+
+                if (options.types[type].autoID) {
+                    props.id = db.mongoose.Types.ObjectId().toString();
+                } else {
+                    props.id = fields.id;
+                }
+
+                Object.assign(props, {
+                    lang: req.lang,
+                    source: req.params.source,
+                    type,
+                });
+
+                const Record = record(type);
+                const newRecord = new Record(props);
+
+                const validationError = newRecord.validateSync();
+                if (validationError) {
+                    return next(new Error(
+                        req.gettext("Error saving record.")));
+                }
+
+                const images = Array.isArray(files.images) ?
+                    files.images :
+                    [files.images];
+
+                async.mapSeries(images, (file, callback) => {
+                    if (!file.path || file.size <= 0) {
+                        return process.nextTick(callback);
+                    }
+
+                    const mockBatch = {source: newRecord.source};
+                    Image.fromFile(mockBatch, file.path, (err, image) => {
+                        // TODO: Display better error message
+                        if (err) {
+                            return callback(
+                                new Error(
+                                    req.gettext("Error processing image.")));
+                        }
+
+                        image.save((err) => {
+                            /* istanbul ignore if */
+                            if (err) {
+                                return callback(err);
+                            }
+
+                            callback(null, image);
+                        });
+                    });
+                }, (err, unfilteredImages) => {
+                    if (err) {
+                        return next(err);
+                    }
+
+                    props.images = unfilteredImages
+                        .filter((image) => image)
+                        .map((image) => image._id);
+
+                    newRecord.save((err) => {
+                        if (err) {
+                            return next(new Error(
+                                req.gettext("Error saving record.")));
+                        }
+
+                        res.redirect(newRecord.getURL(req.lang));
+                    });
+                });
             });
         },
 

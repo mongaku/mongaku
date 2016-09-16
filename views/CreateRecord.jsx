@@ -20,7 +20,10 @@ const CreateRecord = React.createClass({
 
     renderForm() {
         return <div className="col-md-12 imageholder">
-            <form action="" method="POST">
+            <form action="" method="POST" encType="multipart/form-data">
+                <input type="hidden" name="lang"
+                    value={this.props.lang}
+                />
                 <div className="responsive-table">
                     <table className="table table-hover">
                         <thead>
@@ -83,8 +86,9 @@ const CreateRecord = React.createClass({
     renderMetadata() {
         const type = this.props.type;
         const model = metadata.model(type);
+        const props = Object.keys(options.types[type].model);
 
-        return options.types[type].display.map((type) => {
+        return props.map((type) => {
             const typeSchema = model[type];
 
             return <tr key={type}>

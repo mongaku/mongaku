@@ -38,6 +38,20 @@ const FixedStringEdit = React.createClass({
     renderValue(value) {
         const defaultValue = this.getValue(value);
 
+        if (this.props.values) {
+            return <select
+                name={this.props.name}
+                className="form-control"
+                defaultValue={defaultValue}
+            >
+                {this.props.values.map((value) =>
+                    <option value={value.id} key={value.id}>
+                        {value.name}
+                    </option>
+                )}
+            </select>;
+        }
+
         if (this.props.multiline) {
             return <textarea
                 name={this.props.name}
