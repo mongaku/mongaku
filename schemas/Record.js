@@ -97,6 +97,14 @@ Record.schema = {
         convert: (name, data) => `${data.source}/${name}`,
     },
 
+    // Images associated with the record that haven't been uploaded yet
+    missingImages: {
+        type: [String],
+        validateArray: (v) => /^\w+\/[a-z0-9_-]+\.jpe?g$/i.test(v),
+        validationMsg: (req) => req.gettext("Images must be a valid " +
+            "image file name. For example: `image.jpg`."),
+    },
+
     // Keep track of if the record needs to update its record similarity
     needsSimilarUpdate: {
         type: Boolean,
@@ -337,6 +345,8 @@ Record.statics = {
 
         const data = lint.data;
         const recordId = `${data.source}/${data.id}`;
+        const missingImages = [];
+        const typeOptions = options.types[this.getType()];
 
         Record.findById(recordId, (err, record) => {
             const creating = !record;
@@ -345,6 +355,7 @@ Record.statics = {
                 Image.findById(imageId, (err, image) => {
                     if (!image) {
                         const fileName = imageId.replace(/^\w+[/]/, "");
+                        missingImages.push(imageId);
                         warnings.push(req.format(req.gettext(
                             "Image file not found: %(fileName)s"),
                             {fileName}));
@@ -359,17 +370,25 @@ Record.statics = {
                         "Error accessing image data.")));
                 }
 
-                if (options.types[this.getType()].hasImages()) {
+                if (typeOptions.hasImages()) {
                     // Filter out any missing images
                     const filteredImages = images.filter((image) => !!image);
 
                     if (filteredImages.length === 0) {
-                        return callback(new Error(req.gettext(
-                            "No images found.")));
+                        const errMsg = req.gettext("No images found.");
+
+                        if (typeOptions.imagesRequired) {
+                            return callback(new Error(errMsg));
+                        }
+
+                        warnings.push(errMsg);
+
+                    } else {
+                        data.defaultImageHash = filteredImages[0].hash;
                     }
 
-                    data.defaultImageHash = filteredImages[0].hash;
                     data.images = filteredImages.map((image) => image._id);
+                    data.missingImages = missingImages;
                 }
 
                 let model = record;
@@ -424,7 +443,7 @@ Record.statics = {
                 continue;
             }
 
-            let value = data[field];
+            let value = data && data[field];
             const options = schema.path(field).options;
 
             if (value !== "" && value !== null && value !== undefined &&

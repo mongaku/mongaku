@@ -10,7 +10,6 @@ const fs = require("fs");
 const options = require("../lib/options");
 
 module.exports = ([converterName, fileName], callback) => {
-    console.log(converterName, fileName);
     // Import the converter module
     const converter = options.converters[converterName];
 

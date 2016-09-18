@@ -104,12 +104,13 @@ module.exports = function(app) {
                 state: true,
                 fileName: true,
                 source: true,
+                created: true,
                 modified: true,
                 error: true,
                 "results.result": true,
                 "results.error": true,
                 "results.warnings": true,
-            }, {sort: {created: "desc"}}, callback),
+            }, callback),
         ], (err, results) => {
             /* istanbul ignore if */
             if (err) {
@@ -118,7 +119,8 @@ module.exports = function(app) {
             }
 
             const imageImport = results[0];
-            const dataImport = results[1];
+            const dataImport = results[1]
+                .sort((a, b) => b.created - a.created);
 
             res.render("Admin", {
                 source,

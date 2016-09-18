@@ -233,16 +233,25 @@ Object.assign(RecordImport.methods, Import.methods, {
                 });
 
             } else if (result.result === "deleted") {
-                Record.findByIdAndRemove(result.model, (err) => {
+                Record.findById(result.model, (err, record) => {
                     /* istanbul ignore if */
-                    if (err) {
+                    if (err || !record) {
                         result.state = "error";
                         result.error = "ERROR_DELETING";
-                    } else {
-                        result.state = "import.completed";
+                        return callback(err);
                     }
 
-                    callback(err);
+                    record.remove((err) => {
+                        /* istanbul ignore if */
+                        if (err) {
+                            result.state = "error";
+                            result.error = "ERROR_DELETING";
+                        } else {
+                            result.state = "import.completed";
+                        }
+
+                        callback(err);
+                    });
                 });
 
             } else {

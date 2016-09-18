@@ -232,6 +232,20 @@ Image.methods = {
             }, callback);
         });
     },
+
+    linkToRecords(callback) {
+        const imageId = this._id;
+
+        async.eachSeries(Object.keys(options.types), (type, callback) => {
+            record(type).find({missingImages: imageId}, (err, records) => {
+                async.eachLimit(records, 4, (record, callback) => {
+                    record.images.push(imageId);
+                    record.missingImages.remove(imageId);
+                    record.save(callback);
+                }, callback);
+            });
+        }, callback);
+    },
 };
 
 Image.statics = {

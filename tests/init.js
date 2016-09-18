@@ -556,7 +556,7 @@ const bindStubs = () => {
         }
     });
 
-    sandbox.stub(Record, "findByIdAndRemove", (id, callback) => {
+    sandbox.stub(Record, "remove", (id, callback) => {
         delete records[id];
         process.nextTick(callback);
     });

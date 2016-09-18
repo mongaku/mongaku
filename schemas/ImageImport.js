@@ -186,7 +186,8 @@ Object.assign(ImageImport.methods, Import.methods, {
                         return callback(err);
                     }
 
-                    this.save(callback);
+                    image.linkToRecords(() =>
+                        this.save(callback));
                 });
             } else {
                 this.save(callback);

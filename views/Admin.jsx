@@ -145,15 +145,6 @@ module.exports = React.createClass({
 
     renderUploadDataFormContents() {
         const files = this.props.source.getExpectedFiles();
-        const imagesImported = this.props.imageImport.some((batch) =>
-            batch.state === "completed");
-
-        if (!imagesImported && this.hasImages()) {
-            return <p>
-                {this.props.gettext("You must upload some images " +
-                    "before you can upload any metadata.")}
-            </p>;
-        }
 
         return <form action={this.props.URL(
                 `/source/${this.props.source._id}/upload-data`)}
