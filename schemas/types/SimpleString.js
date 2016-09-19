@@ -17,6 +17,7 @@ const SimpleString = function(options) {
     placeholder(i18n)
     multiple: Bool
     recommended: Bool
+    hidden: Bool
     */
 };
 
@@ -48,6 +49,7 @@ SimpleString.prototype = {
             type: this.options.type,
             value,
             multiline: this.options.multiline,
+            hidden: this.options.hidden,
         });
     },
 

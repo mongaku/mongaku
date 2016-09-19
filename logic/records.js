@@ -169,13 +169,14 @@ module.exports = function(app) {
                 });
 
                 const Record = record(type);
-                const newRecord = new Record(props);
 
-                const validationError = newRecord.validateSync();
-                if (validationError) {
-                    return next(new Error(
-                        req.gettext("Error saving record.")));
+                const {data, error, warnings} = Record.lintData(props, req);
+
+                if (error) {
+                    return next(new Error(error));
                 }
+
+                const newRecord = new Record(data);
 
                 const mockBatch = {
                     _id: db.mongoose.Types.ObjectId().toString(),

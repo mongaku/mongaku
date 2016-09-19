@@ -4,6 +4,7 @@ const React = require("react");
 
 const FixedStringEdit = React.createClass({
     propTypes: {
+        hidden: React.PropTypes.bool,
         multiline: React.PropTypes.bool,
         name: React.PropTypes.string.isRequired,
         type: React.PropTypes.string.isRequired,
@@ -38,11 +39,11 @@ const FixedStringEdit = React.createClass({
     renderValue(value) {
         const defaultValue = this.getValue(value);
 
-        if (this.props.values) {
+        if (this.props.values && this.props.values.length > 0) {
             return <select
                 name={this.props.name}
                 className="form-control"
-                defaultValue={defaultValue}
+                defaultValue={value}
             >
                 {this.props.values.map((value) =>
                     <option value={value.id} key={value.id}>
@@ -62,9 +63,10 @@ const FixedStringEdit = React.createClass({
 
         return <input
             name={this.props.name}
-            type="text"
+            type={this.props.hidden ? "password" : "text"}
             className="form-control"
             defaultValue={defaultValue}
+            data-hidden={this.props.hidden}
         />;
     },
 
