@@ -448,6 +448,11 @@ Record.statics = {
 
             if (value !== "" && value !== null && value !== undefined &&
                     (value.length === undefined || value.length > 0)) {
+                // Coerce single items that should be arrays into arrays
+                if (Array.isArray(options.type) && !Array.isArray(value)) {
+                    value = [value];
+                }
+
                 const expectedType = getExpectedType(options, value);
 
                 if (expectedType) {

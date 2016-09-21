@@ -170,7 +170,7 @@ module.exports = function(app) {
 
                 const Record = record(type);
 
-                const {data, error, warnings} = Record.lintData(props, req);
+                const {data, error} = Record.lintData(props, req);
 
                 if (error) {
                     return next(new Error(error));

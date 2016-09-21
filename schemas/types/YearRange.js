@@ -7,8 +7,8 @@ const YearRangeFilter = React.createFactory(
     require("../../views/types/filter/YearRange.jsx"));
 const YearRangeDisplay = React.createFactory(
     require("../../views/types/view/YearRange.jsx"));
-const FixedStringEdit = React.createFactory(
-    require("../../views/types/edit/FixedString.jsx"));
+const YearRangeEdit = React.createFactory(
+    require("../../views/types/edit/YearRange.jsx"));
 
 const numRange = (bucket) => bucket.to ?
     `${bucket.from || 0}-${bucket.to}` :
@@ -244,7 +244,7 @@ YearRange.prototype = {
     },
 
     renderEdit(value) {
-        return FixedStringEdit({
+        return YearRangeEdit({
             name: this.options.name,
             type: this.options.type,
             value,
