@@ -176,7 +176,7 @@ module.exports = (req, res, tmplParams) => {
         res.render("Search", Object.assign({
             title,
             breadcrumbs,
-            sources: models("Source").getSources()
+            sources: models("Source").getSourcesByType(values.type)
                 .filter((source) => source.numRecords > 0),
             values,
             queries: typeQueries,

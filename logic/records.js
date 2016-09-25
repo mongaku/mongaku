@@ -65,7 +65,7 @@ module.exports = function(app) {
                             compare: false,
                             records: [record],
                             similar: record.similarRecords,
-                            sources: Source.getSources(),
+                            sources: Source.getSourcesByType(typeName),
                         });
                     }
 
@@ -81,7 +81,7 @@ module.exports = function(app) {
                                 records: [record]
                                     .concat(record.similarRecords
                                         .map((similar) => similar.recordModel)),
-                                sources: Source.getSources(),
+                                sources: Source.getSourcesByType(typeName),
                             });
                         });
                 });

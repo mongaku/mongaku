@@ -131,6 +131,10 @@ Source.statics = {
         return sourceCache;
     },
 
+    getSourcesByType(type) {
+        return this.getSources().filter((source) => source.type === type);
+    },
+
     getSource(sourceName) {
         const sources = this.getSources();
 
