@@ -49,6 +49,7 @@ const EditRecord = React.createClass({
                             </tr>
                         </thead>
                         <tbody>
+                            {this.renderImageForm()}
                             {this.renderMetadata()}
                             {this.renderSubmitButton()}
                         </tbody>
@@ -87,6 +88,29 @@ const EditRecord = React.createClass({
                 />
             </a>
         </div>;
+    },
+
+    renderImageForm() {
+        const record = this.props.record;
+        const type = record.type;
+
+        if (options.types[type].noImages) {
+            return null;
+        }
+
+        return <tr>
+            <th className="text-right">
+                {this.props.gettext("Add Images")}
+            </th>
+            <td>
+                <input
+                    type="file"
+                    name="images"
+                    className="form-control"
+                    multiple
+                />
+            </td>
+        </tr>;
     },
 
     renderMetadata() {

@@ -107,22 +107,120 @@ module.exports = function(app) {
             });
         },
 
-        update(req, res) {
-            const Record = record(req.params.type);
-            const id = `${req.params.source}/${req.params.recordName}`;
+        update(req, res, next) {
+            const props = {};
+            const type = req.params.type;
+            const model = metadata.model(type);
+            const hasImageSearch = options.types[type].hasImageSearch();
+            const id = req.params.recordName;
+            const _id = `${req.params.source}/${id}`;
 
-            Record.findById(id, (err, record) => {
-                if (err || !record) {
-                    return res.status(404).render("Error", {
-                        title: req.gettext("Not found."),
+            const form = new formidable.IncomingForm();
+            form.encoding = "utf-8";
+            form.maxFieldsSize = options.maxUploadSize;
+            form.multiples = true;
+
+            form.parse(req, (err, fields, files) => {
+                /* istanbul ignore if */
+                if (err) {
+                    return next(new Error(
+                        req.gettext("Error processing upload.")));
+                }
+
+                req.lang = fields.lang;
+
+                for (const prop in model) {
+                    props[prop] = fields[prop];
+                }
+
+                Object.assign(props, {
+                    id,
+                    lang: req.lang,
+                    source: req.params.source,
+                    type,
+                });
+
+                const Record = record(type);
+
+                const {data, error} = Record.lintData(props, req);
+
+                if (error) {
+                    return next(new Error(error));
+                }
+
+                const mockBatch = {
+                    _id: db.mongoose.Types.ObjectId().toString(),
+                    source: req.params.source,
+                };
+
+                const images = Array.isArray(files.images) ?
+                    files.images :
+                    files.images ?
+                        [files.images] :
+                        [];
+
+                async.mapSeries(images, (file, callback) => {
+                    if (!file.path || file.size <= 0) {
+                        return process.nextTick(callback);
+                    }
+
+                    Image.fromFile(mockBatch, file, (err, image) => {
+                        // TODO: Display better error message
+                        if (err) {
+                            return callback(
+                                new Error(
+                                    req.gettext("Error processing image.")));
+                        }
+
+                        image.save((err) => {
+                            /* istanbul ignore if */
+                            if (err) {
+                                return callback(err);
+                            }
+
+                            callback(null, image);
+                        });
                     });
-                }
+                }, (err, unfilteredImages) => {
+                    if (err) {
+                        return next(err);
+                    }
 
-                for (const prop in req.body) {
-                    record[prop] = req.body[prop];
-                }
+                    Record.findById(_id, (err, record) => {
+                        if (err || !record) {
+                            return res.status(404).render("Error", {
+                                title: req.gettext("Not found."),
+                            });
+                        }
 
-                record.save(() => res.redirect(req.originalUrl));
+                        record.set(data);
+
+                        record.images = record.images.concat(
+                            unfilteredImages
+                                .filter((image) => image)
+                                .map((image) => image._id));
+
+                        record.save((err) => {
+                            if (err) {
+                                return next(new Error(
+                                    req.gettext("Error saving record.")));
+                            }
+
+                            const finish = () =>
+                                res.redirect(record.getURL(req.lang));
+
+                            if (record.images.length === 0 || !hasImageSearch) {
+                                return finish();
+                            }
+
+                            // If new images were added then we need to update
+                            // their similarity and the similarity of all other
+                            // images, as well.
+                            Image.queueBatchSimilarityUpdate(mockBatch._id,
+                                finish);
+                        });
+                    });
+                });
             });
         },
 
