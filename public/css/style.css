@@ -91,6 +91,13 @@
     max-height: 20px;
 }
 
+.img .details.reduced {
+    background: none;
+    text-align: center;
+    color: #000;
+    max-height: none;
+}
+
 .img .details a {
     color: #FFF;
     overflow: auto;

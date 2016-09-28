@@ -224,6 +224,53 @@ module.exports = function(app) {
             });
         },
 
+        removeImage(req, res, next) {
+            const type = req.params.type;
+            const Record = record(type);
+            const hasImageSearch = options.types[type].hasImageSearch();
+            const id = `${req.params.source}/${req.params.recordName}`;
+
+            const form = new formidable.IncomingForm();
+            form.encoding = "utf-8";
+
+            form.parse(req, (err, fields) => {
+                /* istanbul ignore if */
+                if (err) {
+                    return next(new Error(
+                        req.gettext("Error processing request.")));
+                }
+
+                const imageID = fields.image;
+
+                req.lang = fields.lang;
+
+                Record.findById(id, (err, record) => {
+                    if (err || !record) {
+                        return next(new Error(req.gettext("Not found.")));
+                    }
+
+                    record.images = record.images
+                        .filter((image) => image !== imageID);
+
+                    record.save((err) => {
+                        if (err) {
+                            return next(new Error(
+                                req.gettext("Error saving record.")));
+                        }
+
+                        const finish = () =>
+                            res.redirect(record.getURL(req.lang));
+
+                        if (!hasImageSearch) {
+                            return finish();
+                        }
+
+                        record.updateSimilarity(finish);
+                    });
+                });
+            });
+        },
+
         createView(req, res) {
             res.render("CreateRecord", {
                 type: req.params.type,
@@ -359,6 +406,8 @@ module.exports = function(app) {
             // Handle these last as they'll catch almost anything
             app.get("/:type/:source/:recordName/edit", auth, this.edit);
             app.post("/:type/:source/:recordName/edit", auth, this.update);
+            app.post("/:type/:source/:recordName/remove-image", auth,
+                this.removeImage);
             app.get("/:type/:source/:recordName", this.show);
         },
     };

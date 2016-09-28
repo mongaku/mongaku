@@ -149,6 +149,10 @@ Record.methods = {
         return `${this.getURL(locale)}/edit`;
     },
 
+    getRemoveImageURL(locale) {
+        return `${this.getURL(locale)}/remove-image`;
+    },
+
     getOriginalURL() {
         return urls.genData(
             `/${this.source}/images/${this.defaultImageHash}.jpg`);

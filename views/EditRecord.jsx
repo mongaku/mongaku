@@ -79,7 +79,7 @@ const EditRecord = React.createClass({
     },
 
     renderImage(record, image) {
-        return <div className="item" key={image._id}>
+        return <div className="img col-md-4 col-xs-12 col-sm-6" key={image._id}>
             <a href={image.getOriginalURL()}>
                 <img src={image.getScaledURL()}
                     alt={this.getTitle(record)}
@@ -87,6 +87,37 @@ const EditRecord = React.createClass({
                     className="img-responsive center-block"
                 />
             </a>
+
+            <div className="details reduced">
+                <form
+                    action={record.getRemoveImageURL(this.props.lang)}
+                    method="POST"
+                    encType="multipart/form-data"
+                >
+                    <input
+                        type="hidden"
+                        name="lang"
+                        value={this.props.lang}
+                    />
+                    <input
+                        type="hidden"
+                        name="image"
+                        value={image._id}
+                    />
+
+                    <button
+                        type="submit"
+                        className="btn btn-danger btn-xs"
+                    >
+                        <span
+                            className="glyphicon glyphicon-remove"
+                            aria-hidden="true"
+                        />
+                        {" "}
+                        {this.props.gettext("Remove Image")}
+                    </button>
+                </form>
+            </div>
         </div>;
     },
 
