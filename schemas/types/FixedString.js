@@ -21,6 +21,7 @@ const FixedString = function(options) {
     placeholder(i18n)
     url(value)
     recommended: Bool
+    multiple: Bool
     */
 
     if (this.options.url) {
@@ -143,7 +144,7 @@ FixedString.prototype = {
             validate.recommended = true;
         }
 
-        return Object.assign({
+        const schema = Object.assign({
             type: String,
             es_indexed: true,
             es_type: "multi_field",
@@ -153,6 +154,8 @@ FixedString.prototype = {
                 raw: {type: "string", index: "not_analyzed"},
             },
         }, validate);
+
+        return this.options.multiple ? [schema] : schema;
     },
 };
 
