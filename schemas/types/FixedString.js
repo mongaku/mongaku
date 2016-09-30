@@ -48,11 +48,11 @@ FixedString.prototype = {
         return nameMap ? nameMap.name(i18n) : name;
     },
 
-    filter(value, sanitize) {
+    filter(value) {
         return {
             match: {
                 [`${this.options.name}.raw`]: {
-                    query: sanitize(value),
+                    query: value,
                     operator: "or",
                     zero_terms_query: "all",
                 },
