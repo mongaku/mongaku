@@ -68,6 +68,7 @@ FixedString.prototype = {
                 facet: () => ({
                     terms: {
                         field: `${this.options.name}.raw`,
+                        size: 0,
                     },
                 }),
 
