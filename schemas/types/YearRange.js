@@ -225,7 +225,7 @@ YearRange.prototype = {
         };
     },
 
-    renderFilter(value, i18n) {
+    renderFilter(value, values, i18n) {
         return YearRangeFilter({
             name: this.options.name,
             searchName: this.options.searchName,

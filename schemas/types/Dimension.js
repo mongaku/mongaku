@@ -273,7 +273,7 @@ Dimension.prototype = {
         };
     },
 
-    renderFilter(value, i18n) {
+    renderFilter(value, values, i18n) {
         return DimensionFilter({
             name: this.options.name,
             searchName: this.options.searchName,

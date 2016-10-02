@@ -88,12 +88,21 @@ FixedString.prototype = {
         }));
     },
 
-    renderFilter(value, i18n) {
+    renderFilter(value, allValues, i18n) {
+        let values = this.getValueArray(i18n);
+
+        if (values.length === 0) {
+            values = allValues.map((text) => ({
+                id: text,
+                name: text,
+            }));
+        }
+
         return FixedStringFilter({
             name: this.options.name,
             searchName: this.options.searchName,
             value,
-            values: this.getValueArray(i18n),
+            values,
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n),
         });

@@ -81,7 +81,7 @@ Name.prototype = {
         };
     },
 
-    renderFilter(value, i18n) {
+    renderFilter(value, values, i18n) {
         return NameFilter({
             name: this.options.name,
             searchName: this.options.searchName,

@@ -52,7 +52,7 @@ Location.prototype = {
         };
     },
 
-    renderFilter(value, i18n) {
+    renderFilter(value, values, i18n) {
         return LocationFilter({
             name: this.options.name,
             searchName: this.options.searchName,

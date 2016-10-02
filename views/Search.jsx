@@ -27,6 +27,7 @@ const Search = React.createClass({
         end: React.PropTypes.number,
         facets: React.PropTypes.arrayOf(
             React.PropTypes.shape({
+                field: React.PropTypes.string.isRequired,
                 name: React.PropTypes.string.isRequired,
                 buckets,
                 extra: buckets,
@@ -176,8 +177,19 @@ const Search = React.createClass({
                 return null;
             }
 
+            let values = [];
+            const typeFacet = this.props.facets
+                .find((facet) => facet.field === type);
+
+            if (typeFacet) {
+                values = typeFacet.buckets
+                    .concat(typeFacet.extra || [])
+                    .map((bucket) => bucket.text).sort();
+            }
+
             return <div key={type}>
-                {typeSchema.renderFilter(this.props.values[type], this.props)}
+                {typeSchema.renderFilter(this.props.values[type], values,
+                    this.props)}
             </div>;
         });
     },

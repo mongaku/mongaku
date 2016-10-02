@@ -123,6 +123,7 @@ module.exports = (req, res, tmplParams) => {
             }
 
             const result = {
+                field: name,
                 name: facet.title(req),
                 buckets,
             };
