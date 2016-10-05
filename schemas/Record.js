@@ -159,6 +159,10 @@ Record.methods = {
     },
 
     getThumbURL() {
+        if (!this.defaultImageHash) {
+            return options.types[this.type].defaultImage;
+        }
+
         return urls.genData(
             `/${this.source}/thumbs/${this.defaultImageHash}.jpg`);
     },
