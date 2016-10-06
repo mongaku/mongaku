@@ -12,7 +12,7 @@ const queries = require("./queries");
 const searchURL = require("./search-url");
 const paramFilter = require("./param-filter");
 
-module.exports = (req, res, tmplParams) => {
+module.exports = (fields, req, callback) => {
     // Collect all the values from the request to construct
     // the search URL and matches later
     // Generate the filters and facets which will be fed in to Elasticsearch
@@ -20,13 +20,10 @@ module.exports = (req, res, tmplParams) => {
     const values = {};
     const filters = [];
     const aggregations = {};
-    const fields = Object.assign({}, req.query, req.params);
     const type = fields.type || Object.keys(options.types)[0];
 
     if (type && !options.types[type]) {
-        return res.status(404).render("Error", {
-            title: req.gettext("Page Not Found"),
-        });
+        return callback(new Error(req.gettext("Page Not Found")));
     }
 
     const typeFacets = facets(type);
@@ -57,7 +54,7 @@ module.exports = (req, res, tmplParams) => {
     const expectedURL = searchURL(req, values, true);
 
     if (expectedURL !== curURL) {
-        return res.redirect(expectedURL);
+        return callback(null, null, expectedURL);
     }
 
     let sort = null;
@@ -81,9 +78,7 @@ module.exports = (req, res, tmplParams) => {
     }, (err, results) => {
         /* istanbul ignore if */
         if (err) {
-            return res.status(500).render("Error", {
-                title: err.message,
-            });
+            return callback(new Error(err.message));
         }
 
         // The number of the last item in this result set
@@ -174,7 +169,7 @@ module.exports = (req, res, tmplParams) => {
             title = options.types[values.type].name(req);
         }
 
-        res.render("Search", Object.assign({
+        callback(null, {
             title,
             breadcrumbs,
             sources: models("Source").getSourcesByType(values.type)
@@ -192,6 +187,6 @@ module.exports = (req, res, tmplParams) => {
             next: nextLink,
             // Don't index the search results
             noIndex: true,
-        }, tmplParams));
+        });
     });
 };

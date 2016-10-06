@@ -14,7 +14,7 @@ module.exports = function(app) {
     const Image = models("Image");
 
     const cache = require("../server/middlewares/cache");
-    const search = require("./shared/search");
+    const search = require("./shared/search-page");
     const auth = require("./shared/auth");
 
     return {
