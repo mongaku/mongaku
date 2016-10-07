@@ -125,7 +125,9 @@ Object.assign(RecordImport.methods, Import.methods, {
         const Record = record(this.type);
         const incomingIDs = {};
 
-        async.eachLimit(this.results, 1, (result, callback) => {
+        const results = this.results;
+
+        async.eachLimit(results, 1, (result, callback) => {
             const data = Object.assign(result.data, {
                 source: this.source,
                 type: this.type,
@@ -173,7 +175,7 @@ Object.assign(RecordImport.methods, Import.methods, {
                             continue;
                         }
 
-                        this.results.push({
+                        results.push({
                             _id: id,
                             model: id,
                             result: "deleted",
@@ -182,6 +184,7 @@ Object.assign(RecordImport.methods, Import.methods, {
                         });
                     }
 
+                    this.results = results;
                     callback();
                 });
         });
