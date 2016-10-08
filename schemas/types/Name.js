@@ -133,7 +133,7 @@ Name.prototype = {
                     name: {type: "string", index: "analyzed"},
                     raw: {type: "string", index: "not_analyzed"},
                 },
-                required: true,
+                recommended: true,
             },
 
             // Same but in ascii (for example: Hokushō becomes Hokushoo)
@@ -141,6 +141,9 @@ Name.prototype = {
 
             // Same but with diacritics stripped (Hokushō becomes Hokusho)
             plain: {type: String, es_indexed: true},
+
+            // The English form of the given name
+            given: String,
 
             // The English form of the middle name
             middle: String,
