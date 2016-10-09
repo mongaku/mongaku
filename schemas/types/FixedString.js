@@ -45,7 +45,9 @@ FixedString.prototype = {
     searchTitle(name, i18n) {
         const values = this.options.values || {};
         const nameMap = values[name];
-        return nameMap ? nameMap.name(i18n) : name;
+        return values.hasOwnProperty(name) && nameMap && nameMap.name ?
+            nameMap.name(i18n) :
+            name;
     },
 
     filter(value) {

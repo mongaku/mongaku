@@ -8,8 +8,8 @@ const NameFilter = React.createFactory(
     require("../../views/types/filter/Name.jsx"));
 const NameDisplay = React.createFactory(
     require("../../views/types/view/Name.jsx"));
-const FixedStringEdit = React.createFactory(
-    require("../../views/types/edit/FixedString.jsx"));
+const NameEdit = React.createFactory(
+    require("../../views/types/edit/Name.jsx"));
 
 const Name = function(options) {
     this.options = options;
@@ -100,7 +100,7 @@ Name.prototype = {
     },
 
     renderEdit(value) {
-        return FixedStringEdit({
+        return NameEdit({
             name: this.options.name,
             type: this.options.type,
             value,
