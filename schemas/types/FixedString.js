@@ -22,11 +22,14 @@ const FixedString = function(options) {
     url(value)
     recommended: Bool
     multiple: Bool
+    minCount: Number
     */
 
     if (this.options.url) {
         this.url = this.options.url;
     }
+
+    this.minCount = this.options.minCount || 1;
 };
 
 FixedString.prototype = {
@@ -78,7 +81,7 @@ FixedString.prototype = {
                     text: this.searchTitle(bucket.key, i18n),
                     count: bucket.doc_count,
                     url: {[this.options.name]: bucket.key},
-                })),
+                })).filter((bucket) => bucket.count >= this.minCount),
             },
         };
     },
