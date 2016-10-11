@@ -117,22 +117,11 @@ module.exports = (fields, req, callback) => {
                 continue;
             }
 
-            const result = {
+            facetData.push({
                 field: name,
                 name: facet.title(req),
                 buckets,
-            };
-
-            // Make sure that there aren't too many buckets displaying at
-            // any one time, otherwise it gets too long. We mitigate this
-            // by splitting the extra buckets into a separate container
-            // and then allow the user to toggle its visibility.
-            if (result.buckets.length > 10) {
-                result.extra = result.buckets.slice(5);
-                result.buckets = result.buckets.slice(0, 5);
-            }
-
-            facetData.push(result);
+            });
         }
 
         // Construct a list of the possible sorts, their translated

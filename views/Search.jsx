@@ -30,7 +30,6 @@ const Search = React.createClass({
                 field: React.PropTypes.string.isRequired,
                 name: React.PropTypes.string.isRequired,
                 buckets,
-                extra: buckets,
             })
         ),
         format: React.PropTypes.func.isRequired,
@@ -183,7 +182,6 @@ const Search = React.createClass({
 
             if (typeFacet) {
                 values = typeFacet.buckets
-                    .concat(typeFacet.extra || [])
                     .map((bucket) => bucket.text).sort();
             }
 
@@ -225,23 +223,42 @@ const Search = React.createClass({
     },
 
     renderFacet(facet) {
+        const type = this.props.type;
+        const minFacetCount = options.types[type].minFacetCount || 1;
+        let extra = null;
+        let buckets = facet.buckets
+            .filter((bucket) => bucket.count >= minFacetCount);
+
+        if (buckets.length <= 1) {
+            return null;
+        }
+
+        // Make sure that there aren't too many buckets displaying at
+        // any one time, otherwise it gets too long. We mitigate this
+        // by splitting the extra buckets into a separate container
+        // and then allow the user to toggle its visibility.
+        if (buckets.length > 10) {
+            extra = buckets.slice(5);
+            buckets = buckets.slice(0, 5);
+        }
+
         return <div className="panel panel-default facet" key={facet.name}>
             <div className="panel-heading">{facet.name}</div>
             <div className="panel-body">
                 <ul>
-                    {facet.buckets.map((bucket) => this.renderBucket(bucket))}
+                    {buckets.map((bucket) => this.renderBucket(bucket))}
                 </ul>
 
-                {facet.extra && <div>
+                {extra && <div>
                     <button className="btn btn-default btn-xs toggle-facets">
                         {this.props.format(
                             this.props.gettext("Show %(count)s more..."),
-                                {count: facet.extra.length})}
+                                {count: extra.length})}
                     </button>
 
                     <div className="extra-facets">
                         <ul>
-                            {facet.extra.map((bucket) =>
+                            {extra.map((bucket) =>
                                 this.renderBucket(bucket))}
                         </ul>
                     </div>
