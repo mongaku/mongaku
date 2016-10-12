@@ -582,6 +582,37 @@ Record.statics = {
             });
         });
     },
+
+    getFacets(req, callback) {
+        if (!this.facetCache) {
+            this.facetCache = {};
+        }
+
+        if (this.facetCache[req.lang]) {
+            return process.nextTick(() =>
+                callback(null, this.facetCache[req.lang]));
+        }
+
+        const search = require("../logic/shared/search");
+
+        search({
+            type: this.getType(),
+            noRedirect: true,
+        }, req, (err, results) => {
+            if (err) {
+                return callback(err);
+            }
+
+            const facets = {};
+
+            for (const facet of results.facets) {
+                facets[facet.field] = facet.buckets;
+            }
+
+            this.facetCache[req.lang] = facets;
+            callback(null, facets);
+        });
+    },
 };
 
 module.exports = Record;

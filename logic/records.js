@@ -271,6 +271,20 @@ module.exports = function(app) {
             });
         },
 
+        facets(req, res, next) {
+            const type = req.params.type;
+            const Record = record(type);
+
+            Record.getFacets(req, (err, facets) => {
+                if (err) {
+                    return next(new Error(
+                        req.gettext("Error processing request.")));
+                }
+
+                res.json(facets);
+            });
+        },
+
         createView(req, res) {
             res.render("CreateRecord", {
                 type: req.params.type,
@@ -390,6 +404,7 @@ module.exports = function(app) {
         routes() {
             app.get("/search", cache(1), this.search);
             app.get("/:type/search", cache(1), this.search);
+            app.get("/:type/facets", cache(1), this.facets);
             app.get("/source/:source", cache(1), this.bySource);
             app.get("/:type/source/:source", cache(1), this.bySource);
             app.get("/:type/:source/create", auth, this.createView);

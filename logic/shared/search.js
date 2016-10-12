@@ -50,11 +50,13 @@ module.exports = (fields, req, callback) => {
         aggregations[name] = typeFacets[name].facet();
     }
 
-    const curURL = urls.gen(req.lang, req.originalUrl);
-    const expectedURL = searchURL(req, values, true);
+    if (!fields.noRedirect) {
+        const curURL = urls.gen(req.lang, req.originalUrl);
+        const expectedURL = searchURL(req, values, true);
 
-    if (expectedURL !== curURL) {
-        return callback(null, null, expectedURL);
+        if (expectedURL !== curURL) {
+            return callback(null, null, expectedURL);
+        }
     }
 
     let sort = null;
