@@ -13,3 +13,7 @@ $(document).on("focusin", "input[data-hidden]", function() {
 $(document).on("focusout", "input[data-hidden]", function() {
     this.type = "password";
 });
+
+$(function() {
+    $(".select2-select").select2();
+});

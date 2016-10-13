@@ -1,5 +1,7 @@
 "use strict";
 
+const record = require("../../lib/record");
+
 const search = require("./search");
 
 module.exports = (req, res, tmplParams) => {
@@ -14,7 +16,13 @@ module.exports = (req, res, tmplParams) => {
             return res.redirect(expectedURL);
         }
 
-        const tmplData = Object.assign(data, tmplParams);
-        res.render("Search", tmplData);
+        const type = req.params.type;
+        const Record = record(type);
+        Record.getFacets(req, (err, globalFacets) => {
+            const tmplData = Object.assign(data, tmplParams, {
+                globalFacets,
+            });
+            res.render("Search", tmplData);
+        });
     });
 };

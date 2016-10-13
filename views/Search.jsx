@@ -35,6 +35,7 @@ const Search = React.createClass({
         format: React.PropTypes.func.isRequired,
         getTitle: React.PropTypes.func.isRequired,
         gettext: React.PropTypes.func.isRequired,
+        globalFacets: React.PropTypes.any,
         lang: React.PropTypes.string.isRequired,
         next: React.PropTypes.string,
         prev: React.PropTypes.string,
@@ -168,6 +169,7 @@ const Search = React.createClass({
     renderFilters() {
         const type = this.props.type;
         const model = metadata.model(type);
+        const globalFacets = this.props.globalFacets;
 
         return options.types[type].filters.map((type) => {
             const typeSchema = model[type];
@@ -176,14 +178,8 @@ const Search = React.createClass({
                 return null;
             }
 
-            let values = [];
-            const typeFacet = this.props.facets
-                .find((facet) => facet.field === type);
-
-            if (typeFacet) {
-                values = typeFacet.buckets
-                    .map((bucket) => bucket.text).sort();
-            }
+            const values = (globalFacets[type] || [])
+                .map((bucket) => bucket.text).sort();
 
             return <div key={type}>
                 {typeSchema.renderFilter(this.props.values[type], values,

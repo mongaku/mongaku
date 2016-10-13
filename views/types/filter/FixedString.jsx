@@ -25,8 +25,9 @@ const FixedStringFilter = React.createClass({
                 {this.props.title}
             </label>
             <select name={searchName} style={{width: "100%"}}
-                className="form-control"
+                className="form-control select2-select"
                 defaultValue={this.props.value}
+                data-placeholder={this.props.placeholder}
             >
                 <option value="">{this.props.placeholder}</option>
                 {this.props.values.map((type) =>
