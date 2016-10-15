@@ -88,6 +88,7 @@ Name.prototype = {
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n),
             value,
+            values,
         });
     },
 

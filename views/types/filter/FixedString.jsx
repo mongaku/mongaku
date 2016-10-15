@@ -29,7 +29,6 @@ const FixedStringFilter = React.createClass({
                 defaultValue={this.props.value}
                 data-placeholder={this.props.placeholder}
             >
-                <option value="">{this.props.placeholder}</option>
                 {this.props.values.map((type) =>
                     <option value={type.id} key={type.id}>
                         {type.name}

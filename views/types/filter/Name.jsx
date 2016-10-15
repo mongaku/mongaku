@@ -9,6 +9,7 @@ const NameFilter = React.createClass({
         searchName: React.PropTypes.string,
         title: React.PropTypes.string.isRequired,
         value: React.PropTypes.string,
+        values: React.PropTypes.arrayOf(React.PropTypes.string),
     },
 
     render() {
@@ -18,11 +19,17 @@ const NameFilter = React.createClass({
             <label htmlFor={searchName} className="control-label">
                 {this.props.title}
             </label>
-            <input type="text" name={searchName}
-                placeholder={this.props.placeholder}
+            <select name={searchName} style={{width: "100%"}}
+                className="form-control select2-select"
                 defaultValue={this.props.value}
-                className="form-control"
-            />
+                data-placeholder={this.props.placeholder}
+            >
+                {this.props.values.map((name) =>
+                    <option value={name} key={name}>
+                        {name}
+                    </option>
+                )}
+            </select>
         </div>;
     },
 });
