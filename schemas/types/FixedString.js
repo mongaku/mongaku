@@ -120,7 +120,7 @@ FixedString.prototype = {
         });
     },
 
-    renderEdit(value, i18n) {
+    renderEdit(value, allValues, i18n) {
         return FixedStringEdit({
             name: this.options.name,
             type: this.options.type,

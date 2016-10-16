@@ -24,6 +24,7 @@ const NameFilter = React.createClass({
                 defaultValue={this.props.value}
                 data-placeholder={this.props.placeholder}
             >
+                <option value="">{this.props.placeholder}</option>
                 {this.props.values.map((name) =>
                     <option value={name} key={name}>
                         {name}

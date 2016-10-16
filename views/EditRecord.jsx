@@ -10,9 +10,8 @@ const Page = require("./Page.jsx");
 const EditRecord = React.createClass({
     propTypes: {
         gettext: React.PropTypes.func.isRequired,
-
+        globalFacets: React.PropTypes.any,
         lang: React.PropTypes.string.isRequired,
-
         record: React.PropTypes.shape({
             type: React.PropTypes.string.isRequired,
             images: React.PropTypes.arrayOf(React.PropTypes.any),
@@ -149,16 +148,20 @@ const EditRecord = React.createClass({
         const type = record.type;
         const model = metadata.model(type);
         const props = Object.keys(options.types[type].model);
+        const globalFacets = this.props.globalFacets;
 
         return props.map((type) => {
             const typeSchema = model[type];
+
+            const values = (globalFacets[type] || [])
+                .map((bucket) => bucket.text).sort();
 
             return <tr key={type}>
                 <th className="text-right">
                     {typeSchema.options.title(this.props)}
                 </th>
                 <td key={record._id}>
-                    {typeSchema.renderEdit(record[type], this.props)}
+                    {typeSchema.renderEdit(record[type], values, this.props)}
                 </td>
             </tr>;
         });
