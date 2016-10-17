@@ -59,6 +59,24 @@ if (args.v || args.version) {
 } else if (cmd === "restart") {
     shell.exec(`${getBinary("naught")} deploy mongaku.ipc`);
 
+} else if (cmd === "dev") {
+    const cwd = path.dirname(extraArgs[0]);
+    const localDir = localFile("..");
+    const serverjs = localFile("../mongaku.js");
+
+    const devCmd = [
+        getBinary("supervisor"),
+        `-w ${localDir},${cwd}`,
+        "-e js,jsx",
+        `-i ${localDir}/node_modules,${cwd}/node_modules`,
+        "--",
+        serverjs,
+    ].concat(extraArgs).join(" ");
+
+    console.log(devCmd);
+
+    shell.exec(devCmd);
+
 } else if (cmd === "create" || cmd === "convert") {
     const [name, configFile] = extraArgs;
 
@@ -95,6 +113,7 @@ Commands:
       --workers
     stop
     restart
+    dev
 
 -v: Show program version
 -h: Show available commands
