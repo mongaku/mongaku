@@ -63,17 +63,19 @@ if (args.v || args.version) {
     const cwd = path.dirname(extraArgs[0]);
     const localDir = localFile("..");
     const serverjs = localFile("../mongaku.js");
+    const ignored = [
+        path.join(localDir, "node_modules"),
+        path.join(cwd, "node_modules"),
+    ].join(",");
 
     const devCmd = [
         getBinary("supervisor"),
         `-w ${localDir},${cwd}`,
         "-e js,jsx",
-        `-i ${localDir}/node_modules,${cwd}/node_modules`,
+        `-i ${ignored}`,
         "--",
         serverjs,
     ].concat(extraArgs).join(" ");
-
-    console.log(devCmd);
 
     shell.exec(devCmd);
 
