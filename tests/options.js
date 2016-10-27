@@ -142,7 +142,7 @@ module.exports = {
             },
 
             searchURLs: {
-                "/type/:objectType": (req, res, search) => {
+                "/type/:objectType": (req, res, next, search) => {
                     const type = types[req.params.objectType];
 
                     if (!type) {

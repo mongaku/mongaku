@@ -18,11 +18,13 @@ module.exports = function(app) {
     const auth = require("./shared/auth");
 
     return {
-        search,
+        search(req, res, next) {
+            return search(req, res, next);
+        },
 
-        bySource(req, res) {
+        bySource(req, res, next) {
             try {
-                search(req, res, {
+                search(req, res, next, {
                     url: Source.getSource(req.params.source).url,
                 });
 
@@ -415,8 +417,8 @@ module.exports = function(app) {
             for (const typeName in options.types) {
                 const searchURLs = options.types[typeName].searchURLs;
                 for (const path in searchURLs) {
-                    app.get(`/:type${path}`, cache(1), (req, res) =>
-                        searchURLs[path](req, res, search));
+                    app.get(`/:type${path}`, cache(1), (req, res, next) =>
+                        searchURLs[path](req, res, next, search));
                 }
             }
 
