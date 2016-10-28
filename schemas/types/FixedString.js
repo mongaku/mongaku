@@ -107,6 +107,7 @@ FixedString.prototype = {
             values,
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n),
+            multiple: this.options.multiple,
         });
     },
 
@@ -127,6 +128,7 @@ FixedString.prototype = {
             value,
             values: this.getValueArray(i18n),
             searchField: this.options.searchField,
+            multiple: this.options.multiple,
         });
     },
 

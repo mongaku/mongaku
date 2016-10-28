@@ -4,6 +4,7 @@ const React = require("react");
 
 const FixedStringFilter = React.createClass({
     propTypes: {
+        multiple: React.PropTypes.bool,
         name: React.PropTypes.string.isRequired,
         placeholder: React.PropTypes.string,
         searchName: React.PropTypes.string,
@@ -28,6 +29,7 @@ const FixedStringFilter = React.createClass({
                 className="form-control select2-select"
                 defaultValue={this.props.value}
                 data-placeholder={this.props.placeholder}
+                multiple={this.props.multiple}
             >
                 <option value="">{this.props.placeholder}</option>
                 {this.props.values.map((type) =>

@@ -6,6 +6,7 @@ const FixedStringEdit = React.createClass({
     propTypes: {
         hidden: React.PropTypes.bool,
         multiline: React.PropTypes.bool,
+        multiple: React.PropTypes.bool,
         name: React.PropTypes.string.isRequired,
         type: React.PropTypes.string.isRequired,
         value: React.PropTypes.oneOfType([
@@ -44,6 +45,7 @@ const FixedStringEdit = React.createClass({
                 name={this.props.name}
                 className="form-control"
                 defaultValue={value}
+                multiple={this.props.multiple}
             >
                 {this.props.values.map((value) =>
                     <option value={value.id} key={value.id}>
