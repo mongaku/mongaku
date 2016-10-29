@@ -102,9 +102,11 @@ module.exports = function(app) {
                 }
 
                 record.loadImages(true, () => {
-                    res.render("EditRecord", {
-                        record,
-                        globalFacets: {},
+                    Record.getFacets(req, (err, globalFacets) => {
+                        res.render("EditRecord", {
+                            record,
+                            globalFacets,
+                        });
                     });
                 });
             });
@@ -289,9 +291,14 @@ module.exports = function(app) {
         },
 
         createView(req, res) {
-            res.render("CreateRecord", {
-                type: req.params.type,
-                globalFacets: {},
+            const type = req.params.type;
+            const Record = record(type);
+
+            Record.getFacets(req, (err, globalFacets) => {
+                res.render("CreateRecord", {
+                    type,
+                    globalFacets,
+                });
             });
         },
 

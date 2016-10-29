@@ -122,11 +122,20 @@ FixedString.prototype = {
     },
 
     renderEdit(value, allValues, i18n) {
+        let values = this.getValueArray(i18n);
+
+        if (values.length === 0) {
+            values = allValues.map((text) => ({
+                id: text,
+                name: text,
+            }));
+        }
+
         return FixedStringEdit({
             name: this.options.name,
             type: this.options.type,
             value,
-            values: this.getValueArray(i18n),
+            values,
             searchField: this.options.searchField,
             multiple: this.options.multiple,
         });

@@ -70,8 +70,8 @@ const Search = React.createClass({
                 <div className="panel-heading">
                     <strong>{this.props.format(
                         this.props.gettext("%(numRecords)s matches."),
-                            {numRecords: this.props.stringNum(
-                                this.props.total)})}
+                        {numRecords: this.props.stringNum(
+                            this.props.total)})}
                     </strong>
                     <br/>
                     {!!this.props.end && <span>{this.props.format(

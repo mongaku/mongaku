@@ -40,21 +40,6 @@ const FixedStringEdit = React.createClass({
     renderValue(value) {
         const defaultValue = this.getValue(value);
 
-        if (this.props.values && this.props.values.length > 0) {
-            return <select
-                name={this.props.name}
-                className="form-control"
-                defaultValue={value}
-                multiple={this.props.multiple}
-            >
-                {this.props.values.map((value) =>
-                    <option value={value.id} key={value.id}>
-                        {value.name}
-                    </option>
-                )}
-            </select>;
-        }
-
         if (this.props.multiline) {
             return <textarea
                 name={this.props.name}
@@ -73,6 +58,21 @@ const FixedStringEdit = React.createClass({
     },
 
     renderValues(values) {
+        if (this.props.values && this.props.values.length > 0) {
+            return <select
+                name={this.props.name}
+                className="form-control select2-select"
+                defaultValue={values.map((value) => this.getValue(value))}
+                multiple={this.props.multiple}
+            >
+                {this.props.values.map((value) =>
+                    <option value={value.id} key={value.id}>
+                        {value.name}
+                    </option>
+                )}
+            </select>;
+        }
+
         return <span>
             {values.map((value, i) => <span key={i}>
                 {this.renderValue(value)}
