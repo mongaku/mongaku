@@ -62,10 +62,12 @@ const Page = React.createClass({
             {this.props.social && this.renderSocialMeta()}
             <link rel="stylesheet" href={URL("/css/bootstrap.min.css")}/>
             <link rel="stylesheet" href={
-                URL("/css/bootstrap-theme.min.css")}/>
+                URL("/css/bootstrap-theme.min.css")}
+            />
             <link rel="stylesheet" href={URL("/css/select2.min.css")}/>
             <link rel="stylesheet" href={
-                URL("/css/select2-bootstrap.min.css")}/>
+                URL("/css/select2-bootstrap.min.css")}
+            />
             <link rel="stylesheet" href={URL("/css/style.css")}/>
             {this.props.style}
         </head>;
