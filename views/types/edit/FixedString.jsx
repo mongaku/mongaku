@@ -58,11 +58,24 @@ const FixedStringEdit = React.createClass({
     },
 
     renderValues(values) {
+        return <span>
+            {values.map((value, i) => <span key={i}>
+                {this.renderValue(value)}
+                {values.length - 1 === i ? "" : ", "}
+            </span>)}
+        </span>;
+    },
+
+    render() {
         if (this.props.values && this.props.values.length > 0) {
+            const values = Array.isArray(this.props.value) ?
+                this.props.value.map((value) => this.getValue(value)) :
+                this.getValue(this.props.value);
+
             return <select
                 name={this.props.name}
                 className="form-control select2-select"
-                defaultValue={values.map((value) => this.getValue(value))}
+                defaultValue={values}
                 multiple={this.props.multiple}
             >
                 {this.props.values.map((value) =>
@@ -73,15 +86,6 @@ const FixedStringEdit = React.createClass({
             </select>;
         }
 
-        return <span>
-            {values.map((value, i) => <span key={i}>
-                {this.renderValue(value)}
-                {values.length - 1 === i ? "" : ", "}
-            </span>)}
-        </span>;
-    },
-
-    render() {
         return Array.isArray(this.props.value) ?
             this.renderValues(this.props.value) :
             this.renderValue(this.props.value);
