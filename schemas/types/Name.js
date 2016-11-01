@@ -19,6 +19,7 @@ const Name = function(options) {
     searchName
     title(i18n)
     placeholder(i18n)
+    multiple: Boolean
     */
 };
 
@@ -89,6 +90,7 @@ Name.prototype = {
             title: this.options.title(i18n),
             value,
             values,
+            multiple: this.options.multiple,
         });
     },
 
@@ -97,14 +99,17 @@ Name.prototype = {
             name: this.options.name,
             type: this.options.type,
             value,
+            multiple: this.options.multiple,
         });
     },
 
-    renderEdit(value) {
+    renderEdit(value, names) {
         return NameEdit({
             name: this.options.name,
             type: this.options.type,
             value,
+            names,
+            multiple: this.options.multiple,
         });
     },
 
