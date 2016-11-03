@@ -276,7 +276,7 @@ Dimension.prototype = {
     renderFilter(value, values, i18n) {
         return DimensionFilter({
             name: this.options.name,
-            searchName: this.options.searchName,
+            searchName: this.searchName(),
             placeholder: this.options.placeholder(i18n),
             heightTitle: this.options.heightTitle(i18n),
             widthTitle: this.options.widthTitle(i18n),

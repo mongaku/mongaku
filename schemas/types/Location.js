@@ -55,7 +55,7 @@ Location.prototype = {
     renderFilter(value, values, i18n) {
         return LocationFilter({
             name: this.options.name,
-            searchName: this.options.searchName,
+            searchName: this.searchName(),
             value,
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n),

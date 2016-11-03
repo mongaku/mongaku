@@ -102,7 +102,7 @@ FixedString.prototype = {
 
         return FixedStringFilter({
             name: this.options.name,
-            searchName: this.options.searchName,
+            searchName: this.searchName(),
             value,
             values,
             placeholder: this.options.placeholder(i18n),

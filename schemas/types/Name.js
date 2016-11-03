@@ -29,7 +29,7 @@ Name.prototype = {
     },
 
     value(query) {
-        return query[this.options.searchName];
+        return query[this.searchName()];
     },
 
     defaultValue() {
@@ -85,7 +85,7 @@ Name.prototype = {
     renderFilter(value, values, i18n) {
         return NameFilter({
             name: this.options.name,
-            searchName: this.options.searchName,
+            searchName: this.searchName(),
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n),
             value,
