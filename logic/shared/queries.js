@@ -148,6 +148,42 @@ const defaultQueries = {
             return this.filters[value].match();
         },
     },
+
+    images: {
+        filters: {
+            hasImage: {
+                getTitle: (i18n) => i18n.gettext("Has An Image"),
+                match: () => ({
+                    exists: {
+                        field: "images",
+                    },
+                }),
+            },
+
+            hasNoImage: {
+                getTitle: (i18n) => i18n.gettext("Has No Image"),
+                match: () => ({
+                    bool: {
+                        must_not: [
+                            {
+                                exists: {
+                                    field: "images",
+                                },
+                            },
+                        ],
+                    },
+                }),
+            },
+        },
+        value: (fields) => fields.images,
+        defaultValue: () => undefined,
+        searchTitle(value, i18n) {
+            return this.filters[value].getTitle(i18n);
+        },
+        filter(value) {
+            return this.filters[value].match();
+        },
+    },
 };
 
 module.exports = (type) => {

@@ -115,6 +115,32 @@ const Search = React.createClass({
         </div>;
     },
 
+    renderImageFilter() {
+        if (!options.types[this.props.type].hasImages() ||
+                options.types[this.props.type].requiresImages()) {
+            return null;
+        }
+
+        const images = this.props.queries.images.filters;
+
+        return <div className="form-group">
+            <label htmlFor="images" className="control-label">
+                {this.props.gettext("Images")}
+            </label>
+            <select name="images" style={{width: "100%"}}
+                className="form-control"
+                defaultValue={this.props.values.images}
+            >
+                <option value=""/>
+                {Object.keys(images).map((id) =>
+                    <option value={id} key={id}>
+                        {this.props.getTitle(images[id])}
+                    </option>
+                )}
+            </select>
+        </div>;
+    },
+
     renderSorts() {
         if (this.props.sorts.length === 0) {
             return null;
@@ -157,6 +183,7 @@ const Search = React.createClass({
             {this.renderFilters()}
             {this.renderSourceFilter()}
             {this.renderSimilarityFilter()}
+            {this.renderImageFilter()}
             {this.renderSorts()}
             <div className="form-group">
                 <input type="submit" value={this.props.gettext("Search")}
