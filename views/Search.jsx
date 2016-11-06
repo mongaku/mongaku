@@ -102,10 +102,9 @@ const Search = React.createClass({
                 {this.props.gettext("Similarity")}
             </label>
             <select name="similar" style={{width: "100%"}}
-                className="form-control"
+                className="form-control select2-select"
                 defaultValue={this.props.values.similar}
             >
-                <option value=""/>
                 {Object.keys(similarity).map((id) =>
                     <option value={id} key={id}>
                         {this.props.getTitle(similarity[id])}
@@ -124,14 +123,14 @@ const Search = React.createClass({
         const images = this.props.queries.images.filters;
 
         return <div className="form-group">
-            <label htmlFor="images" className="control-label">
+            <label htmlFor="imageFilter" className="control-label">
                 {this.props.gettext("Images")}
             </label>
-            <select name="images" style={{width: "100%"}}
-                className="form-control"
+            <select name="imageFilter" style={{width: "100%"}}
+                className="form-control select2-select"
                 defaultValue={this.props.values.images}
+                data-placeholder={this.props.gettext("Filter by image...")}
             >
-                <option value=""/>
                 {Object.keys(images).map((id) =>
                     <option value={id} key={id}>
                         {this.props.getTitle(images[id])}
@@ -151,7 +150,7 @@ const Search = React.createClass({
                 {this.props.gettext("Sort")}
             </label>
             <select name="sort" style={{width: "100%"}}
-                className="form-control"
+                className="form-control select2-select"
                 defaultValue={this.props.values.sort}
             >
                 {this.props.sorts.map((sort) =>
@@ -226,10 +225,10 @@ const Search = React.createClass({
                 {this.props.gettext("Source")}
             </label>
             <select name="source" style={{width: "100%"}}
-                className="form-control"
+                className="form-control select2-select"
                 defaultValue={this.props.values.source}
+                data-placeholder={this.props.gettext("Filter by source...")}
             >
-                <option value="">{this.props.gettext("Any Source")}</option>
                 {this.props.sources.map((source) =>
                     <option value={source._id} key={source._id}>
                         {source.name}
