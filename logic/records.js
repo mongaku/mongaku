@@ -412,6 +412,22 @@ module.exports = function(app) {
             });
         },
 
+        json(req, res) {
+            const id = `${req.params.source}/${req.params.recordName}`;
+            const type = req.params.type;
+            const Record = record(type);
+
+            Record.findById(id, (err, record) => {
+                if (record) {
+                    return res.send(record.toJSON());
+                }
+
+                res.status(404).send({
+                    error: req.gettext("Record not found."),
+                });
+            });
+        },
+
         routes() {
             app.get("/search", cache(1), this.search);
             app.get("/:type/search", cache(1), this.search);
@@ -434,6 +450,7 @@ module.exports = function(app) {
             app.post("/:type/:source/:recordName/edit", auth, this.update);
             app.post("/:type/:source/:recordName/remove-image", auth,
                 this.removeImage);
+            app.get("/:type/:source/:recordName/json", this.json);
             app.get("/:type/:source/:recordName", this.show);
         },
     };
