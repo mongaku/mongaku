@@ -74,12 +74,19 @@ const CreateRecord = React.createClass({
             return null;
         }
 
-        return <tr>
+        return <tr className="has-error">
             <th className="text-right">
-                {this.props.gettext("ID")}
+                <label className="control-label">
+                    {this.props.gettext("ID")}
+                </label>
             </th>
             <td>
-                <input type="text" name="id" className="form-control"/>
+                <input
+                    type="text"
+                    name="id"
+                    className="form-control"
+                    data-id="true"
+                />
             </td>
         </tr>;
     },
