@@ -21,7 +21,12 @@ const CreateRecord = React.createClass({
 
     renderForm() {
         return <div className="col-md-12 imageholder">
-            <form action="" method="POST" encType="multipart/form-data">
+            <form
+                action=""
+                method="POST"
+                encType="multipart/form-data"
+                data-validate="true"
+            >
                 <input type="hidden" name="lang"
                     value={this.props.lang}
                 />
@@ -121,6 +126,7 @@ const CreateRecord = React.createClass({
                     type="submit"
                     value={this.props.gettext("Create")}
                     className="btn btn-primary"
+                    disabled={true}
                 />
             </td>
         </tr>;

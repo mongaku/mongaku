@@ -39,4 +39,13 @@ $(function() {
         tags: true,
         allowClear: true,
     });
+
+    var $form = $("form[data-validate]");
+
+    if ($form.length > 0) {
+        setInterval(function() {
+            $form.find("input[type=submit]")
+                .attr("disabled", $form.find(".has-error").length > 0);
+        }, 100);
+    }
 });
