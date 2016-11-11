@@ -70,7 +70,7 @@ FixedString.prototype = {
                 facet: () => ({
                     terms: {
                         field: `${this.options.name}.raw`,
-                        size: 0,
+                        size: 1000,
                     },
                 }),
 
@@ -170,7 +170,7 @@ FixedString.prototype = {
         const schema = Object.assign({
             type: String,
             es_indexed: true,
-            es_type: "multi_field",
+            es_type: "string",
             // A raw type to use for building aggregations in Elasticsearch
             es_fields: {
                 name: {type: "string", index: "analyzed"},

@@ -104,26 +104,28 @@ module.exports = (fields, req, callback) => {
         // the templates
         const facetData = [];
 
-        for (const name in aggregations) {
-            const aggregation = results.aggregations[name];
-            const facet = typeFacets[name];
-            const buckets = facet.formatBuckets(aggregation.buckets, req)
-                .filter((bucket) => {
-                    bucket.url = searchURL(req,
-                        Object.assign({}, values, bucket.url));
-                    return bucket.count > 0;
+        if (results.aggregations) {
+            for (const name in aggregations) {
+                const aggregation = results.aggregations[name];
+                const facet = typeFacets[name];
+                const buckets = facet.formatBuckets(aggregation.buckets, req)
+                    .filter((bucket) => {
+                        bucket.url = searchURL(req,
+                            Object.assign({}, values, bucket.url));
+                        return bucket.count > 0;
+                    });
+
+                // Skip facets that won't filter anything
+                if (buckets.length <= 1) {
+                    continue;
+                }
+
+                facetData.push({
+                    field: name,
+                    name: facet.title(req),
+                    buckets,
                 });
-
-            // Skip facets that won't filter anything
-            if (buckets.length <= 1) {
-                continue;
             }
-
-            facetData.push({
-                field: name,
-                name: facet.title(req),
-                buckets,
-            });
         }
 
         // Construct a list of the possible sorts, their translated

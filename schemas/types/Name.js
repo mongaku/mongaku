@@ -133,7 +133,7 @@ Name.prototype = {
             name: {
                 type: String,
                 es_indexed: true,
-                es_type: "multi_field",
+                es_type: "string",
                 // A raw name to use for building aggregations in Elasticsearch
                 es_fields: {
                     name: {type: "string", index: "analyzed"},
