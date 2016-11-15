@@ -42,10 +42,15 @@ Record.schema = {
     created: {
         type: Date,
         default: Date.now,
+        es_indexed: true,
     },
 
     // The date that this item was updated
-    modified: Date,
+    modified: {
+        type: Date,
+        default: Date.now,
+        es_indexed: true,
+    },
 
     // The most recent batch in which the record data was uploaded
     batch: {

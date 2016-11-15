@@ -184,6 +184,31 @@ const defaultQueries = {
             return this.filters[value].match();
         },
     },
+
+    created: {
+        value: () => 0,
+        defaultValue: () => 0,
+        secondary: true,
+        sort() {
+            return {
+                asc: [
+                    {
+                        "created": {
+                            order: "asc",
+                        },
+                    },
+                ],
+
+                desc: [
+                    {
+                        "created": {
+                            order: "desc",
+                        },
+                    },
+                ],
+            };
+        },
+    },
 };
 
 module.exports = (type) => {
