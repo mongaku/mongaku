@@ -8,6 +8,12 @@ const getCurType = (fields) => fields.type ||
     Object.keys(options.types)[0];
 
 const defaultQueries = {
+    format: {
+        value: (fields) => fields.format,
+        defaultValue: () => "html",
+        secondary: true,
+    },
+
     type: {
         value: (fields) => fields.type,
         defaultValue: getCurType,

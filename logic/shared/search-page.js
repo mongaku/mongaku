@@ -17,6 +17,10 @@ module.exports = (req, res, next, tmplParams) => {
             return res.redirect(expectedURL);
         }
 
+        if (data.values.format === "json") {
+            return res.status(200).send(data);
+        }
+
         const type = req.params.type;
         const Record = record(type);
         Record.getFacets(req, (err, globalFacets) => {
