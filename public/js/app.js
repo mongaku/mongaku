@@ -40,6 +40,35 @@ $(function() {
         allowClear: true,
     });
 
+    $(".select2-remote").each(function() {
+        $(this).select2({
+            allowClear: true,
+            ajax: {
+                url: "/" + $(this).data("record") + "/search",
+                dataType: "json",
+                data: function(params) {
+                    return {
+                        format: "json",
+                        filter: (params.term || "") + "*",
+                        page: params.page,
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: data.records.map(function(record) {
+                            return {
+                                id: record._id,
+                                // TODO: Generate real title
+                                text: record.name,
+                            };
+                        }),
+                    };
+                },
+                minInputLength: 3,
+            },
+        });
+    });
+
     var $form = $("form[data-validate]");
 
     if ($form.length > 0) {

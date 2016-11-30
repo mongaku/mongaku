@@ -12,6 +12,7 @@ const LinkedRecordEdit = React.createClass({
         hidden: React.PropTypes.bool,
         multiple: React.PropTypes.bool,
         name: React.PropTypes.string.isRequired,
+        recordType: React.PropTypes.string.isRequired,
         value: React.PropTypes.oneOf([
             valueType,
             React.PropTypes.arrayOf(valueType),
@@ -29,9 +30,10 @@ const LinkedRecordEdit = React.createClass({
 
         return <select
             name={this.props.name}
-            className="form-control select2-select"
+            className="form-control select2-remote"
             defaultValue={defaultValue}
             multiple={this.props.multiple}
+            data-record={this.props.recordType}
         >
             {values.map((value) =>
                 <option value={value.id} key={value.id}>

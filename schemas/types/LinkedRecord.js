@@ -11,7 +11,7 @@ const LinkedRecord = function(options) {
     this.options = options;
     /*
     name
-    type
+    recordType
     searchName
     recordType: String
     title(i18n)
@@ -52,6 +52,7 @@ LinkedRecord.prototype = {
             value,
             hidden: this.options.hidden,
             multiple: this.options.multiple,
+            recordType: this.options.recordType,
         });
     },
 
