@@ -35,9 +35,11 @@ $(document).on("input", "input[data-id]", function(e) {
 });
 
 $(function() {
-    $(".select2-select").select2({
-        tags: true,
-        allowClear: true,
+    $(".select2-select").each(function() {
+        $(this).select2({
+            tags: true,
+            allowClear: $(this).data("placeholder"),
+        });
     });
 
     $(".select2-remote").each(function() {

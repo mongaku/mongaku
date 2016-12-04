@@ -131,6 +131,9 @@ const Search = React.createClass({
                 defaultValue={this.props.values.images}
                 data-placeholder={this.props.gettext("Filter by image...")}
             >
+                <option value="">
+                    {this.props.gettext("Filter by image...")}
+                </option>
                 {Object.keys(images).map((id) =>
                     <option value={id} key={id}>
                         {this.props.getTitle(images[id])}
