@@ -39,6 +39,7 @@ $(function() {
         $(this).select2({
             tags: true,
             allowClear: $(this).data("placeholder"),
+            minimumResultsForSearch: this.options.length > 10 ? 1 : Infinity,
         });
     });
 
