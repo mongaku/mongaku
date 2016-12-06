@@ -11,6 +11,7 @@ const models = require("../lib/models");
 const urls = require("../lib/urls");
 const config = require("../lib/config");
 const options = require("../lib/options");
+const metadata = require("../lib/metadata");
 
 const Record = {};
 
@@ -186,6 +187,18 @@ Record.methods = {
                 return process.nextTick(() => callback(null, id));
             }
             models("Image").findById(id, callback);
+        }, callback);
+    },
+
+    getDynamicValues(i18n, callback) {
+        const model = metadata.model(this.type);
+
+        async.mapValues(model, (propModel, propName, callback) => {
+            if (propModel.loadDynamicValue) {
+                propModel.loadDynamicValue(this[propName], i18n, callback);
+            } else {
+                callback(null, this[propName]);
+            }
         }, callback);
     },
 

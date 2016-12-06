@@ -35,6 +35,21 @@ LinkedRecord.prototype = {
         return {[this.searchName()]: value};
     },
 
+    loadDynamicValue(value, i18n, callback) {
+        const record = require("../../lib/record");
+        const Record = record(this.options.recordType);
+        Record.findById(value, (err, item) => {
+            if (err) {
+                return callback(err);
+            }
+
+            callback(null, {
+                id: value,
+                title: item.getTitle(i18n),
+            });
+        });
+    },
+
     renderView() {
         /*
         return LinkedRecordDisplay({

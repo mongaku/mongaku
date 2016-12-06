@@ -103,9 +103,12 @@ module.exports = function(app) {
 
                 record.loadImages(true, () => {
                     Record.getFacets(req, (err, globalFacets) => {
-                        res.render("EditRecord", {
-                            record,
-                            globalFacets,
+                        record.getDynamicValues(req, (err, dynamicValues) => {
+                            res.render("EditRecord", {
+                                record,
+                                globalFacets,
+                                dynamicValues,
+                            });
                         });
                     });
                 });

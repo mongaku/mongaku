@@ -9,6 +9,7 @@ const Page = require("./Page.jsx");
 
 const EditRecord = React.createClass({
     propTypes: {
+        dynamicValues: React.PropTypes.any.isRequired,
         gettext: React.PropTypes.func.isRequired,
         globalFacets: React.PropTypes.any,
         lang: React.PropTypes.string.isRequired,
@@ -152,7 +153,7 @@ const EditRecord = React.createClass({
 
         return props.map((type) => {
             const typeSchema = model[type];
-
+            const dynamicValue = this.props.dynamicValues[type];
             const values = (globalFacets[type] || [])
                 .map((bucket) => bucket.text).sort();
 
@@ -161,7 +162,7 @@ const EditRecord = React.createClass({
                     {typeSchema.options.title(this.props)}
                 </th>
                 <td key={record._id}>
-                    {typeSchema.renderEdit(record[type], values, this.props)}
+                    {typeSchema.renderEdit(dynamicValue, values, this.props)}
                 </td>
             </tr>;
         });
