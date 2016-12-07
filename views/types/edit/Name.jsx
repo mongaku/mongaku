@@ -10,7 +10,8 @@ const NameEdit = React.createClass({
         type: React.PropTypes.string.isRequired,
         value: React.PropTypes.arrayOf(
             React.PropTypes.shape({
-                original: React.PropTypes.string.isRequired,
+                name: React.PropTypes.string,
+                original: React.PropTypes.string,
             })
         ),
     },

@@ -13,7 +13,7 @@ const LinkedRecordEdit = React.createClass({
         multiple: React.PropTypes.bool,
         name: React.PropTypes.string.isRequired,
         recordType: React.PropTypes.string.isRequired,
-        value: React.PropTypes.oneOf([
+        value: React.PropTypes.oneOfType([
             valueType,
             React.PropTypes.arrayOf(valueType),
         ]),
