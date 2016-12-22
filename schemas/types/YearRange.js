@@ -14,12 +14,26 @@ const numRange = (bucket) => bucket.to ?
     `${bucket.from || 0}-${bucket.to}` :
     `${bucket.from}+`;
 
+const defaultRanges = [
+    { to: 999 },
+    { from: 1000, to: 1099 },
+    { from: 1100, to: 1199 },
+    { from: 1200, to: 1299 },
+    { from: 1300, to: 1399 },
+    { from: 1400, to: 1499 },
+    { from: 1500, to: 1599 },
+    { from: 1600, to: 1699 },
+    { from: 1700, to: 1799 },
+    { from: 1800 },
+];
+
 const YearRange = function(options) {
     this.options = options;
     /*
     name
     type
     searchName
+    ranges
     title(i18n)
     placeholder(i18n)
     */
@@ -144,19 +158,7 @@ YearRange.prototype = {
                 title: (i18n) => this.options.title(i18n),
 
                 facet: (value) => {
-                    // TODO: Make these ranges configurable
-                    let ranges = [
-                        { to: 999 },
-                        { from: 1000, to: 1099 },
-                        { from: 1100, to: 1199 },
-                        { from: 1200, to: 1299 },
-                        { from: 1300, to: 1399 },
-                        { from: 1400, to: 1499 },
-                        { from: 1500, to: 1599 },
-                        { from: 1600, to: 1699 },
-                        { from: 1700, to: 1799 },
-                        { from: 1800 },
-                    ];
+                    let ranges = this.options.ranges || defaultRanges;
 
                     if (value) {
                         const start = parseFloat(value.start);
