@@ -25,7 +25,7 @@ const CreateRecord = React.createClass({
                 action=""
                 method="POST"
                 encType="multipart/form-data"
-                data-validate="true"
+                data-validate={true}
             >
                 <input type="hidden" name="lang"
                     value={this.props.lang}

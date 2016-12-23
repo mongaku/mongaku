@@ -155,6 +155,14 @@ Record.methods = {
         return `${this.getURL(locale)}/edit`;
     },
 
+    getCreateURL(locale) {
+        return urls.gen(locale, `/${this.type}/${this.source}/create`);
+    },
+
+    getCloneURL(locale) {
+        return `${this.getURL(locale)}/clone`;
+    },
+
     getRemoveImageURL(locale) {
         return `${this.getURL(locale)}/remove-image`;
     },
@@ -194,10 +202,11 @@ Record.methods = {
         const model = metadata.model(this.type);
 
         async.mapValues(model, (propModel, propName, callback) => {
-            if (propModel.loadDynamicValue) {
-                propModel.loadDynamicValue(this[propName], i18n, callback);
+            const value = this[propName];
+            if (propModel.loadDynamicValue && value !== undefined) {
+                propModel.loadDynamicValue(value, i18n, callback);
             } else {
-                callback(null, this[propName]);
+                callback(null, value);
             }
         }, callback);
     },

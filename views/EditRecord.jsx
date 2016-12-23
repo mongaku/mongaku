@@ -14,9 +14,12 @@ const EditRecord = React.createClass({
         globalFacets: React.PropTypes.any,
         lang: React.PropTypes.string.isRequired,
         record: React.PropTypes.shape({
+            _id: React.PropTypes.string,
+            id: React.PropTypes.string,
             type: React.PropTypes.string.isRequired,
             images: React.PropTypes.arrayOf(React.PropTypes.any),
         }).isRequired,
+        type: React.PropTypes.string.isRequired,
     },
 
     getTitle(record) {
@@ -25,16 +28,20 @@ const EditRecord = React.createClass({
     },
 
     renderRecord() {
-        const record = this.props.record;
+        const {record, lang} = this.props;
+        const postURL = record._id ?
+            record.getEditURL(lang) :
+            record.getCreateURL(lang);
 
         return <div className="col-md-12 imageholder">
             <form
-                action={record.getEditURL(this.props.lang)}
+                action={postURL}
                 method="POST"
                 encType="multipart/form-data"
+                data-validate={true}
             >
                 <input type="hidden" name="lang"
-                    value={this.props.lang}
+                    value={lang}
                 />
                 <div className="responsive-table">
                     <table className="table table-hover">
@@ -50,6 +57,7 @@ const EditRecord = React.createClass({
                         </thead>
                         <tbody>
                             {this.renderImageForm()}
+                            {this.renderIDForm()}
                             {this.renderMetadata()}
                             {this.renderSubmitButton()}
                         </tbody>
@@ -119,6 +127,30 @@ const EditRecord = React.createClass({
                 </form>
             </div>
         </div>;
+    },
+
+    renderIDForm() {
+        if (options.types[this.props.type].autoID ||
+                this.props.record._id) {
+            return null;
+        }
+
+        return <tr className="has-error">
+            <th className="text-right">
+                <label className="control-label">
+                    {this.props.gettext("ID")}
+                </label>
+            </th>
+            <td>
+                <input
+                    type="text"
+                    name="id"
+                    className="form-control"
+                    data-id="true"
+                    defaultValue={this.props.record.id}
+                />
+            </td>
+        </tr>;
     },
 
     renderImageForm() {

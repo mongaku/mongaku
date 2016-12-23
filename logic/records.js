@@ -90,8 +90,9 @@ module.exports = function(app) {
             });
         },
 
-        edit(req, res) {
-            const Record = record(req.params.type);
+        editView(req, res) {
+            const type = req.params.type;
+            const Record = record(type);
             const id = `${req.params.source}/${req.params.recordName}`;
 
             Record.findById(id, (err, record) => {
@@ -108,6 +109,7 @@ module.exports = function(app) {
                                 record,
                                 globalFacets,
                                 dynamicValues,
+                                type,
                             });
                         });
                     });
@@ -115,7 +117,7 @@ module.exports = function(app) {
             });
         },
 
-        update(req, res, next) {
+        edit(req, res, next) {
             const props = {};
             const type = req.params.type;
             const model = metadata.model(type);
@@ -293,6 +295,46 @@ module.exports = function(app) {
             });
         },
 
+        cloneView(req, res) {
+            const type = req.params.type;
+            const Record = record(type);
+            const id = `${req.params.source}/${req.params.recordName}`;
+
+            Record.findById(id, (err, oldRecord) => {
+                if (err || !oldRecord) {
+                    return res.status(404).render("Error", {
+                        title: req.gettext("Not found."),
+                    });
+                }
+
+                const data = {
+                    type,
+                    source: oldRecord.source,
+                    lang: oldRecord.lang,
+                    id: oldRecord.id,
+                };
+
+                for (const typeName of options.types[type].cloneFields) {
+                    data[typeName] = oldRecord[typeName];
+                }
+
+                const record = new Record(data);
+
+                record.loadImages(true, () => {
+                    Record.getFacets(req, (err, globalFacets) => {
+                        record.getDynamicValues(req, (err, dynamicValues) => {
+                            res.render("EditRecord", {
+                                record,
+                                globalFacets,
+                                dynamicValues,
+                                type,
+                            });
+                        });
+                    });
+                });
+            });
+        },
+
         createView(req, res) {
             const type = req.params.type;
             const Record = record(type);
@@ -449,8 +491,9 @@ module.exports = function(app) {
             }
 
             // Handle these last as they'll catch almost anything
-            app.get("/:type/:source/:recordName/edit", auth, this.edit);
-            app.post("/:type/:source/:recordName/edit", auth, this.update);
+            app.get("/:type/:source/:recordName/edit", auth, this.editView);
+            app.post("/:type/:source/:recordName/edit", auth, this.edit);
+            app.get("/:type/:source/:recordName/clone", auth, this.cloneView);
             app.post("/:type/:source/:recordName/remove-image", auth,
                 this.removeImage);
             app.get("/:type/:source/:recordName/json", this.json);
