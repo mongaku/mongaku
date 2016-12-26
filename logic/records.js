@@ -311,7 +311,6 @@ module.exports = function(app) {
                     type,
                     source: oldRecord.source,
                     lang: oldRecord.lang,
-                    id: oldRecord.id,
                 };
 
                 for (const typeName of options.types[type].cloneFields) {
@@ -340,9 +339,10 @@ module.exports = function(app) {
             const Record = record(type);
 
             Record.getFacets(req, (err, globalFacets) => {
-                res.render("CreateRecord", {
+                res.render("EditRecord", {
                     type,
                     globalFacets,
+                    dynamicValues: {},
                 });
             });
         },

@@ -18,20 +18,28 @@ const EditRecord = React.createClass({
             id: React.PropTypes.string,
             type: React.PropTypes.string.isRequired,
             images: React.PropTypes.arrayOf(React.PropTypes.any),
-        }).isRequired,
+        }),
         type: React.PropTypes.string.isRequired,
     },
 
-    getTitle(record) {
+    getTitle() {
+        const {record} = this.props;
+
+        if (!record) {
+            return this.props.gettext("Create Record");
+        }
+
         return options.types[record.type]
             .recordTitle(record, this.props);
     },
 
     renderRecord() {
         const {record, lang} = this.props;
-        const postURL = record._id ?
-            record.getEditURL(lang) :
-            record.getCreateURL(lang);
+        const postURL = record ?
+            (record._id ?
+                record.getEditURL(lang) :
+                record.getCreateURL(lang)) :
+            "";
 
         return <div className="col-md-12 imageholder">
             <form
@@ -48,7 +56,7 @@ const EditRecord = React.createClass({
                         <thead>
                             <tr className="plain">
                                 <th/>
-                                {this.renderTitle(record)}
+                                {this.renderTitle()}
                             </tr>
                             <tr className="plain">
                                 <td/>
@@ -67,31 +75,35 @@ const EditRecord = React.createClass({
         </div>;
     },
 
-    renderTitle(record) {
-        const title = this.getTitle(record);
+    renderTitle() {
+        const title = this.getTitle();
 
-        return <th className="col-xs-12 text-center" key={record._id}>
+        return <th className="col-xs-12 text-center">
             <h1 className="panel-title">{title}</h1>
         </th>;
     },
 
-    renderImages(record) {
-        return <td key={record._id}>
+    renderImages() {
+        const {record} = this.props;
+
+        return <td>
             <div>
                 <div>
-                    {record.images.map((image, i) =>
-                        this.renderImage(record, image, i))}
+                    {record && record.images.map((image, i) =>
+                        this.renderImage(image, i))}
                 </div>
             </div>
         </td>;
     },
 
-    renderImage(record, image) {
+    renderImage(image) {
+        const {record} = this.props;
+
         return <div className="img col-md-4 col-xs-12 col-sm-6" key={image._id}>
             <a href={image.getOriginalURL()}>
                 <img src={image.getScaledURL()}
-                    alt={this.getTitle(record)}
-                    title={this.getTitle(record)}
+                    alt={this.getTitle()}
+                    title={this.getTitle()}
                     className="img-responsive center-block"
                 />
             </a>
@@ -130,8 +142,9 @@ const EditRecord = React.createClass({
     },
 
     renderIDForm() {
-        if (options.types[this.props.type].autoID ||
-                this.props.record._id) {
+        const {record, type} = this.props;
+
+        if (options.types[type].autoID || record && record._id) {
             return null;
         }
 
@@ -147,15 +160,14 @@ const EditRecord = React.createClass({
                     name="id"
                     className="form-control"
                     data-id="true"
-                    defaultValue={this.props.record.id}
+                    defaultValue={record && record.id}
                 />
             </td>
         </tr>;
     },
 
     renderImageForm() {
-        const record = this.props.record;
-        const type = record.type;
+        const {type} = this.props;
 
         if (options.types[type].noImages) {
             return null;
@@ -177,11 +189,9 @@ const EditRecord = React.createClass({
     },
 
     renderMetadata() {
-        const record = this.props.record;
-        const type = record.type;
+        const {type, globalFacets} = this.props;
         const model = metadata.model(type);
         const props = Object.keys(options.types[type].model);
-        const globalFacets = this.props.globalFacets;
 
         return props.map((type) => {
             const typeSchema = model[type];
@@ -193,7 +203,7 @@ const EditRecord = React.createClass({
                 <th className="text-right">
                     {typeSchema.options.title(this.props)}
                 </th>
-                <td key={record._id}>
+                <td>
                     {typeSchema.renderEdit(dynamicValue, values, this.props)}
                 </td>
             </tr>;
@@ -214,7 +224,7 @@ const EditRecord = React.createClass({
     },
 
     render() {
-        const title = this.getTitle(this.props.record);
+        const title = this.getTitle();
 
         return <Page
             {...this.props}
