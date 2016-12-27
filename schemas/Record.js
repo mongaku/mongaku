@@ -338,6 +338,11 @@ const getExpectedType = (options, value) => {
         return typeof value === "boolean" ? false : "boolean";
     }
 
+    if (options.type === Date) {
+        return (typeof value === "string" || value instanceof Date) ?
+            false : "date";
+    }
+
     // Defaults to type of String
     return typeof value === "string" ? false : "string";
 };
@@ -434,13 +439,31 @@ Record.statics = {
                 } else {
                     original = model.toJSON();
                     model.set(data);
+
+                    // Delete missing fields
+                    const {schema} = Record;
+
+                    for (const field in schema.paths) {
+                        // Skip internal fields
+                        if (internal.indexOf(field) >= 0) {
+                            continue;
+                        }
+
+                        if (data[field] === undefined) {
+                            model[field] = undefined;
+                        }
+                    }
                 }
 
                 model.validate((err) => {
                     /* istanbul ignore if */
                     if (err) {
-                        return callback(new Error(req.gettext(
-                            "There was an error with the data format.")));
+                        const msg = req.gettext(
+                            "There was an error with the data format.");
+                        const errors = Object.keys(err.errors)
+                            .map((path) => err.errors[path].message)
+                            .join(", ");
+                        return callback(new Error(`${msg} ${errors}`));
                     }
 
                     if (!creating) {
