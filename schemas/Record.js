@@ -323,7 +323,7 @@ Record.methods = {
 };
 
 const internal = ["_id", "__v", "created", "modified", "defaultImageHash",
-    "batch"];
+    "batch", "needsSimilarUpdate", "similarRecords"];
 
 const getExpectedType = (options, value) => {
     if (Array.isArray(options.type)) {
