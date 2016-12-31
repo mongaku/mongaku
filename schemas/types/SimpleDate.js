@@ -17,7 +17,6 @@ const SimpleDate = function(options) {
     placeholder(i18n)
     multiple: Bool
     recommended: Bool
-    hidden: Bool
     */
 };
 
@@ -49,7 +48,6 @@ SimpleDate.prototype = {
             type: this.options.type,
             value,
             multiline: this.options.multiline,
-            hidden: this.options.hidden,
         });
     },
 

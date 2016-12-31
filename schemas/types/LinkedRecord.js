@@ -18,7 +18,6 @@ const LinkedRecord = function(options) {
     placeholder(i18n)
     multiple: Bool
     recommended: Bool
-    hidden: Bool
     */
 };
 
@@ -65,7 +64,6 @@ LinkedRecord.prototype = {
             name: this.options.name,
             type: this.options.type,
             value,
-            hidden: this.options.hidden,
             multiple: this.options.multiple,
             recordType: this.options.recordType,
         });

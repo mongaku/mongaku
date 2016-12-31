@@ -6,12 +6,15 @@ $(document).on("click", ".toggle-facets", function() {
     $(this).remove();
 });
 
-$(document).on("focusin", "input[data-hidden]", function() {
-    this.type = "text";
-});
+var updatePrivateDisplay = function() {
+    var showPrivate = (localStorage.showPrivate === "true");
+    $("html").toggleClass("revealed", showPrivate);
+    $("input.toggle-private").prop("checked", showPrivate);
+};
 
-$(document).on("focusout", "input[data-hidden]", function() {
-    this.type = "password";
+$(document).on("click", "input.toggle-private", function() {
+    localStorage.showPrivate = this.checked;
+    updatePrivateDisplay();
 });
 
 $(document).on("input", "input[data-id]", function(e) {
@@ -80,4 +83,6 @@ $(function() {
                 .attr("disabled", $form.find(".has-error").length > 0);
         }, 100);
     }
+
+    updatePrivateDisplay();
 });

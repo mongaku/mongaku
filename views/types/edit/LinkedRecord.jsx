@@ -9,7 +9,6 @@ const valueType = React.PropTypes.shape({
 
 const LinkedRecordEdit = React.createClass({
     propTypes: {
-        hidden: React.PropTypes.bool,
         multiple: React.PropTypes.bool,
         name: React.PropTypes.string.isRequired,
         recordType: React.PropTypes.string.isRequired,

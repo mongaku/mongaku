@@ -192,22 +192,45 @@ const EditRecord = React.createClass({
         const {type, globalFacets} = this.props;
         const model = metadata.model(type);
         const props = Object.keys(options.types[type].model);
+        let hasPrivate = false;
 
-        return props.map((type) => {
+        const fields = props.map((type) => {
             const typeSchema = model[type];
             const dynamicValue = this.props.dynamicValues[type];
             const values = (globalFacets[type] || [])
                 .map((bucket) => bucket.text).sort();
+            const isPrivate = typeSchema.options.private;
+
+            hasPrivate = hasPrivate || isPrivate;
 
             return <tr key={type}>
                 <th className="text-right">
                     {typeSchema.options.title(this.props)}
                 </th>
-                <td>
+                <td data-private={isPrivate}>
                     {typeSchema.renderEdit(dynamicValue, values, this.props)}
                 </td>
             </tr>;
         });
+
+        if (hasPrivate) {
+            fields.push(<tr key="private">
+                <th/>
+                <td>
+                    <label>
+                        <input
+                            type="checkbox"
+                            className="toggle-private"
+                        />
+                        {" "}
+                        {this.props.gettext(
+                            "Show private fields.")}
+                    </label>
+                </td>
+            </tr>);
+        }
+
+        return fields;
     },
 
     renderSubmitButton() {

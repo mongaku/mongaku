@@ -4,7 +4,6 @@ const React = require("react");
 
 const FixedStringEdit = React.createClass({
     propTypes: {
-        hidden: React.PropTypes.bool,
         multiline: React.PropTypes.bool,
         multiple: React.PropTypes.bool,
         name: React.PropTypes.string.isRequired,
@@ -50,10 +49,9 @@ const FixedStringEdit = React.createClass({
 
         return <input
             name={this.props.name}
-            type={this.props.hidden ? "password" : "text"}
+            type="text"
             className="form-control"
             defaultValue={defaultValue}
-            data-hidden={this.props.hidden}
         />;
     },
 
