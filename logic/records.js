@@ -4,6 +4,7 @@ const async = require("async");
 const formidable = require("formidable");
 
 const db = require("../lib/db");
+const urls = require("../lib/urls");
 const record = require("../lib/record");
 const models = require("../lib/models");
 const options = require("../lib/options");
@@ -334,6 +335,23 @@ module.exports = function(app) {
             });
         },
 
+        createRedirect(req, res) {
+            const type = req.params.type;
+            const sources = Source.getSourcesByType(type).filter((source) =>
+                req.user.siteAdmin ||
+                req.user.sourceAdmin.indexOf(source._id) >= 0);
+
+            if (sources.length === 1) {
+                return res.redirect(urls.gen(req.lang,
+                    `/${type}/${sources[0]._id}/create`));
+            }
+
+            // TODO(jeresig): Figure out a better way to handle multiple sources
+            res.status(404).send({
+                error: req.gettext("Page not found."),
+            });
+        },
+
         createView(req, res) {
             const type = req.params.type;
             const Record = record(type);
@@ -477,6 +495,7 @@ module.exports = function(app) {
             app.get("/search", cache(1), this.search);
             app.get("/:type/search", cache(1), this.search);
             app.get("/:type/facets", cache(1), this.facets);
+            app.get("/:type/create", cache(1), this.createRedirect);
             app.get("/source/:source", cache(1), this.bySource);
             app.get("/:type/source/:source", cache(1), this.bySource);
             app.get("/:type/:source/create", auth, this.createView);

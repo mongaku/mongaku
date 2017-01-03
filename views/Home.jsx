@@ -29,6 +29,7 @@ const Home = React.createClass({
     renderSearchForm(type) {
         const title = options.types[type].name(this.props);
         const searchURL = this.props.URL(`/${type}/search`);
+        const createURL = this.props.URL(`/${type}/create`);
 
         return <div>
             <h3>{title}</h3>
@@ -49,6 +50,10 @@ const Home = React.createClass({
                 {" "}
                 <a href={searchURL} className="btn btn-default">
                     {this.props.gettext("Browse All")}
+                </a>
+                {" "}
+                <a href={createURL} className="btn btn-success">
+                    {this.props.gettext("Create New")}
                 </a>
             </form>
         </div>;
