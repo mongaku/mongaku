@@ -103,6 +103,64 @@ const Page = React.createClass({
         </span>;
     },
 
+    renderNavLinks() {
+        return Object.keys(options.types).map((type) => {
+            const title = options.types[type].name(this.props);
+
+            return <li key={type} className="dropdown">
+                <a
+                    href={this.props.URL(`/${type}/search`)}
+                    className="dropdown-toggle"
+                    data-toggle="dropdown"
+                    role="button"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                >
+                    {title}
+                    {" "}
+                    <span className="caret"/>
+                </a>
+                <ul className="dropdown-menu">
+                    <li>
+                        <form
+                            action={this.props.URL(`/${type}/search`)}
+                            method="GET"
+                            className="form-search search form-inline dropdown-search"
+                        >
+                            <div className="form-group">
+                                <input
+                                    type="hidden"
+                                    name="lang"
+                                    value={this.props.lang}
+                                />
+                                <input type="search" id="filter" name="filter"
+                                    placeholder={this.props.gettext("Search")}
+                                    className="form-control search-query"
+                                />
+                            </div>
+                            {" "}
+                            <input
+                                type="submit"
+                                value={this.props.gettext("Search")}
+                                className="btn btn-primary"
+                            />
+                        </form>
+                    </li>
+                    <li>
+                        <a href={this.props.URL(`/${type}/search`)}>
+                            {this.props.gettext("Browse All")}
+                        </a>
+                    </li>
+                    <li>
+                        <a href={this.props.URL(`/${type}/create`)}>
+                            {this.props.gettext("Create New")}
+                        </a>
+                    </li>
+                </ul>
+            </li>;
+        });
+    },
+
     renderLogoutLink() {
         if (!this.props.currentUser()) {
             return null;
@@ -169,6 +227,7 @@ const Page = React.createClass({
                                 {gettext("Browse All")}
                             </a>
                         </li>}
+                        {this.renderNavLinks()}
                         {this.renderLogoutLink()}
                         {this.renderLocaleMenu()}
                     </ul>

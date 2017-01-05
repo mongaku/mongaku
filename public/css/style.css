@@ -13,6 +13,17 @@
     padding-right: 0;
 }
 
+.dropdown-search {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.428571429;
+    color: #333;
+    white-space: nowrap;
+    min-width: 280px;
+}
+
 /*
  * Styling for the home page splash.
  */
