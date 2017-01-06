@@ -10,9 +10,11 @@ const Page = require("./Page.jsx");
 const EditRecord = React.createClass({
     propTypes: {
         dynamicValues: React.PropTypes.any.isRequired,
+        format: React.PropTypes.func.isRequired,
         gettext: React.PropTypes.func.isRequired,
         globalFacets: React.PropTypes.any,
         lang: React.PropTypes.string.isRequired,
+        mode: React.PropTypes.oneOf(["create", "edit", "clone"]).isRequired,
         record: React.PropTypes.shape({
             _id: React.PropTypes.string,
             id: React.PropTypes.string,
@@ -23,14 +25,22 @@ const EditRecord = React.createClass({
     },
 
     getTitle() {
-        const {record} = this.props;
+        const {record, mode, format, gettext, type} = this.props;
 
-        if (!record) {
-            return this.props.gettext("Create Record");
+        if (!record || mode === "create") {
+            return format(gettext("%(recordName)s: Create New"), {
+                recordName: options.types[type].name(this.props),
+            });
         }
 
-        return options.types[record.type]
+        const recordTitle = options.types[type]
             .recordTitle(record, this.props);
+
+        if (mode === "clone") {
+            return format(gettext("Cloning '%(recordTitle)s'"), {recordTitle});
+        }
+
+        return format(gettext("Updating '%(recordTitle)s'"), {recordTitle});
     },
 
     renderRecord() {
@@ -234,12 +244,20 @@ const EditRecord = React.createClass({
     },
 
     renderSubmitButton() {
+        let buttonText = this.props.gettext("Update");
+
+        if (this.props.mode === "create") {
+            buttonText = this.props.gettext("Create");
+        } else if (this.props.mode === "clone") {
+            buttonText = this.props.gettext("Clone");
+        }
+
         return <tr>
             <th/>
             <td>
                 <input
                     type="submit"
-                    value={this.props.gettext("Update")}
+                    value={buttonText}
                     className="btn btn-primary"
                 />
             </td>

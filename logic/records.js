@@ -107,6 +107,7 @@ module.exports = function(app) {
                     Record.getFacets(req, (err, globalFacets) => {
                         record.getDynamicValues(req, (err, dynamicValues) => {
                             res.render("EditRecord", {
+                                mode: "edit",
                                 record,
                                 globalFacets,
                                 dynamicValues,
@@ -324,6 +325,7 @@ module.exports = function(app) {
                     Record.getFacets(req, (err, globalFacets) => {
                         record.getDynamicValues(req, (err, dynamicValues) => {
                             res.render("EditRecord", {
+                                mode: "clone",
                                 record,
                                 globalFacets,
                                 dynamicValues,
@@ -358,6 +360,7 @@ module.exports = function(app) {
 
             Record.getFacets(req, (err, globalFacets) => {
                 res.render("EditRecord", {
+                    mode: "create",
                     type,
                     globalFacets,
                     dynamicValues: {},

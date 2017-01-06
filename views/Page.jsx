@@ -125,7 +125,7 @@ const Page = React.createClass({
                         <form
                             action={this.props.URL(`/${type}/search`)}
                             method="GET"
-                            className="form-search search form-inline dropdown-search"
+                            className="form-search form-inline dropdown-search"
                         >
                             <div className="form-group">
                                 <input

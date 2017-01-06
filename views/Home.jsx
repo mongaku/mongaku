@@ -34,7 +34,7 @@ const Home = React.createClass({
         return <div>
             <h3>{title}</h3>
             <form action={searchURL} method="GET"
-                className="form-search search form-inline"
+                className="form-search form-inline"
             >
                 <div className="form-group">
                     <input type="hidden" name="lang" value={this.props.lang} />
