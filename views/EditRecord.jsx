@@ -264,6 +264,23 @@ const EditRecord = React.createClass({
         </tr>;
     },
 
+    renderCloneButton() {
+        const {gettext, record, mode, lang} = this.props;
+
+        if (mode !== "edit") {
+            return;
+        }
+
+        return <div className="row">
+            <a
+                href={record.getCloneURL(lang)}
+                className="btn btn-primary pull-right"
+            >
+                {gettext("Clone Record")}
+            </a>
+        </div>;
+    },
+
     render() {
         const title = this.getTitle();
 
@@ -271,6 +288,7 @@ const EditRecord = React.createClass({
             {...this.props}
             title={title}
         >
+            {this.renderCloneButton()}
             <div className="row">
                 {this.renderRecord()}
             </div>
