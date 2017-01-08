@@ -11,6 +11,7 @@ const LinkedRecordEdit = React.createClass({
     propTypes: {
         multiple: React.PropTypes.bool,
         name: React.PropTypes.string.isRequired,
+        placeholder: React.PropTypes.string,
         recordType: React.PropTypes.string.isRequired,
         value: React.PropTypes.oneOfType([
             valueType,
@@ -33,7 +34,9 @@ const LinkedRecordEdit = React.createClass({
             defaultValue={defaultValue}
             multiple={this.props.multiple}
             data-record={this.props.recordType}
+            data-placeholder={this.props.placeholder}
         >
+            <option value="">{this.props.placeholder}</option>
             {values.map((value) =>
                 <option value={value.id} key={value.id}>
                     {value.title}

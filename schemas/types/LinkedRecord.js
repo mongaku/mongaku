@@ -59,13 +59,14 @@ LinkedRecord.prototype = {
         */
     },
 
-    renderEdit(value) {
+    renderEdit(value, allValues, i18n) {
         return LinkedRecordEdit({
             name: this.options.name,
             type: this.options.type,
             value,
             multiple: this.options.multiple,
             recordType: this.options.recordType,
+            placeholder: this.options.placeholder(i18n),
         });
     },
 
