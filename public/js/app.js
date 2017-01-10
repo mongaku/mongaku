@@ -24,8 +24,8 @@ $(document).on("input", "input[data-id]", function(e) {
     }
 
     $.ajax({
-        url: window.location.href.replace("/create",
-            "/" + e.target.value + "/json"),
+        url: window.location.pathname.replace(/^(\/.*?\/.*?)\/.*$/,
+            "$1/" + e.target.value + "/json"),
         success: function() {
             $(e.target).parents("tr")
                 .addClass("has-error").removeClass("has-success");
