@@ -36,7 +36,6 @@ const LinkedRecordEdit = React.createClass({
             data-record={this.props.recordType}
             data-placeholder={this.props.placeholder}
         >
-            <option value="">{this.props.placeholder}</option>
             {values.map((value) =>
                 <option value={value.id} key={value.id}>
                     {value.title}

@@ -207,6 +207,12 @@ module.exports = function(app) {
 
                         record.set(data);
 
+                        for (const prop in model) {
+                            if (!fields[prop] && !data[prop]) {
+                                record[prop] = undefined;
+                            }
+                        }
+
                         record.images = record.images.concat(
                             unfilteredImages
                                 .filter((image) => image)

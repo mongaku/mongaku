@@ -511,6 +511,11 @@ Record.statics = {
                     value = [value];
                 }
 
+                // Coerce numbers that are strings into numbers
+                if (options.type === Number && typeof value === "string") {
+                    value = parseFloat(value);
+                }
+
                 const expectedType = getExpectedType(options, value);
 
                 if (expectedType) {
