@@ -53,6 +53,8 @@ const types = {
 module.exports = {
     types: {
         artworks: {
+            urlRequired: true,
+
             filters: ["artists", "locations", "objectType", "dates",
                 "dimensions"],
 

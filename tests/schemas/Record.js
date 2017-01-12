@@ -528,7 +528,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, (t) => {
     }, req), {
         "error": "Required field `images` is empty.",
         "warnings": [
-            "`images` is the wrong type. Expected a array.",
+            "Images must be a valid image file name. For example: `image.jpg`.",
         ],
     }, "Images");
 
@@ -555,12 +555,10 @@ tap.test("Record.lintData: Type checking", {autoend: true}, (t) => {
             title: "Test",
             objectType: "painting",
             dates: [
-                {end: 1976},
+                {start: 1234, end: 1976},
             ],
         },
-        "warnings": [
-            "`dates`: `start` is the wrong type. Expected a number.",
-        ],
+        "warnings": [],
     }, "Date Start");
 
     t.same(Record.lintData({
@@ -616,7 +614,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, (t) => {
             objectType: "painting",
         },
         "warnings": [
-            "`categories` is the wrong type. Expected a array.",
+            "`categories` value is the wrong type. Expected a string.",
         ],
     }, "Categories");
 
@@ -757,9 +755,10 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
             images: ["nga/foo.jpg"],
             title: "Test",
             objectType: "painting",
+            artists: [{pseudonym: "Test"}],
         },
         "warnings": [
-            "`artists`: Required field `name` is empty.",
+            "`artists`: Recommended field `name` is empty.",
         ],
     }, "artists");
 
