@@ -110,7 +110,7 @@ module.exports = function(app) {
                 "results.result": true,
                 "results.error": true,
                 "results.warnings": true,
-            }, callback),
+            }, {}, callback),
         ], (err, results) => {
             /* istanbul ignore if */
             if (err) {
@@ -250,10 +250,10 @@ module.exports = function(app) {
                 }
             };
 
-            app.get("/source/:source/admin", auth, source, this.admin);
-            app.post("/source/:source/upload-images", auth, source,
+            app.get("/:type/source/:source/admin", auth, source, this.admin);
+            app.post("/:type/source/:source/upload-images", auth, source,
                 this.uploadImages);
-            app.post("/source/:source/upload-data", auth, source,
+            app.post("/:type/source/:source/upload-data", auth, source,
                 this.uploadData);
         },
     };

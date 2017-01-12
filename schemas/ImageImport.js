@@ -73,7 +73,8 @@ const ImageImport = new db.schema(Object.assign({}, Import.schema, {
 Object.assign(ImageImport.methods, Import.methods, {
     getURL(lang) {
         return urls.gen(lang,
-            `/source/${this.source}/admin?images=${this._id}`);
+            `/${this.getSource().type}/source` +
+            `/${this.source}/admin?images=${this._id}`);
     },
 
     getError(req) {

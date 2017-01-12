@@ -196,10 +196,16 @@ const genData = () => {
         })),
     };
 
+    const remove = function(callback) {
+        delete records[this._id];
+        process.nextTick(callback);
+    };
+
     for (const id in records) {
         const record = records[id];
         record.validateSync();
         record.isNew = false;
+        sinon.stub(record, "remove", remove);
     }
 
     primaryRecord = records["test/1234"];
@@ -554,11 +560,6 @@ const bindStubs = () => {
             process.nextTick(() => callback(
                 new Error("Record not found.")));
         }
-    });
-
-    sandbox.stub(Record, "remove", (id, callback) => {
-        delete records[id];
-        process.nextTick(callback);
     });
 
     sandbox.stub(Record, "find", (query, callback, extra) => {

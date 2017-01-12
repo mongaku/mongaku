@@ -12,7 +12,7 @@ const RecordImport = init.RecordImport;
 tap.test("getURL", {autoend: true}, (t) => {
     const batch = init.getRecordBatch();
     t.equal(batch.getURL(req.lang),
-        "/source/test/admin?records=test/started",
+        "/artworks/source/test/admin?records=test/started",
         "Get URL");
 });
 

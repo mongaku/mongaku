@@ -92,7 +92,7 @@ const RecordImport = new db.schema(Object.assign({}, Import.schema, {
 Object.assign(RecordImport.methods, Import.methods, {
     getURL(lang) {
         return urls.gen(lang,
-            `/source/${this.source}/admin?records=${this._id}`);
+            `/${this.type}/source/${this.source}/admin?records=${this._id}`);
     },
 
     getError(req) {

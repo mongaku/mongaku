@@ -6,6 +6,7 @@
         "images": ["foo.jpg"],
         "title": "Test",
         "objectType": "painting",
+        "medium": "oil",
         "artists": [{
             "name": "Test",
             "dates": ["ca. 1456-1457"]
@@ -21,6 +22,7 @@
         "images": ["bar.jpg"],
         "title": "Test",
         "objectType": "painting",
+        "medium": "oil",
         "artists": [{
             "name": "Test",
             "dates": ["ca. 1456-1458"]
@@ -36,6 +38,7 @@
         "images": ["foo.jpg"],
         "title": "Test",
         "objectType": "painting",
+        "medium": "oil",
         "artists": [{
             "name": "Test",
             "dates": ["ca. 1456-1457"]
@@ -50,6 +53,7 @@
         "url": "http://google.com",
         "images": ["bar.jpg"],
         "title": "Test",
+        "medium": "oil",
         "artists": [{
             "name": "Test",
             "dates": ["ca. 1456-1457"]
@@ -65,6 +69,7 @@
         "images": [],
         "title": "Test",
         "objectType": "painting",
+        "medium": "oil",
         "artists": [{
             "name": "Test",
             "dates": ["ca. 1456-1457"]
@@ -79,6 +84,7 @@
         "images": ["foo.jpg"],
         "title": "Test",
         "objectType": "painting",
+        "medium": "oil",
         "artists": [{
             "name": "Test",
             "dates": ["ca. 1456-1457"]
