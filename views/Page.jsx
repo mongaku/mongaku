@@ -4,7 +4,8 @@ const React = require("react");
 
 const options = require("../lib/options");
 
-const multipleTypes = Object.keys(options.types).length > 1;
+const types = Object.keys(options.types);
+const multipleTypes = types.length > 1;
 
 const Page = React.createClass({
     propTypes: {
@@ -181,7 +182,7 @@ const Page = React.createClass({
         const gettext = this.props.gettext;
         const URL = this.props.URL;
 
-        return <form action={URL("/search")} method="GET"
+        return <form action={URL(`/${types[0]}/search`)} method="GET"
             className={"navbar-form navbar-right search " +
                 "form-inline hidden-xs"}
         >
@@ -223,7 +224,7 @@ const Page = React.createClass({
                 <div id="header-navbar" className="collapse navbar-collapse">
                     <ul className="nav navbar-nav">
                         {!multipleTypes && <li>
-                            <a href={URL("/search")}>
+                            <a href={URL(`/${types[0]}/search`)}>
                                 {gettext("Browse All")}
                             </a>
                         </li>}

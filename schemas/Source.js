@@ -45,7 +45,7 @@ const Source = new db.schema({
 
 Source.methods = {
     getURL(locale) {
-        return urls.gen(locale, `/source/${this._id}`);
+        return urls.gen(locale, `/${this.type}/source/${this._id}`);
     },
 
     getAdminURL(locale) {

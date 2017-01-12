@@ -6,7 +6,7 @@ const request = require("request");
 require("../init");
 
 tap.test("Search", (t) => {
-    const url = "http://localhost:3000/search";
+    const url = "http://localhost:3000/artworks/search";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
@@ -33,7 +33,7 @@ tap.test("By Type Missing", (t) => {
 });
 
 tap.test("By Source", (t) => {
-    const url = "http://localhost:3000/source/test";
+    const url = "http://localhost:3000/artworks/source/test";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
@@ -42,7 +42,7 @@ tap.test("By Source", (t) => {
 });
 
 tap.test("By Source Missing", (t) => {
-    const url = "http://localhost:3000/source/foo";
+    const url = "http://localhost:3000/artworks/source/foo";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 404);
@@ -87,7 +87,7 @@ tap.test("Record Missing", (t) => {
 });
 
 tap.test("Search: Filter", (t) => {
-    const url = "http://localhost:3000/search?filter=test";
+    const url = "http://localhost:3000/artworks/search?filter=test";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
@@ -96,7 +96,7 @@ tap.test("Search: Filter", (t) => {
 });
 
 tap.test("Search: Location", (t) => {
-    const url = "http://localhost:3000/search?location=test";
+    const url = "http://localhost:3000/artworks/search?location=test";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
@@ -105,7 +105,7 @@ tap.test("Search: Location", (t) => {
 });
 
 tap.test("Search: Artist", (t) => {
-    const url = "http://localhost:3000/search?artist=test";
+    const url = "http://localhost:3000/artworks/search?artist=test";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
@@ -114,7 +114,7 @@ tap.test("Search: Artist", (t) => {
 });
 
 tap.test("Search: Date", (t) => {
-    const url = "http://localhost:3000/search?dateStart=1500&dateEnd=1599";
+    const url = "http://localhost:3000/artworks/search?dateStart=1500&dateEnd=1599";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
@@ -123,7 +123,7 @@ tap.test("Search: Date", (t) => {
 });
 
 tap.test("Search: Date (Start Only)", (t) => {
-    const url = "http://localhost:3000/search?dateStart=1500";
+    const url = "http://localhost:3000/artworks/search?dateStart=1500";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
@@ -132,7 +132,7 @@ tap.test("Search: Date (Start Only)", (t) => {
 });
 
 tap.test("Search: Date (End Only)", (t) => {
-    const url = "http://localhost:3000/search?dateEnd=1599";
+    const url = "http://localhost:3000/artworks/search?dateEnd=1599";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
@@ -141,7 +141,7 @@ tap.test("Search: Date (End Only)", (t) => {
 });
 
 tap.test("Search: Width", (t) => {
-    const url = "http://localhost:3000/search?widthMin=0&widthMax=99";
+    const url = "http://localhost:3000/artworks/search?widthMin=0&widthMax=99";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
@@ -150,7 +150,7 @@ tap.test("Search: Width", (t) => {
 });
 
 tap.test("Search: Height", (t) => {
-    const url = "http://localhost:3000/search?heightMin=0&heightMax=99";
+    const url = "http://localhost:3000/artworks/search?heightMin=0&heightMax=99";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
@@ -159,7 +159,7 @@ tap.test("Search: Height", (t) => {
 });
 
 tap.test("Search: Similar (Any)", (t) => {
-    const url = "http://localhost:3000/search?similar=any";
+    const url = "http://localhost:3000/artworks/search?similar=any";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
@@ -168,7 +168,7 @@ tap.test("Search: Similar (Any)", (t) => {
 });
 
 tap.test("Search: Similar (Internal)", (t) => {
-    const url = "http://localhost:3000/search?similar=internal";
+    const url = "http://localhost:3000/artworks/search?similar=internal";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
@@ -177,7 +177,7 @@ tap.test("Search: Similar (Internal)", (t) => {
 });
 
 tap.test("Search: Similar (External)", (t) => {
-    const url = "http://localhost:3000/search?similar=external";
+    const url = "http://localhost:3000/artworks/search?similar=external";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
@@ -186,7 +186,7 @@ tap.test("Search: Similar (External)", (t) => {
 });
 
 tap.test("Search: Multiple", (t) => {
-    const url = "http://localhost:3000/search?filter=test&location=test";
+    const url = "http://localhost:3000/artworks/search?filter=test&location=test";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
@@ -195,12 +195,12 @@ tap.test("Search: Multiple", (t) => {
 });
 
 tap.test("Search: Defaults", (t) => {
-    const url = "http://localhost:3000/search?filter=test&location=";
+    const url = "http://localhost:3000/artworks/search?filter=test&location=";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
         t.equal(res.request.uri.href,
-            "http://localhost:3000/search?filter=test");
+            "http://localhost:3000/artworks/search?filter=test");
         t.end();
     });
 });

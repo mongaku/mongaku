@@ -501,11 +501,9 @@ module.exports = function(app) {
         },
 
         routes() {
-            app.get("/search", cache(1), this.search);
             app.get("/:type/search", cache(1), this.search);
             app.get("/:type/facets", cache(1), this.facets);
             app.get("/:type/create", cache(1), this.createRedirect);
-            app.get("/source/:source", cache(1), this.bySource);
             app.get("/:type/source/:source", cache(1), this.bySource);
             app.get("/:type/:source/create", auth, this.createView);
             app.post("/:type/:source/create", auth, this.create);

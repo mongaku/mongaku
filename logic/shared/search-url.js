@@ -3,11 +3,8 @@
 const qs = require("querystring");
 
 const urls = require("../../lib/urls");
-const options = require("../../lib/options");
 const queries = require("./queries");
 const paramFilter = require("./param-filter");
-
-const types = Object.keys(options.types);
 
 const searchURL = (req, query, keepSecondary) => {
     const params = paramFilter(query, keepSecondary);
@@ -15,11 +12,7 @@ const searchURL = (req, query, keepSecondary) => {
     const type = query.type;
     const typeQueries = queries(type);
     let queryString = qs.stringify(params.all);
-    let url = urls.gen(req.lang, "/search");
-
-    if (types.length > 1) {
-        url = urls.gen(req.lang, `/${type}/search`);
-    }
+    let url = urls.gen(req.lang, `/${type}/search`);
 
     if (primary.length === 1 && typeQueries[primary[0]].url) {
         queryString = qs.stringify(params.secondary);
