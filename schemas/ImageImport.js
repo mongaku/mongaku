@@ -91,9 +91,11 @@ Object.assign(ImageImport.methods, Import.methods, {
         const files = [];
         const extractDir = path.join(os.tmpdir(),
             (new Date).getTime().toString());
-
+        console.log("processImages");
         fs.mkdir(extractDir, () => {
+            console.log("zipFile");
             zipFile.pipe(unzip.Parse()).on("entry", (entry) => {
+                console.log("inside");
                 const fileName = path.basename(entry.path);
                 const outFileName = path.join(extractDir, fileName);
 
@@ -118,8 +120,10 @@ Object.assign(ImageImport.methods, Import.methods, {
 
                 files.push(outFileName);
                 entry.pipe(fs.createWriteStream(outFileName));
+                console.log("end");
             })
             .on("error", function() {
+                console.log("error");
                 // Hack from this ticket to force the stream to close:
                 // https://github.com/glebdmitriew/node-unzip-2/issues/8
                 this._streamEnd = true;
@@ -127,16 +131,21 @@ Object.assign(ImageImport.methods, Import.methods, {
                 zipError = true;
             })
             .on("close", () => {
+                console.log("close");
                 if (zipError) {
+                    console.log("zipError");
                     return callback(new Error("ERROR_READING_ZIP"));
                 }
 
                 if (files.length === 0) {
+                    console.log("empty");
                     return callback(new Error("ZIP_FILE_EMPTY"));
                 }
 
+                console.log("here");
                 // Import all of the files as images
                 async.eachLimit(files, 1, (file, callback) => {
+                    console.log("addResult");
                     this.addResult(file, callback);
                 }, (err) => {
                     /* istanbul ignore if */
@@ -144,6 +153,7 @@ Object.assign(ImageImport.methods, Import.methods, {
                         return callback(err);
                     }
 
+                    console.log("setSimilarityState");
                     this.setSimilarityState(callback);
                 });
             });
@@ -152,16 +162,19 @@ Object.assign(ImageImport.methods, Import.methods, {
 
     setSimilarityState(callback) {
         const Image = models("Image");
+        console.log("queueBatchSimilarityUpdate");
         Image.queueBatchSimilarityUpdate(this._id, callback);
     },
 
     addResult(file, callback) {
+        console.log("addResult");
         /* istanbul ignore if */
         if (config.NODE_ENV !== "test") {
             console.log("Adding Image:", path.basename(file));
         }
 
         models("Image").fromFile(this, file, (err, image, warnings) => {
+            console.log("fromFile");
             const fileName = path.basename(file);
 
             const result = {
@@ -181,16 +194,21 @@ Object.assign(ImageImport.methods, Import.methods, {
             this.results.push(result);
 
             if (image) {
+                console.log("saving image");
                 image.save((err) => {
                     /* istanbul ignore if */
                     if (err) {
                         return callback(err);
                     }
 
-                    image.linkToRecords(() =>
-                        this.save(callback));
+                    console.log("saved");
+                    image.linkToRecords(() => {
+                        console.log("linked");
+                        this.save(callback);
+                    });
                 });
             } else {
+                console.log("saved2");
                 this.save(callback);
             }
         });

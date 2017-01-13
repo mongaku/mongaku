@@ -351,7 +351,9 @@ tap.test("ImageImport.advance", (t) => {
     };
 
     const getBatches = (callback) => {
+        console.log("getting batches");
         ImageImport.find({}, "", {}, (err, batches) => {
+            console.log("got batches");
             callback(null, batches.filter((batch) => (batch.state !== "error" &&
                 batch.state !== "completed")));
         });
