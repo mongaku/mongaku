@@ -449,7 +449,9 @@ Record.statics = {
                             continue;
                         }
 
-                        if (data[field] === undefined) {
+                        if (data[field] === undefined && model[field] &&
+                                (model[field].length === undefined ||
+                                    model[field].length > 0)) {
                             model[field] = undefined;
                         }
                     }

@@ -594,6 +594,18 @@ const bindStubs = () => {
             matches = Object.keys(records).map((id) => records[id]);
         }
 
+        for (const record of matches) {
+            if (!record.save.restore) {
+                sandbox.stub(record, "save", (callback) => {
+                    if (!(record._id in records)) {
+                        records[record._id] = record;
+                    }
+
+                    process.nextTick(callback);
+                });
+            }
+        }
+
         if (!callback || extra) {
             const ret = {
                 lean: () => ret,
