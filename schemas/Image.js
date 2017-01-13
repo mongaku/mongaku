@@ -250,6 +250,7 @@ Image.methods = {
 
 Image.statics = {
     fromFile(batch, file, callback) {
+        console.log("Image fromFile");
         const Image = models("Image");
         const Source = models("Source");
 
@@ -260,27 +261,34 @@ Image.statics = {
         const sourceDir = Source.getSource(source).getDirBase();
         const warnings = [];
 
+        console.log("findById");
         this.findById(_id, (err, image) => {
             /* istanbul ignore if */
             if (err) {
+                console.log("ERROR");
                 return callback(new Error("ERROR_RETRIEVING"));
             }
 
             const creating = !image;
 
+            console.log("processImage", filePath);
             this.processImage(filePath, sourceDir, (err, hash) => {
                 if (err) {
+                    console.log("malformed");
                     return callback(new Error("MALFORMED_IMAGE"));
                 }
 
                 // The same image was uploaded, we can just skip the rest
                 if (!creating && hash === image.hash) {
+                    console.log("callback");
                     return callback(null, image, warnings);
                 }
 
+                console.log("getSize");
                 this.getSize(filePath, (err, size) => {
                     /* istanbul ignore if */
                     if (err) {
+                        console.log("malformed");
                         return callback(new Error("MALFORMED_IMAGE"));
                     }
 
@@ -288,6 +296,7 @@ Image.statics = {
                     const height = size.height;
 
                     if (width <= 1 || height <= 1) {
+                        console.log("empty");
                         return callback(new Error("EMPTY_IMAGE"));
                     }
 
@@ -304,6 +313,7 @@ Image.statics = {
                     let model = image;
 
                     if (creating) {
+                        console.log("creating");
                         model = new Image(data);
 
                     } else {
@@ -315,12 +325,15 @@ Image.statics = {
                         warnings.push("TOO_SMALL");
                     }
 
+                    console.log("validating");
                     model.validate((err) => {
                         /* istanbul ignore if */
                         if (err) {
+                            console.log("error saving");
                             return callback(new Error("ERROR_SAVING"));
                         }
 
+                        console.log("callback");
                         callback(null, model, warnings);
                     });
                 });
