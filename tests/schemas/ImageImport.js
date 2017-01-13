@@ -342,7 +342,8 @@ tap.test("processImages (advance, Corrupted File)", (t) => {
     });
 });
 
-tap.test("ImageImport.advance", (t) => {
+// NOTE(jeresig): Increase the timeout as this test can take a while to run
+tap.test("ImageImport.advance", {timeout: 10000}, (t) => {
     const checkStates = (batches, states) => {
         t.equal(batches.length, states.length);
         for (const batch of batches) {
