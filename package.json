@@ -61,7 +61,7 @@
     "moment": "^2.12.0",
     "mongoosastic": "jeresig/mongoosastic#fix-aggs",
     "mongoose": "^4.4.10",
-    "mongoose-version": "^1.0.0",
+    "mongoose-version": "jeresig/mongoose-version#custom-refid-type",
     "morgan": "^1.7.0",
     "naught": "^1.6.0",
     "parse-dimensions": "0.0.7",
