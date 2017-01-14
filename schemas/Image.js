@@ -561,8 +561,11 @@ const images = {
 };
 
 Image.plugin(versioner, {
-    collection: "image_versions",
+    collection: `image_versions`,
     suppressVersionIncrement: false,
+    suppressRefIdIndex: false,
+    refIdType: String,
+    removeVersions: false,
     strategy: "collection",
     mongoose: db.mongoose,
 });
