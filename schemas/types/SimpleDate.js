@@ -9,6 +9,10 @@ const SimpleDateEdit = React.createFactory(
 
 const SimpleDate = function(options) {
     this.options = options;
+
+    this.options.interval = options.interval || "year";
+    this.options.format = options.format || "yyyy";
+
     /*
     name
     type
@@ -17,6 +21,8 @@ const SimpleDate = function(options) {
     placeholder(i18n)
     multiple: Bool
     recommended: Bool
+    interval: String
+    format: String
     */
 };
 
@@ -31,6 +37,16 @@ SimpleDate.prototype = {
 
     fields(value) {
         return {[this.searchName()]: value};
+    },
+
+    formatDate(value) {
+        return value;
+    },
+
+    searchTitle(value, i18n) {
+        const title = this.options.title(i18n);
+        const date = this.formatDate(value, i18n);
+        return `${title}: ${date}`;
     },
 
     renderView(value) {
@@ -49,6 +65,43 @@ SimpleDate.prototype = {
             value,
             multiline: this.options.multiline,
         });
+    },
+
+    filter(value) {
+        return {
+            range: {
+                [this.options.name]: {
+                    gte: value,
+                    lte: value,
+                    format: this.options.format,
+                },
+            },
+        };
+    },
+
+    facet() {
+        return {
+            [this.options.name]: {
+                title: (i18n) => this.options.title(i18n),
+
+                facet: () => ({
+                    date_histogram: {
+                        field: this.options.name,
+                        interval: this.options.interval,
+                        format: this.options.format,
+                    },
+                }),
+
+                formatBuckets: (buckets, i18n) => buckets.map((bucket) => ({
+                    text: bucket.key_as_string,
+                    count: bucket.doc_count,
+                    url: {
+                        [this.options.name]:
+                            this.formatDate(bucket.key_as_string, i18n),
+                    },
+                })).reverse(),
+            },
+        };
     },
 
     schema() {
