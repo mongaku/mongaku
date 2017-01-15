@@ -60,7 +60,7 @@ if (args.v || args.version) {
     shell.exec(`${getBinary("naught")} deploy mongaku.ipc`);
 
 } else if (cmd === "dev") {
-    const cwd = path.dirname(extraArgs[0]);
+    const cwd = process.cwd();
     const localDir = localFile("..");
     const serverjs = localFile("../mongaku.js");
     const ignored = [
@@ -80,9 +80,7 @@ if (args.v || args.version) {
     shell.exec(devCmd);
 
 } else if (cmd === "create" || cmd === "convert") {
-    const [name, configFile] = extraArgs;
-
-    process.env.MONGAKU_OPTIONS = configFile;
+    const [name] = extraArgs;
 
     const init = require("../lib/init");
     const logic = require(`../utils/${cmd}-${name}.js`);
