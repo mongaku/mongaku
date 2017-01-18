@@ -84,7 +84,7 @@
     "eslint-plugin-react": "6.0.0",
     "jsxgettext": "0.9.0",
     "migrate": "0.2.2",
-    "mock-fs": "3.11.0",
+    "mock-fs": "3.12.1",
     "pre-commit": "1.1.2",
     "sinon": "1.17.3",
     "supervisor": "0.11.0",
