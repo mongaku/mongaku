@@ -7,23 +7,67 @@ const options = require("../lib/options");
 
 const Page = require("./Page.jsx");
 
-const EditRecord = React.createClass({
-    propTypes: {
-        dynamicValues: React.PropTypes.any.isRequired,
-        format: React.PropTypes.func.isRequired,
-        gettext: React.PropTypes.func.isRequired,
-        globalFacets: React.PropTypes.any,
-        lang: React.PropTypes.string.isRequired,
-        mode: React.PropTypes.oneOf(["create", "edit", "clone"]).isRequired,
-        record: React.PropTypes.shape({
-            _id: React.PropTypes.string,
-            id: React.PropTypes.string,
-            type: React.PropTypes.string.isRequired,
-            images: React.PropTypes.arrayOf(React.PropTypes.any),
-        }),
-        type: React.PropTypes.string.isRequired,
-    },
+const Image = ({
+    image,
+    record,
+    lang,
+    gettext,
+    title,
+}) => <div className="img col-md-4 col-xs-12 col-sm-6" key={image._id}>
+    <a href={image.getOriginalURL()}>
+        <img src={image.getScaledURL()}
+            alt={title}
+            title={title}
+            className="img-responsive center-block"
+        />
+    </a>
 
+    <div className="details reduced">
+        <form
+            action={record.getRemoveImageURL(lang)}
+            method="POST"
+            encType="multipart/form-data"
+        >
+            <input
+                type="hidden"
+                name="lang"
+                value={lang}
+            />
+            <input
+                type="hidden"
+                name="image"
+                value={image._id}
+            />
+
+            <button
+                type="submit"
+                className="btn btn-danger btn-xs"
+            >
+                <span
+                    className="glyphicon glyphicon-remove"
+                    aria-hidden="true"
+                />
+                {" "}
+                {gettext("Remove Image")}
+            </button>
+        </form>
+    </div>
+</div>;
+
+Image.propTypes = {
+    gettext: React.PropTypes.func.isRequired,
+    image: React.PropTypes.any.isRequired,
+    lang: React.PropTypes.string.isRequired,
+    record: React.PropTypes.shape({
+        _id: React.PropTypes.string,
+        id: React.PropTypes.string,
+        type: React.PropTypes.string.isRequired,
+        images: React.PropTypes.arrayOf(React.PropTypes.any),
+    }),
+    title: React.PropTypes.string.isRequired,
+};
+
+class EditRecord extends React.Component {
     getTitle() {
         const {record, mode, format, gettext, type} = this.props;
 
@@ -41,118 +85,10 @@ const EditRecord = React.createClass({
         }
 
         return format(gettext("Updating '%(recordTitle)s'"), {recordTitle});
-    },
-
-    renderRecord() {
-        const {record, lang} = this.props;
-        const postURL = record ?
-            (record._id ?
-                record.getEditURL(lang) :
-                record.getCreateURL(lang)) :
-            "";
-
-        return <div className="col-md-12 imageholder">
-            <form
-                action={postURL}
-                method="POST"
-                encType="multipart/form-data"
-                data-validate={true}
-            >
-                <input type="hidden" name="lang"
-                    value={lang}
-                />
-                <div className="responsive-table">
-                    <table className="table table-hover">
-                        <thead>
-                            <tr className="plain">
-                                <th/>
-                                {this.renderTitle()}
-                            </tr>
-                            <tr className="plain">
-                                <td/>
-                                {this.renderImages(record)}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.renderImageForm()}
-                            {this.renderIDForm()}
-                            {this.renderMetadata()}
-                            {this.renderSubmitButton()}
-                        </tbody>
-                    </table>
-                </div>
-            </form>
-        </div>;
-    },
-
-    renderTitle() {
-        const title = this.getTitle();
-
-        return <th className="col-xs-12 text-center">
-            <h1 className="panel-title">{title}</h1>
-        </th>;
-    },
-
-    renderImages() {
-        const {record} = this.props;
-
-        return <td>
-            <div>
-                <div>
-                    {record && record.images.map((image, i) =>
-                        this.renderImage(image, i))}
-                </div>
-            </div>
-        </td>;
-    },
-
-    renderImage(image) {
-        const {record} = this.props;
-
-        return <div className="img col-md-4 col-xs-12 col-sm-6" key={image._id}>
-            <a href={image.getOriginalURL()}>
-                <img src={image.getScaledURL()}
-                    alt={this.getTitle()}
-                    title={this.getTitle()}
-                    className="img-responsive center-block"
-                />
-            </a>
-
-            <div className="details reduced">
-                <form
-                    action={record.getRemoveImageURL(this.props.lang)}
-                    method="POST"
-                    encType="multipart/form-data"
-                >
-                    <input
-                        type="hidden"
-                        name="lang"
-                        value={this.props.lang}
-                    />
-                    <input
-                        type="hidden"
-                        name="image"
-                        value={image._id}
-                    />
-
-                    <button
-                        type="submit"
-                        className="btn btn-danger btn-xs"
-                    >
-                        <span
-                            className="glyphicon glyphicon-remove"
-                            aria-hidden="true"
-                        />
-                        {" "}
-                        {this.props.gettext("Remove Image")}
-                    </button>
-                </form>
-            </div>
-        </div>;
-    },
+    }
 
     renderIDForm() {
-        const {record, type} = this.props;
+        const {record, type, gettext} = this.props;
 
         if (options.types[type].autoID || record && record._id) {
             return null;
@@ -161,7 +97,7 @@ const EditRecord = React.createClass({
         return <tr className="has-error">
             <th className="text-right">
                 <label className="control-label">
-                    {this.props.gettext("ID")}
+                    {gettext("ID")}
                 </label>
             </th>
             <td>
@@ -174,10 +110,10 @@ const EditRecord = React.createClass({
                 />
             </td>
         </tr>;
-    },
+    }
 
     renderImageForm() {
-        const {type} = this.props;
+        const {type, gettext} = this.props;
 
         if (options.types[type].noImages) {
             return null;
@@ -185,7 +121,7 @@ const EditRecord = React.createClass({
 
         return <tr>
             <th className="text-right">
-                {this.props.gettext("Add Images")}
+                {gettext("Add Images")}
             </th>
             <td>
                 <input
@@ -196,17 +132,17 @@ const EditRecord = React.createClass({
                 />
             </td>
         </tr>;
-    },
+    }
 
     renderMetadata() {
-        const {type, globalFacets} = this.props;
+        const {type, globalFacets, dynamicValues, gettext} = this.props;
         const model = metadata.model(type);
         const props = Object.keys(options.types[type].model);
         let hasPrivate = false;
 
         const fields = props.map((type) => {
             const typeSchema = model[type];
-            const dynamicValue = this.props.dynamicValues[type];
+            const dynamicValue = dynamicValues[type];
             const values = (globalFacets[type] || [])
                 .map((bucket) => bucket.text).sort();
             const isPrivate = typeSchema.options.private;
@@ -233,23 +169,24 @@ const EditRecord = React.createClass({
                             className="toggle-private"
                         />
                         {" "}
-                        {this.props.gettext(
-                            "Show private fields.")}
+                        {gettext("Show private fields.")}
                     </label>
                 </td>
             </tr>);
         }
 
         return fields;
-    },
+    }
 
     renderSubmitButton() {
-        let buttonText = this.props.gettext("Update");
+        const {gettext, mode} = this.props;
 
-        if (this.props.mode === "create") {
-            buttonText = this.props.gettext("Create");
-        } else if (this.props.mode === "clone") {
-            buttonText = this.props.gettext("Clone");
+        let buttonText = gettext("Update");
+
+        if (mode === "create") {
+            buttonText = gettext("Create");
+        } else if (mode === "clone") {
+            buttonText = gettext("Clone");
         }
 
         return <tr>
@@ -262,13 +199,13 @@ const EditRecord = React.createClass({
                 />
             </td>
         </tr>;
-    },
+    }
 
     renderCloneButton() {
         const {gettext, record, mode, lang} = this.props;
 
         if (mode !== "edit") {
-            return;
+            return null;
         }
 
         return <div className="row">
@@ -279,9 +216,15 @@ const EditRecord = React.createClass({
                 {gettext("Clone Record")}
             </a>
         </div>;
-    },
+    }
 
     render() {
+        const {record, lang} = this.props;
+        const postURL = record ?
+            (record._id ?
+                record.getEditURL(lang) :
+                record.getCreateURL(lang)) :
+            "";
         const title = this.getTitle();
 
         return <Page
@@ -290,10 +233,72 @@ const EditRecord = React.createClass({
         >
             {this.renderCloneButton()}
             <div className="row">
-                {this.renderRecord()}
+                <div className="col-md-12 imageholder">
+                    <form
+                        action={postURL}
+                        method="POST"
+                        encType="multipart/form-data"
+                        data-validate={true}
+                    >
+                        <input type="hidden" name="lang"
+                            value={lang}
+                        />
+                        <div className="responsive-table">
+                            <table className="table table-hover">
+                                <thead>
+                                    <tr className="plain">
+                                        <th/>
+                                        <th className="col-xs-12 text-center">
+                                            <h1 className="panel-title">
+                                                {title}
+                                            </h1>
+                                        </th>
+                                    </tr>
+                                    <tr className="plain">
+                                        <td/>
+                                        <td>
+                                            <div>
+                                                <div>
+                                                    {record && record.images
+                                                        .map((image) => <Image
+                                                            {...this.props}
+                                                            image={image}
+                                                            title={title}
+                                                        />)}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.renderImageForm()}
+                                    {this.renderIDForm()}
+                                    {this.renderMetadata()}
+                                    {this.renderSubmitButton()}
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
             </div>
         </Page>;
-    },
-});
+    }
+}
+
+EditRecord.propTypes = {
+    dynamicValues: React.PropTypes.any.isRequired,
+    format: React.PropTypes.func.isRequired,
+    gettext: React.PropTypes.func.isRequired,
+    globalFacets: React.PropTypes.any,
+    lang: React.PropTypes.string.isRequired,
+    mode: React.PropTypes.oneOf(["create", "edit", "clone"]).isRequired,
+    record: React.PropTypes.shape({
+        _id: React.PropTypes.string,
+        id: React.PropTypes.string,
+        type: React.PropTypes.string.isRequired,
+        images: React.PropTypes.arrayOf(React.PropTypes.any),
+    }),
+    type: React.PropTypes.string.isRequired,
+};
 
 module.exports = EditRecord;

@@ -6,154 +6,241 @@ const options = require("../lib/options");
 
 const Page = require("./Page.jsx");
 
-const importsType = React.PropTypes.arrayOf(
-    React.PropTypes.shape({
-        _id: React.PropTypes.string.isRequired,
-        error: React.PropTypes.string,
-        fileName: React.PropTypes.string.isRequired,
-        getFilteredResults: React.PropTypes.func.isRequired,
-        modified: React.PropTypes.instanceOf(Date).isRequired,
-        state: React.PropTypes.string.isRequired,
-    })
-).isRequired;
+const importType = React.PropTypes.shape({
+    _id: React.PropTypes.string.isRequired,
+    error: React.PropTypes.string,
+    fileName: React.PropTypes.string.isRequired,
+    getFilteredResults: React.PropTypes.func.isRequired,
+    modified: React.PropTypes.instanceOf(Date).isRequired,
+    state: React.PropTypes.string.isRequired,
+});
+const importsType = React.PropTypes.arrayOf(importType).isRequired;
 
-module.exports = React.createClass({
-    propTypes: {
-        URL: React.PropTypes.func.isRequired,
-        batchError: React.PropTypes.func.isRequired,
-        batchState: React.PropTypes.func.isRequired,
-        dataImport: importsType,
-        format: React.PropTypes.func.isRequired,
-        fullName: React.PropTypes.func.isRequired,
-        gettext: React.PropTypes.func.isRequired,
-        imageImport: importsType,
-        lang: React.PropTypes.string.isRequired,
-        relativeDate: React.PropTypes.func.isRequired,
-        source: React.PropTypes.any.isRequired,
-    },
+const ImageImport = ({
+    batch,
+    batchError,
+    batchState,
+    format,
+    gettext,
+    relativeDate,
+    URL,
+}) => {
+    const results = batch.getFilteredResults();
+    let columns;
 
-    hasImages() {
-        return options.types[this.props.source.type].hasImages();
-    },
+    if (batch.state === "error") {
+        columns = <td colSpan="4">
+            {format(gettext("Error: %(error)s"),
+                {error: batchError(batch)})}
+        </td>;
+    } else {
+        columns = [
+            <td key="state">{batchState(batch)}</td>,
+            <td key="models">{results.models.length}</td>,
+            <td key="errors">{results.errors.length}</td>,
+            <td key="warnings">{results.warnings.length}</td>,
+        ];
+    }
 
-    renderUploadImagesForm() {
-        if (!this.hasImages()) {
-            return null;
-        }
+    return <tr>
+        <td><a href={URL(batch)}>{batch.fileName}</a></td>
+        <td>{relativeDate(batch.modified)}</td>
+        {columns}
+    </tr>;
+};
 
-        return <div className="panel panel-default">
-            <div className="panel-heading">
-                <h3 className="panel-title">
-                    {this.props.gettext("Upload Images")}
-                </h3>
-            </div>
-            <div className="panel-body">
-                <form action={this.props.URL(
-                        `/${this.props.source.type}/source` +
-                        `/${this.props.source._id}/upload-images`)}
-                    method="POST" encType="multipart/form-data"
-                >
-                    <input type="hidden" name="lang" value={this.props.lang}/>
-                    <p>
-                        {this.props.gettext("Upload a Zip file (.zip) of " +
-                            "JPG images (.jpg or .jpeg).")}
-                        {" "}
-                        {this.props.gettext("Names of images should match " +
-                            "the names provided in the metadata.")}
-                        {" "}
-                        {this.props.gettext("After you've uploaded a new " +
-                            "batch of images they will be processed " +
-                            "immediately but their similarity to other " +
-                            "images will be computed in the background over " +
-                            "the subsequent hours and days.")}
-                    </p>
+ImageImport.propTypes = {
+    URL: React.PropTypes.func.isRequired,
+    batch: importType,
+    batchError: React.PropTypes.func.isRequired,
+    batchState: React.PropTypes.func.isRequired,
+    format: React.PropTypes.func.isRequired,
+    gettext: React.PropTypes.func.isRequired,
+    relativeDate: React.PropTypes.func.isRequired,
+};
 
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <input type="file" name="zipField"
-                                className="form-control"
-                            />
-                        </div>
-                        {" "}
-                        <input type="submit"
-                            value={this.props.gettext("Upload")}
-                            className="btn btn-primary"
-                        />
-                    </div>
-                </form>
-            </div>
-        </div>;
-    },
+const ImageImports = (props) => {
+    const {gettext, imageImport} = props;
 
-    renderImageImports() {
-        return <div className="responsive-table">
-            <table className="table">
-                <thead>
-                    <tr>
-                        <th>{this.props.gettext("File Name")}</th>
-                        <th>{this.props.gettext("Last Updated")}</th>
-                        <th>{this.props.gettext("Status")}</th>
-                        <th>{this.props.gettext("Images")}</th>
-                        <th>{this.props.gettext("Errors")}</th>
-                        <th>{this.props.gettext("Warnings")}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {this.props.imageImport.map((batch) =>
-                        this.renderImageImport(batch))}
-                </tbody>
-            </table>
-        </div>;
-    },
+    return <div className="responsive-table">
+        <table className="table">
+            <thead>
+                <tr>
+                    <th>{gettext("File Name")}</th>
+                    <th>{gettext("Last Updated")}</th>
+                    <th>{gettext("Status")}</th>
+                    <th>{gettext("Images")}</th>
+                    <th>{gettext("Errors")}</th>
+                    <th>{gettext("Warnings")}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {imageImport.map((batch) =>
+                    <ImageImport {...props} batch={batch} key={batch._id} />)}
+            </tbody>
+        </table>
+    </div>;
+};
 
-    renderImageImport(batch) {
-        const results = batch.getFilteredResults();
-        let columns;
+ImageImports.propTypes = {
+    gettext: React.PropTypes.func.isRequired,
+    imageImport: importsType,
+};
 
-        if (batch.state === "error") {
-            columns = <td colSpan="4">
-                {this.props.format(this.props.gettext("Error: %(error)s"),
-                    {error: this.props.batchError(batch)})}
-            </td>;
-        } else {
-            columns = [
-                <td key="state">{this.props.batchState(batch)}</td>,
-                <td key="models">{results.models.length}</td>,
-                <td key="errors">{results.errors.length}</td>,
-                <td key="warnings">{results.warnings.length}</td>,
-            ];
-        }
-
-        return <tr key={batch._id}>
-            <td><a href={this.props.URL(batch)}>{batch.fileName}</a></td>
-            <td>{this.props.relativeDate(batch.modified)}</td>
-            {columns}
-        </tr>;
-    },
-
-    renderUploadDataForm() {
-        return <div className="panel panel-default">
-            <div className="panel-heading">
-                <h3 className="panel-title">
-                    {this.props.gettext("Upload Metadata")}
-                </h3>
-            </div>
-            <div className="panel-body">
-                {this.renderUploadDataFormContents()}
-            </div>
-        </div>;
-    },
-
-    renderUploadDataFormContents() {
-        const files = this.props.source.getExpectedFiles();
-
-        return <form action={this.props.URL(
-                `/${this.props.source.type}/source` +
-                `/${this.props.source._id}/upload-data`)}
+const UploadImagesForm = ({
+    gettext,
+    source,
+    lang,
+    URL,
+}) => <div className="panel panel-default">
+    <div className="panel-heading">
+        <h3 className="panel-title">
+            {gettext("Upload Images")}
+        </h3>
+    </div>
+    <div className="panel-body">
+        <form action={URL(
+                `/${source.type}/source/${source._id}/upload-images`)}
             method="POST" encType="multipart/form-data"
         >
-            <input type="hidden" name="lang" value={this.props.lang}/>
-            {files.map((file, i) => <div key={`file${i}`}>
+            <input type="hidden" name="lang" value={lang}/>
+            <p>
+                {gettext("Upload a Zip file (.zip) of " +
+                    "JPG images (.jpg or .jpeg).")}
+                {" "}
+                {gettext("Names of images should match " +
+                    "the names provided in the metadata.")}
+                {" "}
+                {gettext("After you've uploaded a new " +
+                    "batch of images they will be processed " +
+                    "immediately but their similarity to other " +
+                    "images will be computed in the background over " +
+                    "the subsequent hours and days.")}
+            </p>
+
+            <div className="form-inline">
+                <div className="form-group">
+                    <input type="file" name="zipField"
+                        className="form-control"
+                    />
+                </div>
+                {" "}
+                <input type="submit"
+                    value={gettext("Upload")}
+                    className="btn btn-primary"
+                />
+            </div>
+        </form>
+    </div>
+</div>;
+
+UploadImagesForm.propTypes = {
+    URL: React.PropTypes.func.isRequired,
+    gettext: React.PropTypes.func.isRequired,
+    lang: React.PropTypes.string.isRequired,
+    source: React.PropTypes.any.isRequired,
+};
+
+const DataImport = ({
+    batch,
+    batchError,
+    batchState,
+    format,
+    gettext,
+    relativeDate,
+    URL,
+}) => {
+    const results = batch.getFilteredResults();
+    let columns;
+
+    if (batch.state === "error") {
+        columns = <td colSpan="7">
+            {format(gettext("Error: %(error)s"), {error: batchError(batch)})}
+        </td>;
+    } else {
+        columns = [
+            batch.state === "process.completed" && <td key="finalize">
+                <a href={URL(batch)} className="btn btn-success btn-xs">
+                    {gettext("Finalize Import")}
+                </a>
+            </td>,
+            batch.state !== "process.completed" &&
+                <td key="state">{batchState(batch)}</td>,
+            <td key="unprocessed">{results.unprocessed.length}</td>,
+            <td key="created">{results.created.length}</td>,
+            <td key="changed">{results.changed.length}</td>,
+            <td key="deleted">{results.deleted.length}</td>,
+            <td key="errors">{results.errors.length}</td>,
+            <td key="warnings">{results.warnings.length}</td>,
+        ];
+    }
+
+    return <tr>
+        <td><a href={URL(batch)}>{batch.fileName}</a></td>
+        <td>{relativeDate(batch.modified)}</td>
+        {columns}
+    </tr>;
+};
+
+DataImport.propTypes = {
+    URL: React.PropTypes.func.isRequired,
+    batch: importType,
+    batchError: React.PropTypes.func.isRequired,
+    batchState: React.PropTypes.func.isRequired,
+    format: React.PropTypes.func.isRequired,
+    gettext: React.PropTypes.func.isRequired,
+    relativeDate: React.PropTypes.func.isRequired,
+};
+
+const DataImports = (props) => {
+    const {gettext, dataImport} = props;
+
+    return <div className="responsive-table">
+        <table className="table">
+            <thead>
+                <tr>
+                    <th>{gettext("File Name")}</th>
+                    <th>{gettext("Last Updated")}</th>
+                    <th>{gettext("Status")}</th>
+                    <th>{gettext("Unprocessed")}</th>
+                    <th>{gettext("Created")}</th>
+                    <th>{gettext("Updated")}</th>
+                    <th>{gettext("Deleted")}</th>
+                    <th>{gettext("Errors")}</th>
+                    <th>{gettext("Warnings")}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {dataImport.map((batch) =>
+                    <DataImport {...props} batch={batch} key={batch._id} />)}
+            </tbody>
+        </table>
+    </div>;
+};
+
+DataImports.propTypes = {
+    dataImport: importsType,
+    gettext: React.PropTypes.func.isRequired,
+};
+
+const UploadDataForm = ({
+    gettext,
+    source,
+    lang,
+    URL,
+}) => <div className="panel panel-default">
+    <div className="panel-heading">
+        <h3 className="panel-title">
+            {gettext("Upload Metadata")}
+        </h3>
+    </div>
+    <div className="panel-body">
+        <form action={URL(
+                `/${source.type}/source/${source._id}/upload-data`)}
+            method="POST" encType="multipart/form-data"
+        >
+            <input type="hidden" name="lang" value={lang}/>
+            {source.getExpectedFiles().map((file, i) => <div key={`file${i}`}>
                 <p>{file}</p>
 
                 <div className="form-inline">
@@ -163,89 +250,59 @@ module.exports = React.createClass({
                         />
                     </div>
                     {" "}
-                    {files.length - 1 === i && <input type="submit"
-                        value={this.props.gettext("Upload")}
-                        className="btn btn-primary"
-                    />}
+                    {source.getExpectedFiles().length - 1 === i &&
+                        <input type="submit"
+                            value={gettext("Upload")}
+                            className="btn btn-primary"
+                        />}
                 </div>
             </div>)}
-        </form>;
-    },
+        </form>
+    </div>
+</div>;
 
-    renderDataImports() {
-        return <div className="responsive-table">
-            <table className="table">
-                <thead>
-                    <tr>
-                        <th>{this.props.gettext("File Name")}</th>
-                        <th>{this.props.gettext("Last Updated")}</th>
-                        <th>{this.props.gettext("Status")}</th>
-                        <th>{this.props.gettext("Unprocessed")}</th>
-                        <th>{this.props.gettext("Created")}</th>
-                        <th>{this.props.gettext("Updated")}</th>
-                        <th>{this.props.gettext("Deleted")}</th>
-                        <th>{this.props.gettext("Errors")}</th>
-                        <th>{this.props.gettext("Warnings")}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {this.props.dataImport.map((batch) =>
-                        this.renderDataImport(batch))}
-                </tbody>
-            </table>
-        </div>;
-    },
+UploadDataForm.propTypes = {
+    URL: React.PropTypes.func.isRequired,
+    gettext: React.PropTypes.func.isRequired,
+    lang: React.PropTypes.string.isRequired,
+    source: React.PropTypes.any.isRequired,
+};
 
-    renderDataImport(batch) {
-        const results = batch.getFilteredResults();
-        let columns;
+const Admin = (props) => {
+    const {
+        format,
+        gettext,
+        fullName,
+        imageImport,
+        dataImport,
+        source,
+    } = props;
+    const hasImages = options.types[source.type].hasImages();
+    const title = format(gettext("%(name)s Admin Area"), {
+        name: fullName(source),
+    });
 
-        if (batch.state === "error") {
-            columns = <td colSpan="7">
-                {this.props.format(this.props.gettext("Error: %(error)s"),
-                    {error: this.props.batchError(batch)})}
-            </td>;
-        } else {
-            columns = [
-                batch.state === "process.completed" && <td key="finalize">
-                    <a href={this.props.URL(batch)}
-                        className="btn btn-success btn-xs"
-                    >
-                        {this.props.gettext("Finalize Import")}
-                    </a>
-                </td>,
-                batch.state !== "process.completed" &&
-                    <td key="state">{this.props.batchState(batch)}</td>,
-                <td key="unprocessed">{results.unprocessed.length}</td>,
-                <td key="created">{results.created.length}</td>,
-                <td key="changed">{results.changed.length}</td>,
-                <td key="deleted">{results.deleted.length}</td>,
-                <td key="errors">{results.errors.length}</td>,
-                <td key="warnings">{results.warnings.length}</td>,
-            ];
-        }
+    return <Page
+        {...props}
+        title={title}
+    >
+        <h1>{title}</h1>
+        {hasImages && <UploadImagesForm {...props} />}
+        {imageImport.length > 0 && <ImageImports {...props} />}
+        {<UploadDataForm {...props} />}
+        {dataImport.length > 0 && <DataImports {...props} />}
+    </Page>;
+};
 
-        return <tr key={batch._id}>
-            <td><a href={this.props.URL(batch)}>{batch.fileName}</a></td>
-            <td>{this.props.relativeDate(batch.modified)}</td>
-            {columns}
-        </tr>;
-    },
+Admin.propTypes = {
+    URL: React.PropTypes.func.isRequired,
+    dataImport: importsType,
+    format: React.PropTypes.func.isRequired,
+    fullName: React.PropTypes.func.isRequired,
+    gettext: React.PropTypes.func.isRequired,
+    imageImport: importsType,
+    lang: React.PropTypes.string.isRequired,
+    source: React.PropTypes.any.isRequired,
+};
 
-    render() {
-        const title = this.props.format(
-            this.props.gettext("%(name)s Admin Area"),
-            {name: this.props.fullName(this.props.source)});
-
-        return <Page
-            {...this.props}
-            title={title}
-        >
-            <h1>{title}</h1>
-            {this.renderUploadImagesForm()}
-            {this.props.imageImport.length > 0 && this.renderImageImports()}
-            {this.renderUploadDataForm()}
-            {this.props.dataImport.length > 0 && this.renderDataImports()}
-        </Page>;
-    },
-});
+module.exports = Admin;
