@@ -15,6 +15,7 @@ iconv.getCodec("utf8");
 // Force babel sub-modules to preload
 require("babel-preset-react");
 require("babel-helper-builder-react-jsx");
+require("babel-plugin-flow-react-proptypes");
 require("../lib/babel");
 
 // Load in global ENV

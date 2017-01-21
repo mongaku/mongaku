@@ -1,3 +1,5 @@
+// @flow
+
 "use strict";
 
 const React = require("react");
@@ -6,15 +8,46 @@ const options = require("../lib/options");
 
 const Page = require("./Page.jsx");
 
-const importType = React.PropTypes.shape({
-    _id: React.PropTypes.string.isRequired,
-    error: React.PropTypes.string,
-    fileName: React.PropTypes.string.isRequired,
-    getFilteredResults: React.PropTypes.func.isRequired,
-    modified: React.PropTypes.instanceOf(Date).isRequired,
-    state: React.PropTypes.string.isRequired,
-});
-const importsType = React.PropTypes.arrayOf(importType).isRequired;
+type Props = {
+    // GlobalProps
+    URL: (path: string | {getURL: (lang: string) => string}) => string,
+    format: (text: string, options: {}) => string,
+    fullName: (name: *) => string,
+    gettext: (text: string) => string,
+    lang: string,
+    relativeDate: (date: Date) => string,
+
+    dataImport: Array<Import>,
+    imageImport: Array<Import>,
+    batchError: (batch: Import) => string,
+    batchState: (batch: Import) => string,
+    source: {
+        _id: string,
+        type: string,
+        getExpectedFiles: () => Array<string>,
+        getURL: (lang: string) => string,
+    },
+};
+
+type Import = {
+    _id: string,
+    error?: string,
+    fileName: string,
+    getFilteredResults: () => ImportResults,
+    getURL: (lang: string) => string,
+    modified: Date,
+    state: string,
+};
+
+type ImportResults = {
+    models: [],
+    unprocessed: [],
+    created: [],
+    changed: [],
+    deleted: [],
+    errors: [],
+    warnings: [],
+};
 
 const ImageImport = ({
     batch,
@@ -24,7 +57,7 @@ const ImageImport = ({
     gettext,
     relativeDate,
     URL,
-}) => {
+}: Props & {batch: Import}) => {
     const results = batch.getFilteredResults();
     let columns;
 
@@ -49,17 +82,7 @@ const ImageImport = ({
     </tr>;
 };
 
-ImageImport.propTypes = {
-    URL: React.PropTypes.func.isRequired,
-    batch: importType,
-    batchError: React.PropTypes.func.isRequired,
-    batchState: React.PropTypes.func.isRequired,
-    format: React.PropTypes.func.isRequired,
-    gettext: React.PropTypes.func.isRequired,
-    relativeDate: React.PropTypes.func.isRequired,
-};
-
-const ImageImports = (props) => {
+const ImageImports = (props: Props) => {
     const {gettext, imageImport} = props;
 
     return <div className="responsive-table">
@@ -82,17 +105,12 @@ const ImageImports = (props) => {
     </div>;
 };
 
-ImageImports.propTypes = {
-    gettext: React.PropTypes.func.isRequired,
-    imageImport: importsType,
-};
-
 const UploadImagesForm = ({
     gettext,
     source,
     lang,
     URL,
-}) => <div className="panel panel-default">
+}: Props) => <div className="panel panel-default">
     <div className="panel-heading">
         <h3 className="panel-title">
             {gettext("Upload Images")}
@@ -134,13 +152,6 @@ const UploadImagesForm = ({
     </div>
 </div>;
 
-UploadImagesForm.propTypes = {
-    URL: React.PropTypes.func.isRequired,
-    gettext: React.PropTypes.func.isRequired,
-    lang: React.PropTypes.string.isRequired,
-    source: React.PropTypes.any.isRequired,
-};
-
 const DataImport = ({
     batch,
     batchError,
@@ -149,7 +160,7 @@ const DataImport = ({
     gettext,
     relativeDate,
     URL,
-}) => {
+}: Props & {batch: Import}) => {
     const results = batch.getFilteredResults();
     let columns;
 
@@ -182,17 +193,7 @@ const DataImport = ({
     </tr>;
 };
 
-DataImport.propTypes = {
-    URL: React.PropTypes.func.isRequired,
-    batch: importType,
-    batchError: React.PropTypes.func.isRequired,
-    batchState: React.PropTypes.func.isRequired,
-    format: React.PropTypes.func.isRequired,
-    gettext: React.PropTypes.func.isRequired,
-    relativeDate: React.PropTypes.func.isRequired,
-};
-
-const DataImports = (props) => {
+const DataImports = (props: Props) => {
     const {gettext, dataImport} = props;
 
     return <div className="responsive-table">
@@ -218,17 +219,12 @@ const DataImports = (props) => {
     </div>;
 };
 
-DataImports.propTypes = {
-    dataImport: importsType,
-    gettext: React.PropTypes.func.isRequired,
-};
-
 const UploadDataForm = ({
     gettext,
     source,
     lang,
     URL,
-}) => <div className="panel panel-default">
+}: Props) => <div className="panel panel-default">
     <div className="panel-heading">
         <h3 className="panel-title">
             {gettext("Upload Metadata")}
@@ -261,14 +257,7 @@ const UploadDataForm = ({
     </div>
 </div>;
 
-UploadDataForm.propTypes = {
-    URL: React.PropTypes.func.isRequired,
-    gettext: React.PropTypes.func.isRequired,
-    lang: React.PropTypes.string.isRequired,
-    source: React.PropTypes.any.isRequired,
-};
-
-const Admin = (props) => {
+const Admin = (props: Props) => {
     const {
         format,
         gettext,
@@ -292,17 +281,6 @@ const Admin = (props) => {
         {<UploadDataForm {...props} />}
         {dataImport.length > 0 && <DataImports {...props} />}
     </Page>;
-};
-
-Admin.propTypes = {
-    URL: React.PropTypes.func.isRequired,
-    dataImport: importsType,
-    format: React.PropTypes.func.isRequired,
-    fullName: React.PropTypes.func.isRequired,
-    gettext: React.PropTypes.func.isRequired,
-    imageImport: importsType,
-    lang: React.PropTypes.string.isRequired,
-    source: React.PropTypes.any.isRequired,
 };
 
 module.exports = Admin;

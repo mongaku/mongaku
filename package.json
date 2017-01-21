@@ -7,7 +7,7 @@
     "mongaku": "bin/mongaku.js"
   },
   "scripts": {
-    "lint": "eslint lib/*.js logic/*.js logic/shared/*.js schemas/*.js server/*.js server/*/*.js utils/*.js converters/*.js tests/*.js *.js views/*.jsx views/types/*/*.jsx",
+    "lint": "eslint lib/*.js logic/*.js logic/shared/*.js schemas/*.js server/*.js server/*/*.js utils/*.js converters/*.js tests/*.js *.js views/*.jsx views/types/*/*.jsx && npm run flow",
     "test": "npm run lint && NODE_ENV=test tap --cov tests/schemas/*.js tests/logic/shared/*.js tests/logic/*.js",
     "dev": "supervisor -e js,jsx -i node_modules,old,locales,converters,sources,public -- mongaku.js options.jsx",
     "dev-test": "NODE_ENV=test supervisor -e js,jsx -i node_modules,old,locales,converters,sources,public tests/server.js",
@@ -16,7 +16,8 @@
     "update-i18n": "tx pull -a && po2json.js -p translations/de/messages.po > translations/de/messages.json && po2json.js -p translations/it/messages.po > translations/it/messages.json",
     "migrate": "migrate",
     "coverage": "NODE_ENV=test tap --cov --coverage-report=lcov tests/schemas/*.js tests/logic/*.js",
-    "test-file": "NODE_ENV=test tap --cov"
+    "test-file": "NODE_ENV=test tap --cov",
+    "flow": "flow"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
   "homepage": "https://github.com/mongaku/mongaku",
   "dependencies": {
     "async": "2.1.4",
+    "babel-plugin-flow-react-proptypes": "0.20.0",
     "babel-preset-es2015": "6.18.0",
     "babel-preset-react": "6.16.0",
     "babel-register": "6.18.0",
@@ -80,8 +82,11 @@
     "yearrange": "0.0.5"
   },
   "devDependencies": {
+    "babel-eslint": "7.1.1",
     "eslint": "3.13.1",
+    "eslint-plugin-flowtype": "2.30.0",
     "eslint-plugin-react": "6.9.0",
+    "flow-bin": "0.38.0",
     "jsxgettext": "0.9.0",
     "migrate": "0.2.3",
     "mock-fs": "3.12.1",

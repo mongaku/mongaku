@@ -1,0 +1,6 @@
+[options]
+module.file_ext=.js
+module.file_ext=.jsx
+
+[ignore]
+<PROJECT_ROOT>/node_modules/fbjs

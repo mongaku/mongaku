@@ -1,3 +1,5 @@
+// @flow
+
 "use strict";
 
 const React = require("react");
@@ -7,12 +9,46 @@ const options = require("../lib/options");
 
 const Page = require("./Page.jsx");
 
+type Props = {
+    // GlobalProps
+    URL: (path: string | {getURL: (lang: string) => string}) => string,
+    format: (text: string, options: {}) => string,
+    gettext: (text: string) => string,
+    lang: string,
+
+    dynamicValues: {},
+    globalFacets?: Array<{
+        text: string,
+    }>,
+    mode: "create" | "edit" | "clone",
+    record: {
+        _id?: string,
+        id?: string,
+        type: string,
+        images: Array<ImageType>,
+        getEditURL: (lang: string) => string,
+        getCloneURL: (lang: string) => string,
+        getCreateURL: (lang: string) => string,
+        getRemoveImageURL: (lang: string) => string,
+    },
+    type: string,
+};
+
+type ImageType = {
+    _id: string,
+    getOriginalURL: () => string,
+    getScaledURL: () => string,
+};
+
 const Image = ({
     image,
     record,
     lang,
     gettext,
     title,
+}: Props & {
+    image: ImageType,
+    title: string,
 }) => <div className="img col-md-4 col-xs-12 col-sm-6" key={image._id}>
     <a href={image.getOriginalURL()}>
         <img src={image.getScaledURL()}
@@ -54,20 +90,9 @@ const Image = ({
     </div>
 </div>;
 
-Image.propTypes = {
-    gettext: React.PropTypes.func.isRequired,
-    image: React.PropTypes.any.isRequired,
-    lang: React.PropTypes.string.isRequired,
-    record: React.PropTypes.shape({
-        _id: React.PropTypes.string,
-        id: React.PropTypes.string,
-        type: React.PropTypes.string.isRequired,
-        images: React.PropTypes.arrayOf(React.PropTypes.any),
-    }),
-    title: React.PropTypes.string.isRequired,
-};
-
 class EditRecord extends React.Component {
+    props: Props
+
     getTitle() {
         const {record, mode, format, gettext, type} = this.props;
 
@@ -85,6 +110,39 @@ class EditRecord extends React.Component {
         }
 
         return format(gettext("Updating '%(recordTitle)s'"), {recordTitle});
+    }
+
+    renderTitle() {
+        const title = this.getTitle();
+
+        return <tr className="plain">
+            <th/>
+            <th className="col-xs-12 text-center">
+                <h1 className="panel-title">
+                    {title}
+                </h1>
+            </th>
+        </tr>;
+    }
+
+    renderImages() {
+        const {record} = this.props;
+        const title = this.getTitle();
+
+        return <tr className="plain">
+            <td/>
+            <td>
+                <div>
+                    <div>
+                        {record && record.images.map((image) => <Image
+                            {...this.props}
+                            image={image}
+                            title={title}
+                        />)}
+                    </div>
+                </div>
+            </td>
+        </tr>;
     }
 
     renderIDForm() {
@@ -143,7 +201,7 @@ class EditRecord extends React.Component {
         const fields = props.map((type) => {
             const typeSchema = model[type];
             const dynamicValue = dynamicValues[type];
-            const values = (globalFacets[type] || [])
+            const values = (globalFacets && globalFacets[type] || [])
                 .map((bucket) => bucket.text).sort();
             const isPrivate = typeSchema.options.private;
 
@@ -240,35 +298,12 @@ class EditRecord extends React.Component {
                         encType="multipart/form-data"
                         data-validate={true}
                     >
-                        <input type="hidden" name="lang"
-                            value={lang}
-                        />
+                        <input type="hidden" name="lang" value={lang} />
                         <div className="responsive-table">
                             <table className="table table-hover">
                                 <thead>
-                                    <tr className="plain">
-                                        <th/>
-                                        <th className="col-xs-12 text-center">
-                                            <h1 className="panel-title">
-                                                {title}
-                                            </h1>
-                                        </th>
-                                    </tr>
-                                    <tr className="plain">
-                                        <td/>
-                                        <td>
-                                            <div>
-                                                <div>
-                                                    {record && record.images
-                                                        .map((image) => <Image
-                                                            {...this.props}
-                                                            image={image}
-                                                            title={title}
-                                                        />)}
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    {this.renderTitle()}
+                                    {this.renderImages()}
                                 </thead>
                                 <tbody>
                                     {this.renderImageForm()}
@@ -284,21 +319,5 @@ class EditRecord extends React.Component {
         </Page>;
     }
 }
-
-EditRecord.propTypes = {
-    dynamicValues: React.PropTypes.any.isRequired,
-    format: React.PropTypes.func.isRequired,
-    gettext: React.PropTypes.func.isRequired,
-    globalFacets: React.PropTypes.any,
-    lang: React.PropTypes.string.isRequired,
-    mode: React.PropTypes.oneOf(["create", "edit", "clone"]).isRequired,
-    record: React.PropTypes.shape({
-        _id: React.PropTypes.string,
-        id: React.PropTypes.string,
-        type: React.PropTypes.string.isRequired,
-        images: React.PropTypes.arrayOf(React.PropTypes.any),
-    }),
-    type: React.PropTypes.string.isRequired,
-};
 
 module.exports = EditRecord;
