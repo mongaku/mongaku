@@ -19,7 +19,7 @@ type Props = {
 
     dataImport: Array<Import>,
     imageImport: Array<Import>,
-    batchError: (batch: Import) => string,
+    batchError: (error: string) => string,
     batchState: (batch: Import) => string,
     source: {
         _id: string,
@@ -64,7 +64,7 @@ const ImageImport = ({
     if (batch.state === "error") {
         columns = <td colSpan="4">
             {format(gettext("Error: %(error)s"),
-                {error: batchError(batch)})}
+                {error: batchError(batch.error || "")})}
         </td>;
     } else {
         columns = [
@@ -166,7 +166,8 @@ const DataImport = ({
 
     if (batch.state === "error") {
         columns = <td colSpan="7">
-            {format(gettext("Error: %(error)s"), {error: batchError(batch)})}
+            {format(gettext("Error: %(error)s"),
+                {error: batchError(batch.error || "")})}
         </td>;
     } else {
         columns = [

@@ -1,3 +1,5 @@
+// @flow
+
 "use strict";
 
 const React = require("react");
@@ -5,117 +7,163 @@ const React = require("react");
 const Page = require("./Page.jsx");
 const ImportResult = require("./ImportResult.jsx");
 
-const batchType = React.PropTypes.shape({
-    _id: React.PropTypes.string.isRequired,
-    created: React.PropTypes.instanceOf(Date).isRequired,
-    error: React.PropTypes.string,
-    fileName: React.PropTypes.string.isRequired,
-    getFilteredResults: React.PropTypes.func.isRequired,
-    modified: React.PropTypes.instanceOf(Date).isRequired,
-    state: React.PropTypes.string.isRequired,
-});
+type Import = {
+    _id: string,
+    error?: string,
+    fileName: string,
+    getFilteredResults: () => ImportResults,
+    getURL: (lang: string) => string,
+    created: Date,
+    modified: Date,
+    state: string,
+};
 
-const ImportImages = React.createClass({
-    propTypes: {
-        URL: React.PropTypes.func.isRequired,
-        adminURL: React.PropTypes.string.isRequired,
-        batch: batchType.isRequired,
-        batchError: React.PropTypes.func.isRequired,
-        batchState: React.PropTypes.func.isRequired,
-        expanded: React.PropTypes.string,
-        fixedDate: React.PropTypes.func.isRequired,
-        format: React.PropTypes.func.isRequired,
-        fullName: React.PropTypes.func.isRequired,
-        gettext: React.PropTypes.func.isRequired,
-        lang: React.PropTypes.string.isRequired,
-        relativeDate: React.PropTypes.func.isRequired,
-    },
+type ImportResults = {
+    models: Array<Result>,
+    unprocessed: Array<Result>,
+    created: Array<Result>,
+    changed: Array<Result>,
+    deleted: Array<Result>,
+    errors: Array<Result>,
+    warnings: Array<Result>,
+};
 
-    renderErrorResult(result) {
-        return <li key={result.fileName}>
-            {result.fileName}: {this.props.batchError(result.error)}
-        </li>;
-    },
+type ImageType = {
+    _id: string,
+    getOriginalURL: () => string,
+    getScaledURL: () => string,
+    getThumbURL: () => string,
+};
 
-    renderWarningResult(result) {
-        return <li key={result.fileName}>
-            {result.fileName}:
-            <ul>
-                {result.warnings.map((warning) =>
-                    <li key={warning}>{this.props.batchError(warning)}</li>)}
-            </ul>
-        </li>;
-    },
+type Result = {
+    fileName: string,
+    error?: string,
+    model?: ImageType,
+    warnings?: Array<string>,
+};
 
-    renderModelResult(result) {
-        return <div className="img col-xs-6 col-sm-4 col-md-3"
-            key={result.model._id}
-        >
-            <div className="img-wrap">
-                <a href={result.model.getOriginalURL()}>
-                    <img src={result.model.getThumbURL()}
-                        className="img-responsive center-block"
-                    />
-                </a>
-            </div>
-            <div className="details">
-                <div className="wrap">{result.fileName}</div>
-            </div>
-        </div>;
-    },
+type Props = {
+    // GlobalProps
+    URL: (path: string | {getURL: (lang: string) => string}) => string,
+    format: (text: string, options: {}) => string,
+    fullName: (name: *) => string,
+    gettext: (text: string) => string,
+    stringNum: (num: number) => string,
+    lang: string,
+    fixedDate: (date: Date) => string,
+    relativeDate: (date: Date) => string,
 
-    render() {
-        const format = this.props.format;
-        const gettext = this.props.gettext;
+    adminURL: string,
+    batch: Import,
+    batchError: (error: string) => string,
+    batchState: (batch: Import) => string,
+    expanded?: "models" | "unprocessed" | "created" | "changed" | "deleted" |
+        "errors" | "warnings",
+};
 
-        const title = format(gettext("Image Import: %(fileName)s"),
-            {fileName: this.props.batch.fileName});
-        const state = this.props.batch.state === "error" ?
-            format(gettext("Error: %(error)s"),
-                {error: this.props.batchError(this.props.batch.error)}) :
-            this.props.batchState(this.props.batch);
-        const uploadDate = format(gettext("Uploaded: %(date)s"),
-            {date: this.props.fixedDate(this.props.batch.created)});
-        const lastUpdated = format(gettext("Last Updated: %(date)s"),
-            {date: this.props.relativeDate(this.props.batch.modified)});
+const ErrorResult = ({result, batchError}: Props & {result: Result}) => {
+    if (!result.error) {
+        return null;
+    }
 
-        return <Page
-            {...this.props}
-            title={title}
-        >
-            <p><a href={this.props.adminURL} className="btn btn-primary">
-                &laquo; {gettext("Return to Admin Page")}
-            </a></p>
+    return <li>
+        {result.fileName}: {batchError(result.error || "")}
+    </li>;
+};
 
-            <h1>{title}</h1>
-            <p>{uploadDate}</p>
-            <p><strong>{state}</strong></p>
-            {this.props.batch.state !== "completed" &&
-                this.props.batch.state !== "error" && <p>{lastUpdated}</p>}
+const WarningResult = ({result, batchError}: Props & {result: Result}) => {
+    if (!result.warnings) {
+        return null;
+    }
 
-            <ImportResult
-                {...this.props}
-                id="errors"
-                title={this.props.gettext("Errors")}
-                renderResult={this.renderErrorResult}
-            />
+    return <li>
+        {result.fileName}:
+        <ul>
+            {result.warnings.map((warning) =>
+                <li key={warning}>{batchError(warning)}</li>)}
+        </ul>
+    </li>;
+};
 
-            <ImportResult
-                {...this.props}
-                id="warnings"
-                title={this.props.gettext("Warnings")}
-                renderResult={this.renderWarningResult}
-            />
+const ModelResult = ({result}: {result: Result}) => {
+    if (!result.model) {
+        return null;
+    }
 
-            <ImportResult
-                {...this.props}
-                id="models"
-                title={this.props.gettext("Images")}
-                renderResult={this.renderModelResult}
-                numShow={8}
-            />
-        </Page>;
-    },
-});
+    // NOTE(jeresig): The extra result.model && is here due to a weird
+    // bit of logic in Flow. This is possibly a bug.
+    return <div className="img col-xs-6 col-sm-4 col-md-3">
+        <div className="img-wrap">
+            <a href={result.model && result.model.getOriginalURL()}>
+                <img src={result.model.getThumbURL()}
+                    className="img-responsive center-block"
+                />
+            </a>
+        </div>
+        <div className="details">
+            <div className="wrap">{result.fileName}</div>
+        </div>
+    </div>;
+};
+
+const ImportImages = (props: Props) => {
+    const {
+        adminURL,
+        format,
+        gettext,
+        batchError,
+        batch,
+        batchState,
+        fixedDate,
+        relativeDate,
+    } = props;
+    const title = format(gettext("Image Import: %(fileName)s"),
+        {fileName: batch.fileName});
+    const state = batch.state === "error" ?
+        format(gettext("Error: %(error)s"),
+            {error: batchError(batch.error || "")}) :
+        batchState(batch);
+    const uploadDate = format(gettext("Uploaded: %(date)s"),
+        {date: fixedDate(batch.created)});
+    const lastUpdated = format(gettext("Last Updated: %(date)s"),
+        {date: relativeDate(batch.modified)});
+
+    return <Page
+        {...props}
+        title={title}
+    >
+        <p><a href={adminURL} className="btn btn-primary">
+            &laquo; {gettext("Return to Admin Page")}
+        </a></p>
+
+        <h1>{title}</h1>
+        <p>{uploadDate}</p>
+        <p><strong>{state}</strong></p>
+        {batch.state !== "completed" &&
+            batch.state !== "error" && <p>{lastUpdated}</p>}
+
+        <ImportResult
+            {...props}
+            id="errors"
+            title={gettext("Errors")}
+            renderResult={ErrorResult}
+        />
+
+        <ImportResult
+            {...props}
+            id="warnings"
+            title={gettext("Warnings")}
+            renderResult={WarningResult}
+        />
+
+        <ImportResult
+            {...props}
+            id="models"
+            title={gettext("Images")}
+            renderResult={ModelResult}
+            numShow={8}
+        />
+    </Page>;
+};
 
 module.exports = ImportImages;
