@@ -85,23 +85,21 @@ const WarningResult = ({result, batchError}: Props & {result: Result}) => {
     </li>;
 };
 
-const ModelResult = ({result}: {result: Result}) => {
-    if (!result.model) {
+const ModelResult = ({result: {model, fileName}}: {result: Result}) => {
+    if (!model) {
         return null;
     }
 
-    // NOTE(jeresig): The extra result.model && is here due to a weird
-    // bit of logic in Flow. This is possibly a bug.
     return <div className="img col-xs-6 col-sm-4 col-md-3">
         <div className="img-wrap">
-            <a href={result.model && result.model.getOriginalURL()}>
-                <img src={result.model.getThumbURL()}
+            <a href={model.getOriginalURL()}>
+                <img src={model.getThumbURL()}
                     className="img-responsive center-block"
                 />
             </a>
         </div>
         <div className="details">
-            <div className="wrap">{result.fileName}</div>
+            <div className="wrap">{fileName}</div>
         </div>
     </div>;
 };

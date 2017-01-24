@@ -1,3 +1,5 @@
+// @flow
+
 "use strict";
 
 const React = require("react");
@@ -7,205 +9,262 @@ const record = require("../lib/record");
 const Page = require("./Page.jsx");
 const ImportResult = require("./ImportResult.jsx");
 
-const batchType = React.PropTypes.shape({
-    _id: React.PropTypes.string.isRequired,
-    created: React.PropTypes.instanceOf(Date).isRequired,
-    error: React.PropTypes.string,
-    fileName: React.PropTypes.string.isRequired,
-    getFilteredResults: React.PropTypes.func.isRequired,
-    modified: React.PropTypes.instanceOf(Date).isRequired,
-    state: React.PropTypes.string.isRequired,
-    type: React.PropTypes.string.isRequired,
-});
+type Import = {
+    _id: string,
+    type: string,
+    error?: string,
+    fileName: string,
+    getFilteredResults: () => ImportResults,
+    getURL: (lang: string) => string,
+    created: Date,
+    modified: Date,
+    state: string,
+};
 
-const ImportData = React.createClass({
-    propTypes: {
-        URL: React.PropTypes.func.isRequired,
-        adminURL: React.PropTypes.string.isRequired,
-        batch: batchType.isRequired,
-        batchError: React.PropTypes.func.isRequired,
-        batchState: React.PropTypes.func.isRequired,
-        diff: React.PropTypes.func.isRequired,
-        expanded: React.PropTypes.string,
-        fixedDate: React.PropTypes.func.isRequired,
-        format: React.PropTypes.func.isRequired,
-        fullName: React.PropTypes.func.isRequired,
-        gettext: React.PropTypes.func.isRequired,
-        lang: React.PropTypes.string.isRequired,
-        relativeDate: React.PropTypes.func.isRequired,
+type ImportResults = {
+    models: Array<Result>,
+    unprocessed: Array<Result>,
+    created: Array<Result>,
+    changed: Array<Result>,
+    deleted: Array<Result>,
+    errors: Array<Result>,
+    warnings: Array<Result>,
+};
+
+type Result = {
+    fileName: string,
+    error?: string,
+    model?: string,
+    warnings?: Array<string>,
+    diff?: Object,
+    data: {
+        id?: string,
     },
+};
 
-    getURLFromID(id) {
-        const Record = record(this.props.batch.type);
-        return Record.getURLFromID(this.props.lang, id);
-    },
+type Props = {
+    // GlobalProps
+    URL: (path: string | {getURL: (lang: string) => string}) => string,
+    format: (text: string, options: {}) => string,
+    fullName: (name: *) => string,
+    gettext: (text: string) => string,
+    stringNum: (num: number) => string,
+    lang: string,
+    fixedDate: (date: Date) => string,
+    relativeDate: (date: Date) => string,
 
-    renderUnprocessedResult(result, i) {
-        return <pre className="json" key={`item${i}`}>
-            {JSON.stringify(result.data, null, "    ")}
-        </pre>;
-    },
+    adminURL: string,
+    batch: Import,
+    batchError: (error: string) => string,
+    batchState: (batch: Import) => string,
+    expanded?: "models" | "unprocessed" | "created" | "changed" | "deleted" |
+        "errors" | "warnings",
+    diff: (delta: Object) => string,
+};
 
-    renderErrorResult(result, i) {
-        const title = result.data.id ?
-            `${result.data.id}: ${result.error}` :
-            result.error;
+const getURLFromID = (id: string, {type}: Import, lang: string) =>
+    record(type).getURLFromID(lang, id);
 
-        return <div key={`item${i}`}>
-            <h4>{title}</h4>
-            <pre className="json">
-                {JSON.stringify(result.data, null, "    ")}
-            </pre>
-        </div>;
-    },
+const UnprocessedResult = ({result: data}: {result: Result}) =>
+    <pre className="json">
+        {JSON.stringify(data, null, "    ")}
+    </pre>;
 
-    renderWarningResult(result, i) {
-        return <div key={`item${i}`}>
-            <h4>{result.data.id}</h4>
-            <ul>
-                {result.warnings.map((warning) =>
-                    <li key={warning}>{this.props.batchError(warning)}</li>)}
-            </ul>
-            <pre className="json">
-                {JSON.stringify(result.data, null, "    ")}
-            </pre>
-        </div>;
-    },
+const ErrorResult = ({result}: {result: Result}) => {
+    if (!result.error) {
+        return null;
+    }
 
-    renderChangedResult(result, i) {
-        return <div key={`item${i}`}>
-            <h4><a href={this.getURLFromID(result.model)}>
-                {result.model}
-            </a></h4>
-            <div className="diff"
-                dangerouslySetInnerHTML={{
-                    __html: this.props.diff(result.diff),
-                }}
-            />
-        </div>;
-    },
+    const title = result.data.id ?
+        `${result.data.id}: ${result.error}` :
+        result.error;
 
-    renderCreatedResult(result, i) {
-        const title = this.props.batch.state === "completed" ?
-            <a href={this.getURLFromID(result.model)}>{result.model}</a> :
-            result.model;
+    return <div>
+        <h4>{title}</h4>
+        <UnprocessedResult result={result} />
+    </div>;
+};
 
-        return <div key={`item${i}`}>
-            <h4>{title}</h4>
-            <pre className="json">
-                {JSON.stringify(result.data, null, "    ")}
-            </pre>
-        </div>;
-    },
+const WarningResult = ({
+    result,
+    batchError,
+}: Props & {result: Result}) => {
+    if (!result.warnings) {
+        return null;
+    }
 
-    renderDeletedResult(result, i) {
-        const title = this.props.batch.state === "completed" ?
-            <a href={this.getURLFromID(result.model)}>{result.model}</a> :
-            result.model;
+    return <div>
+        <h4>{result.data.id}</h4>
+        <ul>
+            {result.warnings.map((warning) =>
+                <li key={warning}>{batchError(warning)}</li>)}
+        </ul>
+        <UnprocessedResult result={result} />
+    </div>;
+};
 
-        return <div key={`item${i}`}>{title}</div>;
-    },
+const ChangedResult = ({
+    result: {model, diff: diffText},
+    diff,
+    batch,
+    lang,
+}: Props & {result: Result}) => {
+    if (!diffText || !model) {
+        return null;
+    }
 
-    renderConfirmButtons() {
-        return <p>
-            <a href={this.props.URL(this.props.batch, {finalize: true})}
-                className="btn btn-success"
-            >
-                {this.props.gettext("Finalize Import")}
-            </a>
-            {" "}
-            <a href={this.props.URL(this.props.batch, {abandon: true})}
-                className="btn btn-danger"
-            >
-                {this.props.gettext("Abandon Import")}
-            </a>
-        </p>;
-    },
+    return <div>
+        <h4><a href={getURLFromID(model, batch, lang)}>
+            {model}
+        </a></h4>
+        <div className="diff"
+            dangerouslySetInnerHTML={{
+                __html: diff(diffText),
+            }}
+        />
+    </div>;
+};
 
-    render() {
-        const format = this.props.format;
-        const gettext = this.props.gettext;
+const CreatedResult = ({
+    result,
+    batch,
+    lang,
+}: Props & {result: Result}) => {
+    if (!result.model) {
+        return null;
+    }
 
-        const state = this.props.batch.state;
-        const title = format(gettext("Data Import: %(fileName)s"),
-            {fileName: this.props.batch.fileName});
-        const stateText = state === "error" ?
-            format(gettext("Error: %(error)s"),
-                {error: this.props.batchError(this.props.batch.error)}) :
-            this.props.batchState(this.props.batch);
-        const uploadDate = format(gettext("Uploaded: %(date)s"),
-            {date: this.props.fixedDate(this.props.batch.created)});
-        const lastUpdated = format(gettext("Last Updated: %(date)s"),
-            {date: this.props.relativeDate(this.props.batch.modified)});
+    const title = batch.state === "completed" ?
+        <a href={getURLFromID(result.model, batch, lang)}>{result.model}</a> :
+        result.model;
 
-        const style = <link rel="stylesheet"
-            href={this.props.URL("/css/format-diff.css")}
-        />;
+    return <div>
+        <h4>{title}</h4>
+        <UnprocessedResult result={result} />
+    </div>;
+};
 
-        return <Page
-            {...this.props}
-            title={title}
-            style={style}
-        >
-            <p><a href={this.props.adminURL} className="btn btn-primary">
-                &laquo; {gettext("Return to Admin Page")}
-            </a></p>
+const DeletedResult = ({
+    result,
+    batch,
+    lang,
+}: Props & {result: Result}) => {
+    if (!result.model) {
+        return null;
+    }
 
-            <h1>{title}</h1>
-            <p>{uploadDate}</p>
-            <p><strong>{stateText}</strong></p>
-            {state !== "completed" && state !== "error" && <p>{lastUpdated}</p>}
-            {state === "process.completed" && this.renderConfirmButtons()}
+    const title = batch.state === "completed" ?
+        <a href={getURLFromID(result.model, batch, lang)}>{result.model}</a> :
+        result.model;
 
-            <ImportResult
-                {...this.props}
-                id="unprocessed"
-                title={this.props.gettext("To Be Processed")}
-                renderResult={this.renderUnprocessedResult}
-            />
+    return <div>{title}</div>;
+};
 
-            <ImportResult
-                {...this.props}
-                id="errors"
-                title={this.props.gettext("Errors")}
-                renderResult={this.renderErrorResult}
-            />
+const ConfirmButtons = ({
+    batch,
+    URL,
+    gettext,
+}: Props) => <p>
+    <a href={URL(batch, {finalize: true})} className="btn btn-success">
+        {gettext("Finalize Import")}
+    </a>
+    {" "}
+    <a href={URL(batch, {abandon: true})} className="btn btn-danger">
+        {gettext("Abandon Import")}
+    </a>
+</p>;
 
-            <ImportResult
-                {...this.props}
-                id="warnings"
-                title={this.props.gettext("Warnings")}
-                renderResult={this.renderWarningResult}
-            />
+const ImportData = (props: Props) => {
+    const {
+        gettext,
+        format,
+        batch,
+        batchError,
+        batchState,
+        fixedDate,
+        relativeDate,
+        URL,
+        adminURL,
+    } = props;
+    const state = {batch};
+    const title = format(gettext("Data Import: %(fileName)s"),
+        {fileName: batch.fileName});
+    const stateText = state === "error" ?
+        format(gettext("Error: %(error)s"),
+            {error: batchError(batch.error || "")}) :
+        batchState(batch);
+    const uploadDate = format(gettext("Uploaded: %(date)s"),
+        {date: fixedDate(batch.created)});
+    const lastUpdated = format(gettext("Last Updated: %(date)s"),
+        {date: relativeDate(batch.modified)});
 
-            <ImportResult
-                {...this.props}
-                id="changed"
-                title={state === "completed" ?
-                    this.props.gettext("Changed") :
-                    this.props.gettext("Will Be Changed")}
-                renderResult={this.renderChangedResult}
-            />
+    const style = <link rel="stylesheet"
+        href={URL("/css/format-diff.css")}
+    />;
 
-            <ImportResult
-                {...this.props}
-                id="created"
-                title={state === "completed" ?
-                    this.props.gettext("Created") :
-                    this.props.gettext("Will Be Created")}
-                renderResult={this.renderCreatedResult}
-            />
+    return <Page
+        {...props}
+        title={title}
+        style={style}
+    >
+        <p><a href={adminURL} className="btn btn-primary">
+            &laquo; {gettext("Return to Admin Page")}
+        </a></p>
 
-            <ImportResult
-                {...this.props}
-                id="deleted"
-                title={state === "completed" ?
-                    this.props.gettext("Deleted") :
-                    this.props.gettext("Will Be Deleted")}
-                renderResult={this.renderDeletedResult}
-            />
-        </Page>;
-    },
-});
+        <h1>{title}</h1>
+        <p>{uploadDate}</p>
+        <p><strong>{stateText}</strong></p>
+        {state !== "completed" && state !== "error" && <p>{lastUpdated}</p>}
+        {state === "process.completed" && <ConfirmButtons {...props} />}
+
+        <ImportResult
+            {...props}
+            id="unprocessed"
+            title={gettext("To Be Processed")}
+            renderResult={UnprocessedResult}
+        />
+
+        <ImportResult
+            {...props}
+            id="errors"
+            title={gettext("Errors")}
+            renderResult={ErrorResult}
+        />
+
+        <ImportResult
+            {...props}
+            id="warnings"
+            title={gettext("Warnings")}
+            renderResult={WarningResult}
+        />
+
+        <ImportResult
+            {...props}
+            id="changed"
+            title={state === "completed" ?
+                gettext("Changed") :
+                gettext("Will Be Changed")}
+            renderResult={ChangedResult}
+        />
+
+        <ImportResult
+            {...props}
+            id="created"
+            title={state === "completed" ?
+                gettext("Created") :
+                gettext("Will Be Created")}
+            renderResult={CreatedResult}
+        />
+
+        <ImportResult
+            {...props}
+            id="deleted"
+            title={state === "completed" ?
+                gettext("Deleted") :
+                gettext("Will Be Deleted")}
+            renderResult={DeletedResult}
+        />
+    </Page>;
+};
 
 module.exports = ImportData;
