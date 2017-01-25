@@ -137,9 +137,6 @@
         "react",
         "flowtype"
     ],
-    "parserOptions": {
-        "sourceType": "script"
-    },
     "env": {
         "es6": true,
         "node": true,

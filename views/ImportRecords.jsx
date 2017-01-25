@@ -1,7 +1,5 @@
 // @flow
 
-"use strict";
-
 const React = require("react");
 
 const record = require("../lib/record");

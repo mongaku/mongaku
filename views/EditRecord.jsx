@@ -1,7 +1,5 @@
 // @flow
 
-"use strict";
-
 const React = require("react");
 
 const metadata = require("../lib/metadata");
@@ -21,17 +19,19 @@ type Props = {
         text: string,
     }>,
     mode: "create" | "edit" | "clone",
-    record: {
-        _id?: string,
-        id?: string,
-        type: string,
-        images: Array<ImageType>,
-        getEditURL: (lang: string) => string,
-        getCloneURL: (lang: string) => string,
-        getCreateURL: (lang: string) => string,
-        getRemoveImageURL: (lang: string) => string,
-    },
+    record: Record,
     type: string,
+};
+
+type Record = {
+    _id?: string,
+    id?: string,
+    type: string,
+    images: Array<ImageType>,
+    getEditURL: (lang: string) => string,
+    getCloneURL: (lang: string) => string,
+    getCreateURL: (lang: string) => string,
+    getRemoveImageURL: (lang: string) => string,
 };
 
 type ImageType = {
