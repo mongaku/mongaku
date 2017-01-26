@@ -1,5 +1,3 @@
-"use strict";
-
 const React = require("react");
 
 const dateRangeType = React.PropTypes.shape({

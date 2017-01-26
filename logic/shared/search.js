@@ -1,5 +1,3 @@
-"use strict";
-
 const sanitize = require("elasticsearch-sanitize");
 
 const record = require("../../lib/record");

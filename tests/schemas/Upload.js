@@ -1,5 +1,3 @@
-"use strict";
-
 const tap = require("tap");
 
 const init = require("../init");

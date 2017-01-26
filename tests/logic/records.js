@@ -1,5 +1,3 @@
-"use strict";
-
 const tap = require("tap");
 const request = require("request");
 

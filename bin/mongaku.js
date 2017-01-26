@@ -1,7 +1,5 @@
 #! /usr/bin/env node
 
-"use strict";
-
 const path = require("path");
 
 const minimist = require("minimist");

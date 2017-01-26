@@ -1,5 +1,3 @@
-"use strict";
-
 const db = require("../lib/db");
 
 const Location = new db.schema({

@@ -1,5 +1,3 @@
-"use strict";
-
 const React = require("react");
 
 const NameFilter = React.createClass({

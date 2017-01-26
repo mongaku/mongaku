@@ -1,5 +1,3 @@
-"use strict";
-
 const bcrypt = require("bcrypt");
 
 const models = require("../lib/models");

@@ -1,5 +1,3 @@
-"use strict";
-
 const record = require("../../lib/record");
 
 const search = require("./search");

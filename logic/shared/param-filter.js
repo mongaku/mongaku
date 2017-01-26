@@ -1,5 +1,3 @@
-"use strict";
-
 const options = require("../../lib/options");
 
 const queries = require("./queries");

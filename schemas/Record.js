@@ -1,5 +1,3 @@
-"use strict";
-
 const async = require("async");
 const validUrl = require("valid-url");
 const jdp = require("jsondiffpatch").create({

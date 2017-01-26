@@ -1,5 +1,3 @@
-"use strict";
-
 const async = require("async");
 const formidable = require("formidable");
 

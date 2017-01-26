@@ -1,5 +1,3 @@
-"use strict";
-
 // How often queries should be performed
 const QUERY_RATE = 5000;
 

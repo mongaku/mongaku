@@ -1,5 +1,3 @@
-"use strict";
-
 const models = require("../../lib/models");
 const metadata = require("../../lib/metadata");
 

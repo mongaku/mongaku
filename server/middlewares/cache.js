@@ -1,5 +1,3 @@
-"use strict";
-
 const config = require("../../lib/config");
 
 // Utility method of setting the cache header on a request

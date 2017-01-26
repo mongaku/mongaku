@@ -1,5 +1,3 @@
-"use strict";
-
 const types = {
     architecture: {
         name: (i18n) => i18n.gettext("Architecture"),

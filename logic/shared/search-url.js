@@ -1,5 +1,3 @@
-"use strict";
-
 const qs = require("querystring");
 
 const urls = require("../../lib/urls");

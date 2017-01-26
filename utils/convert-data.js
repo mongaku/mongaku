@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  * Parse a data file, given the specified converter, and return a JSON
  * representation to load into the database.

@@ -1,5 +1,3 @@
-"use strict";
-
 const pd = require("parse-dimensions");
 const React = require("react");
 

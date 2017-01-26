@@ -1,5 +1,3 @@
-"use strict";
-
 const rl = require("readline-sync");
 const genPassword = require("password-generator");
 

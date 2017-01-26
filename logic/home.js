@@ -1,5 +1,3 @@
-"use strict";
-
 const cache = require("../server/middlewares/cache");
 
 const models = require("../lib/models");
