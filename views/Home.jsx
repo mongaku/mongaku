@@ -6,6 +6,9 @@ const options = require("../lib/options");
 
 const Page = require("./Page.jsx");
 
+import type {Context} from "./types.jsx";
+const {childContextTypes} = require("./Wrapper.jsx");
+
 type SourceType = {
     _id: string,
     type: string,
@@ -15,21 +18,11 @@ type SourceType = {
 };
 
 type Props = {
-    // GlobalProps
-    URL: (path: string | {getURL: (lang: string) => string}) => string,
-    format: (text: string, options: {}) => string,
-    gettext: (text: string) => string,
-    stringNum: (num: number) => string,
-    lang: string,
-
-    imageTotal: number,
-    recordTotal: number,
     sources: Array<SourceType>,
 };
 
-const SearchForm = (props: Props & {type: string}) => {
-    const {type, lang, URL, gettext} = props;
-    const title = options.types[type].name(props);
+const SearchForm = ({type}: {type: string}, {lang, URL, gettext}: Context) => {
+    const title = options.types[type].name({gettext});
 
     return <div>
         <h3>{title}</h3>
@@ -59,12 +52,10 @@ const SearchForm = (props: Props & {type: string}) => {
     </div>;
 };
 
-const ImageUploadForms = ({
-    type,
-    lang,
-    gettext,
-    URL,
-}: Props & {type: string}) => <div>
+SearchForm.contextTypes = childContextTypes;
+
+const ImageUploadForms = ({type}: {type: string},
+        {lang, gettext, URL}: Context) => <div>
     <h3>{gettext("Search by Image:")}</h3>
     <p>{gettext("Upload an image to find other " +
         "similar images.")}</p>
@@ -126,9 +117,12 @@ const ImageUploadForms = ({
     </div>
 </div>;
 
-const Source = (props: Props & {type: string, source: SourceType}) => {
-    const {type, source, lang, stringNum} = props;
-    const typeName = options.types[type].name(props);
+ImageUploadForms.contextTypes = childContextTypes;
+
+const Source = ({type, source}: {type: string, source: SourceType},
+    {lang, stringNum, gettext}: Context) => {
+
+    const typeName = options.types[type].name({gettext});
     const recordCount = stringNum(source.numRecords);
     const desc = `${recordCount} ${typeName}`;
 
@@ -140,42 +134,41 @@ const Source = (props: Props & {type: string, source: SourceType}) => {
     </div>;
 };
 
-const Sources = (props: Props & {type: string}) => {
-    const {type, sources, gettext} = props;
-    return <div>
-        <h3>{gettext("Browse by Collection:")}</h3>
+Source.contextTypes = childContextTypes;
 
-        <div className="sources">
-            {sources.map((source) => <Source
-                {...props}
-                key={source._id}
-                source={source}
-                type={type}
-            />)}
-        </div>
-    </div>;
-};
+const Sources = ({type, sources}: Props & {type: string},
+        {gettext}: Context) => <div>
+    <h3>{gettext("Browse by Collection:")}</h3>
 
-const Type = (props: Props & {type: string}) => {
-    const {type, sources} = props;
+    <div className="sources">
+        {sources.map((source) => <Source
+            key={source._id}
+            source={source}
+            type={type}
+        />)}
+    </div>
+</div>;
+
+Sources.contextTypes = childContextTypes;
+
+const Type = ({type, sources}: Props & {type: string}) => {
     const sourcesByType = sources.filter((source) => source.type === type);
 
     return <div className="col-sm-8 col-sm-offset-2 upload-box">
-        <SearchForm {...props} type={type} />
+        <SearchForm type={type} />
         {options.types[type].hasImageSearch() &&
-            <ImageUploadForms {...props} type={type} />}
+            <ImageUploadForms type={type} />}
         {sourcesByType.length > 1 &&
-            <Sources {...props} type={type} sources={sourcesByType} />}
+            <Sources type={type} sources={sourcesByType} />}
     </div>;
 };
 
-const Home = (props: Props) => <Page
-    {...props}
+const Home = ({sources}: Props) => <Page
     splash={options.views.homeSplash &&
-        <options.views.homeSplash {...props} />}
+        <options.views.homeSplash />}
 >
     {Object.keys(options.types).map((type) =>
-        <Type key={type} {...props} type={type} />)}
+        <Type key={type} sources={sources} type={type} />)}
 </Page>;
 
 module.exports = Home;

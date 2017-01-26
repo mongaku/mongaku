@@ -45,7 +45,6 @@
     "dotenv": "4.0.0",
     "elasticsearch-sanitize": "2.0.0",
     "express": "4.14.0",
-    "express-react-views": "0.10.2",
     "express-session": "1.14.2",
     "farmhash": "1.2.1",
     "formidable": "1.1.1",

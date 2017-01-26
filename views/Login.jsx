@@ -4,20 +4,13 @@ const React = require("react");
 
 const Page = require("./Page.jsx");
 
-type Props = {
-    // GlobalProps
-    URL: (path: string | {getURL: (lang: string) => string}) => string,
-    gettext: (text: string) => string,
-};
+import type {Context} from "./types.jsx";
+const {childContextTypes} = require("./Wrapper.jsx");
 
-const Login = (props: Props) => {
-    const {gettext, URL} = props;
+const Login = (props: {}, {gettext, URL}: Context) => {
     const title = gettext("Login");
 
-    return <Page
-        {...props}
-        title={title}
-    >
+    return <Page title={title}>
         <h1>{title}</h1>
 
         <form action={URL("/login")} method="post">
@@ -37,5 +30,7 @@ const Login = (props: Props) => {
         </form>
     </Page>;
 };
+
+Login.contextTypes = childContextTypes;
 
 module.exports = Login;

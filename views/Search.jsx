@@ -40,7 +40,7 @@ type Sort = {
 type RecordType = {
     _id: string,
     type: string,
-    url: string,
+    url?: string,
     getOriginalURL: () => string,
     getThumbURL: () => string,
     getTitle: () => string,
@@ -93,20 +93,22 @@ const Filters = (props: Props) => {
     const {type, globalFacets} = props;
     const model = metadata.model(type);
 
-    return options.types[type].filters.map((type) => {
-        const typeSchema = model[type];
+    return <div>
+        {options.types[type].filters.map((type) => {
+            const typeSchema = model[type];
 
-        if (!typeSchema.renderFilter) {
-            return null;
-        }
+            if (!typeSchema.renderFilter) {
+                return null;
+            }
 
-        const values = (globalFacets[type] || [])
-            .map((bucket) => bucket.text).sort();
+            const values = (globalFacets[type] || [])
+                .map((bucket) => bucket.text).sort();
 
-        return <div key={type}>
-            {typeSchema.renderFilter(values[type], values, props)}
-        </div>;
-    });
+            return <div key={type}>
+                {typeSchema.renderFilter(values[type], values, props)}
+            </div>;
+        })}
+    </div>;
 };
 
 const SourceFilter = ({

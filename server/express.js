@@ -8,12 +8,12 @@ const serveStatic = require("serve-static");
 const morgan = require("morgan");
 const session = require("express-session");
 const mongoStore = require("connect-mongo")(session);
-const reactViews = require("express-react-views");
 
 const pkg = require("../package");
 
 const db = require("../lib/db");
 const config = require("../lib/config");
+const reactViews = require("./react-views.jsx");
 
 const viewMethods = require("./middlewares/view-methods");
 
@@ -32,9 +32,7 @@ module.exports = (app) => {
     app.use("/data", serveStatic(config.BASE_DATA_DIR));
 
     // Configure how the views are handled (with React)
-    app.engine("jsx", reactViews.createEngine({
-        transformViews: false,
-    }));
+    app.engine("jsx", reactViews);
     app.set("views", `${rootPath}/views`);
     app.set("view engine", "jsx");
 

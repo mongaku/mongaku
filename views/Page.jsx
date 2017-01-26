@@ -4,20 +4,14 @@ const React = require("react");
 
 const options = require("../lib/options");
 
+import type {Context} from "./types.jsx";
+const {childContextTypes} = require("./Wrapper.jsx");
+
 const types = Object.keys(options.types);
 const multipleTypes = types.length > 1;
 
 type Props = {
-    // GlobalProps
-    URL: (path: string | {getURL: (lang: string) => string}) => string,
-    gettext: (text: string) => string,
-    lang: string,
-    currentUser: () => ?Object,
-    getOtherURL: (lang: string) => string,
-    getShortTitle: (item: {getShortTitle: () => string}) => string,
-    getTitle: (item: {getTitle: () => string}) => string,
-
-    children: React.Element<*>,
+    children?: React.Element<*>,
     noIndex?: boolean,
     scripts?: React.Element<*>,
     splash?: React.Element<*>,
@@ -30,17 +24,12 @@ type Props = {
     },
 };
 
-const Head = (props: Props) => {
-    const {
-        URL,
-        getTitle,
-        title,
-        lang,
-        social,
-        style,
-        noIndex,
-    } = props;
-
+const Head = ({
+    title,
+    social,
+    style,
+    noIndex,
+}: Props, {URL, getTitle, lang}: Context) => {
     const siteTitle = getTitle(options);
     let pageTitle = siteTitle;
 
@@ -91,7 +80,9 @@ const Head = (props: Props) => {
     </head>;
 };
 
-const Logo = ({getTitle, URL}: Props) => <span>
+Head.contextTypes = childContextTypes;
+
+const Logo = (props, {getTitle, URL}: Context) => <span>
     <img alt={getTitle(options)}
         src={URL(options.logoUrl)}
         height="40" width="40"
@@ -99,13 +90,8 @@ const Logo = ({getTitle, URL}: Props) => <span>
     {" "}
 </span>;
 
-const NavLink = ({
-    type,
-    title,
-    URL,
-    lang,
-    gettext,
-}: Props & {type: string}) => <li className="dropdown">
+const NavLink = ({type, title}: Props & {type: string},
+        {URL, lang, gettext}: Context) => <li className="dropdown">
     <a
         href={URL(`/${type}/search`)}
         className="dropdown-toggle"
@@ -157,17 +143,18 @@ const NavLink = ({
     </ul>
 </li>;
 
-const NavLinks = (props: Props) => <div>
+NavLink.contextTypes = childContextTypes;
+
+const NavLinks = (props, {gettext}: Context) => <div>
     {Object.keys(options.types).map((type) => {
-        const title = options.types[type].name(props);
-        return <NavLink {...props} type={type} title={title} key={type} />;
+        const title = options.types[type].name({gettext});
+        return <NavLink type={type} title={title} key={type} />;
     })}
 </div>;
 
-const SearchForm = ({
-    gettext,
-    URL,
-}: Props) => <form
+NavLinks.contextTypes = childContextTypes;
+
+const SearchForm = (props, {gettext, URL}: Context) => <form
     action={URL(`/${types[0]}/search`)}
     method="GET"
     className={"navbar-form navbar-right search form-inline hidden-xs"}
@@ -184,11 +171,13 @@ const SearchForm = ({
     />
 </form>;
 
-const LocaleMenu = ({
+SearchForm.contextTypes = childContextTypes;
+
+const LocaleMenu = (props, {
     lang,
     URL,
     getOtherURL,
-}: Props) => <li className="dropdown">
+}: Context) => <li className="dropdown">
     <a href="" className="dropdown-toggle"
         data-toggle="dropdown" role="button"
         aria-expanded="false"
@@ -218,58 +207,58 @@ const LocaleMenu = ({
     </ul>
 </li>;
 
-const Header = (props: Props) => {
-    const {
-        gettext,
-        URL,
-        getShortTitle,
-        currentUser,
-    } = props;
+LocaleMenu.contextTypes = childContextTypes;
 
-    return <div
-        className="navbar navbar-default navbar-static-top"
-    >
-        <div className="container">
-            <div className="navbar-header">
-                <button type="button" className="navbar-toggle"
-                    data-toggle="collapse"
-                    data-target="#header-navbar"
-                >
-                    <span className="sr-only">Toggle Navigation</span>
-                    <span className="icon-bar"/>
-                    <span className="icon-bar"/>
-                    <span className="icon-bar"/>
-                </button>
-                <a className="navbar-brand" href={URL("/")}>
-                    {options.logoUrl && <Logo {...props} />}
-                    {getShortTitle(options)}
-                </a>
-            </div>
-
-            <div id="header-navbar" className="collapse navbar-collapse">
-                <ul className="nav navbar-nav">
-                    {!multipleTypes && <li>
-                        <a href={URL(`/${types[0]}/search`)}>
-                            {gettext("Browse All")}
-                        </a>
-                    </li>}
-                    {<NavLinks {...props} />}
-                    {currentUser() && <li>
-                        <a href={URL("/logout")}>
-                            {gettext("Logout")}
-                        </a>
-                    </li>}
-                    {Object.keys(options.locales).length > 1 &&
-                        <LocaleMenu {...props} />}
-                </ul>
-
-                {multipleTypes && <SearchForm {...props} />}
-            </div>
+const Header = (props, {
+    gettext,
+    URL,
+    getShortTitle,
+    currentUser,
+}: Context) => <div
+    className="navbar navbar-default navbar-static-top"
+>
+    <div className="container">
+        <div className="navbar-header">
+            <button type="button" className="navbar-toggle"
+                data-toggle="collapse"
+                data-target="#header-navbar"
+            >
+                <span className="sr-only">Toggle Navigation</span>
+                <span className="icon-bar"/>
+                <span className="icon-bar"/>
+                <span className="icon-bar"/>
+            </button>
+            <a className="navbar-brand" href={URL("/")}>
+                {options.logoUrl && <Logo />}
+                {getShortTitle(options)}
+            </a>
         </div>
-    </div>;
-};
 
-const Scripts = ({URL, scripts}: Props) => <div>
+        <div id="header-navbar" className="collapse navbar-collapse">
+            <ul className="nav navbar-nav">
+                {!multipleTypes && <li>
+                    <a href={URL(`/${types[0]}/search`)}>
+                        {gettext("Browse All")}
+                    </a>
+                </li>}
+                {<NavLinks />}
+                {currentUser() && <li>
+                    <a href={URL("/logout")}>
+                        {gettext("Logout")}
+                    </a>
+                </li>}
+                {Object.keys(options.locales).length > 1 &&
+                    <LocaleMenu />}
+            </ul>
+
+            {multipleTypes && <SearchForm />}
+        </div>
+    </div>
+</div>;
+
+Header.contextTypes = childContextTypes;
+
+const Scripts = ({scripts}: Props, {URL}: Context) => <div>
     <script src={URL("/js/jquery.min.js")} />
     <script src={URL("/js/bootstrap.min.js")} />
     <script src={URL("/js/select2.min.js")} />
@@ -277,20 +266,28 @@ const Scripts = ({URL, scripts}: Props) => <div>
     {scripts}
 </div>;
 
-const Page = (props: Props) => {
-    const {lang, splash, children} = props;
+Scripts.contextTypes = childContextTypes;
 
-    return <html lang={lang}>
-        {<Head {...props} />}
-        <body>
-            {<Header {...props} />}
-            {splash}
-            <div className="container">
-                {children}
-            </div>
-            {<Scripts {...props} />}
-        </body>
-    </html>;
-};
+const Page = ({
+    splash,
+    children,
+    scripts,
+    title,
+    social,
+    style,
+    noIndex,
+}: Props, {lang}: Context) => <html lang={lang}>
+    <Head title={title} social={social} style={style} noIndex={noIndex} />
+    <body>
+        <Header/>
+        {splash}
+        <div className="container">
+            {children}
+        </div>
+        <Scripts scripts={scripts} />
+    </body>
+</html>;
+
+Page.contextTypes = childContextTypes;
 
 module.exports = Page;
