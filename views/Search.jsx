@@ -7,6 +7,9 @@ const options = require("../lib/options");
 
 const Page = require("./Page.jsx");
 
+import type {Context} from "./types.jsx";
+const {childContextTypes} = require("./Wrapper.jsx");
+
 type Bucket = {
     count: number,
     text: string,
@@ -49,14 +52,6 @@ type RecordType = {
 };
 
 type Props = {
-    // GlobalProps
-    URL: (path: string | {getURL: (lang: string) => string}) => string,
-    gettext: (text: string) => string,
-    lang: string,
-    getTitle: (item: {getTitle: () => string}) => string,
-    format: (text: string, options: {}) => string,
-    stringNum: (num?: number) => string,
-
     title: string,
     url?: string,
     type: string,
@@ -89,8 +84,7 @@ type Props = {
     },
 };
 
-const Filters = (props: Props) => {
-    const {type, globalFacets} = props;
+const Filters = ({type, globalFacets}: Props, {gettext}: Context) => {
     const model = metadata.model(type);
 
     return <div>
@@ -105,17 +99,18 @@ const Filters = (props: Props) => {
                 .map((bucket) => bucket.text).sort();
 
             return <div key={type}>
-                {typeSchema.renderFilter(values[type], values, props)}
+                {typeSchema.renderFilter(values[type], values, {gettext})}
             </div>;
         })}
     </div>;
 };
 
+Filters.contextTypes = childContextTypes;
+
 const SourceFilter = ({
-    gettext,
     values,
     sources,
-}: Props) => <div className="form-group">
+}: Props, {gettext}: Context) => <div className="form-group">
     <label htmlFor="source" className="control-label">
         {gettext("Source")}
     </label>
@@ -132,12 +127,12 @@ const SourceFilter = ({
     </select>
 </div>;
 
+SourceFilter.contextTypes = childContextTypes;
+
 const SimilarityFilter = ({
     queries,
-    gettext,
     values,
-    getTitle,
-}: Props) => {
+}: Props, {gettext, getTitle}: Context) => {
     const similarity = queries.similar.filters;
 
     return <div className="form-group">
@@ -157,12 +152,12 @@ const SimilarityFilter = ({
     </div>;
 };
 
+SimilarityFilter.contextTypes = childContextTypes;
+
 const ImageFilter = ({
     queries,
-    gettext,
     values,
-    getTitle,
-}: Props) => {
+}: Props, {gettext, getTitle}: Context) => {
     const images = queries.images.filters;
 
     return <div className="form-group">
@@ -186,11 +181,12 @@ const ImageFilter = ({
     </div>;
 };
 
+ImageFilter.contextTypes = childContextTypes;
+
 const Sorts = ({
-    gettext,
     values,
     sorts,
-}: Props) => <div className="form-group">
+}: Props, {gettext}: Context) => <div className="form-group">
     <label htmlFor="source" className="control-label">
         {gettext("Sort")}
     </label>
@@ -206,20 +202,13 @@ const Sorts = ({
     </select>
 </div>;
 
-const SearchForm = (props: Props) => {
-    const {
-        URL,
-        type,
-        lang,
-        gettext,
-        values,
-        sorts,
-        sources,
-    } = props;
+Sorts.contextTypes = childContextTypes;
 
+const SearchForm = (props: Props, {URL, lang, gettext}: Context) => {
+    const {type, values, sorts, sources} = props;
     const searchURL = URL(`/${type}/search`);
     const typeOptions = options.types[type];
-    const placeholder = typeOptions.getSearchPlaceholder(props);
+    const placeholder = typeOptions.getSearchPlaceholder({gettext});
     const showImageFilter = typeOptions.hasImages() ||
         !typeOptions.requiresImages();
 
@@ -251,6 +240,8 @@ const SearchForm = (props: Props) => {
     </form>;
 };
 
+SearchForm.contextTypes = childContextTypes;
+
 const FacetBucket = ({bucket}: {bucket: Bucket}) => <li>
     <a href={bucket.url}>{bucket.text}</a>
     {" "}({bucket.count})
@@ -259,9 +250,7 @@ const FacetBucket = ({bucket}: {bucket: Bucket}) => <li>
 const Facet = ({
     facet,
     type,
-    format,
-    gettext,
-}: Props & {facet: FacetType}) => {
+}: {type: string, facet: FacetType}, {format, gettext}: Context) => {
     const minFacetCount = options.types[type].minFacetCount || 1;
     let extra = null;
     let buckets = facet.buckets
@@ -306,23 +295,22 @@ const Facet = ({
     </div>;
 };
 
+Facet.contextTypes = childContextTypes;
+
 const Facets = (props: Props) => {
     const {facets} = props;
     return <div className="hidden-xs hidden-sm">
         {facets && facets.map((facet) =>
-            <Facet {...props} facet={facet} key={facet.name} />)}
+            <Facet
+                {...props}
+                facet={facet}
+                key={facet.name}
+            />)}
     </div>;
 };
 
-const Sidebar = (props: Props) => {
-    const {
-        format,
-        gettext,
-        stringNum,
-        total,
-        start,
-        end,
-    } = props;
+const Sidebar = (props: Props, {format, gettext, stringNum}: Context) => {
+    const {total, start, end} = props;
 
     return <div className="results-side col-sm-3 col-sm-push-9">
         <div className="panel panel-default facet">
@@ -334,7 +322,7 @@ const Sidebar = (props: Props) => {
                 {!!end && <span>{format(
                     gettext("Viewing %(start)s to %(end)s."),
                     {
-                        start: stringNum(start),
+                        start: stringNum(start || 1),
                         end: stringNum(end),
                     }
                 )}</span>}
@@ -347,11 +335,11 @@ const Sidebar = (props: Props) => {
     </div>;
 };
 
-const Breadcrumb = ({
-    crumb,
-    format,
-    gettext,
-}: Props & {crumb: BreadcrumbType}) => <a href={crumb.url}
+Sidebar.contextTypes = childContextTypes;
+
+const Breadcrumb = ({crumb}: {crumb: BreadcrumbType},
+    {format, gettext}: Context) =>
+<a href={crumb.url}
     className="btn btn-default btn-xs"
     title={format(gettext("Remove %(query)s"),
         {query: crumb.name})}
@@ -366,6 +354,8 @@ const Breadcrumb = ({
             {query: crumb.name})}
     </span>
 </a>;
+
+Breadcrumb.contextTypes = childContextTypes;
 
 const Breadcrumbs = (props: Props) => {
     const {breadcrumbs} = props;
@@ -384,20 +374,17 @@ const Breadcrumbs = (props: Props) => {
     </div>;
 };
 
-const NoResults = ({gettext}: Props) => <div className="row">
+const NoResults = (props, {gettext}: Context) => <div className="row">
     <div className="col-xs-12">
         <div className="alert alert-info" role="alert">
-            {gettext(
-                "No results found. Please refine your query.")}
+            {gettext("No results found. Please refine your query.")}
         </div>
     </div>
 </div>;
 
-const Pagination = ({
-    prev,
-    next,
-    gettext,
-}: Props) => <nav>
+NoResults.contextTypes = childContextTypes;
+
+const Pagination = ({prev, next}: Props, {gettext}: Context) => <nav>
     <ul className="pager">
         {prev && <li className="previous">
             <a href={prev}>
@@ -414,14 +401,11 @@ const Pagination = ({
     </ul>
 </nav>;
 
-const ImageResultFooter = (props: Props & {record: RecordType}) => {
-    const {
-        record,
-        sources,
-        URL,
-        lang,
-        type,
-    } = props;
+Pagination.contextTypes = childContextTypes;
+
+const ImageResultFooter = (props: Props & {record: RecordType},
+        {URL, lang}: Context) => {
+    const {record, sources, type} = props;
     const resultFooter = options.types[type]
         .views.resultFooter;
 
@@ -455,12 +439,11 @@ const ImageResultFooter = (props: Props & {record: RecordType}) => {
     </div>;
 };
 
-const ImageResult = (props: Props & {record: RecordType}) => {
-    const {
-        record,
-        URL,
-        getTitle,
-    } = props;
+ImageResultFooter.contextTypes = childContextTypes;
+
+const ImageResult = (props: Props & {record: RecordType},
+        {URL, getTitle}: Context) => {
+    const {record} = props;
 
     return <div className="img col-xs-6 col-sm-4 col-md-3">
         <div className="img-wrap">
@@ -478,17 +461,19 @@ const ImageResult = (props: Props & {record: RecordType}) => {
     </div>;
 };
 
-const TextResult = ({
-    URL,
-    getTitle,
-    record,
-}: Props & {record: RecordType}) => <div className="col-xs-12">
+ImageResult.contextTypes = childContextTypes;
+
+const TextResult = ({record}: {record: RecordType},
+        {URL, getTitle}: Context) =>
+<div className="col-xs-12">
     <a href={URL(record)}
         title={getTitle(record)}
     >
         {getTitle(record)}
     </a>
 </div>;
+
+TextResult.contextTypes = childContextTypes;
 
 const Results = (props: Props) => {
     const {breadcrumbs, records, type} = props;

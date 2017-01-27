@@ -7,6 +7,9 @@ const record = require("../lib/record");
 const Page = require("./Page.jsx");
 const ImportResult = require("./ImportResult.jsx");
 
+import type {Context} from "./types.jsx";
+const {childContextTypes} = require("./Wrapper.jsx");
+
 type Import = {
     _id: string,
     type: string,
@@ -41,16 +44,6 @@ type Result = {
 };
 
 type Props = {
-    // GlobalProps
-    URL: (path: string | {getURL: (lang: string) => string}) => string,
-    format: (text: string, options: {}) => string,
-    fullName: (name: *) => string,
-    gettext: (text: string) => string,
-    stringNum: (num: number) => string,
-    lang: string,
-    fixedDate: (date: Date) => string,
-    relativeDate: (date: Date) => string,
-
     adminURL: string,
     batch: Import,
     batchError: (error: string) => string,
@@ -105,8 +98,7 @@ const ChangedResult = ({
     result: {model, diff: diffText},
     diff,
     batch,
-    lang,
-}: Props & {result: Result}) => {
+}: Props & {result: Result}, {lang}: Context) => {
     if (!diffText || !model) {
         return null;
     }
@@ -123,11 +115,12 @@ const ChangedResult = ({
     </div>;
 };
 
+ChangedResult.contextTypes = childContextTypes;
+
 const CreatedResult = ({
     result,
     batch,
-    lang,
-}: Props & {result: Result}) => {
+}: Props & {result: Result}, {lang}: Context) => {
     if (!result.model) {
         return null;
     }
@@ -142,11 +135,12 @@ const CreatedResult = ({
     </div>;
 };
 
+CreatedResult.contextTypes = childContextTypes;
+
 const DeletedResult = ({
     result,
     batch,
-    lang,
-}: Props & {result: Result}) => {
+}: Props & {result: Result}, {lang}: Context) => {
     if (!result.model) {
         return null;
     }
@@ -158,11 +152,9 @@ const DeletedResult = ({
     return <div>{title}</div>;
 };
 
-const ConfirmButtons = ({
-    batch,
-    URL,
-    gettext,
-}: Props) => <p>
+DeletedResult.contextTypes = childContextTypes;
+
+const ConfirmButtons = ({batch}: Props, {URL, gettext}: Context) => <p>
     <a href={URL(batch, {finalize: true})} className="btn btn-success">
         {gettext("Finalize Import")}
     </a>
@@ -172,16 +164,19 @@ const ConfirmButtons = ({
     </a>
 </p>;
 
-const ImportData = (props: Props) => {
+ConfirmButtons.contextTypes = childContextTypes;
+
+const ImportData = (props: Props, {
+    gettext,
+    format,
+    fixedDate,
+    relativeDate,
+    URL,
+}: Context) => {
     const {
-        gettext,
-        format,
         batch,
         batchError,
         batchState,
-        fixedDate,
-        relativeDate,
-        URL,
         adminURL,
     } = props;
     const state = {batch};
@@ -264,5 +259,7 @@ const ImportData = (props: Props) => {
         />
     </Page>;
 };
+
+ImportData.contextTypes = childContextTypes;
 
 module.exports = ImportData;

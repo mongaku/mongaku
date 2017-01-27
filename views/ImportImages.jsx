@@ -5,6 +5,9 @@ const React = require("react");
 const Page = require("./Page.jsx");
 const ImportResult = require("./ImportResult.jsx");
 
+import type {Context} from "./types.jsx";
+const {childContextTypes} = require("./Wrapper.jsx");
+
 type Import = {
     _id: string,
     error?: string,
@@ -41,16 +44,6 @@ type Result = {
 };
 
 type Props = {
-    // GlobalProps
-    URL: (path: string | {getURL: (lang: string) => string}) => string,
-    format: (text: string, options: {}) => string,
-    fullName: (name: *) => string,
-    gettext: (text: string) => string,
-    stringNum: (num: number) => string,
-    lang: string,
-    fixedDate: (date: Date) => string,
-    relativeDate: (date: Date) => string,
-
     adminURL: string,
     batch: Import,
     batchError: (error: string) => string,
@@ -102,16 +95,17 @@ const ModelResult = ({result: {model, fileName}}: {result: Result}) => {
     </div>;
 };
 
-const ImportImages = (props: Props) => {
+const ImportImages = (props: Props, {
+    format,
+    gettext,
+    fixedDate,
+    relativeDate,
+}: Context) => {
     const {
         adminURL,
-        format,
-        gettext,
         batchError,
         batch,
         batchState,
-        fixedDate,
-        relativeDate,
     } = props;
     const title = format(gettext("Image Import: %(fileName)s"),
         {fileName: batch.fileName});
@@ -161,5 +155,7 @@ const ImportImages = (props: Props) => {
         />
     </Page>;
 };
+
+ImportImages.contextTypes = childContextTypes;
 
 module.exports = ImportImages;

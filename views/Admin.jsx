@@ -6,15 +6,10 @@ const options = require("../lib/options");
 
 const Page = require("./Page.jsx");
 
-type Props = {
-    // GlobalProps
-    URL: (path: string | {getURL: (lang: string) => string}) => string,
-    format: (text: string, options: {}) => string,
-    fullName: (name: *) => string,
-    gettext: (text: string) => string,
-    lang: string,
-    relativeDate: (date: Date) => string,
+import type {Context} from "./types.jsx";
+const {childContextTypes} = require("./Wrapper.jsx");
 
+type Props = {
     dataImport: Array<Import>,
     imageImport: Array<Import>,
     batchError: (error: string) => string,
@@ -51,11 +46,12 @@ const ImageImport = ({
     batch,
     batchError,
     batchState,
+}: Props & {batch: Import}, {
     format,
     gettext,
     relativeDate,
     URL,
-}: Props & {batch: Import}) => {
+}: Context) => {
     const results = batch.getFilteredResults();
     let columns;
 
@@ -80,8 +76,10 @@ const ImageImport = ({
     </tr>;
 };
 
-const ImageImports = (props: Props) => {
-    const {gettext, imageImport} = props;
+ImageImport.contextTypes = childContextTypes;
+
+const ImageImports = (props: Props, {gettext}: Context) => {
+    const {imageImport} = props;
 
     return <div className="responsive-table">
         <table className="table">
@@ -103,12 +101,10 @@ const ImageImports = (props: Props) => {
     </div>;
 };
 
-const UploadImagesForm = ({
-    gettext,
-    source,
-    lang,
-    URL,
-}: Props) => <div className="panel panel-default">
+ImageImports.contextTypes = childContextTypes;
+
+const UploadImagesForm = ({source}: Props,
+        {gettext, lang, URL}: Context) => <div className="panel panel-default">
     <div className="panel-heading">
         <h3 className="panel-title">
             {gettext("Upload Images")}
@@ -150,15 +146,18 @@ const UploadImagesForm = ({
     </div>
 </div>;
 
+UploadImagesForm.contextTypes = childContextTypes;
+
 const DataImport = ({
     batch,
     batchError,
     batchState,
+}: Props & {batch: Import}, {
     format,
     gettext,
     relativeDate,
     URL,
-}: Props & {batch: Import}) => {
+}: Context) => {
     const results = batch.getFilteredResults();
     let columns;
 
@@ -192,8 +191,10 @@ const DataImport = ({
     </tr>;
 };
 
-const DataImports = (props: Props) => {
-    const {gettext, dataImport} = props;
+DataImport.contextTypes = childContextTypes;
+
+const DataImports = (props: Props, {gettext}: Context) => {
+    const {dataImport} = props;
 
     return <div className="responsive-table">
         <table className="table">
@@ -218,12 +219,13 @@ const DataImports = (props: Props) => {
     </div>;
 };
 
-const UploadDataForm = ({
+DataImports.contextTypes = childContextTypes;
+
+const UploadDataForm = ({source}: Props, {
     gettext,
-    source,
     lang,
     URL,
-}: Props) => <div className="panel panel-default">
+}: Context) => <div className="panel panel-default">
     <div className="panel-heading">
         <h3 className="panel-title">
             {gettext("Upload Metadata")}
@@ -256,11 +258,14 @@ const UploadDataForm = ({
     </div>
 </div>;
 
-const Admin = (props: Props) => {
+UploadDataForm.contextTypes = childContextTypes;
+
+const Admin = (props: Props, {
+    format,
+    gettext,
+    fullName,
+}: Context) => {
     const {
-        format,
-        gettext,
-        fullName,
         imageImport,
         dataImport,
         source,
@@ -281,5 +286,7 @@ const Admin = (props: Props) => {
         {dataImport.length > 0 && <DataImports {...props} />}
     </Page>;
 };
+
+Admin.contextTypes = childContextTypes;
 
 module.exports = Admin;

@@ -2,6 +2,9 @@
 
 const React = require("react");
 
+import type {Context} from "./types.jsx";
+const {childContextTypes} = require("./Wrapper.jsx");
+
 type Import = {
     _id: string,
     error?: string,
@@ -23,13 +26,6 @@ type ImportResults = {
 };
 
 type Props = {
-    // GlobalProps
-    URL: (path: string | {getURL: (lang: string) => string}) => string,
-    format: (text: string, options: {}) => string,
-    gettext: (text: string) => string,
-    stringNum: (num: number) => string,
-    lang: string,
-
     batch: Import,
     expanded?: string,
     id: "models" | "unprocessed" | "created" | "changed" | "deleted" |
@@ -41,17 +37,18 @@ type Props = {
     title: string,
 };
 
-const ImportResult = (props: Props) => {
+const ImportResult = (props: Props, {
+    URL,
+    format,
+    gettext,
+    stringNum,
+}: Context) => {
     const {
-        URL,
         batch,
         expanded,
-        format,
-        gettext,
         id,
         numShow = 5,
         renderResult,
-        stringNum,
         title,
     } = props;
     const allResults = batch.getFilteredResults()[id];
@@ -90,5 +87,7 @@ const ImportResult = (props: Props) => {
         </div>
     </div>;
 };
+
+ImportResult.contextTypes = childContextTypes;
 
 module.exports = ImportResult;

@@ -4,6 +4,9 @@ const React = require("react");
 
 const Page = require("./Page.jsx");
 
+import type {Context} from "./types.jsx";
+const {childContextTypes} = require("./Wrapper.jsx");
+
 type ImageType = {
     _id: string,
     getOriginalURL: () => string,
@@ -36,23 +39,11 @@ type MatchType = {
 };
 
 type Props = {
-    // GlobalProps
-    URL: (path: string | {getURL: (lang: string) => string}) => string,
-    gettext: (text: string) => string,
-    lang: string,
-    getTitle: (item: {getTitle: () => string}) => string,
-    format: (text: string, options: {}) => string,
-    fullName: (name: *) => string,
-    shortName: (name: *) => string,
-
     image: ImageType,
     similar: Array<MatchType>,
 };
 
-const UploadedImage = ({
-    gettext,
-    image,
-}: Props) => {
+const UploadedImage = ({image}: Props, {gettext}: Context) => {
     const title = gettext("Uploaded Image");
 
     return <div className="panel panel-default">
@@ -71,15 +62,18 @@ const UploadedImage = ({
     </div>;
 };
 
+UploadedImage.contextTypes = childContextTypes;
+
 const Match = ({
     match: {recordModel, score},
+}: Props & {match: MatchType}, {
     getTitle,
     URL,
     format,
     gettext,
     fullName,
     shortName,
-}: Props & {match: MatchType}) => {
+}: Context) => {
     const source = recordModel.getSource();
 
     return <div className="img col-md-6 col-sm-4 col-xs-6">
@@ -108,8 +102,10 @@ const Match = ({
     </div>;
 };
 
-const Results = (props: Props) => {
-    const {gettext, similar} = props;
+Match.contextTypes = childContextTypes;
+
+const Results = (props: Props, {gettext}: Context) => {
+    const {similar} = props;
 
     let similarResults;
 
@@ -131,6 +127,8 @@ const Results = (props: Props) => {
         </div>
     </div>;
 };
+
+Results.contextTypes = childContextTypes;
 
 const Upload = (props: Props) => {
     return <Page {...props}>

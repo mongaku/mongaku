@@ -7,6 +7,9 @@ const options = require("../lib/options");
 
 const Page = require("./Page.jsx");
 
+import type {Context} from "./types.jsx";
+const {childContextTypes} = require("./Wrapper.jsx");
+
 type ImageType = {
     _id: string,
     getOriginalURL: () => string,
@@ -39,15 +42,6 @@ type Match = {
 };
 
 type Props = {
-    // GlobalProps
-    URL: (path: string | {getURL: (lang: string) => string}) => string,
-    gettext: (text: string) => string,
-    lang: string,
-    getTitle: (item: {getTitle: () => string}) => string,
-    format: (text: string, options: {}) => string,
-    fullName: (name: *) => string,
-    shortName: (name: *) => string,
-
     compare: boolean,
     records: Array<RecordType>,
     similar: Array<Match>,
@@ -77,12 +71,11 @@ const Image = ({
     image,
     record,
     active,
-    getTitle,
 }: Props & {
     record: RecordType,
     image: ImageType,
     active: boolean,
-}) => <div className={`item ${active ? "active" : ""}`}>
+}, {getTitle}: Context) => <div className={`item ${active ? "active" : ""}`}>
     <a href={image.getOriginalURL()}>
         <img src={image.getScaledURL()}
             alt={getTitle(record)}
@@ -92,10 +85,11 @@ const Image = ({
     </a>
 </div>;
 
-const Carousel = ({
-    record,
+Image.contextTypes = childContextTypes;
+
+const Carousel = ({record}: Props & {record: RecordType}, {
     gettext,
-}: Props & {record: RecordType}) => {
+}: Context) => {
     const carouselId = record._id.replace("/", "-");
     return <div>
         <ol className="carousel-indicators">
@@ -132,6 +126,8 @@ const Carousel = ({
         </a>
     </div>;
 };
+
+Carousel.contextTypes = childContextTypes;
 
 const Images = (props: Props & {record: RecordType}) => {
     const {record} = props;
@@ -186,7 +182,7 @@ const Metadata = (props: Props) => {
     });
 };
 
-const Details = ({gettext, records}: Props) => <tr>
+const Details = ({records}: Props, {gettext}: Context) => <tr>
     <th className="text-right">
         {gettext("Details")}
     </th>
@@ -199,7 +195,13 @@ const Details = ({gettext, records}: Props) => <tr>
     })}
 </tr>;
 
-const Sources = ({gettext, records, URL, fullName}: Props) => <tr>
+Details.contextTypes = childContextTypes;
+
+const Sources = ({records}: Props, {
+    gettext,
+    URL,
+    fullName,
+}: Context) => <tr>
     <th className="text-right">
         {gettext("Source")}
     </th>
@@ -214,11 +216,14 @@ const Sources = ({gettext, records, URL, fullName}: Props) => <tr>
     })}
 </tr>;
 
-const MainRecord = (props: Props) => {
+Sources.contextTypes = childContextTypes;
+
+const MainRecord = (props: Props, {
+    URL,
+    gettext,
+}: Context) => {
     const {
         similar,
-        URL,
-        gettext,
         compare,
         records,
         sources,
@@ -260,15 +265,18 @@ const MainRecord = (props: Props) => {
     </div>;
 };
 
+MainRecord.contextTypes = childContextTypes;
+
 const SimilarMatch = ({
     match: {recordModel, score},
+}: Props & {match: Match}, {
     URL,
     getTitle,
     format,
     gettext,
     fullName,
     shortName,
-}: Props & {match: Match}) => <div className="img col-md-12 col-xs-6 col-sm-4">
+}: Context) => <div className="img col-md-12 col-xs-6 col-sm-4">
     <a href={URL(recordModel)}>
         <img src={recordModel.getThumbURL()}
             alt={getTitle(recordModel)}
@@ -291,8 +299,10 @@ const SimilarMatch = ({
     </div>
 </div>;
 
-const Similar = (props: Props) => {
-    const {gettext, similar} = props;
+SimilarMatch.contextTypes = childContextTypes;
+
+const Similar = (props: Props, {gettext}: Context) => {
+    const {similar} = props;
 
     return <div className="col-md-3">
         <a href="?compare" className="btn btn-success btn-block"
@@ -313,6 +323,8 @@ const Similar = (props: Props) => {
     </div>;
 };
 
+Similar.contextTypes = childContextTypes;
+
 const Script = () => <script
     dangerouslySetInnerHTML={{__html: `
         $(function() {
@@ -321,8 +333,8 @@ const Script = () => <script
     `}}
 />;
 
-const Record = (props: Props) => {
-    const {records, similar, URL} = props;
+const Record = (props: Props, {URL}: Context) => {
+    const {records, similar} = props;
     const record = records[0];
     const title = options.types[record.type]
         .recordTitle(record, props);
@@ -344,5 +356,7 @@ const Record = (props: Props) => {
         </div>
     </Page>;
 };
+
+Record.contextTypes = childContextTypes;
 
 module.exports = Record;
