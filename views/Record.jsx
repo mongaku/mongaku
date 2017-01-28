@@ -255,7 +255,7 @@ const MainRecord = (props: Props, {
                     </tr>
                 </thead>
                 <tbody>
-                    {<Metadata {...props} />}
+                    <Metadata {...props} />
                     {hasValue(records, "url") && <Details {...props} />}
                     {sources.length > 1 &&
                         <Sources {...props} />}
@@ -345,13 +345,12 @@ const Record = (props: Props, {URL}: Context) => {
     };
 
     return <Page
-        {...props}
         title={title}
         scripts={<Script/>}
         social={social}
     >
         <div className="row">
-            {<MainRecord {...props} />}
+            <MainRecord {...props} />
             {similar.length > 0 && <Similar {...props} />}
         </div>
     </Page>;

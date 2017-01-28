@@ -8,7 +8,6 @@ const {childContextTypes} = require("./Wrapper.jsx");
 type Import = {
     _id: string,
     error?: string,
-    fileName: string,
     getFilteredResults: () => ImportResults,
     getURL: (lang: string) => string,
     modified: Date,
@@ -31,9 +30,7 @@ type Props = {
     id: "models" | "unprocessed" | "created" | "changed" | "deleted" |
         "errors" | "warnings",
     numShow?: number,
-    // NOTE(jeresig): I'm not sure of the right way to handle passing in any
-    // component (including stateless functional components)
-    renderResult: React.Component<*, *, *> | Function,
+    renderResult: (result: any, i: number) => React.Element<*>,
     title: string,
 };
 
@@ -74,8 +71,7 @@ const ImportResult = (props: Props, {
         <div className="panel-body">
             <div className="row">
                 <ul className="col-xs-12">
-                    {results.map((result) =>
-                        <renderResult {...props} result={result} />)}
+                    {results.map(renderResult)}
                 </ul>
             </div>
             <div className="row">

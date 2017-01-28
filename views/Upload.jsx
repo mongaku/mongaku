@@ -41,6 +41,7 @@ type MatchType = {
 type Props = {
     image: ImageType,
     similar: Array<MatchType>,
+    title: string,
 };
 
 const UploadedImage = ({image}: Props, {gettext}: Context) => {
@@ -131,7 +132,9 @@ const Results = (props: Props, {gettext}: Context) => {
 Results.contextTypes = childContextTypes;
 
 const Upload = (props: Props) => {
-    return <Page {...props}>
+    const {title} = props;
+
+    return <Page title={title}>
         <div className="row">
             <div className="col-md-6">
                 <UploadedImage {...props} />

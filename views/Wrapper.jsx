@@ -6,11 +6,10 @@ const moment = require("moment");
 const React = require("react");
 
 const urls = require("../lib/urls");
-import type {User} from "./types.jsx";
 
 class Wrapper extends React.Component {
     getChildContext() {
-        const {originalUrl, user, lang, gettext, format} = this.props;
+        const {originalUrl, lang, gettext, format} = this.props;
 
         return {
             lang,
@@ -74,14 +73,11 @@ class Wrapper extends React.Component {
             fixedDate(date: Date): string {
                 return moment(date).locale(lang).format("LLL");
             },
-
-            currentUser: (): ?User => user,
         };
     }
 
     props: {
-        originalUrl?: string,
-        user?: User,
+        originalUrl: string,
         lang: string,
         gettext: (text: string) => string,
         format: (text: string, options: {}) => string,
@@ -106,7 +102,6 @@ Wrapper.childContextTypes = {
     stringNum: React.PropTypes.func,
     relativeDate: React.PropTypes.func,
     fixedDate: React.PropTypes.func,
-    currentUser: React.PropTypes.func,
 };
 
 module.exports = Wrapper;

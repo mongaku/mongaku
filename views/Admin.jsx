@@ -12,7 +12,7 @@ const {childContextTypes} = require("./Wrapper.jsx");
 type Props = {
     dataImport: Array<Import>,
     imageImport: Array<Import>,
-    batchError: (error: string) => string,
+    batchError: (batch: Import) => string,
     batchState: (batch: Import) => string,
     source: {
         _id: string,
@@ -58,7 +58,7 @@ const ImageImport = ({
     if (batch.state === "error") {
         columns = <td colSpan="4">
             {format(gettext("Error: %(error)s"),
-                {error: batchError(batch.error || "")})}
+                {error: batchError(batch)})}
         </td>;
     } else {
         columns = [
@@ -164,7 +164,7 @@ const DataImport = ({
     if (batch.state === "error") {
         columns = <td colSpan="7">
             {format(gettext("Error: %(error)s"),
-                {error: batchError(batch.error || "")})}
+                {error: batchError(batch)})}
         </td>;
     } else {
         columns = [
@@ -275,14 +275,11 @@ const Admin = (props: Props, {
         name: fullName(source),
     });
 
-    return <Page
-        {...props}
-        title={title}
-    >
+    return <Page title={title}>
         <h1>{title}</h1>
         {hasImages && <UploadImagesForm {...props} />}
         {imageImport.length > 0 && <ImageImports {...props} />}
-        {<UploadDataForm {...props} />}
+        <UploadDataForm {...props} />
         {dataImport.length > 0 && <DataImports {...props} />}
     </Page>;
 };

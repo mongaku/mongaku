@@ -12,11 +12,13 @@ const {childContextTypes} = require("./Wrapper.jsx");
 
 type Props = {
     dynamicValues: {},
-    globalFacets?: Array<{
-        text: string,
-    }>,
+    globalFacets?: {
+        [name: string]: {
+            text: string,
+        },
+    },
     mode: "create" | "edit" | "clone",
-    record: Record,
+    record?: Record,
     type: string,
 };
 
@@ -58,7 +60,7 @@ const Image = ({
 
     <div className="details reduced">
         <form
-            action={record.getRemoveImageURL(lang)}
+            action={record && record.getRemoveImageURL(lang)}
             method="POST"
             encType="multipart/form-data"
         >
@@ -244,7 +246,7 @@ SubmitButton.contextTypes = childContextTypes;
 const CloneButton = ({record, mode}: Props, {gettext, lang}: Context) =>
 <div className="row">
     <a
-        href={record.getCloneURL(lang)}
+        href={record && record.getCloneURL(lang)}
         className="btn btn-primary pull-right"
     >
         {gettext("Clone Record")}

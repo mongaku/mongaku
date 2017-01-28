@@ -118,10 +118,7 @@ const ImportImages = (props: Props, {
     const lastUpdated = format(gettext("Last Updated: %(date)s"),
         {date: relativeDate(batch.modified)});
 
-    return <Page
-        {...props}
-        title={title}
-    >
+    return <Page title={title}>
         <p><a href={adminURL} className="btn btn-primary">
             &laquo; {gettext("Return to Admin Page")}
         </a></p>
@@ -136,21 +133,24 @@ const ImportImages = (props: Props, {
             {...props}
             id="errors"
             title={gettext("Errors")}
-            renderResult={ErrorResult}
+            renderResult={(result, i) =>
+                <ErrorResult {...props} result={result} key={i} />}
         />
 
         <ImportResult
             {...props}
             id="warnings"
             title={gettext("Warnings")}
-            renderResult={WarningResult}
+            renderResult={(result, i) =>
+                <WarningResult {...props} result={result} key={i} />}
         />
 
         <ImportResult
             {...props}
             id="models"
             title={gettext("Images")}
-            renderResult={ModelResult}
+            renderResult={(result, i) =>
+                <ModelResult {...props} result={result} key={i} />}
             numShow={8}
         />
     </Page>;

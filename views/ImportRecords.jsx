@@ -12,9 +12,9 @@ const {childContextTypes} = require("./Wrapper.jsx");
 
 type Import = {
     _id: string,
+    fileName: string,
     type: string,
     error?: string,
-    fileName: string,
     getFilteredResults: () => ImportResults,
     getURL: (lang: string) => string,
     created: Date,
@@ -33,7 +33,6 @@ type ImportResults = {
 };
 
 type Result = {
-    fileName: string,
     error?: string,
     model?: string,
     warnings?: Array<string>,
@@ -195,11 +194,7 @@ const ImportData = (props: Props, {
         href={URL("/css/format-diff.css")}
     />;
 
-    return <Page
-        {...props}
-        title={title}
-        style={style}
-    >
+    return <Page title={title} style={style}>
         <p><a href={adminURL} className="btn btn-primary">
             &laquo; {gettext("Return to Admin Page")}
         </a></p>
@@ -221,14 +216,16 @@ const ImportData = (props: Props, {
             {...props}
             id="errors"
             title={gettext("Errors")}
-            renderResult={ErrorResult}
+            renderResult={(result, i) =>
+                <ErrorResult {...props} result={result} key={i} />}
         />
 
         <ImportResult
             {...props}
             id="warnings"
             title={gettext("Warnings")}
-            renderResult={WarningResult}
+            renderResult={(result, i) =>
+                <WarningResult {...props} result={result} key={i} />}
         />
 
         <ImportResult
@@ -237,7 +234,8 @@ const ImportData = (props: Props, {
             title={state === "completed" ?
                 gettext("Changed") :
                 gettext("Will Be Changed")}
-            renderResult={ChangedResult}
+            renderResult={(result, i) =>
+                <ChangedResult {...props} result={result} key={i} />}
         />
 
         <ImportResult
@@ -246,7 +244,8 @@ const ImportData = (props: Props, {
             title={state === "completed" ?
                 gettext("Created") :
                 gettext("Will Be Created")}
-            renderResult={CreatedResult}
+            renderResult={(result, i) =>
+                <CreatedResult {...props} result={result} key={i} />}
         />
 
         <ImportResult
@@ -255,7 +254,8 @@ const ImportData = (props: Props, {
             title={state === "completed" ?
                 gettext("Deleted") :
                 gettext("Will Be Deleted")}
-            renderResult={DeletedResult}
+            renderResult={(result, i) =>
+                <DeletedResult {...props} result={result} key={i} />}
         />
     </Page>;
 };

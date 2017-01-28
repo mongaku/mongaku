@@ -145,15 +145,6 @@ const NavLink = ({type, title}: Props & {type: string},
 
 NavLink.contextTypes = childContextTypes;
 
-const NavLinks = (props, {gettext}: Context) => <div>
-    {Object.keys(options.types).map((type) => {
-        const title = options.types[type].name({gettext});
-        return <NavLink type={type} title={title} key={type} />;
-    })}
-</div>;
-
-NavLinks.contextTypes = childContextTypes;
-
 const SearchForm = (props, {gettext, URL}: Context) => <form
     action={URL(`/${types[0]}/search`)}
     method="GET"
@@ -213,7 +204,7 @@ const Header = (props, {
     gettext,
     URL,
     getShortTitle,
-    currentUser,
+    user,
 }: Context) => <div
     className="navbar navbar-default navbar-static-top"
 >
@@ -241,8 +232,11 @@ const Header = (props, {
                         {gettext("Browse All")}
                     </a>
                 </li>}
-                {<NavLinks />}
-                {currentUser() && <li>
+                {Object.keys(options.types).map((type) => {
+                    const title = options.types[type].name({gettext});
+                    return <NavLink type={type} title={title} key={type} />;
+                })}
+                {user && <li>
                     <a href={URL("/logout")}>
                         {gettext("Logout")}
                     </a>

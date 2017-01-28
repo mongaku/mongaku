@@ -15,8 +15,6 @@ const db = require("../lib/db");
 const config = require("../lib/config");
 const reactViews = require("./react-views.jsx");
 
-const viewMethods = require("./middlewares/view-methods");
-
 const rootPath = path.resolve(__dirname, "..");
 
 module.exports = (app) => {
@@ -69,7 +67,4 @@ module.exports = (app) => {
         secret: pkg.name,
         store,
     }));
-
-    // Bring in the methods that will be available to the views
-    app.use(viewMethods);
 };

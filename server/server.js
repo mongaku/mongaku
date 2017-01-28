@@ -7,6 +7,7 @@ const expressInit = require("./express");
 const passport = require("./passport");
 const i18n = require("./i18n");
 const routes = require("./routes");
+const tmplVars = require("./tmpl-vars");
 const cron = require("./cron");
 
 module.exports = (callback) => {
@@ -23,6 +24,7 @@ module.exports = (callback) => {
         expressInit(app);
         passport(app);
         i18n(app);
+        tmplVars(app);
         routes(app);
 
         const server = app.listen(port, () => {

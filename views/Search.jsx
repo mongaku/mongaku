@@ -482,21 +482,21 @@ const Results = (props: Props) => {
     return <div className="results-main col-sm-9 col-sm-pull-3">
         {breadcrumbs && breadcrumbs.length > 0 && <Breadcrumbs {...props} />}
         {records.length === 0 && <NoResults {...props} />}
-        {<Pagination {...props} />}
+        <Pagination {...props} />
         <div className="row">
             {records.map((record) => imageResult ?
                 <ImageResult {...props} record={record} key={record._id} /> :
                 <TextResult {...props} record={record} key={record._id} />
             )}
         </div>
-        {<Pagination {...props} />}
+        <Pagination {...props} />
     </div>;
 };
 
 const Search = (props: Props) => {
     const {title, url} = props;
 
-    return <Page {...props}>
+    return <Page title={title}>
         <div className="row">
             <div className="col-xs-12">
                 <h1>{title}</h1>
