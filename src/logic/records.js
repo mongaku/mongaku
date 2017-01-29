@@ -37,6 +37,12 @@ module.exports = function(app) {
         show(req, res, next) {
             const typeName = req.params.type;
 
+            if (!options.types[typeName]) {
+                return res.status(404).render("Error", {
+                    title: req.gettext("Page not found."),
+                });
+            }
+
             if (options.types[typeName].alwaysEdit) {
                 return res.redirect(`${req.originalUrl}/edit`);
             }
