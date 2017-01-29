@@ -2,20 +2,21 @@
   "name": "mongaku",
   "version": "0.0.1",
   "description": "An image similarity search engine and database.",
-  "main": "mongaku.js",
+  "main": "build/mongaku.js",
   "bin": {
-    "mongaku": "bin/mongaku.js"
+    "mongaku": "build/bin/mongaku.js"
   },
   "scripts": {
-    "lint": "eslint lib/*.js logic/*.js logic/shared/*.js schemas/*.js server/*.js server/*/*.js utils/*.js converters/*.js tests/*.js *.js views/*.jsx views/types/*/*.jsx && npm run flow",
-    "test": "npm run lint && NODE_ENV=test tap --cov tests/schemas/*.js tests/logic/shared/*.js tests/logic/*.js",
-    "dev": "supervisor -e js,jsx -i node_modules,old,locales,converters,sources,public -- mongaku.js options.jsx",
-    "dev-test": "NODE_ENV=test supervisor -e js,jsx -i node_modules,old,locales,converters,sources,public tests/server.js",
-    "extract-i18n-js": "jsxgettext --keyword=format --keyword=gettext -L javascript --output-dir=./translations --output=messages.pot logic/*.js logic/*/*.js schemas/*.js schemas/*/*.js server/*.js lib/*.js views/*.jsx views/types/*/*.jsx",
+    "build": "babel src --out-dir build",
+    "lint": "eslint src && npm run flow",
+    "test": "npm run lint && NODE_ENV=test tap --cov build/tests/*/*.js",
+    "dev": "supervisor -e js,jsx -i node_modules,old,locales,converters,sources,public -- build/mongaku.js",
+    "dev-test": "NODE_ENV=test supervisor -e js,jsx -i node_modules,old,locales,converters,sources,public build/tests/server.js",
+    "extract-i18n-js": "jsxgettext --keyword=format --keyword=gettext -L javascript --output-dir=./translations --output=messages.pot",
     "extract-i18n": "npm run extract-i18n-js && git add translations/messages.pot",
     "update-i18n": "tx pull -a && po2json.js -p translations/de/messages.po > translations/de/messages.json && po2json.js -p translations/it/messages.po > translations/it/messages.json",
     "migrate": "migrate",
-    "coverage": "NODE_ENV=test tap --cov --coverage-report=lcov tests/schemas/*.js tests/logic/*.js",
+    "coverage": "NODE_ENV=test tap --cov --coverage-report=lcov build/tests/*/*.js",
     "test-file": "NODE_ENV=test tap --cov",
     "flow": "flow"
   },
@@ -34,7 +35,6 @@
     "babel-plugin-flow-react-proptypes": "0.20.0",
     "babel-preset-es2015": "6.18.0",
     "babel-preset-react": "6.16.0",
-    "babel-register": "6.18.0",
     "bcrypt": "1.0.2",
     "body-parser": "1.16.0",
     "concat-stream": "1.6.0",
@@ -81,6 +81,7 @@
     "yearrange": "0.0.5"
   },
   "devDependencies": {
+    "babel-cli": "6.22.2",
     "babel-eslint": "7.1.1",
     "eslint": "3.13.1",
     "eslint-plugin-flowtype": "2.30.0",
@@ -88,7 +89,7 @@
     "flow-bin": "0.38.0",
     "jsxgettext": "0.9.0",
     "migrate": "0.2.3",
-    "mock-fs": "3.12.1",
+    "mock-fs": "4.0.0-beta.1",
     "pre-commit": "1.2.2",
     "sinon": "1.17.7",
     "supervisor": "0.12.0",

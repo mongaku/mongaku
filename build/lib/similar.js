@@ -1,0 +1,17 @@
+"use strict";
+
+var config = require("./config");
+
+var similar = void 0;
+
+/* istanbul ignore else */
+if (config.PASTEC_URL) {
+    similar = require("pastec")({
+        server: config.PASTEC_URL
+    });
+}
+
+// TODO(jeresig): Implement TinEye MatchEngine option
+
+module.exports = similar;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL3NyYy9saWIvc2ltaWxhci5qcyJdLCJuYW1lcyI6WyJjb25maWciLCJyZXF1aXJlIiwic2ltaWxhciIsIlBBU1RFQ19VUkwiLCJzZXJ2ZXIiLCJtb2R1bGUiLCJleHBvcnRzIl0sIm1hcHBpbmdzIjoiOztBQUFBLElBQU1BLFNBQVNDLFFBQVEsVUFBUixDQUFmOztBQUVBLElBQUlDLGdCQUFKOztBQUVBO0FBQ0EsSUFBSUYsT0FBT0csVUFBWCxFQUF1QjtBQUNuQkQsY0FBVUQsUUFBUSxRQUFSLEVBQWtCO0FBQ3hCRyxnQkFBUUosT0FBT0c7QUFEUyxLQUFsQixDQUFWO0FBR0g7O0FBRUQ7O0FBRUFFLE9BQU9DLE9BQVAsR0FBaUJKLE9BQWpCIiwiZmlsZSI6InNpbWlsYXIuanMiLCJzb3VyY2VzQ29udGVudCI6WyJjb25zdCBjb25maWcgPSByZXF1aXJlKFwiLi9jb25maWdcIik7XG5cbmxldCBzaW1pbGFyO1xuXG4vKiBpc3RhbmJ1bCBpZ25vcmUgZWxzZSAqL1xuaWYgKGNvbmZpZy5QQVNURUNfVVJMKSB7XG4gICAgc2ltaWxhciA9IHJlcXVpcmUoXCJwYXN0ZWNcIikoe1xuICAgICAgICBzZXJ2ZXI6IGNvbmZpZy5QQVNURUNfVVJMLFxuICAgIH0pO1xufVxuXG4vLyBUT0RPKGplcmVzaWcpOiBJbXBsZW1lbnQgVGluRXllIE1hdGNoRW5naW5lIG9wdGlvblxuXG5tb2R1bGUuZXhwb3J0cyA9IHNpbWlsYXI7XG4iXX0=

@@ -1,0 +1,236 @@
+/*
+ * Custom styling for the page header.
+ */
+
+.navbar-brand img {
+    margin-bottom: -20px;
+    position: relative;
+    top: -10px;
+}
+
+.navbar-form {
+    margin-right: -15px;
+    padding-right: 0;
+}
+
+.dropdown-search {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.428571429;
+    color: #333;
+    white-space: nowrap;
+    min-width: 280px;
+}
+
+/*
+ * Styling for the home page splash.
+ */
+
+.home-splash {
+    background: url(../images/background-collage.sm.jpg) repeat-x;
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.home-splash {
+    height: 275px;
+}
+
+.home-splash .splash-contents {
+    display: block;
+    position: relative;
+    margin: 0 auto;
+    margin-top: 60px;
+    width: 430px;
+    height: 203px;
+}
+
+@media (max-width: 768px) {
+    .home-splash .splash-contents {
+        width: auto;
+    }
+}
+
+.home-splash img {
+    float: left;
+}
+
+.home-splash h1 {
+    display: block;
+    position: absolute;
+    width: 225px;
+    bottom: 0;
+    right: 0;
+    color: #FFF;
+    text-shadow: 0px 0px 4px black;
+    text-align: left;
+}
+
+.home-splash-offset {
+    margin-top: 220px;
+}
+
+/*
+ * Custom styling for the image results.
+ */
+
+.results-side {
+    padding: 0;
+}
+
+.results-main {
+    overflow: auto;
+}
+
+.img {
+    margin-bottom: 15px;
+}
+
+.img .details {
+    background: rgba(0, 0, 0, 0.5);
+    text-align: left;
+    overflow: hidden;
+    color: #FFF;
+    padding: 0 5px;
+    margin-top: 5px;
+    max-height: 20px;
+}
+
+.img .details.reduced {
+    background: none;
+    text-align: center;
+    color: #000;
+    max-height: none;
+}
+
+.img .details a {
+    color: #FFF;
+    overflow: auto;
+}
+
+.img .img-wrap {
+    height: 220px;
+    margin: 0 auto;
+    max-width: 100%;
+    position: relative;
+    width: 220px;
+}
+
+.img .img-wrap img {
+    bottom: 0;
+    height: auto;
+    left: 0;
+    margin: auto;
+    max-height: 100%;
+    max-width: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+}
+
+/*
+ * Styling for the record search form.
+ */
+
+.search-form {
+    padding-bottom: 0;
+}
+
+.date-control {
+    display: inline-block;
+    width: 46px;
+    padding: 6px;
+}
+
+.size-control {
+    display: inline-block;
+    width: 46px;
+    padding: 6px;
+}
+
+/*
+ * Styling for the facets in the search results.
+ */
+
+.facet ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.facet .toggle-facets {
+    margin-top: 5px;
+}
+
+.facet .extra-facets {
+    display: none;
+}
+
+/*
+ * Styling for the Bootstrap Carousel
+ */
+
+.carousel-control {
+    background: rgba(0, 0, 0, 0.5) !important;
+    max-width: 50px !important;
+    width: 10% !important;
+}
+.carousel-control .icon-prev, .carousel-control .glyphicon-chevron-left {
+    left: 0 !important;
+    width: 100% !important;
+}
+.carousel-control .icon-next, .carousel-control .glyphicon-chevron-right {
+    right: 0 !important;
+    width: 100% !important;
+}
+.carousel-indicators {
+    bottom: 0 !important;
+}
+
+/*
+ * Styling for the metadata view.
+ */
+
+.table > tbody > tr.plain > th,
+.table > tbody > tr.plain > td {
+    border-top: none;
+}
+
+.table > tbody > tr.plain:hover > th,
+.table > tbody > tr.plain:hover > td {
+    background: #fff;
+}
+
+.table td {
+    white-space: pre-line;
+}
+
+.table td textarea {
+    height: 100px;
+}
+
+/*
+ * Styling for forms
+ */
+html:not(.revealed) td[data-private] {
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -ms-filter: blur(5px);
+    -o-filter: blur(5px);
+    filter: blur(5px);
+}
+
+/*
+ * Styling for the import record view.
+ */
+pre.json {
+    max-height: 200px;
+    overflow: auto;
+}

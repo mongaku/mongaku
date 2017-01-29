@@ -1,0 +1,28 @@
+"use strict";
+
+module.exports = {
+    getShortTitle: function getShortTitle() {
+        return "Mongaku";
+    },
+
+    getTitle: function getTitle() {
+        return this.getShortTitle();
+    },
+
+
+    noIndex: false,
+
+    usei18nSubdomain: false,
+
+    maxUploadSize: 10485760,
+
+    imageThumbSize: "220x220",
+    imageScaledSize: "440x440",
+
+    views: {},
+
+    locales: {},
+
+    types: {}
+};
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL3NyYy9saWIvZGVmYXVsdC1vcHRpb25zLmpzIl0sIm5hbWVzIjpbIm1vZHVsZSIsImV4cG9ydHMiLCJnZXRTaG9ydFRpdGxlIiwiZ2V0VGl0bGUiLCJub0luZGV4IiwidXNlaTE4blN1YmRvbWFpbiIsIm1heFVwbG9hZFNpemUiLCJpbWFnZVRodW1iU2l6ZSIsImltYWdlU2NhbGVkU2l6ZSIsInZpZXdzIiwibG9jYWxlcyIsInR5cGVzIl0sIm1hcHBpbmdzIjoiOztBQUFBQSxPQUFPQyxPQUFQLEdBQWlCO0FBQ2JDLG1CQUFlO0FBQUEsZUFBTSxTQUFOO0FBQUEsS0FERjs7QUFHYkMsWUFIYSxzQkFHRjtBQUNQLGVBQU8sS0FBS0QsYUFBTCxFQUFQO0FBQ0gsS0FMWTs7O0FBT2JFLGFBQVMsS0FQSTs7QUFTYkMsc0JBQWtCLEtBVEw7O0FBV2JDLG1CQUFlLFFBWEY7O0FBYWJDLG9CQUFnQixTQWJIO0FBY2JDLHFCQUFpQixTQWRKOztBQWdCYkMsV0FBTyxFQWhCTTs7QUFrQmJDLGFBQVMsRUFsQkk7O0FBb0JiQyxXQUFPO0FBcEJNLENBQWpCIiwiZmlsZSI6ImRlZmF1bHQtb3B0aW9ucy5qcyIsInNvdXJjZXNDb250ZW50IjpbIm1vZHVsZS5leHBvcnRzID0ge1xuICAgIGdldFNob3J0VGl0bGU6ICgpID0+IFwiTW9uZ2FrdVwiLFxuXG4gICAgZ2V0VGl0bGUoKSB7XG4gICAgICAgIHJldHVybiB0aGlzLmdldFNob3J0VGl0bGUoKTtcbiAgICB9LFxuXG4gICAgbm9JbmRleDogZmFsc2UsXG5cbiAgICB1c2VpMThuU3ViZG9tYWluOiBmYWxzZSxcblxuICAgIG1heFVwbG9hZFNpemU6IDEwNDg1NzYwLFxuXG4gICAgaW1hZ2VUaHVtYlNpemU6IFwiMjIweDIyMFwiLFxuICAgIGltYWdlU2NhbGVkU2l6ZTogXCI0NDB4NDQwXCIsXG5cbiAgICB2aWV3czoge30sXG5cbiAgICBsb2NhbGVzOiB7fSxcblxuICAgIHR5cGVzOiB7fSxcbn07XG4iXX0=

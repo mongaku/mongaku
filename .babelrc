@@ -1,0 +1,5 @@
+{
+    "sourceMaps": "inline",
+    "presets": ["es2015", "babel-preset-react"],
+    "plugins": ["flow-react-proptypes"],
+}
