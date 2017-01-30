@@ -1,10 +1,8 @@
 "use strict";
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+const React = require("react");
 
-var React = require("react");
-
-var FixedStringView = React.createClass({
+const FixedStringView = React.createClass({
     displayName: "FixedStringView",
 
     propTypes: {
@@ -17,50 +15,31 @@ var FixedStringView = React.createClass({
         }))
     },
 
-    getTitle: function getTitle(value) {
+    getTitle(value) {
         if (!this.props.values) {
             return value;
         }
 
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-            for (var _iterator = this.props.values[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                var map = _step.value;
-
-                if (map.id === value) {
-                    return map.name;
-                }
-            }
-        } catch (err) {
-            _didIteratorError = true;
-            _iteratorError = err;
-        } finally {
-            try {
-                if (!_iteratorNormalCompletion && _iterator.return) {
-                    _iterator.return();
-                }
-            } finally {
-                if (_didIteratorError) {
-                    throw _iteratorError;
-                }
+        for (const map of this.props.values) {
+            if (map.id === value) {
+                return map.name;
             }
         }
 
         return value;
     },
-    renderValue: function renderValue(value) {
-        var _searchURL;
 
+    renderValue(value) {
         if (!value) {
             return null;
         }
 
-        var searchURL = require("../../../logic/shared/search-url");
-        var title = this.getTitle(value);
-        var url = searchURL(this.props, (_searchURL = {}, _defineProperty(_searchURL, this.props.name, value), _defineProperty(_searchURL, "type", this.props.type), _searchURL));
+        const searchURL = require("../../../logic/shared/search-url");
+        const title = this.getTitle(value);
+        const url = searchURL(this.props, {
+            [this.props.name]: value,
+            type: this.props.type
+        });
 
         return React.createElement(
             "a",
@@ -68,23 +47,21 @@ var FixedStringView = React.createClass({
             title
         );
     },
-    renderValues: function renderValues(values) {
-        var _this = this;
 
+    renderValues(values) {
         return React.createElement(
             "span",
             null,
-            values.map(function (value, i) {
-                return React.createElement(
-                    "span",
-                    { key: i },
-                    _this.renderValue(value),
-                    values.length - 1 === i ? "" : ", "
-                );
-            })
+            values.map((value, i) => React.createElement(
+                "span",
+                { key: i },
+                this.renderValue(value),
+                values.length - 1 === i ? "" : ", "
+            ))
         );
     },
-    render: function render() {
+
+    render() {
         return Array.isArray(this.props.value) ? this.renderValues(this.props.value) : this.renderValue(this.props.value);
     }
 });

@@ -1,9 +1,9 @@
 "use strict";
 
-var db = require("./db");
-var options = require("./options");
+const db = require("./db");
+const options = require("./options");
 
-var types = {
+const types = {
     Name: require("../schemas/types/Name.js"),
     YearRange: require("../schemas/types/YearRange.js"),
     FixedString: require("../schemas/types/FixedString.js"),
@@ -16,17 +16,17 @@ var types = {
 };
 
 module.exports = {
-    model: function model(type) {
+    model(type) {
         if (!options.types[type]) {
-            throw new Error("Type " + type + " not found.");
+            throw new Error(`Type ${type} not found.`);
         }
 
-        var model = {};
-        var modelType = options.types[type].model;
+        const model = {};
+        const modelType = options.types[type].model;
 
-        for (var name in modelType) {
-            var settings = Object.assign({}, modelType[name]);
-            var Type = types[settings.type];
+        for (const name in modelType) {
+            const settings = Object.assign({}, modelType[name]);
+            const Type = types[settings.type];
             settings.name = name;
             settings.type = type;
             model[name] = new Type(settings);
@@ -34,11 +34,12 @@ module.exports = {
 
         return model;
     },
-    schemas: function schemas(type) {
-        var model = this.model(type);
-        var schemas = {};
 
-        for (var modelName in model) {
+    schemas(type) {
+        const model = this.model(type);
+        const schemas = {};
+
+        for (const modelName in model) {
             schemas[modelName] = model[modelName].schema(db.schema);
         }
 

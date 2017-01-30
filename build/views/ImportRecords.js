@@ -2,31 +2,24 @@
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var React = require("react");
+const React = require("react");
 
-var record = require("../lib/record");
+const record = require("../lib/record");
 
-var Page = require("./Page.js");
-var ImportResult = require("./ImportResult.js");
+const Page = require("./Page.js");
+const ImportResult = require("./ImportResult.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
-var _require = require("./Wrapper.js"),
-    childContextTypes = _require.childContextTypes;
+const { childContextTypes } = require("./Wrapper.js");
 
-var getURLFromID = function getURLFromID(id, _ref, lang) {
-    var type = _ref.type;
-    return record(type).getURLFromID(lang, id);
-};
+const getURLFromID = (id, { type }, lang) => record(type).getURLFromID(lang, id);
 
-var UnprocessedResult = function UnprocessedResult(_ref2) {
-    var data = _ref2.result;
-    return React.createElement(
-        "pre",
-        { className: "json" },
-        JSON.stringify(data, null, "    ")
-    );
-};
+const UnprocessedResult = ({ result: data }) => React.createElement(
+    "pre",
+    { className: "json" },
+    JSON.stringify(data, null, "    ")
+);
 
 UnprocessedResult.propTypes = {
     result: require("react").PropTypes.shape({
@@ -39,14 +32,12 @@ UnprocessedResult.propTypes = {
         }).isRequired
     }).isRequired
 };
-var ErrorResult = function ErrorResult(_ref3) {
-    var result = _ref3.result;
-
+const ErrorResult = ({ result }) => {
     if (!result.error) {
         return null;
     }
 
-    var title = result.data.id ? result.data.id + ": " + result.error : result.error;
+    const title = result.data.id ? `${result.data.id}: ${result.error}` : result.error;
 
     return React.createElement(
         "div",
@@ -71,10 +62,10 @@ ErrorResult.propTypes = {
         }).isRequired
     }).isRequired
 };
-var WarningResult = function WarningResult(_ref4) {
-    var result = _ref4.result,
-        batchError = _ref4.batchError;
-
+const WarningResult = ({
+    result,
+    batchError
+}) => {
     if (!result.warnings) {
         return null;
     }
@@ -90,26 +81,21 @@ var WarningResult = function WarningResult(_ref4) {
         React.createElement(
             "ul",
             null,
-            result.warnings.map(function (warning) {
-                return React.createElement(
-                    "li",
-                    { key: warning },
-                    batchError(warning)
-                );
-            })
+            result.warnings.map(warning => React.createElement(
+                "li",
+                { key: warning },
+                batchError(warning)
+            ))
         ),
         React.createElement(UnprocessedResult, { result: result })
     );
 };
 
-var ChangedResult = function ChangedResult(_ref5, _ref6) {
-    var _ref5$result = _ref5.result,
-        model = _ref5$result.model,
-        diffText = _ref5$result.diff,
-        diff = _ref5.diff,
-        batch = _ref5.batch;
-    var lang = _ref6.lang;
-
+const ChangedResult = ({
+    result: { model, diff: diffText },
+    diff,
+    batch
+}, { lang }) => {
     if (!diffText || !model) {
         return null;
     }
@@ -136,16 +122,15 @@ var ChangedResult = function ChangedResult(_ref5, _ref6) {
 
 ChangedResult.contextTypes = childContextTypes;
 
-var CreatedResult = function CreatedResult(_ref7, _ref8) {
-    var result = _ref7.result,
-        batch = _ref7.batch;
-    var lang = _ref8.lang;
-
+const CreatedResult = ({
+    result,
+    batch
+}, { lang }) => {
     if (!result.model) {
         return null;
     }
 
-    var title = batch.state === "completed" ? React.createElement(
+    const title = batch.state === "completed" ? React.createElement(
         "a",
         { href: getURLFromID(result.model, batch, lang) },
         result.model
@@ -165,16 +150,15 @@ var CreatedResult = function CreatedResult(_ref7, _ref8) {
 
 CreatedResult.contextTypes = childContextTypes;
 
-var DeletedResult = function DeletedResult(_ref9, _ref10) {
-    var result = _ref9.result,
-        batch = _ref9.batch;
-    var lang = _ref10.lang;
-
+const DeletedResult = ({
+    result,
+    batch
+}, { lang }) => {
     if (!result.model) {
         return null;
     }
 
-    var title = batch.state === "completed" ? React.createElement(
+    const title = batch.state === "completed" ? React.createElement(
         "a",
         { href: getURLFromID(result.model, batch, lang) },
         result.model
@@ -189,26 +173,21 @@ var DeletedResult = function DeletedResult(_ref9, _ref10) {
 
 DeletedResult.contextTypes = childContextTypes;
 
-var ConfirmButtons = function ConfirmButtons(_ref11, _ref12) {
-    var batch = _ref11.batch;
-    var URL = _ref12.URL,
-        gettext = _ref12.gettext;
-    return React.createElement(
-        "p",
-        null,
-        React.createElement(
-            "a",
-            { href: URL(batch, { finalize: true }), className: "btn btn-success" },
-            gettext("Finalize Import")
-        ),
-        " ",
-        React.createElement(
-            "a",
-            { href: URL(batch, { abandon: true }), className: "btn btn-danger" },
-            gettext("Abandon Import")
-        )
-    );
-};
+const ConfirmButtons = ({ batch }, { URL, gettext }) => React.createElement(
+    "p",
+    null,
+    React.createElement(
+        "a",
+        { href: URL(batch, { finalize: true }), className: "btn btn-success" },
+        gettext("Finalize Import")
+    ),
+    " ",
+    React.createElement(
+        "a",
+        { href: URL(batch, { abandon: true }), className: "btn btn-danger" },
+        gettext("Abandon Import")
+    )
+);
 
 ConfirmButtons.propTypes = {
     adminURL: require("react").PropTypes.string.isRequired,
@@ -230,24 +209,26 @@ ConfirmButtons.propTypes = {
 };
 ConfirmButtons.contextTypes = childContextTypes;
 
-var ImportData = function ImportData(props, _ref13) {
-    var gettext = _ref13.gettext,
-        format = _ref13.format,
-        fixedDate = _ref13.fixedDate,
-        relativeDate = _ref13.relativeDate,
-        URL = _ref13.URL;
-    var batch = props.batch,
-        batchError = props.batchError,
-        batchState = props.batchState,
-        adminURL = props.adminURL;
+const ImportData = (props, {
+    gettext,
+    format,
+    fixedDate,
+    relativeDate,
+    URL
+}) => {
+    const {
+        batch,
+        batchError,
+        batchState,
+        adminURL
+    } = props;
+    const state = { batch };
+    const title = format(gettext("Data Import: %(fileName)s"), { fileName: batch.fileName });
+    const stateText = state === "error" ? format(gettext("Error: %(error)s"), { error: batchError(batch.error || "") }) : batchState(batch);
+    const uploadDate = format(gettext("Uploaded: %(date)s"), { date: fixedDate(batch.created) });
+    const lastUpdated = format(gettext("Last Updated: %(date)s"), { date: relativeDate(batch.modified) });
 
-    var state = { batch: batch };
-    var title = format(gettext("Data Import: %(fileName)s"), { fileName: batch.fileName });
-    var stateText = state === "error" ? format(gettext("Error: %(error)s"), { error: batchError(batch.error || "") }) : batchState(batch);
-    var uploadDate = format(gettext("Uploaded: %(date)s"), { date: fixedDate(batch.created) });
-    var lastUpdated = format(gettext("Last Updated: %(date)s"), { date: relativeDate(batch.modified) });
-
-    var style = React.createElement("link", { rel: "stylesheet",
+    const style = React.createElement("link", { rel: "stylesheet",
         href: URL("/css/format-diff.css")
     });
 
@@ -297,37 +278,27 @@ var ImportData = function ImportData(props, _ref13) {
         React.createElement(ImportResult, _extends({}, props, {
             id: "errors",
             title: gettext("Errors"),
-            renderResult: function renderResult(result, i) {
-                return React.createElement(ErrorResult, _extends({}, props, { result: result, key: i }));
-            }
+            renderResult: (result, i) => React.createElement(ErrorResult, _extends({}, props, { result: result, key: i }))
         })),
         React.createElement(ImportResult, _extends({}, props, {
             id: "warnings",
             title: gettext("Warnings"),
-            renderResult: function renderResult(result, i) {
-                return React.createElement(WarningResult, _extends({}, props, { result: result, key: i }));
-            }
+            renderResult: (result, i) => React.createElement(WarningResult, _extends({}, props, { result: result, key: i }))
         })),
         React.createElement(ImportResult, _extends({}, props, {
             id: "changed",
             title: state === "completed" ? gettext("Changed") : gettext("Will Be Changed"),
-            renderResult: function renderResult(result, i) {
-                return React.createElement(ChangedResult, _extends({}, props, { result: result, key: i }));
-            }
+            renderResult: (result, i) => React.createElement(ChangedResult, _extends({}, props, { result: result, key: i }))
         })),
         React.createElement(ImportResult, _extends({}, props, {
             id: "created",
             title: state === "completed" ? gettext("Created") : gettext("Will Be Created"),
-            renderResult: function renderResult(result, i) {
-                return React.createElement(CreatedResult, _extends({}, props, { result: result, key: i }));
-            }
+            renderResult: (result, i) => React.createElement(CreatedResult, _extends({}, props, { result: result, key: i }))
         })),
         React.createElement(ImportResult, _extends({}, props, {
             id: "deleted",
             title: state === "completed" ? gettext("Deleted") : gettext("Will Be Deleted"),
-            renderResult: function renderResult(result, i) {
-                return React.createElement(DeletedResult, _extends({}, props, { result: result, key: i }));
-            }
+            renderResult: (result, i) => React.createElement(DeletedResult, _extends({}, props, { result: result, key: i }))
         }))
     );
 };

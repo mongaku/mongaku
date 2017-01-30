@@ -1,14 +1,14 @@
 "use strict";
 
-var async = require("async");
+const async = require("async");
 
-var db = require("../lib/db");
-var models = require("../lib/models");
-var urls = require("../lib/urls");
+const db = require("../lib/db");
+const models = require("../lib/models");
+const urls = require("../lib/urls");
 
-var Record = require("./Record");
+const Record = require("./Record");
 
-var Upload = new db.schema({
+const Upload = new db.schema({
     // UUID of the image (Format: uploads/defaultImageHash)
     _id: {
         type: String,
@@ -80,18 +80,18 @@ var Upload = new db.schema({
 });
 
 Upload.methods = Object.assign({}, Record.methods, {
-    getTitle: function getTitle(req) {
+    getTitle(req) {
         return req.gettext("Uploaded Image");
     },
-    getURL: function getURL(locale) {
-        return urls.gen(locale, "/" + this.type + "/" + this._id);
+
+    getURL(locale) {
+        return urls.gen(locale, `/${this.type}/${this._id}`);
     },
-    getImages: function getImages(callback) {
-        async.mapLimit(this.images, 4, function (id, callback) {
+
+    getImages(callback) {
+        async.mapLimit(this.images, 4, (id, callback) => {
             if (typeof id !== "string") {
-                return process.nextTick(function () {
-                    return callback(null, id);
-                });
+                return process.nextTick(() => callback(null, id));
             }
             models("UploadImage").findById(id, callback);
         }, callback);
@@ -99,14 +99,14 @@ Upload.methods = Object.assign({}, Record.methods, {
 });
 
 Upload.statics = Object.assign({}, Record.statics, {
-    fromImage: function fromImage(image, type, callback) {
-        var Upload = models("Upload");
+    fromImage(image, type, callback) {
+        const Upload = models("Upload");
 
-        var _id = image._id.replace(/\.jpg$/, "");
+        const _id = image._id.replace(/\.jpg$/, "");
 
         // Check to see if image already exists and redirect
         // if it does.
-        Upload.findById(_id, function (err, existing) {
+        Upload.findById(_id, (err, existing) => {
             /* istanbul ignore if */
             if (err) {
                 return callback(err);
@@ -116,9 +116,9 @@ Upload.statics = Object.assign({}, Record.statics, {
                 return callback(null, existing);
             }
 
-            var upload = new Upload({
-                _id: _id,
-                type: type,
+            const upload = new Upload({
+                _id,
+                type,
                 images: [image._id],
                 defaultImageHash: image.hash
             });

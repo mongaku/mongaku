@@ -1,21 +1,21 @@
 "use strict";
 
-var fs = require("fs");
-var path = require("path");
+const fs = require("fs");
+const path = require("path");
 
-var farmhash = require("farmhash");
-var imageinfo = require("imageinfo");
-var gm = require("gm");
-var async = require("async");
-var versioner = require("mongoose-version");
+const farmhash = require("farmhash");
+const imageinfo = require("imageinfo");
+let gm = require("gm");
+const async = require("async");
+const versioner = require("mongoose-version");
 
-var record = require("../lib/record");
-var models = require("../lib/models");
-var urls = require("../lib/urls");
-var db = require("../lib/db");
-var similar = require("../lib/similar");
-var config = require("../lib/config");
-var options = require("../lib/options");
+const record = require("../lib/record");
+const models = require("../lib/models");
+const urls = require("../lib/urls");
+const db = require("../lib/db");
+const similar = require("../lib/similar");
+const config = require("../lib/config");
+const options = require("../lib/options");
 
 // Add the ability to provide an explicit bath to the GM binary
 /* istanbul ignore if */
@@ -23,7 +23,7 @@ if (config.GM_PATH) {
     gm = gm.subClass({ appPath: config.GM_PATH });
 }
 
-var Image = new db.schema({
+const Image = new db.schema({
     // An ID for the image in the form: SOURCE/IMAGENAME
     _id: String,
 
@@ -111,61 +111,62 @@ var Image = new db.schema({
 });
 
 Image.methods = {
-    getFilePath: function getFilePath() {
-        return path.resolve(this.getSource().getDirBase(), "images/" + this.hash + ".jpg");
+    getFilePath() {
+        return path.resolve(this.getSource().getDirBase(), `images/${this.hash}.jpg`);
     },
-    getOriginalURL: function getOriginalURL() {
-        return urls.genData("/" + this.source + "/images/" + this.hash + ".jpg");
+
+    getOriginalURL() {
+        return urls.genData(`/${this.source}/images/${this.hash}.jpg`);
     },
-    getScaledURL: function getScaledURL() {
-        return urls.genData("/" + this.source + "/scaled/" + this.hash + ".jpg");
+
+    getScaledURL() {
+        return urls.genData(`/${this.source}/scaled/${this.hash}.jpg`);
     },
-    getThumbURL: function getThumbURL() {
-        return urls.genData("/" + this.source + "/thumbs/" + this.hash + ".jpg");
+
+    getThumbURL() {
+        return urls.genData(`/${this.source}/thumbs/${this.hash}.jpg`);
     },
-    getSource: function getSource() {
+
+    getSource() {
         return models("Source").getSource(this.source);
     },
-    relatedRecords: function relatedRecords(callback) {
-        var _this = this;
 
-        async.map(Object.keys(options.types), function (type, callback) {
-            record(type).find({ images: _this._id }, callback);
-        }, function (err, recordsList) {
+    relatedRecords(callback) {
+        async.map(Object.keys(options.types), (type, callback) => {
+            record(type).find({ images: this._id }, callback);
+        }, (err, recordsList) => {
             if (err) {
                 return callback(err);
             }
 
-            callback(null, recordsList.reduce(function (all, records) {
-                return all.concat(records);
-            }));
+            callback(null, recordsList.reduce((all, records) => all.concat(records)));
         });
     },
-    canIndex: function canIndex() {
+
+    canIndex() {
         return this.width >= 150 && this.height >= 150;
     },
-    updateSimilarity: function updateSimilarity(callback) {
-        var _this2 = this;
 
+    updateSimilarity(callback) {
         // Skip small images
         if (!this.canIndex()) {
             return process.nextTick(callback);
         }
 
-        similar.similar(this.hash, function (err, matches) {
+        similar.similar(this.hash, (err, matches) => {
             if (err || !matches) {
                 return callback(err);
             }
 
-            async.mapLimit(matches, 1, function (match, callback) {
+            async.mapLimit(matches, 1, (match, callback) => {
                 // Skip matches for the image itself
-                if (match.id === _this2.hash) {
+                if (match.id === this.hash) {
                     return callback();
                 }
 
                 models("Image").findOne({
                     hash: match.id
-                }, function (err, image) {
+                }, (err, image) => {
                     if (err || !image) {
                         return callback();
                     }
@@ -175,18 +176,15 @@ Image.methods = {
                         score: match.score
                     });
                 });
-            }, function (err, matches) {
-                _this2.similarImages = matches.filter(function (match) {
-                    return match;
-                });
+            }, (err, matches) => {
+                this.similarImages = matches.filter(match => match);
                 callback();
             });
         });
     },
-    indexSimilarity: function indexSimilarity(callback) {
-        var _this3 = this;
 
-        similar.idIndexed(this.hash, function (err, indexed) {
+    indexSimilarity(callback) {
+        similar.idIndexed(this.hash, (err, indexed) => {
             /* istanbul ignore if */
             if (err) {
                 return callback(err);
@@ -194,9 +192,9 @@ Image.methods = {
                 return callback(null, true);
             }
 
-            var file = _this3.getFilePath();
+            const file = this.getFilePath();
 
-            similar.add(file, _this3.hash, function (err) {
+            similar.add(file, this.hash, err => {
                 // Ignore small images, we just won't index them
                 /* istanbul ignore if */
                 if (err && err.type !== "IMAGE_SIZE_TOO_SMALL") {
@@ -209,15 +207,16 @@ Image.methods = {
             });
         });
     },
-    updateRelatedRecords: function updateRelatedRecords(callback) {
-        this.relatedRecords(function (err, records) {
+
+    updateRelatedRecords(callback) {
+        this.relatedRecords((err, records) => {
             /* istanbul ignore if */
             if (err) {
                 return callback(err);
             }
 
-            async.eachLimit(records, 1, function (record, callback) {
-                record.updateSimilarity(function (err) {
+            async.eachLimit(records, 1, (record, callback) => {
+                record.updateSimilarity(err => {
                     /* istanbul ignore if */
                     if (err) {
                         return callback(err);
@@ -228,12 +227,13 @@ Image.methods = {
             }, callback);
         });
     },
-    linkToRecords: function linkToRecords(callback) {
-        var imageId = this._id;
 
-        async.eachSeries(Object.keys(options.types), function (type, callback) {
-            record(type).find({ missingImages: imageId }, function (err, records) {
-                async.eachLimit(records, 4, function (record, callback) {
+    linkToRecords(callback) {
+        const imageId = this._id;
+
+        async.eachSeries(Object.keys(options.types), (type, callback) => {
+            record(type).find({ missingImages: imageId }, (err, records) => {
+                async.eachLimit(records, 4, (record, callback) => {
                     record.images.push(imageId);
                     record.missingImages.remove(imageId);
                     record.save(callback);
@@ -244,28 +244,26 @@ Image.methods = {
 };
 
 Image.statics = {
-    fromFile: function fromFile(batch, file, callback) {
-        var _this4 = this;
+    fromFile(batch, file, callback) {
+        const Image = models("Image");
+        const Source = models("Source");
 
-        var Image = models("Image");
-        var Source = models("Source");
+        const filePath = file.path || file;
+        const fileName = file.name || path.basename(filePath);
+        const source = batch.source;
+        const _id = `${source}/${fileName}`;
+        const sourceDir = Source.getSource(source).getDirBase();
+        const warnings = [];
 
-        var filePath = file.path || file;
-        var fileName = file.name || path.basename(filePath);
-        var source = batch.source;
-        var _id = source + "/" + fileName;
-        var sourceDir = Source.getSource(source).getDirBase();
-        var warnings = [];
-
-        this.findById(_id, function (err, image) {
+        this.findById(_id, (err, image) => {
             /* istanbul ignore if */
             if (err) {
                 return callback(new Error("ERROR_RETRIEVING"));
             }
 
-            var creating = !image;
+            const creating = !image;
 
-            _this4.processImage(filePath, sourceDir, function (err, hash) {
+            this.processImage(filePath, sourceDir, (err, hash) => {
                 if (err) {
                     return callback(new Error("MALFORMED_IMAGE"));
                 }
@@ -275,30 +273,30 @@ Image.statics = {
                     return callback(null, image, warnings);
                 }
 
-                _this4.getSize(filePath, function (err, size) {
+                this.getSize(filePath, (err, size) => {
                     /* istanbul ignore if */
                     if (err) {
                         return callback(new Error("MALFORMED_IMAGE"));
                     }
 
-                    var width = size.width;
-                    var height = size.height;
+                    const width = size.width;
+                    const height = size.height;
 
                     if (width <= 1 || height <= 1) {
                         return callback(new Error("EMPTY_IMAGE"));
                     }
 
-                    var data = {
-                        _id: _id,
+                    const data = {
+                        _id,
                         batch: batch._id,
-                        source: source,
-                        fileName: fileName,
-                        hash: hash,
-                        width: width,
-                        height: height
+                        source,
+                        fileName,
+                        hash,
+                        width,
+                        height
                     };
 
-                    var model = image;
+                    let model = image;
 
                     if (creating) {
                         model = new Image(data);
@@ -311,7 +309,7 @@ Image.statics = {
                         warnings.push("TOO_SMALL");
                     }
 
-                    model.validate(function (err) {
+                    model.validate(err => {
                         /* istanbul ignore if */
                         if (err) {
                             return callback(new Error("ERROR_SAVING"));
@@ -323,23 +321,26 @@ Image.statics = {
             });
         });
     },
-    processImage: function processImage(sourceFile, baseDir, callback) {
+
+    processImage(sourceFile, baseDir, callback) {
         return images.processImage(sourceFile, baseDir, callback);
     },
-    getSize: function getSize(fileName, callback) {
+
+    getSize(fileName, callback) {
         return images.getSize(fileName, callback);
     },
-    indexSimilarity: function indexSimilarity(callback) {
+
+    indexSimilarity(callback) {
         models("Image").findOne({
             needsSimilarIndex: true
-        }, function (err, image) {
+        }, (err, image) => {
             if (err || !image) {
                 return callback(err);
             }
 
             console.log("Indexing Similarity", image._id);
 
-            image.indexSimilarity(function (err) {
+            image.indexSimilarity(err => {
                 /* istanbul ignore if */
                 if (err) {
                     console.error(err);
@@ -348,23 +349,22 @@ Image.statics = {
 
                 image.needsSimilarIndex = false;
                 image.needsSimilarUpdate = true;
-                image.save(function (err) {
-                    return callback(err, true);
-                });
+                image.save(err => callback(err, true));
             });
         });
     },
-    updateSimilarity: function updateSimilarity(callback) {
+
+    updateSimilarity(callback) {
         models("Image").findOne({
             needsSimilarUpdate: true
-        }, function (err, image) {
+        }, (err, image) => {
             if (err || !image) {
                 return callback(err);
             }
 
             console.log("Updating Similarity", image._id);
 
-            image.updateSimilarity(function (err) {
+            image.updateSimilarity(err => {
                 /* istanbul ignore if */
                 if (err) {
                     console.error(err);
@@ -372,13 +372,13 @@ Image.statics = {
                 }
 
                 image.needsSimilarUpdate = false;
-                image.save(function (err) {
+                image.save(err => {
                     /* istanbul ignore if */
                     if (err) {
                         return callback(err);
                     }
 
-                    image.updateRelatedRecords(function (err) {
+                    image.updateRelatedRecords(err => {
                         /* istanbul ignore if */
                         if (err) {
                             return callback(err);
@@ -390,16 +390,15 @@ Image.statics = {
             });
         });
     },
-    queueBatchSimilarityUpdate: function queueBatchSimilarityUpdate(batchID, callback) {
-        var _this5 = this;
 
-        this.update({ batch: batchID }, { needsSimilarIndex: true }, { multi: true }, function (err) {
+    queueBatchSimilarityUpdate(batchID, callback) {
+        this.update({ batch: batchID }, { needsSimilarIndex: true }, { multi: true }, err => {
             /* istanbul ignore if */
             if (err) {
                 return callback(err);
             }
 
-            _this5.update({ batch: { $ne: batchID } }, { needsSimilarUpdate: true }, { multi: true }, callback);
+            this.update({ batch: { $ne: batchID } }, { needsSimilarUpdate: true }, { multi: true }, callback);
         });
     }
 };
@@ -411,36 +410,38 @@ Image.pre("save", function (next) {
     next();
 });
 
-var images = {
-    convert: function convert(inputStream, outputFile, config, callback) {
-        var stream = gm(inputStream).autoOrient();
+const images = {
+    convert(inputStream, outputFile, config, callback) {
+        let stream = gm(inputStream).autoOrient();
 
         if (config) {
             stream = config(stream);
         }
 
-        stream.stream("jpg").on("error", function (err) {
-            callback(new Error("Error converting file to JPEG: " + err));
-        }).pipe(fs.createWriteStream(outputFile)).on("finish", function () {
+        stream.stream("jpg").on("error", err => {
+            callback(new Error(`Error converting file to JPEG: ${err}`));
+        }).pipe(fs.createWriteStream(outputFile)).on("finish", () => {
             callback(null, outputFile);
         });
     },
-    parseSize: function parseSize(size) {
-        var parts = size.split("x");
+
+    parseSize(size) {
+        const parts = size.split("x");
 
         return {
             width: parseFloat(parts[0]),
             height: parseFloat(parts[0])
         };
     },
-    getSize: function getSize(fileName, callback) {
-        fs.readFile(fileName, function (err, data) {
+
+    getSize(fileName, callback) {
+        fs.readFile(fileName, (err, data) => {
             /* istanbul ignore if */
             if (err) {
                 return callback(err);
             }
 
-            var info = imageinfo(data);
+            const info = imageinfo(data);
 
             callback(null, {
                 width: info.width,
@@ -448,45 +449,43 @@ var images = {
             });
         });
     },
-    makeThumb: function makeThumb(baseDir, fileName, callback) {
-        var imageFile = path.resolve(baseDir, "images", fileName);
-        var thumbFile = path.resolve(baseDir, "thumbs", fileName);
-        var size = this.parseSize(options.imageThumbSize);
 
-        this.convert(fs.createReadStream(imageFile), thumbFile, function (img) {
+    makeThumb(baseDir, fileName, callback) {
+        const imageFile = path.resolve(baseDir, "images", fileName);
+        const thumbFile = path.resolve(baseDir, "thumbs", fileName);
+        const size = this.parseSize(options.imageThumbSize);
+
+        this.convert(fs.createReadStream(imageFile), thumbFile, img => {
             return img.resize(size.width, size.height);
         }, callback);
     },
-    makeScaled: function makeScaled(baseDir, fileName, callback) {
-        var imageFile = path.resolve(baseDir, "images", fileName);
-        var scaledFile = path.resolve(baseDir, "scaled", fileName);
-        var scaled = this.parseSize(options.imageScaledSize);
 
-        this.convert(fs.createReadStream(imageFile), scaledFile, function (img) {
+    makeScaled(baseDir, fileName, callback) {
+        const imageFile = path.resolve(baseDir, "images", fileName);
+        const scaledFile = path.resolve(baseDir, "scaled", fileName);
+        const scaled = this.parseSize(options.imageScaledSize);
+
+        this.convert(fs.createReadStream(imageFile), scaledFile, img => {
             return img.resize(scaled.width, scaled.height, ">");
         }, callback);
     },
-    makeThumbs: function makeThumbs(fullPath, callback) {
-        var _this6 = this;
 
-        var baseDir = path.resolve(path.dirname(fullPath), "..");
-        var fileName = path.basename(fullPath);
+    makeThumbs(fullPath, callback) {
+        const baseDir = path.resolve(path.dirname(fullPath), "..");
+        const fileName = path.basename(fullPath);
 
-        async.series([function (callback) {
-            return _this6.makeThumb(baseDir, fileName, callback);
-        }, function (callback) {
-            return _this6.makeScaled(baseDir, fileName, callback);
-        }], function (err) {
+        async.series([callback => this.makeThumb(baseDir, fileName, callback), callback => this.makeScaled(baseDir, fileName, callback)], err => {
             /* istanbul ignore if */
             if (err) {
-                return callback(new Error("Error converting thumbnails: " + err));
+                return callback(new Error(`Error converting thumbnails: ${err}`));
             }
 
             callback(null, [path.resolve(baseDir, "thumbs", fileName), path.resolve(baseDir, "scaled", fileName)]);
         });
     },
-    hashImage: function hashImage(sourceFile, callback) {
-        fs.readFile(sourceFile, function (err, buffer) {
+
+    hashImage(sourceFile, callback) {
+        fs.readFile(sourceFile, (err, buffer) => {
             /* istanbul ignore if */
             if (err) {
                 return callback(err);
@@ -495,48 +494,43 @@ var images = {
             callback(null, farmhash.hash32(buffer).toString());
         });
     },
-    processImage: function processImage(sourceFile, baseDir, callback) {
-        var _this7 = this;
 
-        var hash = void 0;
-        var imageFile = void 0;
-        var existsError = new Error("Already exists.");
+    processImage(sourceFile, baseDir, callback) {
+        let hash;
+        let imageFile;
+        const existsError = new Error("Already exists.");
 
         async.series([
         // Generate a hash for the incoming image file
-        function (callback) {
-            _this7.hashImage(sourceFile, function (err, imageHash) {
+        callback => {
+            this.hashImage(sourceFile, (err, imageHash) => {
                 /* istanbul ignore if */
                 if (err) {
                     return callback(err);
                 }
 
                 hash = imageHash;
-                imageFile = path.resolve(baseDir, "images", hash + ".jpg");
+                imageFile = path.resolve(baseDir, "images", `${hash}.jpg`);
 
                 // Avoid doing the rest of this if it already exists
-                fs.stat(imageFile, function (err, stats) {
+                fs.stat(imageFile, (err, stats) => {
                     callback(stats ? existsError : null);
                 });
             });
         },
 
         // Convert the image into our standard format
-        function (callback) {
-            return _this7.convert(fs.createReadStream(sourceFile), imageFile, null, callback);
-        },
+        callback => this.convert(fs.createReadStream(sourceFile), imageFile, null, callback),
 
         // Generate thumbnails based on the image
-        function (callback) {
-            return _this7.makeThumbs(imageFile, callback);
-        }], function (err) {
+        callback => this.makeThumbs(imageFile, callback)], err => {
             callback(err === existsError ? null : err, hash);
         });
     }
 };
 
 Image.plugin(versioner, {
-    collection: "image_versions",
+    collection: `image_versions`,
     suppressVersionIncrement: false,
     suppressRefIdIndex: false,
     refIdType: String,

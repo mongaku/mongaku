@@ -2,28 +2,28 @@
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var React = require("react");
+const React = require("react");
 
-var options = require("../lib/options");
+const options = require("../lib/options");
 
-var Page = require("./Page.js");
+const Page = require("./Page.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
-var _require = require("./Wrapper.js"),
-    childContextTypes = _require.childContextTypes;
+const { childContextTypes } = require("./Wrapper.js");
 
-var ImageImport = function ImageImport(_ref, _ref2) {
-    var batch = _ref.batch,
-        batchError = _ref.batchError,
-        batchState = _ref.batchState;
-    var format = _ref2.format,
-        gettext = _ref2.gettext,
-        relativeDate = _ref2.relativeDate,
-        URL = _ref2.URL;
-
-    var results = batch.getFilteredResults();
-    var columns = void 0;
+const ImageImport = ({
+    batch,
+    batchError,
+    batchState
+}, {
+    format,
+    gettext,
+    relativeDate,
+    URL
+}) => {
+    const results = batch.getFilteredResults();
+    let columns;
 
     if (batch.state === "error") {
         columns = React.createElement(
@@ -74,10 +74,8 @@ var ImageImport = function ImageImport(_ref, _ref2) {
 
 ImageImport.contextTypes = childContextTypes;
 
-var ImageImports = function ImageImports(props, _ref3) {
-    var gettext = _ref3.gettext;
-    var imageImport = props.imageImport;
-
+const ImageImports = (props, { gettext }) => {
+    const { imageImport } = props;
 
     return React.createElement(
         "div",
@@ -126,9 +124,7 @@ var ImageImports = function ImageImports(props, _ref3) {
             React.createElement(
                 "tbody",
                 null,
-                imageImport.map(function (batch) {
-                    return React.createElement(ImageImport, _extends({}, props, { batch: batch, key: batch._id }));
-                })
+                imageImport.map(batch => React.createElement(ImageImport, _extends({}, props, { batch: batch, key: batch._id })))
             )
         )
     );
@@ -148,61 +144,55 @@ ImageImports.propTypes = {
 };
 ImageImports.contextTypes = childContextTypes;
 
-var UploadImagesForm = function UploadImagesForm(_ref4, _ref5) {
-    var source = _ref4.source;
-    var gettext = _ref5.gettext,
-        lang = _ref5.lang,
-        URL = _ref5.URL;
-    return React.createElement(
+const UploadImagesForm = ({ source }, { gettext, lang, URL }) => React.createElement(
+    "div",
+    { className: "panel panel-default" },
+    React.createElement(
         "div",
-        { className: "panel panel-default" },
+        { className: "panel-heading" },
         React.createElement(
-            "div",
-            { className: "panel-heading" },
-            React.createElement(
-                "h3",
-                { className: "panel-title" },
-                gettext("Upload Images")
-            )
-        ),
+            "h3",
+            { className: "panel-title" },
+            gettext("Upload Images")
+        )
+    ),
+    React.createElement(
+        "div",
+        { className: "panel-body" },
         React.createElement(
-            "div",
-            { className: "panel-body" },
+            "form",
+            { action: URL(`/${source.type}/source/${source._id}/upload-images`),
+                method: "POST", encType: "multipart/form-data"
+            },
+            React.createElement("input", { type: "hidden", name: "lang", value: lang }),
             React.createElement(
-                "form",
-                { action: URL("/" + source.type + "/source/" + source._id + "/upload-images"),
-                    method: "POST", encType: "multipart/form-data"
-                },
-                React.createElement("input", { type: "hidden", name: "lang", value: lang }),
-                React.createElement(
-                    "p",
-                    null,
-                    gettext("Upload a Zip file (.zip) of " + "JPG images (.jpg or .jpeg)."),
-                    " ",
-                    gettext("Names of images should match " + "the names provided in the metadata."),
-                    " ",
-                    gettext("After you've uploaded a new " + "batch of images they will be processed " + "immediately but their similarity to other " + "images will be computed in the background over " + "the subsequent hours and days.")
-                ),
+                "p",
+                null,
+                gettext("Upload a Zip file (.zip) of " + "JPG images (.jpg or .jpeg)."),
+                " ",
+                gettext("Names of images should match " + "the names provided in the metadata."),
+                " ",
+                gettext("After you've uploaded a new " + "batch of images they will be processed " + "immediately but their similarity to other " + "images will be computed in the background over " + "the subsequent hours and days.")
+            ),
+            React.createElement(
+                "div",
+                { className: "form-inline" },
                 React.createElement(
                     "div",
-                    { className: "form-inline" },
-                    React.createElement(
-                        "div",
-                        { className: "form-group" },
-                        React.createElement("input", { type: "file", name: "zipField",
-                            className: "form-control"
-                        })
-                    ),
-                    " ",
-                    React.createElement("input", { type: "submit",
-                        value: gettext("Upload"),
-                        className: "btn btn-primary"
+                    { className: "form-group" },
+                    React.createElement("input", { type: "file", name: "zipField",
+                        className: "form-control"
                     })
-                )
+                ),
+                " ",
+                React.createElement("input", { type: "submit",
+                    value: gettext("Upload"),
+                    className: "btn btn-primary"
+                })
             )
         )
-    );
-};
+    )
+);
 
 UploadImagesForm.propTypes = {
     dataImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
@@ -218,17 +208,18 @@ UploadImagesForm.propTypes = {
 };
 UploadImagesForm.contextTypes = childContextTypes;
 
-var DataImport = function DataImport(_ref6, _ref7) {
-    var batch = _ref6.batch,
-        batchError = _ref6.batchError,
-        batchState = _ref6.batchState;
-    var format = _ref7.format,
-        gettext = _ref7.gettext,
-        relativeDate = _ref7.relativeDate,
-        URL = _ref7.URL;
-
-    var results = batch.getFilteredResults();
-    var columns = void 0;
+const DataImport = ({
+    batch,
+    batchError,
+    batchState
+}, {
+    format,
+    gettext,
+    relativeDate,
+    URL
+}) => {
+    const results = batch.getFilteredResults();
+    let columns;
 
     if (batch.state === "error") {
         columns = React.createElement(
@@ -299,10 +290,8 @@ var DataImport = function DataImport(_ref6, _ref7) {
 
 DataImport.contextTypes = childContextTypes;
 
-var DataImports = function DataImports(props, _ref8) {
-    var gettext = _ref8.gettext;
-    var dataImport = props.dataImport;
-
+const DataImports = (props, { gettext }) => {
+    const { dataImport } = props;
 
     return React.createElement(
         "div",
@@ -366,9 +355,7 @@ var DataImports = function DataImports(props, _ref8) {
             React.createElement(
                 "tbody",
                 null,
-                dataImport.map(function (batch) {
-                    return React.createElement(DataImport, _extends({}, props, { batch: batch, key: batch._id }));
-                })
+                dataImport.map(batch => React.createElement(DataImport, _extends({}, props, { batch: batch, key: batch._id })))
             )
         )
     );
@@ -388,63 +375,59 @@ DataImports.propTypes = {
 };
 DataImports.contextTypes = childContextTypes;
 
-var UploadDataForm = function UploadDataForm(_ref9, _ref10) {
-    var source = _ref9.source;
-    var gettext = _ref10.gettext,
-        lang = _ref10.lang,
-        URL = _ref10.URL;
-    return React.createElement(
+const UploadDataForm = ({ source }, {
+    gettext,
+    lang,
+    URL
+}) => React.createElement(
+    "div",
+    { className: "panel panel-default" },
+    React.createElement(
         "div",
-        { className: "panel panel-default" },
+        { className: "panel-heading" },
         React.createElement(
-            "div",
-            { className: "panel-heading" },
-            React.createElement(
-                "h3",
-                { className: "panel-title" },
-                gettext("Upload Metadata")
-            )
-        ),
-        React.createElement(
-            "div",
-            { className: "panel-body" },
-            React.createElement(
-                "form",
-                { action: URL("/" + source.type + "/source/" + source._id + "/upload-data"),
-                    method: "POST", encType: "multipart/form-data"
-                },
-                React.createElement("input", { type: "hidden", name: "lang", value: lang }),
-                source.getExpectedFiles().map(function (file, i) {
-                    return React.createElement(
-                        "div",
-                        { key: "file" + i },
-                        React.createElement(
-                            "p",
-                            null,
-                            file
-                        ),
-                        React.createElement(
-                            "div",
-                            { className: "form-inline" },
-                            React.createElement(
-                                "div",
-                                { className: "form-group" },
-                                React.createElement("input", { type: "file", name: "files",
-                                    className: "form-control"
-                                })
-                            ),
-                            " ",
-                            source.getExpectedFiles().length - 1 === i && React.createElement("input", { type: "submit",
-                                value: gettext("Upload"),
-                                className: "btn btn-primary"
-                            })
-                        )
-                    );
-                })
-            )
+            "h3",
+            { className: "panel-title" },
+            gettext("Upload Metadata")
         )
-    );
-};
+    ),
+    React.createElement(
+        "div",
+        { className: "panel-body" },
+        React.createElement(
+            "form",
+            { action: URL(`/${source.type}/source/${source._id}/upload-data`),
+                method: "POST", encType: "multipart/form-data"
+            },
+            React.createElement("input", { type: "hidden", name: "lang", value: lang }),
+            source.getExpectedFiles().map((file, i) => React.createElement(
+                "div",
+                { key: `file${i}` },
+                React.createElement(
+                    "p",
+                    null,
+                    file
+                ),
+                React.createElement(
+                    "div",
+                    { className: "form-inline" },
+                    React.createElement(
+                        "div",
+                        { className: "form-group" },
+                        React.createElement("input", { type: "file", name: "files",
+                            className: "form-control"
+                        })
+                    ),
+                    " ",
+                    source.getExpectedFiles().length - 1 === i && React.createElement("input", { type: "submit",
+                        value: gettext("Upload"),
+                        className: "btn btn-primary"
+                    })
+                )
+            ))
+        )
+    )
+);
 
 UploadDataForm.propTypes = {
     dataImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
@@ -460,16 +443,18 @@ UploadDataForm.propTypes = {
 };
 UploadDataForm.contextTypes = childContextTypes;
 
-var Admin = function Admin(props, _ref11) {
-    var format = _ref11.format,
-        gettext = _ref11.gettext,
-        fullName = _ref11.fullName;
-    var imageImport = props.imageImport,
-        dataImport = props.dataImport,
-        source = props.source;
-
-    var hasImages = options.types[source.type].hasImages();
-    var title = format(gettext("%(name)s Admin Area"), {
+const Admin = (props, {
+    format,
+    gettext,
+    fullName
+}) => {
+    const {
+        imageImport,
+        dataImport,
+        source
+    } = props;
+    const hasImages = options.types[source.type].hasImages();
+    const title = format(gettext("%(name)s Admin Area"), {
         name: fullName(source)
     });
 

@@ -1,30 +1,30 @@
 "use strict";
 
-var React = require("react");
+const React = require("react");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
-var _require = require("./Wrapper.js"),
-    childContextTypes = _require.childContextTypes;
+const { childContextTypes } = require("./Wrapper.js");
 
-var ImportResult = function ImportResult(props, _ref) {
-    var URL = _ref.URL,
-        format = _ref.format,
-        gettext = _ref.gettext,
-        stringNum = _ref.stringNum;
-    var batch = props.batch,
-        expanded = props.expanded,
-        id = props.id,
-        _props$numShow = props.numShow,
-        numShow = _props$numShow === undefined ? 5 : _props$numShow,
-        renderResult = props.renderResult,
-        title = props.title;
-
-    var allResults = batch.getFilteredResults()[id];
-    var showAll = format(gettext("Show all %(count)s results..."), { count: stringNum(allResults.length) });
-    var expandURL = URL(batch, { expanded: id });
-    var isExpanded = expanded === id || allResults.length <= numShow;
-    var results = expanded ? allResults : allResults.slice(0, numShow);
+const ImportResult = (props, {
+    URL,
+    format,
+    gettext,
+    stringNum
+}) => {
+    const {
+        batch,
+        expanded,
+        id,
+        numShow = 5,
+        renderResult,
+        title
+    } = props;
+    const allResults = batch.getFilteredResults()[id];
+    const showAll = format(gettext("Show all %(count)s results..."), { count: stringNum(allResults.length) });
+    const expandURL = URL(batch, { expanded: id });
+    const isExpanded = expanded === id || allResults.length <= numShow;
+    const results = expanded ? allResults : allResults.slice(0, numShow);
 
     if (results.length === 0) {
         return null;
@@ -66,7 +66,7 @@ var ImportResult = function ImportResult(props, _ref) {
                     { className: "col-xs-12" },
                     !isExpanded && React.createElement(
                         "a",
-                        { href: expandURL + "#" + id },
+                        { href: `${expandURL}#${id}` },
                         showAll
                     )
                 )

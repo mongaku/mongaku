@@ -1,12 +1,12 @@
 "use strict";
 
-var passport = require("passport");
+const passport = require("passport");
 
-var urls = require("../../lib/urls");
+const urls = require("../../lib/urls");
 
 // Only allow certain users to access these pages
-module.exports = function (req, res, next) {
-    passport.authenticate("local", function () {
+module.exports = (req, res, next) => {
+    passport.authenticate("local", () => {
         if (!req.user) {
             req.session.redirectTo = req.originalUrl;
             res.redirect(urls.gen(req.lang, "/login"));

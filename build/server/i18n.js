@@ -1,13 +1,13 @@
 "use strict";
 
-var i18n = require("i18n-abide");
+const i18n = require("i18n-abide");
 
-var options = require("../lib/options");
+const options = require("../lib/options");
 
-var defaultLocale = Object.keys(options.locales)[0] || "en";
+const defaultLocale = Object.keys(options.locales)[0] || "en";
 
-module.exports = function (app) {
-    app.use(function (req, res, next) {
+module.exports = app => {
+    app.use((req, res, next) => {
         // i18n-abide overwrites all the locals, so we need to save them
         // and restore them after it's done.
         res.tmpLocals = res.locals;
@@ -21,13 +21,13 @@ module.exports = function (app) {
         translation_type: "po"
     }));
 
-    app.use(function (req, res, next) {
+    app.use((req, res, next) => {
         // Restore the old local properties and methods
         Object.assign(res.locals, res.tmpLocals);
 
         /* istanbul ignore next */
-        var host = req.headers["x-forwarded-host"] || req.get("host");
-        var locale = options.usei18nSubdomain ?
+        const host = req.headers["x-forwarded-host"] || req.get("host");
+        let locale = options.usei18nSubdomain ?
         // Set the locale based upon the subdomain
         /^\w*/.exec(host)[0] :
 

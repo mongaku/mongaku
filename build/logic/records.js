@@ -1,30 +1,31 @@
 "use strict";
 
-var async = require("async");
-var formidable = require("formidable");
+const async = require("async");
+const formidable = require("formidable");
 
-var db = require("../lib/db");
-var urls = require("../lib/urls");
-var record = require("../lib/record");
-var models = require("../lib/models");
-var options = require("../lib/options");
-var metadata = require("../lib/metadata");
+const db = require("../lib/db");
+const urls = require("../lib/urls");
+const record = require("../lib/record");
+const models = require("../lib/models");
+const options = require("../lib/options");
+const metadata = require("../lib/metadata");
 
 module.exports = function (app) {
-    var Source = models("Source");
-    var Image = models("Image");
+    const Source = models("Source");
+    const Image = models("Image");
 
-    var cache = require("../server/middlewares/cache");
-    var _search = require("./shared/search-page");
-    var auth = require("./shared/auth");
+    const cache = require("../server/middlewares/cache");
+    const search = require("./shared/search-page");
+    const auth = require("./shared/auth");
 
     return {
-        search: function search(req, res, next) {
-            return _search(req, res, next);
+        search(req, res, next) {
+            return search(req, res, next);
         },
-        bySource: function bySource(req, res, next) {
+
+        bySource(req, res, next) {
             try {
-                _search(req, res, next, {
+                search(req, res, next, {
                     url: Source.getSource(req.params.source).url
                 });
             } catch (e) {
@@ -33,8 +34,9 @@ module.exports = function (app) {
                 });
             }
         },
-        show: function show(req, res, next) {
-            var typeName = req.params.type;
+
+        show(req, res, next) {
+            const typeName = req.params.type;
 
             if (!options.types[typeName]) {
                 return res.status(404).render("Error", {
@@ -43,32 +45,30 @@ module.exports = function (app) {
             }
 
             if (options.types[typeName].alwaysEdit) {
-                return res.redirect(req.originalUrl + "/edit");
+                return res.redirect(`${req.originalUrl}/edit`);
             }
 
-            var Record = record(typeName);
-            var compare = "compare" in req.query;
-            var id = req.params.source + "/" + req.params.recordName;
+            const Record = record(typeName);
+            const compare = "compare" in req.query;
+            const id = `${req.params.source}/${req.params.recordName}`;
 
-            Record.findById(id, function (err, record) {
+            Record.findById(id, (err, record) => {
                 if (err || !record) {
                     // We don't return a 404 here to allow this to pass
                     // through to other handlers
                     return next();
                 }
 
-                record.loadImages(true, function () {
+                record.loadImages(true, () => {
                     // TODO: Handle error loading images?
-                    var title = record.getTitle(req);
+                    const title = record.getTitle(req);
 
                     // Sort the similar records by score
-                    record.similarRecords = record.similarRecords.sort(function (a, b) {
-                        return b.score - a.score;
-                    });
+                    record.similarRecords = record.similarRecords.sort((a, b) => b.score - a.score);
 
                     if (!compare) {
                         return res.render("Record", {
-                            title: title,
+                            title,
                             compare: false,
                             records: [record],
                             similar: record.similarRecords,
@@ -76,64 +76,64 @@ module.exports = function (app) {
                         });
                     }
 
-                    async.eachLimit(record.similarRecords, 4, function (similar, callback) {
+                    async.eachLimit(record.similarRecords, 4, (similar, callback) => {
                         similar.recordModel.loadImages(false, callback);
-                    }, function () {
+                    }, () => {
                         res.render("Record", {
-                            title: title,
+                            title,
                             compare: true,
                             noIndex: true,
                             similar: [],
-                            records: [record].concat(record.similarRecords.map(function (similar) {
-                                return similar.recordModel;
-                            })),
+                            records: [record].concat(record.similarRecords.map(similar => similar.recordModel)),
                             sources: Source.getSourcesByType(typeName)
                         });
                     });
                 });
             });
         },
-        editView: function editView(req, res) {
-            var type = req.params.type;
-            var Record = record(type);
-            var id = req.params.source + "/" + req.params.recordName;
 
-            Record.findById(id, function (err, record) {
+        editView(req, res) {
+            const type = req.params.type;
+            const Record = record(type);
+            const id = `${req.params.source}/${req.params.recordName}`;
+
+            Record.findById(id, (err, record) => {
                 if (err || !record) {
                     return res.status(404).render("Error", {
                         title: req.gettext("Not found.")
                     });
                 }
 
-                record.loadImages(true, function () {
-                    Record.getFacets(req, function (err, globalFacets) {
-                        record.getDynamicValues(req, function (err, dynamicValues) {
+                record.loadImages(true, () => {
+                    Record.getFacets(req, (err, globalFacets) => {
+                        record.getDynamicValues(req, (err, dynamicValues) => {
                             res.render("EditRecord", {
                                 mode: "edit",
-                                record: record,
-                                globalFacets: globalFacets,
-                                dynamicValues: dynamicValues,
-                                type: type
+                                record,
+                                globalFacets,
+                                dynamicValues,
+                                type
                             });
                         });
                     });
                 });
             });
         },
-        edit: function edit(req, res, next) {
-            var props = {};
-            var type = req.params.type;
-            var model = metadata.model(type);
-            var hasImageSearch = options.types[type].hasImageSearch();
-            var id = req.params.recordName;
-            var _id = req.params.source + "/" + id;
 
-            var form = new formidable.IncomingForm();
+        edit(req, res, next) {
+            const props = {};
+            const type = req.params.type;
+            const model = metadata.model(type);
+            const hasImageSearch = options.types[type].hasImageSearch();
+            const id = req.params.recordName;
+            const _id = `${req.params.source}/${id}`;
+
+            const form = new formidable.IncomingForm();
             form.encoding = "utf-8";
             form.maxFieldsSize = options.maxUploadSize;
             form.multiples = true;
 
-            form.parse(req, function (err, fields, files) {
+            form.parse(req, (err, fields, files) => {
                 /* istanbul ignore if */
                 if (err) {
                     return next(new Error(req.gettext("Error processing upload.")));
@@ -141,46 +141,44 @@ module.exports = function (app) {
 
                 req.lang = fields.lang;
 
-                for (var prop in model) {
+                for (const prop in model) {
                     props[prop] = fields[prop];
                 }
 
                 Object.assign(props, {
-                    id: id,
+                    id,
                     lang: req.lang,
                     source: req.params.source,
-                    type: type
+                    type
                 });
 
-                var Record = record(type);
+                const Record = record(type);
 
-                var _Record$lintData = Record.lintData(props, req),
-                    data = _Record$lintData.data,
-                    error = _Record$lintData.error;
+                const { data, error } = Record.lintData(props, req);
 
                 if (error) {
                     return next(new Error(error));
                 }
 
-                var mockBatch = {
+                const mockBatch = {
                     _id: db.mongoose.Types.ObjectId().toString(),
                     source: req.params.source
                 };
 
-                var images = Array.isArray(files.images) ? files.images : files.images ? [files.images] : [];
+                const images = Array.isArray(files.images) ? files.images : files.images ? [files.images] : [];
 
-                async.mapSeries(images, function (file, callback) {
+                async.mapSeries(images, (file, callback) => {
                     if (!file.path || file.size <= 0) {
                         return process.nextTick(callback);
                     }
 
-                    Image.fromFile(mockBatch, file, function (err, image) {
+                    Image.fromFile(mockBatch, file, (err, image) => {
                         // TODO: Display better error message
                         if (err) {
                             return callback(new Error(req.gettext("Error processing image.")));
                         }
 
-                        image.save(function (err) {
+                        image.save(err => {
                             /* istanbul ignore if */
                             if (err) {
                                 return callback(err);
@@ -189,12 +187,12 @@ module.exports = function (app) {
                             callback(null, image);
                         });
                     });
-                }, function (err, unfilteredImages) {
+                }, (err, unfilteredImages) => {
                     if (err) {
                         return next(err);
                     }
 
-                    Record.findById(_id, function (err, record) {
+                    Record.findById(_id, (err, record) => {
                         if (err || !record) {
                             return res.status(404).render("Error", {
                                 title: req.gettext("Not found.")
@@ -203,26 +201,20 @@ module.exports = function (app) {
 
                         record.set(data);
 
-                        for (var _prop in model) {
-                            if (!fields[_prop] && !data[_prop]) {
-                                record[_prop] = undefined;
+                        for (const prop in model) {
+                            if (!fields[prop] && !data[prop]) {
+                                record[prop] = undefined;
                             }
                         }
 
-                        record.images = record.images.concat(unfilteredImages.filter(function (image) {
-                            return image;
-                        }).map(function (image) {
-                            return image._id;
-                        }));
+                        record.images = record.images.concat(unfilteredImages.filter(image => image).map(image => image._id));
 
-                        record.save(function (err) {
+                        record.save(err => {
                             if (err) {
                                 return next(new Error(req.gettext("Error saving record.")));
                             }
 
-                            var finish = function finish() {
-                                return res.redirect(record.getURL(req.lang));
-                            };
+                            const finish = () => res.redirect(record.getURL(req.lang));
 
                             if (record.images.length === 0 || !hasImageSearch) {
                                 return finish();
@@ -237,42 +229,39 @@ module.exports = function (app) {
                 });
             });
         },
-        removeImage: function removeImage(req, res, next) {
-            var type = req.params.type;
-            var Record = record(type);
-            var hasImageSearch = options.types[type].hasImageSearch();
-            var id = req.params.source + "/" + req.params.recordName;
 
-            var form = new formidable.IncomingForm();
+        removeImage(req, res, next) {
+            const type = req.params.type;
+            const Record = record(type);
+            const hasImageSearch = options.types[type].hasImageSearch();
+            const id = `${req.params.source}/${req.params.recordName}`;
+
+            const form = new formidable.IncomingForm();
             form.encoding = "utf-8";
 
-            form.parse(req, function (err, fields) {
+            form.parse(req, (err, fields) => {
                 /* istanbul ignore if */
                 if (err) {
                     return next(new Error(req.gettext("Error processing request.")));
                 }
 
-                var imageID = fields.image;
+                const imageID = fields.image;
 
                 req.lang = fields.lang;
 
-                Record.findById(id, function (err, record) {
+                Record.findById(id, (err, record) => {
                     if (err || !record) {
                         return next(new Error(req.gettext("Not found.")));
                     }
 
-                    record.images = record.images.filter(function (image) {
-                        return image !== imageID;
-                    });
+                    record.images = record.images.filter(image => image !== imageID);
 
-                    record.save(function (err) {
+                    record.save(err => {
                         if (err) {
                             return next(new Error(req.gettext("Error saving record.")));
                         }
 
-                        var finish = function finish() {
-                            return res.redirect(record.getURL(req.lang));
-                        };
+                        const finish = () => res.redirect(record.getURL(req.lang));
 
                         if (!hasImageSearch) {
                             return finish();
@@ -283,11 +272,12 @@ module.exports = function (app) {
                 });
             });
         },
-        facets: function facets(req, res, next) {
-            var type = req.params.type;
-            var Record = record(type);
 
-            Record.getFacets(req, function (err, facets) {
+        facets(req, res, next) {
+            const type = req.params.type;
+            const Record = record(type);
+
+            Record.getFacets(req, (err, facets) => {
                 if (err) {
                     return next(new Error(req.gettext("Error processing request.")));
                 }
@@ -295,72 +285,53 @@ module.exports = function (app) {
                 res.json(facets);
             });
         },
-        cloneView: function cloneView(req, res) {
-            var type = req.params.type;
-            var Record = record(type);
-            var id = req.params.source + "/" + req.params.recordName;
 
-            Record.findById(id, function (err, oldRecord) {
+        cloneView(req, res) {
+            const type = req.params.type;
+            const Record = record(type);
+            const id = `${req.params.source}/${req.params.recordName}`;
+
+            Record.findById(id, (err, oldRecord) => {
                 if (err || !oldRecord) {
                     return res.status(404).render("Error", {
                         title: req.gettext("Not found.")
                     });
                 }
 
-                var data = {
-                    type: type,
+                const data = {
+                    type,
                     source: oldRecord.source,
                     lang: oldRecord.lang
                 };
 
-                var _iteratorNormalCompletion = true;
-                var _didIteratorError = false;
-                var _iteratorError = undefined;
-
-                try {
-                    for (var _iterator = options.types[type].cloneFields[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                        var typeName = _step.value;
-
-                        data[typeName] = oldRecord[typeName];
-                    }
-                } catch (err) {
-                    _didIteratorError = true;
-                    _iteratorError = err;
-                } finally {
-                    try {
-                        if (!_iteratorNormalCompletion && _iterator.return) {
-                            _iterator.return();
-                        }
-                    } finally {
-                        if (_didIteratorError) {
-                            throw _iteratorError;
-                        }
-                    }
+                for (const typeName of options.types[type].cloneFields) {
+                    data[typeName] = oldRecord[typeName];
                 }
 
-                var record = new Record(data);
+                const record = new Record(data);
 
-                record.loadImages(true, function () {
-                    Record.getFacets(req, function (err, globalFacets) {
-                        record.getDynamicValues(req, function (err, dynamicValues) {
+                record.loadImages(true, () => {
+                    Record.getFacets(req, (err, globalFacets) => {
+                        record.getDynamicValues(req, (err, dynamicValues) => {
                             res.render("EditRecord", {
                                 mode: "clone",
-                                record: record,
-                                globalFacets: globalFacets,
-                                dynamicValues: dynamicValues,
-                                type: type
+                                record,
+                                globalFacets,
+                                dynamicValues,
+                                type
                             });
                         });
                     });
                 });
             });
         },
-        createRedirect: function createRedirect(req, res) {
-            var type = req.params.type;
-            var sources = req.user.getEditableSourcesByType(type);
+
+        createRedirect(req, res) {
+            const type = req.params.type;
+            const sources = req.user.getEditableSourcesByType(type);
 
             if (sources.length === 1) {
-                return res.redirect(urls.gen(req.lang, "/" + type + "/" + sources[0]._id + "/create"));
+                return res.redirect(urls.gen(req.lang, `/${type}/${sources[0]._id}/create`));
             }
 
             // TODO(jeresig): Figure out a better way to handle multiple sources
@@ -368,31 +339,33 @@ module.exports = function (app) {
                 error: req.gettext("Page not found.")
             });
         },
-        createView: function createView(req, res) {
-            var type = req.params.type;
-            var Record = record(type);
 
-            Record.getFacets(req, function (err, globalFacets) {
+        createView(req, res) {
+            const type = req.params.type;
+            const Record = record(type);
+
+            Record.getFacets(req, (err, globalFacets) => {
                 res.render("EditRecord", {
                     mode: "create",
-                    type: type,
-                    globalFacets: globalFacets,
+                    type,
+                    globalFacets,
                     dynamicValues: {}
                 });
             });
         },
-        create: function create(req, res, next) {
-            var props = {};
-            var type = req.params.type;
-            var model = metadata.model(type);
-            var hasImageSearch = options.types[type].hasImageSearch();
 
-            var form = new formidable.IncomingForm();
+        create(req, res, next) {
+            const props = {};
+            const type = req.params.type;
+            const model = metadata.model(type);
+            const hasImageSearch = options.types[type].hasImageSearch();
+
+            const form = new formidable.IncomingForm();
             form.encoding = "utf-8";
             form.maxFieldsSize = options.maxUploadSize;
             form.multiples = true;
 
-            form.parse(req, function (err, fields, files) {
+            form.parse(req, (err, fields, files) => {
                 /* istanbul ignore if */
                 if (err) {
                     return next(new Error(req.gettext("Error processing upload.")));
@@ -400,7 +373,7 @@ module.exports = function (app) {
 
                 req.lang = fields.lang;
 
-                for (var prop in model) {
+                for (const prop in model) {
                     props[prop] = fields[prop];
                 }
 
@@ -413,40 +386,38 @@ module.exports = function (app) {
                 Object.assign(props, {
                     lang: req.lang,
                     source: req.params.source,
-                    type: type
+                    type
                 });
 
-                var Record = record(type);
+                const Record = record(type);
 
-                var _Record$lintData2 = Record.lintData(props, req),
-                    data = _Record$lintData2.data,
-                    error = _Record$lintData2.error;
+                const { data, error } = Record.lintData(props, req);
 
                 if (error) {
                     return next(new Error(error));
                 }
 
-                var newRecord = new Record(data);
+                const newRecord = new Record(data);
 
-                var mockBatch = {
+                const mockBatch = {
                     _id: db.mongoose.Types.ObjectId().toString(),
                     source: newRecord.source
                 };
 
-                var images = Array.isArray(files.images) ? files.images : files.images ? [files.images] : [];
+                const images = Array.isArray(files.images) ? files.images : files.images ? [files.images] : [];
 
-                async.mapSeries(images, function (file, callback) {
+                async.mapSeries(images, (file, callback) => {
                     if (!file.path || file.size <= 0) {
                         return process.nextTick(callback);
                     }
 
-                    Image.fromFile(mockBatch, file, function (err, image) {
+                    Image.fromFile(mockBatch, file, (err, image) => {
                         // TODO: Display better error message
                         if (err) {
                             return callback(new Error(req.gettext("Error processing image.")));
                         }
 
-                        image.save(function (err) {
+                        image.save(err => {
                             /* istanbul ignore if */
                             if (err) {
                                 return callback(err);
@@ -455,25 +426,19 @@ module.exports = function (app) {
                             callback(null, image);
                         });
                     });
-                }, function (err, unfilteredImages) {
+                }, (err, unfilteredImages) => {
                     if (err) {
                         return next(err);
                     }
 
-                    newRecord.images = unfilteredImages.filter(function (image) {
-                        return image;
-                    }).map(function (image) {
-                        return image._id;
-                    });
+                    newRecord.images = unfilteredImages.filter(image => image).map(image => image._id);
 
-                    newRecord.save(function (err) {
+                    newRecord.save(err => {
                         if (err) {
                             return next(new Error(req.gettext("Error saving record.")));
                         }
 
-                        var finish = function finish() {
-                            return res.redirect(newRecord.getURL(req.lang));
-                        };
+                        const finish = () => res.redirect(newRecord.getURL(req.lang));
 
                         if (newRecord.images.length === 0 || !hasImageSearch) {
                             return finish();
@@ -487,12 +452,13 @@ module.exports = function (app) {
                 });
             });
         },
-        json: function json(req, res) {
-            var id = req.params.source + "/" + req.params.recordName;
-            var type = req.params.type;
-            var Record = record(type);
 
-            Record.findById(id, function (err, record) {
+        json(req, res) {
+            const id = `${req.params.source}/${req.params.recordName}`;
+            const type = req.params.type;
+            const Record = record(type);
+
+            Record.findById(id, (err, record) => {
                 if (record) {
                     return res.send(record.toJSON());
                 }
@@ -502,7 +468,8 @@ module.exports = function (app) {
                 });
             });
         },
-        routes: function routes() {
+
+        routes() {
             app.get("/:type/search", cache(1), this.search);
             app.get("/:type/facets", cache(1), this.facets);
             app.get("/:type/create", auth, this.createRedirect);
@@ -510,22 +477,11 @@ module.exports = function (app) {
             app.get("/:type/:source/create", auth, this.createView);
             app.post("/:type/:source/create", auth, this.create);
 
-            var _loop = function _loop(typeName) {
-                var searchURLs = options.types[typeName].searchURLs;
-
-                var _loop2 = function _loop2(path) {
-                    app.get("/:type" + path, cache(1), function (req, res, next) {
-                        return searchURLs[path](req, res, next, _search);
-                    });
-                };
-
-                for (var path in searchURLs) {
-                    _loop2(path);
+            for (const typeName in options.types) {
+                const searchURLs = options.types[typeName].searchURLs;
+                for (const path in searchURLs) {
+                    app.get(`/:type${path}`, cache(1), (req, res, next) => searchURLs[path](req, res, next, search));
                 }
-            };
-
-            for (var typeName in options.types) {
-                _loop(typeName);
             }
 
             // Handle these last as they'll catch almost anything

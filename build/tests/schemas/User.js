@@ -1,12 +1,12 @@
 "use strict";
 
-var tap = require("tap");
+const tap = require("tap");
 
-var init = require("../init");
-var User = init.User;
+const init = require("../init");
+const User = init.User;
 
-tap.test("password", { autoend: true }, function (t) {
-    var user = init.getUser();
+tap.test("password", { autoend: true }, t => {
+    const user = init.getUser();
 
     user.password = "test";
     t.equal(user.password, "test");
@@ -15,8 +15,8 @@ tap.test("password", { autoend: true }, function (t) {
     t.equal(user.password, "");
 });
 
-tap.test("authenticate", { autoend: true }, function (t) {
-    var user = init.getUser();
+tap.test("authenticate", { autoend: true }, t => {
+    const user = init.getUser();
 
     user.password = "test";
 
@@ -24,51 +24,51 @@ tap.test("authenticate", { autoend: true }, function (t) {
     t.equal(user.authenticate("nottest"), false);
 });
 
-tap.test("validate", function (t) {
-    var user = new User({
+tap.test("validate", t => {
+    const user = new User({
         email: "new@test.com",
         password: "test"
     });
 
-    user.validate(function (err) {
+    user.validate(err => {
         t.error(err);
         t.end();
     });
 });
 
-tap.test("validate (not new)", function (t) {
-    var user = new User({
-        email: "new@test.com",
-        password: "test"
-    });
-    user.isNew = false;
-
-    user.validate(function (err) {
-        t.error(err);
-        t.end();
-    });
-});
-
-tap.test("validate (modified)", function (t) {
-    var user = new User({
+tap.test("validate (not new)", t => {
+    const user = new User({
         email: "new@test.com",
         password: "test"
     });
     user.isNew = false;
 
-    user.validate(function (err) {
+    user.validate(err => {
         t.error(err);
         t.end();
     });
 });
 
-tap.test("validate (existing email)", function (t) {
-    var user = new User({
+tap.test("validate (modified)", t => {
+    const user = new User({
+        email: "new@test.com",
+        password: "test"
+    });
+    user.isNew = false;
+
+    user.validate(err => {
+        t.error(err);
+        t.end();
+    });
+});
+
+tap.test("validate (existing email)", t => {
+    const user = new User({
         email: "test@test.com",
         password: "test"
     });
 
-    user.validate(function (err) {
+    user.validate(err => {
         t.equal(err.message, "User validation failed");
         t.end();
     });

@@ -1,6 +1,6 @@
 "use strict";
 
-require("./server/server")(function (err) {
+require("./server/server")(err => {
     if (err) {
         console.error(err);
     } else {

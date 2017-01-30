@@ -1,31 +1,31 @@
 "use strict";
 
-var url = require("url");
+const url = require("url");
 
-var mongoosastic = require("mongoosastic");
-var versioner = require("mongoose-version");
+const mongoosastic = require("mongoosastic");
+const versioner = require("mongoose-version");
 
-var db = require("./db");
-var config = require("./config");
-var options = require("./options");
-var metadata = require("./metadata");
+const db = require("./db");
+const config = require("./config");
+const options = require("./options");
+const metadata = require("./metadata");
 
-var records = {};
+const records = {};
 
-module.exports = function (type) {
+module.exports = type => {
     if (records[type]) {
         return records[type];
     }
 
-    var typeInfo = options.types[type];
+    const typeInfo = options.types[type];
 
     if (!typeInfo) {
-        throw new Error("Type not found: " + type);
+        throw new Error(`Type not found: ${type}`);
     }
 
-    var Record = require("../schemas/Record");
-    var modelProps = metadata.schemas(type);
-    var schemaProps = Object.assign({}, Record.schema, modelProps);
+    const Record = require("../schemas/Record");
+    const modelProps = metadata.schemas(type);
+    const schemaProps = Object.assign({}, Record.schema, modelProps);
 
     if (typeInfo.urlRequired) {
         schemaProps.url = Object.assign({ required: true }, schemaProps.url);
@@ -42,22 +42,20 @@ module.exports = function (type) {
         schemaProps.defaultImageHash = Object.assign({ recommended: true }, schemaProps.defaultImageHash);
     }
 
-    var Schema = new db.schema(schemaProps, {
+    const Schema = new db.schema(schemaProps, {
         collection: type
     });
 
     Schema.methods = Record.methods;
     Schema.statics = Object.assign({
-        getType: function getType() {
-            return type;
-        }
+        getType: () => type
     }, Record.statics);
 
-    var es = url.parse(config.ELASTICSEARCH_URL);
+    const es = url.parse(config.ELASTICSEARCH_URL);
 
     Schema.plugin(mongoosastic, {
         index: type,
-        type: type,
+        type,
         host: es.hostname,
         auth: es.auth,
         port: es.port,
@@ -66,7 +64,7 @@ module.exports = function (type) {
     });
 
     Schema.plugin(versioner, {
-        collection: type + "_versions",
+        collection: `${type}_versions`,
         suppressVersionIncrement: false,
         suppressRefIdIndex: false,
         refIdType: String,
@@ -78,7 +76,7 @@ module.exports = function (type) {
     // Dynamically generate the _id attribute
     Schema.pre("validate", function (next) {
         if (!this._id) {
-            this._id = this.source + "/" + this.id;
+            this._id = `${this.source}/${this.id}`;
         }
         next();
     });

@@ -1,22 +1,22 @@
 "use strict";
 
-var express = require("express");
+const express = require("express");
 
-var init = require("../lib/init");
-var config = require("../lib/config");
+const init = require("../lib/init");
+const config = require("../lib/config");
 
-var expressInit = require("./express");
-var passport = require("./passport");
-var i18n = require("./i18n");
-var routes = require("./routes");
-var tmplVars = require("./tmpl-vars");
-var cron = require("./cron");
+const expressInit = require("./express");
+const passport = require("./passport");
+const i18n = require("./i18n");
+const routes = require("./routes");
+const tmplVars = require("./tmpl-vars");
+const cron = require("./cron");
 
-module.exports = function (callback) {
-    var port = config.PORT;
-    var app = express();
+module.exports = callback => {
+    const port = config.PORT;
+    const app = express();
 
-    init(function (err) {
+    init(err => {
         /* istanbul ignore if */
         if (err) {
             return callback(err);
@@ -29,7 +29,7 @@ module.exports = function (callback) {
         tmplVars(app);
         routes(app);
 
-        var server = app.listen(port, function () {
+        const server = app.listen(port, () => {
             callback(null, server);
 
             /* istanbul ignore if */
@@ -41,15 +41,15 @@ module.exports = function (callback) {
         /* istanbul ignore if */
         if (config.NODE_ENV !== "test") {
             // Start the app by listening on <port>
-            console.log("PORT: " + port);
+            console.log(`PORT: ${port}`);
 
-            process.on("message", function (message) {
+            process.on("message", message => {
                 if (message === "shutdown") {
                     process.exit(0);
                 }
             });
 
-            process.on("uncaughtException", function (err) {
+            process.on("uncaughtException", err => {
                 console.error("Exception:", err.stack);
 
                 if (process.send) {

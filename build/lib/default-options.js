@@ -1,14 +1,11 @@
 "use strict";
 
 module.exports = {
-    getShortTitle: function getShortTitle() {
-        return "Mongaku";
-    },
+    getShortTitle: () => "Mongaku",
 
-    getTitle: function getTitle() {
+    getTitle() {
         return this.getShortTitle();
     },
-
 
     noIndex: false,
 

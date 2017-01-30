@@ -1,25 +1,25 @@
 "use strict";
 
-var tap = require("tap");
+const tap = require("tap");
 
-var init = require("../init");
-var req = init.req;
-var Record = init.Record;
+const init = require("../init");
+const req = init.req;
+const Record = init.Record;
 
-tap.test("getURL", { autoend: true }, function (t) {
-    var record = init.getRecord();
+tap.test("getURL", { autoend: true }, t => {
+    const record = init.getRecord();
     t.equal(record.getURL("en"), "/artworks/test/1234", "Check 'en' URL");
 
     t.equal(record.getURL("de"), "/artworks/test/1234?lang=de", "Check 'de' URL");
 });
 
-tap.test("getThumbURL", { autoend: true }, function (t) {
-    var record = init.getRecord();
+tap.test("getThumbURL", { autoend: true }, t => {
+    const record = init.getRecord();
     t.equal(record.getThumbURL(), "/data/test/thumbs/4266906334.jpg", "Check Thumb URL");
 });
 
-tap.test("getTitle", { autoend: true }, function (t) {
-    var record = init.getRecord();
+tap.test("getTitle", { autoend: true }, t => {
+    const record = init.getRecord();
     t.equal(record.getTitle(req), "Test", "Check Title");
 
     record.title = null;
@@ -28,14 +28,14 @@ tap.test("getTitle", { autoend: true }, function (t) {
     record.title = "Test";
 });
 
-tap.test("getSource", { autoend: true }, function (t) {
-    var record = init.getRecord();
-    var source = init.getSource();
+tap.test("getSource", { autoend: true }, t => {
+    const record = init.getRecord();
+    const source = init.getSource();
     t.equal(record.getSource(), source, "Get Source");
 });
 
-tap.test("date", { autoend: true }, function (t) {
-    var record = init.getRecord();
+tap.test("date", { autoend: true }, t => {
+    const record = init.getRecord();
     t.same(record.dates[0].toJSON(), {
         _id: "ca. 1456-1457",
         start: 1456,
@@ -44,8 +44,8 @@ tap.test("date", { autoend: true }, function (t) {
     }, "Get Date");
 });
 
-tap.test("Record.fromData: Data error", function (t) {
-    Record.fromData({}, req, function (err, value, warnings) {
+tap.test("Record.fromData: Data error", t => {
+    Record.fromData({}, req, (err, value, warnings) => {
         t.equal(err.message, "Required field `id` is empty.", "Data error.");
         t.equal(value, undefined, "No record should be returned.");
         t.equal(warnings, undefined, "There should be no warnings.");
@@ -53,10 +53,10 @@ tap.test("Record.fromData: Data error", function (t) {
     });
 });
 
-tap.test("Record.fromData: Existing record", function (t) {
-    var record = init.getRecord();
-    var recordData = init.getRecordData();
-    Record.fromData(recordData, req, function (err, value, warnings) {
+tap.test("Record.fromData: Existing record", t => {
+    const record = init.getRecord();
+    const recordData = init.getRecordData();
+    Record.fromData(recordData, req, (err, value, warnings) => {
         t.error(err, "Error should be empty.");
         t.equal(value, record, "Record should be returned.");
         t.equal(value.defaultImageHash, "4266906334", "defaultImageHash is set.");
@@ -67,13 +67,13 @@ tap.test("Record.fromData: Existing record", function (t) {
     });
 });
 
-tap.test("Record.fromData: New record", function (t) {
-    var recordData = init.getRecordData();
-    var newData = Object.assign({}, recordData, {
+tap.test("Record.fromData: New record", t => {
+    const recordData = init.getRecordData();
+    const newData = Object.assign({}, recordData, {
         id: "4266906334"
     });
 
-    Record.fromData(newData, req, function (err, value, warnings) {
+    Record.fromData(newData, req, (err, value, warnings) => {
         t.error(err, "Error should be empty.");
         t.equal(value._id, "test/4266906334", "New record should be returned.");
         t.equal(value.defaultImageHash, "4266906334", "defaultImageHash is set.");
@@ -84,14 +84,14 @@ tap.test("Record.fromData: New record", function (t) {
     });
 });
 
-tap.test("Record.fromData: New record with warnings", function (t) {
-    var recordData = init.getRecordData();
-    var newData = Object.assign({}, recordData, {
+tap.test("Record.fromData: New record with warnings", t => {
+    const recordData = init.getRecordData();
+    const newData = Object.assign({}, recordData, {
         id: "4266906334",
         batch: "batch"
     });
 
-    Record.fromData(newData, req, function (err, value, warnings) {
+    Record.fromData(newData, req, (err, value, warnings) => {
         t.error(err, "Error should be empty.");
         t.equal(value._id, "test/4266906334", "New record should be returned.");
         t.equal(value.defaultImageHash, "4266906334", "defaultImageHash is set.");
@@ -102,14 +102,14 @@ tap.test("Record.fromData: New record with warnings", function (t) {
     });
 });
 
-tap.test("Record.fromData: New record missing images", function (t) {
-    var recordData = init.getRecordData();
-    var newData = Object.assign({}, recordData, {
+tap.test("Record.fromData: New record missing images", t => {
+    const recordData = init.getRecordData();
+    const newData = Object.assign({}, recordData, {
         id: "4266906334",
         images: ["missing.jpg"]
     });
 
-    Record.fromData(newData, req, function (err, value, warnings) {
+    Record.fromData(newData, req, (err, value, warnings) => {
         t.equal(err.message, "No images found.", "No images found.");
         t.equal(value, undefined, "No record should be returned.");
         t.equal(warnings, undefined, "There should be no warnings.");
@@ -117,14 +117,14 @@ tap.test("Record.fromData: New record missing images", function (t) {
     });
 });
 
-tap.test("Record.fromData: New record missing single image", function (t) {
-    var recordData = init.getRecordData();
-    var newData = Object.assign({}, recordData, {
+tap.test("Record.fromData: New record missing single image", t => {
+    const recordData = init.getRecordData();
+    const newData = Object.assign({}, recordData, {
         id: "4266906334",
         images: ["missing.jpg", "foo.jpg"]
     });
 
-    Record.fromData(newData, req, function (err, value, warnings) {
+    Record.fromData(newData, req, (err, value, warnings) => {
         t.error(err, "Error should be empty.");
         t.equal(value._id, "test/4266906334", "New record should be returned.");
         t.equal(value.defaultImageHash, "4266906334", "defaultImageHash is set.");
@@ -135,9 +135,9 @@ tap.test("Record.fromData: New record missing single image", function (t) {
     });
 });
 
-tap.test("updateSimilarity", function (t) {
-    var record = init.getRecord();
-    record.updateSimilarity(function (err) {
+tap.test("updateSimilarity", t => {
+    const record = init.getRecord();
+    record.updateSimilarity(err => {
         t.error(err, "Error should be empty.");
         t.equal(record.similarRecords.length, 1, "Correct number of matches.");
         t.same(record.similarRecords[0].toJSON(), {
@@ -151,10 +151,10 @@ tap.test("updateSimilarity", function (t) {
     });
 });
 
-tap.test("updateSimilarity with two matches", function (t) {
-    var records = init.getRecords();
-    var record = records["test/1235"];
-    record.updateSimilarity(function (err) {
+tap.test("updateSimilarity with two matches", t => {
+    const records = init.getRecords();
+    const record = records["test/1235"];
+    record.updateSimilarity(err => {
         t.error(err, "Error should be empty.");
         t.equal(record.similarRecords.length, 2, "Correct number of matches.");
         t.same(record.similarRecords[0].toJSON(), {
@@ -175,17 +175,17 @@ tap.test("updateSimilarity with two matches", function (t) {
     });
 });
 
-tap.test("updateSimilarity with no similar", function (t) {
-    var records = init.getRecords();
-    var record = records["test/1237"];
-    record.updateSimilarity(function (err) {
+tap.test("updateSimilarity with no similar", t => {
+    const records = init.getRecords();
+    const record = records["test/1237"];
+    record.updateSimilarity(err => {
         t.error(err, "Error should be empty.");
         t.equal(record.similarRecords.length, 0, "Correct number of matches.");
         t.end();
     });
 });
 
-tap.test("Record.lintData: Unknown Fields", { autoend: true }, function (t) {
+tap.test("Record.lintData: Unknown Fields", { autoend: true }, t => {
     t.same(Record.lintData({
         batch: "test"
     }, req), {
@@ -201,7 +201,7 @@ tap.test("Record.lintData: Unknown Fields", { autoend: true }, function (t) {
     }, "Unknown field");
 });
 
-tap.test("Record.lintData: Required Fields", { autoend: true }, function (t) {
+tap.test("Record.lintData: Required Fields", { autoend: true }, t => {
     t.same(Record.lintData({}, req), {
         "error": "Required field `id` is empty.",
         "warnings": []
@@ -310,7 +310,7 @@ tap.test("Record.lintData: Required Fields", { autoend: true }, function (t) {
     }, "Images Empty Array");
 });
 
-tap.test("Record.lintData: Recommended Fields", { autoend: true }, function (t) {
+tap.test("Record.lintData: Recommended Fields", { autoend: true }, t => {
     t.same(Record.lintData({
         id: "1234",
         type: "artworks",
@@ -418,7 +418,7 @@ tap.test("Record.lintData: Recommended Fields", { autoend: true }, function (t) 
     }, "No recommended.");
 });
 
-tap.test("Record.lintData: Type checking", { autoend: true }, function (t) {
+tap.test("Record.lintData: Type checking", { autoend: true }, t => {
     t.same(Record.lintData({
         id: 1234,
         type: "artworks",
@@ -588,7 +588,7 @@ tap.test("Record.lintData: Type checking", { autoend: true }, function (t) {
     }, "Categories Values");
 });
 
-tap.test("Record.lintData: Validation", { autoend: true }, function (t) {
+tap.test("Record.lintData: Validation", { autoend: true }, t => {
     t.same(Record.lintData({
         id: "1234/456",
         type: "artworks",
@@ -864,7 +864,7 @@ tap.test("Record.lintData: Validation", { autoend: true }, function (t) {
     }, "All pass");
 });
 
-tap.test("Record.lintData: Conversion", { autoend: true }, function (t) {
+tap.test("Record.lintData: Conversion", { autoend: true }, t => {
     t.same(Record.lintData({
         id: "1234",
         type: "artworks",

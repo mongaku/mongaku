@@ -1,53 +1,31 @@
 "use strict";
 
-var cache = require("../server/middlewares/cache");
+const cache = require("../server/middlewares/cache");
 
-var models = require("../lib/models");
+const models = require("../lib/models");
 
-module.exports = function (app) {
-    var Source = models("Source");
+module.exports = app => {
+    const Source = models("Source");
 
     return {
-        index: function index(req, res) {
-            var sources = Source.getSources().filter(function (source) {
-                return source.numRecords > 0;
-            });
-            var recordTotal = 0;
-            var imageTotal = 0;
+        index(req, res) {
+            const sources = Source.getSources().filter(source => source.numRecords > 0);
+            let recordTotal = 0;
+            let imageTotal = 0;
 
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
-
-            try {
-                for (var _iterator = sources[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var source = _step.value;
-
-                    recordTotal += source.numRecords;
-                    imageTotal += source.numImages;
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
+            for (const source of sources) {
+                recordTotal += source.numRecords;
+                imageTotal += source.numImages;
             }
 
             res.render("Home", {
-                sources: sources,
-                recordTotal: recordTotal,
-                imageTotal: imageTotal
+                sources,
+                recordTotal,
+                imageTotal
             });
         },
-        routes: function routes() {
+
+        routes() {
             app.get("/", cache(1), this.index);
         }
     };

@@ -1,11 +1,11 @@
 "use strict";
 
-var bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt");
 
-var models = require("../lib/models");
-var db = require("../lib/db");
+const models = require("../lib/models");
+const db = require("../lib/db");
 
-var User = new db.schema({
+const User = new db.schema({
     // The email address of the user, must be unique
     email: {
         type: String,
@@ -51,12 +51,12 @@ User.virtual("password").set(function (password) {
 });
 
 User.path("email").validate(function (email, callback) {
-    var User = models("User");
+    const User = models("User");
 
     // Check only when it is a new user or when email field is modified
     /* istanbul ignore else */
     if (this.isNew || this.isModified("email")) {
-        User.findOne({ email: email }, function (err, user) {
+        User.findOne({ email: email }, (err, user) => {
             callback(!err && !user);
         });
     } else {
@@ -66,13 +66,15 @@ User.path("email").validate(function (email, callback) {
 }, "Email already exists");
 
 User.methods = {
-    authenticate: function authenticate(plainText) {
+    authenticate(plainText) {
         return this.encryptPassword(plainText) === this.hashedPassword;
     },
-    makeSalt: function makeSalt() {
+
+    makeSalt() {
         return bcrypt.genSaltSync(10);
     },
-    encryptPassword: function encryptPassword(password) {
+
+    encryptPassword(password) {
         if (!password) {
             return "";
         }
@@ -84,18 +86,14 @@ User.methods = {
             return "";
         }
     },
-    canEditSource: function canEditSource(source) {
+
+    canEditSource(source) {
         return this.siteAdmin || this.sourceAdmin.indexOf(source) >= 0;
     },
-    getEditableSourcesByType: function getEditableSourcesByType(type) {
-        var _this = this;
 
-        var Source = models("Source");
-        var sources = Source.getSourcesByType(type).map(function (source) {
-            return source._id;
-        }).filter(function (source) {
-            return _this.canEditSource(source);
-        });
+    getEditableSourcesByType(type) {
+        const Source = models("Source");
+        const sources = Source.getSourcesByType(type).map(source => source._id).filter(source => this.canEditSource(source));
         return sources;
     }
 };

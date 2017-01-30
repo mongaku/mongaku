@@ -1,48 +1,53 @@
 "use strict";
 
-var async = require("async");
+const async = require("async");
 
-var options = require("../lib/options");
-var record = require("../lib/record");
-var urls = require("../lib/urls");
+const options = require("../lib/options");
+const record = require("../lib/record");
+const urls = require("../lib/urls");
 
-var NUM_PER_SITEMAP = 1000;
+const NUM_PER_SITEMAP = 1000;
 
 module.exports = function (app) {
     return {
-        index: function index(req, res) {
-            var sitemaps = [];
+        index(req, res) {
+            const sitemaps = [];
 
-            async.each(Object.keys(options.types), function (type, callback) {
-                var Record = record(type);
-                Record.count({}, function (err, total) {
+            async.each(Object.keys(options.types), (type, callback) => {
+                const Record = record(type);
+                Record.count({}, (err, total) => {
                     if (err) {
                         return callback(err);
                     }
 
-                    for (var i = 0; i < total; i += NUM_PER_SITEMAP) {
-                        var url = urls.gen(req.lang, "/sitemap-" + type + "-" + i + ".xml");
-                        sitemaps.push("<sitemap><loc>" + url + "</loc></sitemap>");
+                    for (let i = 0; i < total; i += NUM_PER_SITEMAP) {
+                        const url = urls.gen(req.lang, `/sitemap-${type}-${i}.xml`);
+                        sitemaps.push(`<sitemap><loc>${url}</loc></sitemap>`);
                     }
 
                     callback();
                 });
-            }, function (err) {
+            }, err => {
                 if (err) {
                     return res.status(500).render("Error", {
                         title: err.message
                     });
                 }
 
-                var sitemap = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n    <sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n    " + sitemaps.join("\n") + "\n    </sitemapindex>\n    ";
+                const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+    <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    ${sitemaps.join("\n")}
+    </sitemapindex>
+    `;
 
                 res.header("Content-Type", "application/xml");
                 res.status(200).send(sitemap);
             });
         },
-        search: function search(req, res) {
+
+        search(req, res) {
             // Query for the records in Elasticsearch
-            var Record = record(req.params.type);
+            const Record = record(req.params.type);
             Record.search({
                 bool: {
                     must: [{
@@ -54,7 +59,7 @@ module.exports = function (app) {
             }, {
                 size: NUM_PER_SITEMAP,
                 from: req.params.start
-            }, function (err, results) {
+            }, (err, results) => {
                 /* istanbul ignore if */
                 if (err) {
                     return res.status(500).render("Error", {
@@ -62,19 +67,20 @@ module.exports = function (app) {
                     });
                 }
 
-                var sitemaps = results.hits.hits.map(function (item) {
-                    return Record.getURLFromID(req.lang, item._id);
-                }).map(function (url) {
-                    return "<url><loc>" + url + "</loc></url>";
-                });
+                const sitemaps = results.hits.hits.map(item => Record.getURLFromID(req.lang, item._id)).map(url => `<url><loc>${url}</loc></url>`);
 
-                var sitemap = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"\n        xmlns:image=\"http://www.google.com/schemas/sitemap-image/1.1\">\n" + sitemaps.join("\n") + "\n</urlset>";
+                const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${sitemaps.join("\n")}
+</urlset>`;
 
                 res.header("Content-Type", "application/xml");
                 res.status(200).send(sitemap);
             });
         },
-        routes: function routes() {
+
+        routes() {
             app.get("/sitemap.xml", this.index);
             app.get("/sitemap-:type-:start.xml", this.search);
         }

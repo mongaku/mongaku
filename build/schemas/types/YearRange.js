@@ -1,21 +1,17 @@
 "use strict";
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+const React = require("react");
+const yearRange = require("yearrange");
 
-var React = require("react");
-var yearRange = require("yearrange");
+const YearRangeFilter = React.createFactory(require("../../views/types/filter/YearRange.js"));
+const YearRangeDisplay = React.createFactory(require("../../views/types/view/YearRange.js"));
+const YearRangeEdit = React.createFactory(require("../../views/types/edit/YearRange.js"));
 
-var YearRangeFilter = React.createFactory(require("../../views/types/filter/YearRange.js"));
-var YearRangeDisplay = React.createFactory(require("../../views/types/view/YearRange.js"));
-var YearRangeEdit = React.createFactory(require("../../views/types/edit/YearRange.js"));
+const numRange = bucket => bucket.to ? `${bucket.from || 0}-${bucket.to}` : `${bucket.from}+`;
 
-var numRange = function numRange(bucket) {
-    return bucket.to ? (bucket.from || 0) + "-" + bucket.to : bucket.from + "+";
-};
+const defaultRanges = [{ to: 999 }, { from: 1000, to: 1099 }, { from: 1100, to: 1199 }, { from: 1200, to: 1299 }, { from: 1300, to: 1399 }, { from: 1400, to: 1499 }, { from: 1500, to: 1599 }, { from: 1600, to: 1699 }, { from: 1700, to: 1799 }, { from: 1800 }];
 
-var defaultRanges = [{ to: 999 }, { from: 1000, to: 1099 }, { from: 1100, to: 1199 }, { from: 1200, to: 1299 }, { from: 1300, to: 1399 }, { from: 1400, to: 1499 }, { from: 1500, to: 1599 }, { from: 1600, to: 1699 }, { from: 1700, to: 1799 }, { from: 1800 }];
-
-var YearRange = function YearRange(options) {
+const YearRange = function (options) {
     this.options = options;
     /*
     name
@@ -28,74 +24,91 @@ var YearRange = function YearRange(options) {
 };
 
 YearRange.prototype = {
-    searchName: function searchName() {
+    searchName() {
         return this.options.searchName || this.options.name;
     },
-    value: function value(query) {
-        var start = query[this.searchName() + ".start"];
-        var end = query[this.searchName() + ".end"];
+
+    value(query) {
+        const start = query[`${this.searchName()}.start`];
+        const end = query[`${this.searchName()}.end`];
 
         if (start || end) {
-            return { start: start, end: end };
+            return { start, end };
         }
     },
-    fields: function fields(value) {
-        var _ref;
 
-        return _ref = {}, _defineProperty(_ref, this.searchName() + ".start", value.start), _defineProperty(_ref, this.searchName() + ".end", value.end), _ref;
+    fields(value) {
+        return {
+            [`${this.searchName()}.start`]: value.start,
+            [`${this.searchName()}.end`]: value.end
+        };
     },
-    searchTitle: function searchTitle(value, i18n) {
-        var title = this.options.title(i18n);
-        var range = numRange({
+
+    searchTitle(value, i18n) {
+        const title = this.options.title(i18n);
+        const range = numRange({
             from: value.start,
             to: value.end
         });
 
-        return title + ": " + range;
+        return `${title}: ${range}`;
     },
-    filter: function filter(value) {
+
+    filter(value) {
         // NOTE(jeresig): There has got to be a better way to handle this.
-        var start = value.start || -10000;
-        var end = value.end || new Date().getYear() + 1900;
+        const start = value.start || -10000;
+        const end = value.end || new Date().getYear() + 1900;
 
-        var startInside = {
+        const startInside = {
             bool: {
                 must: [{
-                    range: _defineProperty({}, this.options.name + ".start", {
-                        lte: parseFloat(start)
-                    })
+                    range: {
+                        [`${this.options.name}.start`]: {
+                            lte: parseFloat(start)
+                        }
+                    }
                 }, {
-                    range: _defineProperty({}, this.options.name + ".end", {
-                        gte: parseFloat(start)
-                    })
+                    range: {
+                        [`${this.options.name}.end`]: {
+                            gte: parseFloat(start)
+                        }
+                    }
                 }]
             }
         };
 
-        var endInside = {
+        const endInside = {
             bool: {
                 must: [{
-                    range: _defineProperty({}, this.options.name + ".start", {
-                        lte: parseFloat(end)
-                    })
+                    range: {
+                        [`${this.options.name}.start`]: {
+                            lte: parseFloat(end)
+                        }
+                    }
                 }, {
-                    range: _defineProperty({}, this.options.name + ".end", {
-                        gte: parseFloat(end)
-                    })
+                    range: {
+                        [`${this.options.name}.end`]: {
+                            gte: parseFloat(end)
+                        }
+                    }
                 }]
             }
         };
 
-        var contains = {
+        const contains = {
             bool: {
                 must: [{
-                    range: _defineProperty({}, this.options.name + ".start", {
-                        gte: parseFloat(start)
-                    })
+                    range: {
+                        [`${this.options.name}.start`]: {
+                            gte: parseFloat(start)
+                        }
+                    }
                 }, {
-                    range: _defineProperty({}, this.options.name + ".end", {
-                        lte: parseFloat(end)
-                    })
+                    range: {
+                        [`${this.options.name}.end`]: {
+                            lte: parseFloat(end)
+                        }
+                    }
                 }]
             }
         };
@@ -106,94 +119,104 @@ YearRange.prototype = {
             }
         };
     },
-    facet: function facet() {
-        var _this = this;
 
-        return _defineProperty({}, this.options.name, {
-            title: function title(i18n) {
-                return _this.options.title(i18n);
-            },
+    facet() {
+        return {
+            [this.options.name]: {
+                title: i18n => this.options.title(i18n),
 
-            facet: function facet(value) {
-                var ranges = _this.options.ranges || defaultRanges;
+                facet: value => {
+                    let ranges = this.options.ranges || defaultRanges;
 
-                if (value) {
-                    var start = parseFloat(value.start);
-                    var end = parseFloat(value.end);
+                    if (value) {
+                        const start = parseFloat(value.start);
+                        const end = parseFloat(value.end);
 
-                    if (start && end && end - start < 300) {
-                        ranges = [];
-                        for (var year = start; year < end; year += 10) {
-                            ranges.push({
-                                from: year,
-                                to: year + 9
-                            });
+                        if (start && end && end - start < 300) {
+                            ranges = [];
+                            for (let year = start; year < end; year += 10) {
+                                ranges.push({
+                                    from: year,
+                                    to: year + 9
+                                });
+                            }
                         }
                     }
-                }
 
-                return {
-                    range: {
-                        field: _this.options.name + ".years",
-                        ranges: ranges
-                    }
-                };
-            },
-
-            formatBuckets: function formatBuckets(buckets) {
-                return buckets.map(function (bucket) {
                     return {
-                        text: numRange(bucket),
-                        count: bucket.doc_count,
-                        url: _defineProperty({}, _this.options.name, {
+                        range: {
+                            field: `${this.options.name}.years`,
+                            ranges
+                        }
+                    };
+                },
+
+                formatBuckets: buckets => buckets.map(bucket => ({
+                    text: numRange(bucket),
+                    count: bucket.doc_count,
+                    url: {
+                        [this.options.name]: {
                             start: bucket.from,
                             end: bucket.to
-                        })
-                    };
-                });
+                        }
+                    }
+                }))
             }
-        });
-    },
-    sort: function sort() {
-        return {
-            asc: [_defineProperty({}, this.options.name + ".start", {
-                order: "asc"
-            }), _defineProperty({}, this.options.name + ".end", {
-                order: "asc"
-            })],
-
-            desc: [_defineProperty({}, this.options.name + ".end", {
-                order: "desc"
-            }), _defineProperty({}, this.options.name + ".start", {
-                order: "desc"
-            })]
         };
     },
-    renderFilter: function renderFilter(value, values, i18n) {
+
+    sort() {
+        return {
+            asc: [{
+                [`${this.options.name}.start`]: {
+                    order: "asc"
+                }
+            }, {
+                [`${this.options.name}.end`]: {
+                    order: "asc"
+                }
+            }],
+
+            desc: [{
+                [`${this.options.name}.end`]: {
+                    order: "desc"
+                }
+            }, {
+                [`${this.options.name}.start`]: {
+                    order: "desc"
+                }
+            }]
+        };
+    },
+
+    renderFilter(value, values, i18n) {
         return YearRangeFilter({
             name: this.options.name,
             searchName: this.searchName(),
-            value: value,
+            value,
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n)
         });
     },
-    renderView: function renderView(value) {
+
+    renderView(value) {
         return YearRangeDisplay({
             name: this.options.name,
             type: this.options.type,
-            value: value
+            value
         });
     },
-    renderEdit: function renderEdit(value) {
+
+    renderEdit(value) {
         return YearRangeEdit({
             name: this.options.name,
             type: this.options.type,
-            value: value
+            value
         });
     },
-    schema: function schema(Schema) {
-        var YearRangeSchema = new Schema({
+
+    schema(Schema) {
+        const YearRangeSchema = new Schema({
             // An ID for the year range, computed from the original + start/end
             // properties before validation.
             _id: String,
@@ -223,8 +246,8 @@ YearRange.prototype = {
         });
 
         YearRangeSchema.methods = {
-            toJSON: function toJSON() {
-                var obj = this.toObject();
+            toJSON() {
+                const obj = this.toObject();
                 delete obj.original;
                 delete obj.years;
                 return obj;
@@ -238,9 +261,9 @@ YearRange.prototype = {
                 return next();
             }
 
-            var years = [];
+            const years = [];
 
-            for (var year = this.start; year <= this.end; year += 1) {
+            for (let year = this.start; year <= this.end; year += 1) {
                 years.push(year);
             }
 
@@ -257,15 +280,9 @@ YearRange.prototype = {
 
         return {
             type: [YearRangeSchema],
-            convert: function convert(obj) {
-                return typeof obj === "string" ? yearRange.parse(obj) : obj;
-            },
-            validateArray: function validateArray(val) {
-                return val.start || val.end;
-            },
-            validationMsg: function validationMsg(i18n) {
-                return i18n.gettext("Dates must have a start or end specified.");
-            }
+            convert: obj => typeof obj === "string" ? yearRange.parse(obj) : obj,
+            validateArray: val => val.start || val.end,
+            validationMsg: i18n => i18n.gettext("Dates must have a start or end specified.")
         };
     }
 };

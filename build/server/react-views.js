@@ -1,14 +1,14 @@
 "use strict";
 
-var React = require("react");
-var ReactDOMServer = require("react-dom/server");
+const React = require("react");
+const ReactDOMServer = require("react-dom/server");
 
-var Wrapper = require("../views/Wrapper.js");
+const Wrapper = require("../views/Wrapper.js");
 
-var engine = function engine(filePath, options, callback) {
-    var View = require(filePath);
+const engine = (filePath, options, callback) => {
+    const View = require(filePath);
 
-    var wrapped = React.createElement(
+    const wrapped = React.createElement(
         Wrapper,
         {
             originalUrl: options.originalUrl,
@@ -20,9 +20,9 @@ var engine = function engine(filePath, options, callback) {
         React.createElement(View, options)
     );
 
-    var output = ReactDOMServer.renderToStaticMarkup(wrapped);
+    const output = ReactDOMServer.renderToStaticMarkup(wrapped);
 
-    callback(null, "<!DOCTYPE html>" + output);
+    callback(null, `<!DOCTYPE html>${output}`);
 };
 
 module.exports = engine;

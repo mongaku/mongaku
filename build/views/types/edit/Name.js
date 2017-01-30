@@ -1,8 +1,8 @@
 "use strict";
 
-var React = require("react");
+const React = require("react");
 
-var NameEdit = React.createClass({
+const NameEdit = React.createClass({
     displayName: "NameEdit",
 
     propTypes: {
@@ -16,10 +16,8 @@ var NameEdit = React.createClass({
         }))
     },
 
-    render: function render() {
-        var value = (this.props.value || []).map(function (name) {
-            return name.name || name.original;
-        });
+    render() {
+        let value = (this.props.value || []).map(name => name.name || name.original);
 
         if (!this.props.multiple) {
             value = value[0];
@@ -34,13 +32,11 @@ var NameEdit = React.createClass({
                     defaultValue: value,
                     multiple: this.props.multiple
                 },
-                this.props.names.map(function (name) {
-                    return React.createElement(
-                        "option",
-                        { value: name, key: name },
-                        name
-                    );
-                })
+                this.props.names.map(name => React.createElement(
+                    "option",
+                    { value: name, key: name },
+                    name
+                ))
             );
         }
 

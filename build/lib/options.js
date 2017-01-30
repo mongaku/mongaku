@@ -1,13 +1,13 @@
 "use strict";
 
-var fs = require("fs");
-var path = require("path");
+const fs = require("fs");
+const path = require("path");
 
-var options = require("./default-options");
-var recordOptions = require("./default-record-options");
+const options = require("./default-options");
+const recordOptions = require("./default-record-options");
 
-var loadFile = true;
-var optionsFile = path.resolve(process.cwd(), "mongaku.js");
+let loadFile = true;
+let optionsFile = path.resolve(process.cwd(), "mongaku.js");
 
 if (process.env.NODE_ENV === "test") {
     optionsFile = "../tests/options.js";
@@ -23,11 +23,11 @@ if (process.env.NODE_ENV === "test") {
 
 if (loadFile) {
     // If it exists, load in the options from it...
-    var customOptions = require(optionsFile);
+    const customOptions = require(optionsFile);
     Object.assign(options, customOptions);
 }
 
-for (var typeName in options.types) {
+for (const typeName in options.types) {
     options.types[typeName] = Object.assign({}, recordOptions, options.types[typeName]);
 }
 

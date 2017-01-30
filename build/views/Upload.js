@@ -2,20 +2,16 @@
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var React = require("react");
+const React = require("react");
 
-var Page = require("./Page.js");
+const Page = require("./Page.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
-var _require = require("./Wrapper.js"),
-    childContextTypes = _require.childContextTypes;
+const { childContextTypes } = require("./Wrapper.js");
 
-var UploadedImage = function UploadedImage(_ref, _ref2) {
-    var image = _ref.image;
-    var gettext = _ref2.gettext;
-
-    var title = gettext("Uploaded Image");
+const UploadedImage = ({ image }, { gettext }) => {
+    const title = gettext("Uploaded Image");
 
     return React.createElement(
         "div",
@@ -76,18 +72,17 @@ UploadedImage.propTypes = {
 };
 UploadedImage.contextTypes = childContextTypes;
 
-var Match = function Match(_ref3, _ref4) {
-    var _ref3$match = _ref3.match,
-        recordModel = _ref3$match.recordModel,
-        score = _ref3$match.score;
-    var getTitle = _ref4.getTitle,
-        URL = _ref4.URL,
-        format = _ref4.format,
-        gettext = _ref4.gettext,
-        fullName = _ref4.fullName,
-        shortName = _ref4.shortName;
-
-    var source = recordModel.getSource();
+const Match = ({
+    match: { recordModel, score }
+}, {
+    getTitle,
+    URL,
+    format,
+    gettext,
+    fullName,
+    shortName
+}) => {
+    const source = recordModel.getSource();
 
     return React.createElement(
         "div",
@@ -131,12 +126,10 @@ var Match = function Match(_ref3, _ref4) {
 
 Match.contextTypes = childContextTypes;
 
-var Results = function Results(props, _ref5) {
-    var gettext = _ref5.gettext;
-    var similar = props.similar;
+const Results = (props, { gettext }) => {
+    const { similar } = props;
 
-
-    var similarResults = void 0;
+    let similarResults;
 
     if (similar.length === 0) {
         similarResults = React.createElement(
@@ -149,9 +142,7 @@ var Results = function Results(props, _ref5) {
             )
         );
     } else {
-        similarResults = similar.map(function (match) {
-            return React.createElement(Match, _extends({}, props, { match: match, key: match.recordModel._id }));
-        });
+        similarResults = similar.map(match => React.createElement(Match, _extends({}, props, { match: match, key: match.recordModel._id })));
     }
 
     return React.createElement(
@@ -205,9 +196,8 @@ Results.propTypes = {
 };
 Results.contextTypes = childContextTypes;
 
-var Upload = function Upload(props) {
-    var title = props.title;
-
+const Upload = props => {
+    const { title } = props;
 
     return React.createElement(
         Page,

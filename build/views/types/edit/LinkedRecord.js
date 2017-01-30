@@ -1,13 +1,13 @@
 "use strict";
 
-var React = require("react");
+const React = require("react");
 
-var valueType = React.PropTypes.shape({
+const valueType = React.PropTypes.shape({
     id: React.PropTypes.string.isRequired,
     title: React.PropTypes.string.isRequired
 });
 
-var LinkedRecordEdit = React.createClass({
+const LinkedRecordEdit = React.createClass({
     displayName: "LinkedRecordEdit",
 
     propTypes: {
@@ -18,12 +18,10 @@ var LinkedRecordEdit = React.createClass({
         value: React.PropTypes.oneOfType([valueType, React.PropTypes.arrayOf(valueType)])
     },
 
-    render: function render() {
-        var value = this.props.value;
-        var defaultValue = Array.isArray(value) ? value.map(function (value) {
-            return value.id;
-        }) : value && value.id;
-        var values = Array.isArray(value) ? value : value ? [value] : [];
+    render() {
+        const value = this.props.value;
+        const defaultValue = Array.isArray(value) ? value.map(value => value.id) : value && value.id;
+        const values = Array.isArray(value) ? value : value ? [value] : [];
 
         return React.createElement(
             "select",
@@ -35,13 +33,11 @@ var LinkedRecordEdit = React.createClass({
                 "data-record": this.props.recordType,
                 "data-placeholder": this.props.placeholder
             },
-            values.map(function (value) {
-                return React.createElement(
-                    "option",
-                    { value: value.id, key: value.id },
-                    value.title
-                );
-            })
+            values.map(value => React.createElement(
+                "option",
+                { value: value.id, key: value.id },
+                value.title
+            ))
         );
     }
 });

@@ -2,101 +2,95 @@
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var React = require("react");
+const React = require("react");
 
-var metadata = require("../lib/metadata");
-var options = require("../lib/options");
+const metadata = require("../lib/metadata");
+const options = require("../lib/options");
 
-var Page = require("./Page.js");
+const Page = require("./Page.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
-var _require = require("./Wrapper.js"),
-    childContextTypes = _require.childContextTypes;
+const { childContextTypes } = require("./Wrapper.js");
 
-var Image = function Image(_ref, _ref2) {
-    var image = _ref.image,
-        record = _ref.record,
-        title = _ref.title;
-    var lang = _ref2.lang,
-        gettext = _ref2.gettext;
-    return React.createElement(
+const Image = ({
+    image,
+    record,
+    title
+}, {
+    lang,
+    gettext
+}) => React.createElement(
+    "div",
+    { className: "img col-md-4 col-xs-12 col-sm-6", key: image._id },
+    React.createElement(
+        "a",
+        { href: image.getOriginalURL() },
+        React.createElement("img", { src: image.getScaledURL(),
+            alt: title,
+            title: title,
+            className: "img-responsive center-block"
+        })
+    ),
+    React.createElement(
         "div",
-        { className: "img col-md-4 col-xs-12 col-sm-6", key: image._id },
+        { className: "details reduced" },
         React.createElement(
-            "a",
-            { href: image.getOriginalURL() },
-            React.createElement("img", { src: image.getScaledURL(),
-                alt: title,
-                title: title,
-                className: "img-responsive center-block"
-            })
-        ),
-        React.createElement(
-            "div",
-            { className: "details reduced" },
+            "form",
+            {
+                action: record && record.getRemoveImageURL(lang),
+                method: "POST",
+                encType: "multipart/form-data"
+            },
+            React.createElement("input", {
+                type: "hidden",
+                name: "lang",
+                value: lang
+            }),
+            React.createElement("input", {
+                type: "hidden",
+                name: "image",
+                value: image._id
+            }),
             React.createElement(
-                "form",
+                "button",
                 {
-                    action: record && record.getRemoveImageURL(lang),
-                    method: "POST",
-                    encType: "multipart/form-data"
+                    type: "submit",
+                    className: "btn btn-danger btn-xs"
                 },
-                React.createElement("input", {
-                    type: "hidden",
-                    name: "lang",
-                    value: lang
+                React.createElement("span", {
+                    className: "glyphicon glyphicon-remove",
+                    "aria-hidden": "true"
                 }),
-                React.createElement("input", {
-                    type: "hidden",
-                    name: "image",
-                    value: image._id
-                }),
-                React.createElement(
-                    "button",
-                    {
-                        type: "submit",
-                        className: "btn btn-danger btn-xs"
-                    },
-                    React.createElement("span", {
-                        className: "glyphicon glyphicon-remove",
-                        "aria-hidden": "true"
-                    }),
-                    " ",
-                    gettext("Remove Image")
-                )
+                " ",
+                gettext("Remove Image")
             )
         )
-    );
-};
+    )
+);
 
 Image.contextTypes = childContextTypes;
 
-var Title = function Title(_ref3) {
-    var title = _ref3.title;
-    return React.createElement(
-        "tr",
-        { className: "plain" },
-        React.createElement("th", null),
+const Title = ({ title }) => React.createElement(
+    "tr",
+    { className: "plain" },
+    React.createElement("th", null),
+    React.createElement(
+        "th",
+        { className: "col-xs-12 text-center" },
         React.createElement(
-            "th",
-            { className: "col-xs-12 text-center" },
-            React.createElement(
-                "h1",
-                { className: "panel-title" },
-                title
-            )
+            "h1",
+            { className: "panel-title" },
+            title
         )
-    );
-};
+    )
+);
 
 Title.propTypes = {
     title: require("react").PropTypes.string.isRequired
 };
-var Images = function Images(props) {
-    var record = props.record,
-        title = props.title;
-
+const Images = props => {
+    const { record, title } = props;
 
     return React.createElement(
         "tr",
@@ -111,48 +105,42 @@ var Images = function Images(props) {
                 React.createElement(
                     "div",
                     null,
-                    record && record.images.map(function (image) {
-                        return React.createElement(Image, _extends({}, props, {
-                            image: image,
-                            title: title
-                        }));
-                    })
+                    record && record.images.map(image => React.createElement(Image, _extends({}, props, {
+                        image: image,
+                        title: title
+                    })))
                 )
             )
         )
     );
 };
 
-var ImageForm = function ImageForm(props, _ref4) {
-    var gettext = _ref4.gettext;
-    return React.createElement(
-        "tr",
+const ImageForm = (props, { gettext }) => React.createElement(
+    "tr",
+    null,
+    React.createElement(
+        "th",
+        { className: "text-right" },
+        gettext("Add Images")
+    ),
+    React.createElement(
+        "td",
         null,
-        React.createElement(
-            "th",
-            { className: "text-right" },
-            gettext("Add Images")
-        ),
-        React.createElement(
-            "td",
-            null,
-            React.createElement("input", {
-                type: "file",
-                name: "images",
-                className: "form-control",
-                multiple: true
-            })
-        )
-    );
-};
+        React.createElement("input", {
+            type: "file",
+            name: "images",
+            className: "form-control",
+            multiple: true
+        })
+    )
+);
 
 ImageForm.contextTypes = childContextTypes;
 
-var IDForm = function IDForm(_ref5, _ref6) {
-    var record = _ref5.record,
-        type = _ref5.type;
-    var gettext = _ref6.gettext;
-
+const IDForm = ({
+    record,
+    type
+}, { gettext }) => {
     if (options.types[type].autoID || record && record._id) {
         return null;
     }
@@ -192,23 +180,21 @@ IDForm.propTypes = {
 };
 IDForm.contextTypes = childContextTypes;
 
-var Contents = function Contents(props, _ref7) {
-    var gettext = _ref7.gettext;
-    var type = props.type,
-        globalFacets = props.globalFacets,
-        dynamicValues = props.dynamicValues;
+const Contents = (props, { gettext }) => {
+    const {
+        type,
+        globalFacets,
+        dynamicValues
+    } = props;
+    const model = metadata.model(type);
+    const types = Object.keys(options.types[type].model);
+    let hasPrivate = false;
 
-    var model = metadata.model(type);
-    var types = Object.keys(options.types[type].model);
-    var hasPrivate = false;
-
-    var fields = types.map(function (type) {
-        var typeSchema = model[type];
-        var dynamicValue = dynamicValues[type];
-        var values = (globalFacets && globalFacets[type] || []).map(function (bucket) {
-            return bucket.text;
-        }).sort();
-        var isPrivate = typeSchema.options.private;
+    const fields = types.map(type => {
+        const typeSchema = model[type];
+        const dynamicValue = dynamicValues[type];
+        const values = (globalFacets && globalFacets[type] || []).map(bucket => bucket.text).sort();
+        const isPrivate = typeSchema.options.private;
 
         hasPrivate = hasPrivate || isPrivate;
 
@@ -218,12 +204,12 @@ var Contents = function Contents(props, _ref7) {
             React.createElement(
                 "th",
                 { className: "text-right" },
-                typeSchema.options.title({ gettext: gettext })
+                typeSchema.options.title({ gettext })
             ),
             React.createElement(
                 "td",
                 { "data-private": isPrivate },
-                typeSchema.renderEdit(dynamicValue, values, { gettext: gettext })
+                typeSchema.renderEdit(dynamicValue, values, { gettext })
             )
         );
     });
@@ -269,11 +255,8 @@ Contents.propTypes = {
 };
 Contents.contextTypes = childContextTypes;
 
-var SubmitButton = function SubmitButton(_ref8, _ref9) {
-    var mode = _ref8.mode;
-    var gettext = _ref9.gettext;
-
-    var buttonText = gettext("Update");
+const SubmitButton = ({ mode }, { gettext }) => {
+    let buttonText = gettext("Update");
 
     if (mode === "create") {
         buttonText = gettext("Create");
@@ -306,24 +289,18 @@ SubmitButton.propTypes = {
 };
 SubmitButton.contextTypes = childContextTypes;
 
-var CloneButton = function CloneButton(_ref10, _ref11) {
-    var record = _ref10.record,
-        mode = _ref10.mode;
-    var gettext = _ref11.gettext,
-        lang = _ref11.lang;
-    return React.createElement(
-        "div",
-        { className: "row" },
-        React.createElement(
-            "a",
-            {
-                href: record && record.getCloneURL(lang),
-                className: "btn btn-primary pull-right"
-            },
-            gettext("Clone Record")
-        )
-    );
-};
+const CloneButton = ({ record, mode }, { gettext, lang }) => React.createElement(
+    "div",
+    { className: "row" },
+    React.createElement(
+        "a",
+        {
+            href: record && record.getCloneURL(lang),
+            className: "btn btn-primary pull-right"
+        },
+        gettext("Clone Record")
+    )
+);
 
 CloneButton.propTypes = {
     dynamicValues: require("react").PropTypes.shape({}).isRequired,
@@ -334,29 +311,23 @@ CloneButton.propTypes = {
 };
 CloneButton.contextTypes = childContextTypes;
 
-var EditRecord = function EditRecord(props, _ref12) {
-    var lang = _ref12.lang,
-        format = _ref12.format,
-        gettext = _ref12.gettext;
-    var record = props.record,
-        type = props.type,
-        mode = props.mode;
+const EditRecord = (props, { lang, format, gettext }) => {
+    const { record, type, mode } = props;
+    const postURL = record ? record._id ? record.getEditURL(lang) : record.getCreateURL(lang) : "";
 
-    var postURL = record ? record._id ? record.getEditURL(lang) : record.getCreateURL(lang) : "";
-
-    var title = "";
+    let title = "";
 
     if (!record || mode === "create") {
         title = format(gettext("%(recordName)s: Create New"), {
-            recordName: options.types[type].name({ gettext: gettext })
+            recordName: options.types[type].name({ gettext })
         });
     } else {
-        var recordTitle = options.types[type].recordTitle(record, { gettext: gettext });
+        const recordTitle = options.types[type].recordTitle(record, { gettext });
 
         if (mode === "clone") {
-            title = format(gettext("Cloning '%(recordTitle)s'"), { recordTitle: recordTitle });
+            title = format(gettext("Cloning '%(recordTitle)s'"), { recordTitle });
         } else {
-            title = format(gettext("Updating '%(recordTitle)s'"), { recordTitle: recordTitle });
+            title = format(gettext("Updating '%(recordTitle)s'"), { recordTitle });
         }
     }
 

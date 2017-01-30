@@ -1,10 +1,8 @@
 "use strict";
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+const React = require("react");
 
-var React = require("react");
-
-var NameView = React.createClass({
+const NameView = React.createClass({
     displayName: "NameView",
 
     propTypes: {
@@ -17,13 +15,13 @@ var NameView = React.createClass({
         })).isRequired
     },
 
-    renderPseudonym: function renderPseudonym(name) {
+    renderPseudonym(name) {
         if (!name.pseudoynm || name.name === name.pseudoynm) {
             return null;
         }
 
-        var searchURL = require("../../../logic/shared/search-url");
-        var pseudoURL = searchURL(this.props, {
+        const searchURL = require("../../../logic/shared/search-url");
+        const pseudoURL = searchURL(this.props, {
             filter: name.pseudonym,
             type: this.props.type
         });
@@ -41,11 +39,13 @@ var NameView = React.createClass({
             ")"
         );
     },
-    renderName: function renderName(name) {
-        var _searchURL;
 
-        var searchURL = require("../../../logic/shared/search-url");
-        var url = searchURL(this.props, (_searchURL = {}, _defineProperty(_searchURL, this.props.name, name.name), _defineProperty(_searchURL, "type", this.props.type), _searchURL));
+    renderName(name) {
+        const searchURL = require("../../../logic/shared/search-url");
+        const url = searchURL(this.props, {
+            [this.props.name]: name.name,
+            type: this.props.type
+        });
 
         return React.createElement(
             "span",
@@ -58,15 +58,12 @@ var NameView = React.createClass({
             this.renderPseudonym(name)
         );
     },
-    render: function render() {
-        var _this = this;
 
+    render() {
         return React.createElement(
             "div",
             null,
-            this.props.value.map(function (name) {
-                return _this.renderName(name);
-            })
+            this.props.value.map(name => this.renderName(name))
         );
     }
 });

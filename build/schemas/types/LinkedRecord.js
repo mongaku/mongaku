@@ -1,14 +1,12 @@
 "use strict";
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var React = require("react");
+const React = require("react");
 
 //const LinkedRecordDisplay = React.createFactory(
 //    require("../../views/types/view/LinkedRecord.js"));
-var LinkedRecordEdit = React.createFactory(require("../../views/types/edit/LinkedRecord.js"));
+const LinkedRecordEdit = React.createFactory(require("../../views/types/edit/LinkedRecord.js"));
 
-var LinkedRecord = function LinkedRecord(options) {
+const LinkedRecord = function (options) {
     this.options = options;
     /*
     name
@@ -23,19 +21,22 @@ var LinkedRecord = function LinkedRecord(options) {
 };
 
 LinkedRecord.prototype = {
-    searchName: function searchName() {
+    searchName() {
         return this.options.searchName || this.options.name;
     },
-    value: function value(query) {
+
+    value(query) {
         return query[this.searchName()];
     },
-    fields: function fields(value) {
-        return _defineProperty({}, this.searchName(), value);
+
+    fields(value) {
+        return { [this.searchName()]: value };
     },
-    loadDynamicValue: function loadDynamicValue(value, i18n, callback) {
-        var record = require("../../lib/record");
-        var Record = record(this.options.recordType);
-        Record.findById(value, function (err, item) {
+
+    loadDynamicValue(value, i18n, callback) {
+        const record = require("../../lib/record");
+        const Record = record(this.options.recordType);
+        Record.findById(value, (err, item) => {
             if (err) {
                 return callback(err);
             }
@@ -46,7 +47,8 @@ LinkedRecord.prototype = {
             });
         });
     },
-    renderView: function renderView() {
+
+    renderView() {
         /*
         return LinkedRecordDisplay({
             name: this.options.name,
@@ -55,18 +57,20 @@ LinkedRecord.prototype = {
         });
         */
     },
-    renderEdit: function renderEdit(value, allValues, i18n) {
+
+    renderEdit(value, allValues, i18n) {
         return LinkedRecordEdit({
             name: this.options.name,
             type: this.options.type,
-            value: value,
+            value,
             multiple: this.options.multiple,
             recordType: this.options.recordType,
             placeholder: this.options.placeholder(i18n)
         });
     },
-    schema: function schema() {
-        var type = {
+
+    schema() {
+        const type = {
             type: String,
             es_indexed: true,
             recommended: !!this.options.recommended

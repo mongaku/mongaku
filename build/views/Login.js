@@ -1,19 +1,15 @@
 "use strict";
 
-var React = require("react");
+const React = require("react");
 
-var Page = require("./Page.js");
+const Page = require("./Page.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
-var _require = require("./Wrapper.js"),
-    childContextTypes = _require.childContextTypes;
+const { childContextTypes } = require("./Wrapper.js");
 
-var Login = function Login(props, _ref) {
-    var gettext = _ref.gettext,
-        URL = _ref.URL;
-
-    var title = gettext("Login");
+const Login = (props, { gettext, URL }) => {
+    const title = gettext("Login");
 
     return React.createElement(
         Page,

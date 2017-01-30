@@ -1,8 +1,8 @@
 "use strict";
 
-var React = require("react");
+const React = require("react");
 
-var YearRangeEdit = React.createClass({
+const YearRangeEdit = React.createClass({
     displayName: "YearRangeEdit",
 
     propTypes: {
@@ -13,8 +13,8 @@ var YearRangeEdit = React.createClass({
         }))
     },
 
-    render: function render() {
-        var value = this.props.value && this.props.value[0] && this.props.value[0].original;
+    render() {
+        const value = this.props.value && this.props.value[0] && this.props.value[0].original;
 
         return React.createElement("input", {
             name: this.props.name,

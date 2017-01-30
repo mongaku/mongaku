@@ -1,4 +1,8 @@
 {
-    "presets": ["es2015", "babel-preset-react"],
+    "presets": [["env", {
+        "targets": {
+            "node": "current"
+        }
+    }], "react"],
     "plugins": ["flow-react-proptypes"],
 }

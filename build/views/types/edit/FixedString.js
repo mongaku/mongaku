@@ -1,8 +1,8 @@
 "use strict";
 
-var React = require("react");
+const React = require("react");
 
-var FixedStringEdit = React.createClass({
+const FixedStringEdit = React.createClass({
     displayName: "FixedStringEdit",
 
     propTypes: {
@@ -17,42 +17,22 @@ var FixedStringEdit = React.createClass({
         }))
     },
 
-    getValue: function getValue(value) {
+    getValue(value) {
         if (!this.props.values) {
             return value;
         }
 
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-            for (var _iterator = this.props.values[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                var map = _step.value;
-
-                if (map.id === value) {
-                    return map.name;
-                }
-            }
-        } catch (err) {
-            _didIteratorError = true;
-            _iteratorError = err;
-        } finally {
-            try {
-                if (!_iteratorNormalCompletion && _iterator.return) {
-                    _iterator.return();
-                }
-            } finally {
-                if (_didIteratorError) {
-                    throw _iteratorError;
-                }
+        for (const map of this.props.values) {
+            if (map.id === value) {
+                return map.name;
             }
         }
 
         return value;
     },
-    renderValue: function renderValue(value) {
-        var defaultValue = this.getValue(value);
+
+    renderValue(value) {
+        const defaultValue = this.getValue(value);
 
         if (this.props.multiline) {
             return React.createElement("textarea", {
@@ -69,29 +49,23 @@ var FixedStringEdit = React.createClass({
             defaultValue: defaultValue
         });
     },
-    renderValues: function renderValues(values) {
-        var _this = this;
 
+    renderValues(values) {
         return React.createElement(
             "span",
             null,
-            values.map(function (value, i) {
-                return React.createElement(
-                    "span",
-                    { key: i },
-                    _this.renderValue(value),
-                    values.length - 1 === i ? "" : ", "
-                );
-            })
+            values.map((value, i) => React.createElement(
+                "span",
+                { key: i },
+                this.renderValue(value),
+                values.length - 1 === i ? "" : ", "
+            ))
         );
     },
-    render: function render() {
-        var _this2 = this;
 
+    render() {
         if (this.props.values && this.props.values.length > 0) {
-            var values = Array.isArray(this.props.value) ? this.props.value.map(function (value) {
-                return _this2.getValue(value);
-            }) : this.getValue(this.props.value);
+            const values = Array.isArray(this.props.value) ? this.props.value.map(value => this.getValue(value)) : this.getValue(this.props.value);
 
             return React.createElement(
                 "select",
@@ -101,13 +75,11 @@ var FixedStringEdit = React.createClass({
                     defaultValue: values,
                     multiple: this.props.multiple
                 },
-                this.props.values.map(function (value) {
-                    return React.createElement(
-                        "option",
-                        { value: value.id, key: value.id },
-                        value.name
-                    );
-                })
+                this.props.values.map(value => React.createElement(
+                    "option",
+                    { value: value.id, key: value.id },
+                    value.name
+                ))
             );
         }
 

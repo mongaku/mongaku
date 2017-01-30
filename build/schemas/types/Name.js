@@ -1,16 +1,14 @@
 "use strict";
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+const React = require("react");
 
-var React = require("react");
+const YearRange = require("./YearRange.js");
 
-var YearRange = require("./YearRange.js");
+const NameFilter = React.createFactory(require("../../views/types/filter/Name.js"));
+const NameDisplay = React.createFactory(require("../../views/types/view/Name.js"));
+const NameEdit = React.createFactory(require("../../views/types/edit/Name.js"));
 
-var NameFilter = React.createFactory(require("../../views/types/filter/Name.js"));
-var NameDisplay = React.createFactory(require("../../views/types/view/Name.js"));
-var NameEdit = React.createFactory(require("../../views/types/edit/Name.js"));
-
-var Name = function Name(options) {
+const Name = function (options) {
     this.options = options;
     /*
     name
@@ -23,94 +21,97 @@ var Name = function Name(options) {
 };
 
 Name.prototype = {
-    searchName: function searchName() {
+    searchName() {
         return this.options.searchName || this.options.name;
     },
-    value: function value(query) {
+
+    value(query) {
         return query[this.searchName()];
     },
-    defaultValue: function defaultValue() {
+
+    defaultValue() {
         return "";
     },
-    fields: function fields(value) {
-        return _defineProperty({}, this.searchName(), value);
+
+    fields(value) {
+        return { [this.searchName()]: value };
     },
-    title: function title(i18n) {
+
+    title(i18n) {
         return this.options.title(i18n);
     },
-    searchTitle: function searchTitle(value, i18n) {
-        var title = this.options.title(i18n);
-        return title + ": " + value;
+
+    searchTitle(value, i18n) {
+        const title = this.options.title(i18n);
+        return `${title}: ${value}`;
     },
-    filter: function filter(value, sanitize) {
+
+    filter(value, sanitize) {
         return {
             multi_match: {
-                fields: [this.options.name + ".name"],
+                fields: [`${this.options.name}.name`],
                 query: sanitize(value),
                 operator: "and",
                 zero_terms_query: "all"
             }
         };
     },
-    facet: function facet() {
-        var _this = this;
 
-        return _defineProperty({}, this.options.name, {
-            title: function title(i18n) {
-                return _this.options.title(i18n);
-            },
+    facet() {
+        return {
+            [this.options.name]: {
+                title: i18n => this.options.title(i18n),
 
-            // TODO: Make the number of facets configurable
-            facet: function facet() {
-                return {
+                // TODO: Make the number of facets configurable
+                facet: () => ({
                     terms: {
-                        field: _this.options.name + ".name.raw",
+                        field: `${this.options.name}.name.raw`,
                         size: 50
                     }
-                };
-            },
+                }),
 
-            formatBuckets: function formatBuckets(buckets) {
-                return buckets.map(function (bucket) {
-                    return {
-                        text: bucket.key,
-                        count: bucket.doc_count,
-                        url: _defineProperty({}, _this.options.name, bucket.key)
-                    };
-                });
+                formatBuckets: buckets => buckets.map(bucket => ({
+                    text: bucket.key,
+                    count: bucket.doc_count,
+                    url: { [this.options.name]: bucket.key }
+                }))
             }
-        });
+        };
     },
-    renderFilter: function renderFilter(value, values, i18n) {
+
+    renderFilter(value, values, i18n) {
         return NameFilter({
             name: this.options.name,
             searchName: this.searchName(),
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n),
-            value: value,
-            values: values,
+            value,
+            values,
             multiple: this.options.multiple
         });
     },
-    renderView: function renderView(value) {
+
+    renderView(value) {
         return NameDisplay({
             name: this.options.name,
             type: this.options.type,
-            value: value,
+            value,
             multiple: this.options.multiple
         });
     },
-    renderEdit: function renderEdit(value, names) {
+
+    renderEdit(value, names) {
         return NameEdit({
             name: this.options.name,
             type: this.options.type,
-            value: value,
-            names: names,
+            value,
+            names,
             multiple: this.options.multiple
         });
     },
-    schema: function schema(Schema) {
-        var NameSchema = new Schema({
+
+    schema(Schema) {
+        const NameSchema = new Schema({
             // An ID for the name, computed from the original + name properties
             // before validation.
             _id: String,
@@ -183,9 +184,7 @@ Name.prototype = {
 
         return {
             type: [NameSchema],
-            convert: function convert(obj) {
-                return typeof obj === "string" ? { name: obj } : obj;
-            }
+            convert: obj => typeof obj === "string" ? { name: obj } : obj
         };
     }
 };

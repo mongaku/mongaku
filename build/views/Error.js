@@ -1,12 +1,11 @@
 "use strict";
 
-var React = require("react");
+const React = require("react");
 
-var Page = require("./Page.js");
+const Page = require("./Page.js");
 
-var Error = function Error(props) {
-    var title = props.title;
-
+const Error = props => {
+    const { title } = props;
     return React.createElement(
         Page,
         { title: title },

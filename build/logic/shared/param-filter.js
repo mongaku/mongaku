@@ -1,24 +1,22 @@
 "use strict";
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+const options = require("../../lib/options");
 
-var options = require("../../lib/options");
+const queries = require("./queries");
 
-var queries = require("./queries");
+const paramFilter = (values, keepSecondary) => {
+    const all = {};
+    const primary = [];
+    const secondary = {};
+    const type = values.type || Object.keys(options.types)[0];
+    const typeQueries = queries(type);
 
-var paramFilter = function paramFilter(values, keepSecondary) {
-    var all = {};
-    var primary = [];
-    var secondary = {};
-    var type = values.type || Object.keys(options.types)[0];
-    var typeQueries = queries(type);
-
-    for (var name in values) {
-        var query = typeQueries[name];
-        var value = values[name];
+    for (const name in values) {
+        const query = typeQueries[name];
+        const value = values[name];
 
         if (!query) {
-            console.error("ERROR: Unknown field: " + name + ".");
+            console.error(`ERROR: Unknown field: ${name}.`);
             continue;
         }
 
@@ -32,7 +30,7 @@ var paramFilter = function paramFilter(values, keepSecondary) {
             continue;
         }
 
-        var fields = query.fields ? query.fields(value) : _defineProperty({}, name, value);
+        const fields = query.fields ? query.fields(value) : { [name]: value };
 
         if (query.secondary) {
             Object.assign(secondary, fields);
@@ -46,9 +44,9 @@ var paramFilter = function paramFilter(values, keepSecondary) {
     }
 
     return {
-        all: all,
-        primary: primary,
-        secondary: secondary
+        all,
+        primary,
+        secondary
     };
 };
 

@@ -1,19 +1,19 @@
 "use strict";
 
-var path = require("path");
+const path = require("path");
 
-var async = require("async");
+const async = require("async");
 
-var db = require("../lib/db");
-var models = require("../lib/models");
-var urls = require("../lib/urls");
-var similar = require("../lib/similar");
+const db = require("../lib/db");
+const models = require("../lib/models");
+const urls = require("../lib/urls");
+const similar = require("../lib/similar");
 
-var Image = require("./Image");
+const Image = require("./Image");
 
-var uploadName = "uploads";
+const uploadName = "uploads";
 
-var UploadImage = new db.schema({
+const UploadImage = new db.schema({
     // An ID for the image in the form: SOURCE/IMAGENAME
     _id: String,
 
@@ -78,40 +78,37 @@ var UploadImage = new db.schema({
     }]
 });
 
-var getDirBase = function getDirBase() {
+const getDirBase = function () {
     return urls.genLocalFile(uploadName);
 };
 
 UploadImage.methods = Object.assign({}, Image.methods, {
-    getFilePath: function getFilePath() {
-        return path.resolve(getDirBase(), "images/" + this.hash + ".jpg");
+    getFilePath() {
+        return path.resolve(getDirBase(), `images/${this.hash}.jpg`);
     },
-
 
     // We don't save the uploaded files in the index so we override this
     // method to use `fileSimilar` to re-query every time.
-    updateSimilarity: function updateSimilarity(callback) {
-        var _this = this;
+    updateSimilarity(callback) {
+        const Image = models("Image");
 
-        var Image = models("Image");
+        const file = this.getFilePath();
 
-        var file = this.getFilePath();
-
-        similar.fileSimilar(file, function (err, matches) {
+        similar.fileSimilar(file, (err, matches) => {
             /* istanbul ignore if */
             if (err) {
                 return callback(err);
             }
 
-            async.mapLimit(matches, 1, function (match, callback) {
+            async.mapLimit(matches, 1, (match, callback) => {
                 // Skip matches for the image itself
-                if (match.id === _this.hash) {
+                if (match.id === this.hash) {
                     return callback();
                 }
 
                 Image.findOne({
                     hash: match.id
-                }, function (err, image) {
+                }, (err, image) => {
                     if (err || !image) {
                         return callback();
                     }
@@ -121,10 +118,8 @@ UploadImage.methods = Object.assign({}, Image.methods, {
                         score: match.score
                     });
                 });
-            }, function (err, matches) {
-                _this.similarImages = matches.filter(function (match) {
-                    return match;
-                });
+            }, (err, matches) => {
+                this.similarImages = matches.filter(match => match);
                 callback();
             });
         });
@@ -132,26 +127,24 @@ UploadImage.methods = Object.assign({}, Image.methods, {
 });
 
 UploadImage.statics = Object.assign({}, Image.statics, {
-    fromFile: function fromFile(file, callback) {
-        var _this2 = this;
+    fromFile(file, callback) {
+        const UploadImage = models("UploadImage");
 
-        var UploadImage = models("UploadImage");
+        const sourceDir = getDirBase();
 
-        var sourceDir = getDirBase();
-
-        this.processImage(file, sourceDir, function (err, hash) {
+        this.processImage(file, sourceDir, (err, hash) => {
             if (err) {
                 return callback(new Error("MALFORMED_IMAGE"));
             }
 
-            _this2.getSize(file, function (err, size) {
+            this.getSize(file, (err, size) => {
                 /* istanbul ignore if */
                 if (err) {
                     return callback(new Error("MALFORMED_IMAGE"));
                 }
 
-                var width = size.width;
-                var height = size.height;
+                const width = size.width;
+                const height = size.height;
 
                 if (width <= 1 || height <= 1) {
                     return callback(new Error("EMPTY_IMAGE"));
@@ -161,10 +154,10 @@ UploadImage.statics = Object.assign({}, Image.statics, {
                     return callback(new Error("TOO_SMALL"));
                 }
 
-                var fileName = hash + ".jpg";
-                var _id = uploadName + "/" + fileName;
+                const fileName = `${hash}.jpg`;
+                const _id = `${uploadName}/${fileName}`;
 
-                _this2.findById(_id, function (err, image) {
+                this.findById(_id, (err, image) => {
                     /* istanbul ignore if */
                     if (err) {
                         return callback(new Error("ERROR_RETRIEVING"));
@@ -174,15 +167,15 @@ UploadImage.statics = Object.assign({}, Image.statics, {
                         return callback(null, image);
                     }
 
-                    var model = new UploadImage({
-                        _id: _id,
-                        fileName: fileName,
-                        hash: hash,
-                        width: width,
-                        height: height
+                    const model = new UploadImage({
+                        _id,
+                        fileName,
+                        hash,
+                        width,
+                        height
                     });
 
-                    model.validate(function (err) {
+                    model.validate(err => {
                         /* istanbul ignore if */
                         if (err) {
                             return callback(new Error("ERROR_SAVING"));

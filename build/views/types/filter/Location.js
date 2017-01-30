@@ -1,8 +1,8 @@
 "use strict";
 
-var React = require("react");
+const React = require("react");
 
-var LocationFilter = React.createClass({
+const LocationFilter = React.createClass({
     displayName: "LocationFilter",
 
     propTypes: {
@@ -13,8 +13,8 @@ var LocationFilter = React.createClass({
         value: React.PropTypes.string
     },
 
-    render: function render() {
-        var searchName = this.props.searchName || this.props.name;
+    render() {
+        const searchName = this.props.searchName || this.props.name;
 
         return React.createElement(
             "div",

@@ -2,20 +2,16 @@
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var React = require("react");
+const React = require("react");
 
-var Page = require("./Page.js");
-var ImportResult = require("./ImportResult.js");
+const Page = require("./Page.js");
+const ImportResult = require("./ImportResult.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
-var _require = require("./Wrapper.js"),
-    childContextTypes = _require.childContextTypes;
+const { childContextTypes } = require("./Wrapper.js");
 
-var ErrorResult = function ErrorResult(_ref) {
-    var result = _ref.result,
-        batchError = _ref.batchError;
-
+const ErrorResult = ({ result, batchError }) => {
     if (!result.error) {
         return null;
     }
@@ -29,10 +25,7 @@ var ErrorResult = function ErrorResult(_ref) {
     );
 };
 
-var WarningResult = function WarningResult(_ref2) {
-    var result = _ref2.result,
-        batchError = _ref2.batchError;
-
+const WarningResult = ({ result, batchError }) => {
     if (!result.warnings) {
         return null;
     }
@@ -45,22 +38,16 @@ var WarningResult = function WarningResult(_ref2) {
         React.createElement(
             "ul",
             null,
-            result.warnings.map(function (warning) {
-                return React.createElement(
-                    "li",
-                    { key: warning },
-                    batchError(warning)
-                );
-            })
+            result.warnings.map(warning => React.createElement(
+                "li",
+                { key: warning },
+                batchError(warning)
+            ))
         )
     );
 };
 
-var ModelResult = function ModelResult(_ref3) {
-    var _ref3$result = _ref3.result,
-        model = _ref3$result.model,
-        fileName = _ref3$result.fileName;
-
+const ModelResult = ({ result: { model, fileName } }) => {
     if (!model) {
         return null;
     }
@@ -104,20 +91,22 @@ ModelResult.propTypes = {
         warnings: require("react").PropTypes.arrayOf(require("react").PropTypes.string)
     }).isRequired
 };
-var ImportImages = function ImportImages(props, _ref4) {
-    var format = _ref4.format,
-        gettext = _ref4.gettext,
-        fixedDate = _ref4.fixedDate,
-        relativeDate = _ref4.relativeDate;
-    var adminURL = props.adminURL,
-        batchError = props.batchError,
-        batch = props.batch,
-        batchState = props.batchState;
-
-    var title = format(gettext("Image Import: %(fileName)s"), { fileName: batch.fileName });
-    var state = batch.state === "error" ? format(gettext("Error: %(error)s"), { error: batchError(batch.error || "") }) : batchState(batch);
-    var uploadDate = format(gettext("Uploaded: %(date)s"), { date: fixedDate(batch.created) });
-    var lastUpdated = format(gettext("Last Updated: %(date)s"), { date: relativeDate(batch.modified) });
+const ImportImages = (props, {
+    format,
+    gettext,
+    fixedDate,
+    relativeDate
+}) => {
+    const {
+        adminURL,
+        batchError,
+        batch,
+        batchState
+    } = props;
+    const title = format(gettext("Image Import: %(fileName)s"), { fileName: batch.fileName });
+    const state = batch.state === "error" ? format(gettext("Error: %(error)s"), { error: batchError(batch.error || "") }) : batchState(batch);
+    const uploadDate = format(gettext("Uploaded: %(date)s"), { date: fixedDate(batch.created) });
+    const lastUpdated = format(gettext("Last Updated: %(date)s"), { date: relativeDate(batch.modified) });
 
     return React.createElement(
         Page,
@@ -159,23 +148,17 @@ var ImportImages = function ImportImages(props, _ref4) {
         React.createElement(ImportResult, _extends({}, props, {
             id: "errors",
             title: gettext("Errors"),
-            renderResult: function renderResult(result, i) {
-                return React.createElement(ErrorResult, _extends({}, props, { result: result, key: i }));
-            }
+            renderResult: (result, i) => React.createElement(ErrorResult, _extends({}, props, { result: result, key: i }))
         })),
         React.createElement(ImportResult, _extends({}, props, {
             id: "warnings",
             title: gettext("Warnings"),
-            renderResult: function renderResult(result, i) {
-                return React.createElement(WarningResult, _extends({}, props, { result: result, key: i }));
-            }
+            renderResult: (result, i) => React.createElement(WarningResult, _extends({}, props, { result: result, key: i }))
         })),
         React.createElement(ImportResult, _extends({}, props, {
             id: "models",
             title: gettext("Images"),
-            renderResult: function renderResult(result, i) {
-                return React.createElement(ModelResult, _extends({}, props, { result: result, key: i }));
-            },
+            renderResult: (result, i) => React.createElement(ModelResult, _extends({}, props, { result: result, key: i })),
             numShow: 8
         }))
     );

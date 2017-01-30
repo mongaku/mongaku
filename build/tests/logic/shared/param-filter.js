@@ -1,13 +1,13 @@
 "use strict";
 
-var tap = require("tap");
+const tap = require("tap");
 
 require("../../init");
 
-var paramFilter = require("../../../logic/shared/param-filter");
+const paramFilter = require("../../../logic/shared/param-filter");
 
-tap.test("paramFilter - primary", { autoend: true }, function (t) {
-    var query = {
+tap.test("paramFilter - primary", { autoend: true }, t => {
+    const query = {
         filter: "test"
     };
 
@@ -18,8 +18,8 @@ tap.test("paramFilter - primary", { autoend: true }, function (t) {
     });
 });
 
-tap.test("paramFilter - secondary", { autoend: true }, function (t) {
-    var query = {
+tap.test("paramFilter - secondary", { autoend: true }, t => {
+    const query = {
         filter: "test",
         start: 0
     };

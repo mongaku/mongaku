@@ -1,33 +1,33 @@
 "use strict";
 
-var rl = require("readline-sync");
-var genPassword = require("password-generator");
+const rl = require("readline-sync");
+const genPassword = require("password-generator");
 
-var models = require("../lib/models");
+const models = require("../lib/models");
 
-module.exports = function (args, callback) {
-    var email = rl.questionEMail("Email: ");
-    var password = rl.question("Password [auto-gen]: ", {
+module.exports = (args, callback) => {
+    const email = rl.questionEMail("Email: ");
+    const password = rl.question("Password [auto-gen]: ", {
         defaultInput: genPassword(),
         hideEchoBack: true
     });
-    var source = rl.question("Source Admin [Optional, Source ID]: ");
+    const source = rl.question("Source Admin [Optional, Source ID]: ");
 
-    var User = models("User");
-    var user = new User({
-        email: email,
-        password: password,
+    const User = models("User");
+    const user = new User({
+        email,
+        password,
         sourceAdmin: source ? source.split(/,\s*/) : []
     });
 
-    user.save(function (err) {
+    user.save(err => {
         if (err) {
             return callback(err);
         }
 
         console.log("User Created:");
-        console.log("Email: " + email);
-        console.log("Password: " + password);
+        console.log(`Email: ${email}`);
+        console.log(`Password: ${password}`);
 
         callback();
     });

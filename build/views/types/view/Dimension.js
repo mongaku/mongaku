@@ -1,9 +1,9 @@
 "use strict";
 
-var React = require("react");
-var pd = require("parse-dimensions");
+const React = require("react");
+const pd = require("parse-dimensions");
 
-var DimensionView = React.createClass({
+const DimensionView = React.createClass({
     displayName: "DimensionView",
 
     propTypes: {
@@ -17,13 +17,14 @@ var DimensionView = React.createClass({
         })).isRequired
     },
 
-    getDimension: function getDimension(item) {
-        var label = item.label;
-        var dimension = pd.convertDimension(item, this.props.defaultUnit);
-        var unit = dimension.unit;
-        return [dimension.width, unit, " x ", dimension.height, unit, label ? " (" + label + ")" : ""].join("");
+    getDimension(item) {
+        const label = item.label;
+        const dimension = pd.convertDimension(item, this.props.defaultUnit);
+        const unit = dimension.unit;
+        return [dimension.width, unit, " x ", dimension.height, unit, label ? ` (${label})` : ""].join("");
     },
-    renderDimension: function renderDimension(dimension) {
+
+    renderDimension(dimension) {
         return React.createElement(
             "span",
             { key: dimension._id },
@@ -31,15 +32,12 @@ var DimensionView = React.createClass({
             React.createElement("br", null)
         );
     },
-    render: function render() {
-        var _this = this;
 
+    render() {
         return React.createElement(
             "span",
             null,
-            this.props.value.map(function (dimension) {
-                return _this.renderDimension(dimension);
-            })
+            this.props.value.map(dimension => this.renderDimension(dimension))
         );
     }
 });

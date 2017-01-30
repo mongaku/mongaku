@@ -1,8 +1,8 @@
 "use strict";
 
-var React = require("react");
+const React = require("react");
 
-var FixedStringFilter = React.createClass({
+const FixedStringFilter = React.createClass({
     displayName: "FixedStringFilter",
 
     propTypes: {
@@ -18,8 +18,8 @@ var FixedStringFilter = React.createClass({
         }))
     },
 
-    render: function render() {
-        var searchName = this.props.searchName || this.props.name;
+    render() {
+        const searchName = this.props.searchName || this.props.name;
 
         return React.createElement(
             "div",
@@ -42,13 +42,11 @@ var FixedStringFilter = React.createClass({
                     { value: "" },
                     this.props.placeholder
                 ),
-                this.props.values.map(function (type) {
-                    return React.createElement(
-                        "option",
-                        { value: type.id, key: type.id },
-                        type.name
-                    );
-                })
+                this.props.values.map(type => React.createElement(
+                    "option",
+                    { value: type.id, key: type.id },
+                    type.name
+                ))
             )
         );
     }

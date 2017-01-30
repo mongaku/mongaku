@@ -1,74 +1,52 @@
 "use strict";
 
-var os = require("os");
-var fs = require("fs");
-var path = require("path");
+const os = require("os");
+const fs = require("fs");
+const path = require("path");
 
-var async = require("async");
-var unzip = require("unzip2");
+const async = require("async");
+const unzip = require("unzip2");
 
-var models = require("../lib/models");
-var db = require("../lib/db");
-var urls = require("../lib/urls");
-var config = require("../lib/config");
+const models = require("../lib/models");
+const db = require("../lib/db");
+const urls = require("../lib/urls");
+const config = require("../lib/config");
 
-var Import = require("./Import");
+const Import = require("./Import");
 
-var states = [{
+const states = [{
     id: "started",
-    name: function name(req) {
-        return req.gettext("Awaiting processing...");
-    },
-    advance: function advance(batch, callback) {
+    name: req => req.gettext("Awaiting processing..."),
+    advance(batch, callback) {
         batch.processImages(callback);
     }
 }, {
     id: "process.started",
-    name: function name(req) {
-        return req.gettext("Processing...");
-    }
+    name: req => req.gettext("Processing...")
 }, {
     id: "process.completed",
-    name: function name(req) {
-        return req.gettext("Completed.");
-    },
-    advance: function advance(batch, callback) {
+    name: req => req.gettext("Completed."),
+    advance(batch, callback) {
         // NOTE(jeresig): Currently nothing needs to be done to finish
         // up the import, other than moving it to the "completed" state.
         process.nextTick(callback);
     }
 }, {
     id: "completed",
-    name: function name(req) {
-        return req.gettext("Completed.");
-    }
+    name: req => req.gettext("Completed.")
 }];
 
-var errors = {
-    ERROR_READING_ZIP: function ERROR_READING_ZIP(req) {
-        return req.gettext("Error opening zip file.");
-    },
-    ZIP_FILE_EMPTY: function ZIP_FILE_EMPTY(req) {
-        return req.gettext("Zip file has no images in it.");
-    },
-    MALFORMED_IMAGE: function MALFORMED_IMAGE(req) {
-        return req.gettext("There was an error processing " + "the image. Perhaps it is malformed in some way.");
-    },
-    EMPTY_IMAGE: function EMPTY_IMAGE(req) {
-        return req.gettext("The image is empty.");
-    },
-    NEW_VERSION: function NEW_VERSION(req) {
-        return req.gettext("A new version of the image was " + "uploaded, replacing the old one.");
-    },
-    TOO_SMALL: function TOO_SMALL(req) {
-        return req.gettext("The image is too small to work with " + "the image similarity algorithm. It must be at least 150px on " + "each side.");
-    },
-    ERROR_SAVING: function ERROR_SAVING(req) {
-        return req.gettext("Error saving image.");
-    }
+const errors = {
+    ERROR_READING_ZIP: req => req.gettext("Error opening zip file."),
+    ZIP_FILE_EMPTY: req => req.gettext("Zip file has no images in it."),
+    MALFORMED_IMAGE: req => req.gettext("There was an error processing " + "the image. Perhaps it is malformed in some way."),
+    EMPTY_IMAGE: req => req.gettext("The image is empty."),
+    NEW_VERSION: req => req.gettext("A new version of the image was " + "uploaded, replacing the old one."),
+    TOO_SMALL: req => req.gettext("The image is too small to work with " + "the image similarity algorithm. It must be at least 150px on " + "each side."),
+    ERROR_SAVING: req => req.gettext("Error saving image.")
 };
 
-var ImageImport = new db.schema(Object.assign({}, Import.schema, {
+const ImageImport = new db.schema(Object.assign({}, Import.schema, {
     // The location of the uploaded zip file
     // (temporary, deleted after processing)
     zipFile: {
@@ -84,27 +62,28 @@ var ImageImport = new db.schema(Object.assign({}, Import.schema, {
 }));
 
 Object.assign(ImageImport.methods, Import.methods, {
-    getURL: function getURL(lang) {
-        return urls.gen(lang, "/" + this.getSource().type + "/source" + ("/" + this.source + "/admin?images=" + this._id));
+    getURL(lang) {
+        return urls.gen(lang, `/${this.getSource().type}/source` + `/${this.source}/admin?images=${this._id}`);
     },
-    getError: function getError(req) {
+
+    getError(req) {
         return models("ImageImport").getError(req, this.error);
     },
-    getStates: function getStates() {
+
+    getStates() {
         return states;
     },
-    processImages: function processImages(callback) {
-        var _this = this;
 
-        var zipFile = fs.createReadStream(this.zipFile);
-        var zipError = void 0;
-        var files = [];
-        var extractDir = path.join(os.tmpdir(), new Date().getTime().toString());
+    processImages(callback) {
+        const zipFile = fs.createReadStream(this.zipFile);
+        let zipError;
+        const files = [];
+        const extractDir = path.join(os.tmpdir(), new Date().getTime().toString());
 
-        fs.mkdir(extractDir, function () {
-            zipFile.pipe(unzip.Parse()).on("entry", function (entry) {
-                var fileName = path.basename(entry.path);
-                var outFileName = path.join(extractDir, fileName);
+        fs.mkdir(extractDir, () => {
+            zipFile.pipe(unzip.Parse()).on("entry", entry => {
+                const fileName = path.basename(entry.path);
+                const outFileName = path.join(extractDir, fileName);
 
                 // Ignore things that aren't files (e.g. directories)
                 // Ignore files that don't end with .jpe?g
@@ -131,7 +110,7 @@ Object.assign(ImageImport.methods, Import.methods, {
                 this._streamEnd = true;
                 this._streamFinish = true;
                 zipError = true;
-            }).on("close", function () {
+            }).on("close", () => {
                 if (zipError) {
                     return callback(new Error("ERROR_READING_ZIP"));
                 }
@@ -141,37 +120,37 @@ Object.assign(ImageImport.methods, Import.methods, {
                 }
 
                 // Import all of the files as images
-                async.eachLimit(files, 1, function (file, callback) {
-                    _this.addResult(file, callback);
-                }, function (err) {
+                async.eachLimit(files, 1, (file, callback) => {
+                    this.addResult(file, callback);
+                }, err => {
                     /* istanbul ignore if */
                     if (err) {
                         return callback(err);
                     }
 
-                    _this.setSimilarityState(callback);
+                    this.setSimilarityState(callback);
                 });
             });
         });
     },
-    setSimilarityState: function setSimilarityState(callback) {
-        var Image = models("Image");
+
+    setSimilarityState(callback) {
+        const Image = models("Image");
         Image.queueBatchSimilarityUpdate(this._id, callback);
     },
-    addResult: function addResult(file, callback) {
-        var _this2 = this;
 
+    addResult(file, callback) {
         /* istanbul ignore if */
         if (config.NODE_ENV !== "test") {
             console.log("Adding Image:", path.basename(file));
         }
 
-        models("Image").fromFile(this, file, function (err, image, warnings) {
-            var fileName = path.basename(file);
+        models("Image").fromFile(this, file, (err, image, warnings) => {
+            const fileName = path.basename(file);
 
-            var result = {
+            const result = {
                 _id: fileName,
-                fileName: fileName
+                fileName
             };
 
             if (err) {
@@ -182,46 +161,40 @@ Object.assign(ImageImport.methods, Import.methods, {
             }
 
             // Add the result
-            _this2.results.push(result);
+            this.results.push(result);
 
             if (image) {
-                image.save(function (err) {
+                image.save(err => {
                     /* istanbul ignore if */
                     if (err) {
                         return callback(err);
                     }
 
-                    image.linkToRecords(function () {
-                        return _this2.save(callback);
-                    });
+                    image.linkToRecords(() => this.save(callback));
                 });
             } else {
-                _this2.save(callback);
+                this.save(callback);
             }
         });
     },
-    getFilteredResults: function getFilteredResults() {
+
+    getFilteredResults() {
         return {
-            models: this.results.filter(function (result) {
-                return result.model;
-            }),
-            errors: this.results.filter(function (result) {
-                return result.error;
-            }),
-            warnings: this.results.filter(function (result) {
-                return (result.warnings || []).length !== 0;
-            })
+            models: this.results.filter(result => result.model),
+            errors: this.results.filter(result => result.error),
+            warnings: this.results.filter(result => (result.warnings || []).length !== 0)
         };
     }
 });
 
 Object.assign(ImageImport.statics, Import.statics, {
-    fromFile: function fromFile(fileName, source) {
-        var ImageImport = models("ImageImport");
-        return new ImageImport({ source: source, fileName: fileName });
+    fromFile(fileName, source) {
+        const ImageImport = models("ImageImport");
+        return new ImageImport({ source, fileName });
     },
-    getError: function getError(req, error) {
-        var msg = errors[error];
+
+    getError(req, error) {
+        const msg = errors[error];
         return msg ? msg(req) : error;
     }
 });
@@ -229,7 +202,7 @@ Object.assign(ImageImport.statics, Import.statics, {
 ImageImport.pre("validate", function (next) {
     // Create the ID if one hasn't been set before
     if (!this._id) {
-        this._id = this.source + "/" + Date.now();
+        this._id = `${this.source}/${Date.now()}`;
     }
 
     next();

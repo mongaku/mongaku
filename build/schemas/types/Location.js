@@ -1,13 +1,11 @@
 "use strict";
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+const React = require("react");
 
-var React = require("react");
+const LocationFilter = React.createFactory(require("../../views/types/filter/Location.js"));
+const LocationDisplay = React.createFactory(require("../../views/types/view/Location.js"));
 
-var LocationFilter = React.createFactory(require("../../views/types/filter/Location.js"));
-var LocationDisplay = React.createFactory(require("../../views/types/view/Location.js"));
-
-var Location = function Location(options) {
+const Location = function (options) {
     this.options = options;
     /*
     name
@@ -19,49 +17,59 @@ var Location = function Location(options) {
 };
 
 Location.prototype = {
-    searchName: function searchName() {
+    searchName() {
         return this.options.searchName || this.options.name;
     },
-    value: function value(query) {
+
+    value(query) {
         return query[this.searchName()];
     },
-    defaultValue: function defaultValue() {
+
+    defaultValue() {
         return "";
     },
-    fields: function fields(value) {
-        return _defineProperty({}, this.searchName(), value);
+
+    fields(value) {
+        return { [this.searchName()]: value };
     },
-    searchTitle: function searchTitle(value, i18n) {
-        var title = this.options.title(i18n);
-        return title + ": " + value;
+
+    searchTitle(value, i18n) {
+        const title = this.options.title(i18n);
+        return `${title}: ${value}`;
     },
-    filter: function filter(value, sanitize) {
+
+    filter(value, sanitize) {
         return {
-            match: _defineProperty({}, this.options.name + ".name", {
-                query: sanitize(value),
-                operator: "and",
-                zero_terms_query: "all"
-            })
+            match: {
+                [`${this.options.name}.name`]: {
+                    query: sanitize(value),
+                    operator: "and",
+                    zero_terms_query: "all"
+                }
+            }
         };
     },
-    renderFilter: function renderFilter(value, values, i18n) {
+
+    renderFilter(value, values, i18n) {
         return LocationFilter({
             name: this.options.name,
             searchName: this.searchName(),
-            value: value,
+            value,
             placeholder: this.options.placeholder(i18n),
             title: this.options.title(i18n)
         });
     },
-    renderView: function renderView(value) {
+
+    renderView(value) {
         return LocationDisplay({
             name: this.options.name,
             type: this.options.type,
-            value: value
+            value
         });
     },
-    schema: function schema(Schema) {
-        var LocationSchema = new Schema({
+
+    schema(Schema) {
+        const LocationSchema = new Schema({
             // An ID for the name, computed from all the properties
             // before validation.
             _id: String,
@@ -82,12 +90,8 @@ Location.prototype = {
 
         return {
             type: [LocationSchema],
-            validateArray: function validateArray(location) {
-                return location.name || location.city;
-            },
-            validationMsg: function validationMsg(i18n) {
-                return i18n.gettext("Locations must have a " + "name or city specified.");
-            }
+            validateArray: location => location.name || location.city,
+            validationMsg: i18n => i18n.gettext("Locations must have a " + "name or city specified.")
         };
     }
 };

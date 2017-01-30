@@ -1,18 +1,18 @@
 "use strict";
 
-var qs = require("querystring");
+const qs = require("querystring");
 
-var urls = require("../../lib/urls");
-var queries = require("./queries");
-var paramFilter = require("./param-filter");
+const urls = require("../../lib/urls");
+const queries = require("./queries");
+const paramFilter = require("./param-filter");
 
-var searchURL = function searchURL(req, query, keepSecondary) {
-    var params = paramFilter(query, keepSecondary);
-    var primary = params.primary;
-    var type = query.type;
-    var typeQueries = queries(type);
-    var queryString = qs.stringify(params.all);
-    var url = urls.gen(req.lang, "/" + type + "/search");
+const searchURL = (req, query, keepSecondary) => {
+    const params = paramFilter(query, keepSecondary);
+    const primary = params.primary;
+    const type = query.type;
+    const typeQueries = queries(type);
+    let queryString = qs.stringify(params.all);
+    let url = urls.gen(req.lang, `/${type}/search`);
 
     if (primary.length === 1 && typeQueries[primary[0]].url) {
         queryString = qs.stringify(params.secondary);
@@ -25,11 +25,11 @@ var searchURL = function searchURL(req, query, keepSecondary) {
     }
 
     if (queryString) {
-        var prefix = url.indexOf("?") >= 0 ? "&" : "?";
-        queryString = "" + prefix + queryString;
+        const prefix = url.indexOf("?") >= 0 ? "&" : "?";
+        queryString = `${prefix}${queryString}`;
     }
 
-    return "" + url + queryString;
+    return `${url}${queryString}`;
 };
 
 module.exports = searchURL;

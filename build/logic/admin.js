@@ -1,28 +1,24 @@
 "use strict";
 
-var fs = require("fs");
+const fs = require("fs");
 
-var async = require("async");
-var formidable = require("formidable");
-var jdp = require("jsondiffpatch");
+const async = require("async");
+const formidable = require("formidable");
+const jdp = require("jsondiffpatch");
 
-var models = require("../lib/models");
+const models = require("../lib/models");
 
 module.exports = function (app) {
-    var ImageImport = models("ImageImport");
-    var RecordImport = models("RecordImport");
+    const ImageImport = models("ImageImport");
+    const RecordImport = models("RecordImport");
 
-    var auth = require("./shared/auth");
+    const auth = require("./shared/auth");
 
-    var importRecords = function importRecords(req, res) {
-        var batchState = function batchState(batch) {
-            return batch.getCurState().name(req);
-        };
-        var batchError = function batchError(err) {
-            return RecordImport.getError(req, err);
-        };
+    const importRecords = (req, res) => {
+        const batchState = batch => batch.getCurState().name(req);
+        const batchError = err => RecordImport.getError(req, err);
 
-        RecordImport.findById(req.query.records, function (err, batch) {
+        RecordImport.findById(req.query.records, (err, batch) => {
             if (err || !batch) {
                 return res.status(404).render("Error", {
                     title: req.gettext("Import not found.")
@@ -30,122 +26,104 @@ module.exports = function (app) {
             }
 
             if (req.query.abandon) {
-                return batch.abandon(function () {
+                return batch.abandon(() => {
                     res.redirect(req.source.getAdminURL(req.lang));
                 });
             } else if (req.query.finalize) {
-                return batch.manuallyApprove(function () {
+                return batch.manuallyApprove(() => {
                     res.redirect(req.source.getAdminURL(req.lang));
                 });
             }
 
-            var adminURL = req.source.getAdminURL(req.lang);
+            const adminURL = req.source.getAdminURL(req.lang);
 
             res.render("ImportRecords", {
-                batch: batch,
+                batch,
                 results: batch.getFilteredResults(),
                 expanded: req.query.expanded,
-                adminURL: adminURL,
-                batchState: batchState,
-                batchError: batchError,
-                diff: function diff(delta) {
-                    return jdp.formatters.html.format(delta);
-                }
+                adminURL,
+                batchState,
+                batchError,
+                diff: delta => jdp.formatters.html.format(delta)
             });
         });
     };
 
-    var importImages = function importImages(req, res) {
-        var Image = models("Image");
+    const importImages = (req, res) => {
+        const Image = models("Image");
 
-        var batchState = function batchState(batch) {
-            return batch.getCurState().name(req);
-        };
-        var batchError = function batchError(err) {
-            return ImageImport.getError(req, err);
-        };
+        const batchState = batch => batch.getCurState().name(req);
+        const batchError = err => ImageImport.getError(req, err);
 
-        ImageImport.findById(req.query.images, function (err, batch) {
+        ImageImport.findById(req.query.images, (err, batch) => {
             if (err || !batch) {
                 return res.status(404).render("Error", {
                     title: req.gettext("Import not found.")
                 });
             }
 
-            var expanded = req.query.expanded;
-            var results = batch.results.filter(function (result) {
-                return !!result.model;
-            });
-            var toPopulate = req.query.expanded === "models" ? results : results.slice(0, 8);
+            const expanded = req.query.expanded;
+            const results = batch.results.filter(result => !!result.model);
+            const toPopulate = req.query.expanded === "models" ? results : results.slice(0, 8);
 
-            async.eachLimit(toPopulate, 4, function (result, callback) {
-                Image.findById(result.model, function (err, image) {
+            async.eachLimit(toPopulate, 4, (result, callback) => {
+                Image.findById(result.model, (err, image) => {
                     if (image) {
                         result.model = image;
                     }
 
                     callback();
                 });
-            }, function () {
-                var adminURL = req.source.getAdminURL(req.lang);
+            }, () => {
+                const adminURL = req.source.getAdminURL(req.lang);
 
                 res.render("ImportImages", {
-                    batch: batch,
-                    expanded: expanded,
-                    adminURL: adminURL,
-                    batchState: batchState,
-                    batchError: batchError
+                    batch,
+                    expanded,
+                    adminURL,
+                    batchState,
+                    batchError
                 });
             });
         });
     };
 
-    var adminPage = function adminPage(req, res, next) {
-        var source = req.source;
-        var batchState = function batchState(batch) {
-            return batch.getCurState().name(req);
-        };
-        var batchError = function batchError(batch) {
-            return batch.getError(req);
-        };
+    const adminPage = (req, res, next) => {
+        const source = req.source;
+        const batchState = batch => batch.getCurState().name(req);
+        const batchError = batch => batch.getError(req);
 
-        async.parallel([function (callback) {
-            return ImageImport.find({ source: source._id }, null, { sort: { created: "desc" } }, callback);
-        }, function (callback) {
-            return RecordImport.find({ source: source._id }, {
-                state: true,
-                fileName: true,
-                source: true,
-                created: true,
-                modified: true,
-                error: true,
-                "results.result": true,
-                "results.error": true,
-                "results.warnings": true
-            }, {}, callback);
-        }], function (err, results) {
+        async.parallel([callback => ImageImport.find({ source: source._id }, null, { sort: { created: "desc" } }, callback), callback => RecordImport.find({ source: source._id }, {
+            state: true,
+            fileName: true,
+            source: true,
+            created: true,
+            modified: true,
+            error: true,
+            "results.result": true,
+            "results.error": true,
+            "results.warnings": true
+        }, {}, callback)], (err, results) => {
             /* istanbul ignore if */
             if (err) {
                 return next(new Error(req.gettext("Error retrieving records.")));
             }
 
-            var imageImport = results[0];
-            var dataImport = results[1].sort(function (a, b) {
-                return b.created - a.created;
-            });
+            const imageImport = results[0];
+            const dataImport = results[1].sort((a, b) => b.created - a.created);
 
             res.render("Admin", {
-                source: source,
-                imageImport: imageImport,
-                dataImport: dataImport,
-                batchState: batchState,
-                batchError: batchError
+                source,
+                imageImport,
+                dataImport,
+                batchState,
+                batchError
             });
         });
     };
 
     return {
-        admin: function admin(req, res, next) {
+        admin(req, res, next) {
             if (req.query.records) {
                 importRecords(req, res, next);
             } else if (req.query.images) {
@@ -154,31 +132,32 @@ module.exports = function (app) {
                 adminPage(req, res, next);
             }
         },
-        uploadImages: function uploadImages(req, res, next) {
-            var source = req.source;
 
-            var form = new formidable.IncomingForm();
+        uploadImages(req, res, next) {
+            const source = req.source;
+
+            const form = new formidable.IncomingForm();
             form.encoding = "utf-8";
 
-            form.parse(req, function (err, fields, files) {
+            form.parse(req, (err, fields, files) => {
                 /* istanbul ignore if */
                 if (err) {
                     return next(new Error(req.gettext("Error processing zip file.")));
                 }
 
-                var zipField = files && files.zipField;
+                const zipField = files && files.zipField;
 
                 if (!zipField || !zipField.path || zipField.size === 0) {
                     return next(new Error(req.gettext("No zip file specified.")));
                 }
 
-                var zipFile = zipField.path;
-                var fileName = zipField.name;
+                const zipFile = zipField.path;
+                const fileName = zipField.name;
 
-                var batch = ImageImport.fromFile(fileName, source._id);
+                const batch = ImageImport.fromFile(fileName, source._id);
                 batch.zipFile = zipFile;
 
-                batch.save(function (err) {
+                batch.save(err => {
                     /* istanbul ignore if */
                     if (err) {
                         return next(new Error(req.gettext("Error saving zip file.")));
@@ -188,43 +167,38 @@ module.exports = function (app) {
                 });
             });
         },
-        uploadData: function uploadData(req, res, next) {
-            var source = req.source;
 
-            var form = new formidable.IncomingForm();
+        uploadData(req, res, next) {
+            const source = req.source;
+
+            const form = new formidable.IncomingForm();
             form.encoding = "utf-8";
             form.multiples = true;
 
-            form.parse(req, function (err, fields, files) {
+            form.parse(req, (err, fields, files) => {
                 /* istanbul ignore if */
                 if (err) {
                     return next(new Error(req.gettext("Error processing data files.")));
                 }
 
-                var inputFiles = (Array.isArray(files.files) ? files.files : files.files ? [files.files] : []).filter(function (file) {
-                    return file.path && file.size > 0;
-                });
+                const inputFiles = (Array.isArray(files.files) ? files.files : files.files ? [files.files] : []).filter(file => file.path && file.size > 0);
 
                 if (inputFiles.length === 0) {
                     return next(new Error(req.gettext("No data files specified.")));
                 }
 
-                var fileName = inputFiles.map(function (file) {
-                    return file.name;
-                }).join(", ");
-                var inputStreams = inputFiles.map(function (file) {
-                    return fs.createReadStream(file.path);
-                });
+                const fileName = inputFiles.map(file => file.name).join(", ");
+                const inputStreams = inputFiles.map(file => fs.createReadStream(file.path));
 
-                var batch = RecordImport.fromFile(fileName, source._id, source.type);
+                const batch = RecordImport.fromFile(fileName, source._id, source.type);
 
-                batch.setResults(inputStreams, function (err) {
+                batch.setResults(inputStreams, err => {
                     /* istanbul ignore if */
                     if (err) {
                         return next(new Error(req.gettext("Error saving data file.")));
                     }
 
-                    batch.save(function (err) {
+                    batch.save(err => {
                         /* istanbul ignore if */
                         if (err) {
                             return next(new Error(req.gettext("Error saving data file.")));
@@ -235,9 +209,10 @@ module.exports = function (app) {
                 });
             });
         },
-        routes: function routes() {
-            var source = function source(req, res, next) {
-                var Source = models("Source");
+
+        routes() {
+            const source = (req, res, next) => {
+                const Source = models("Source");
 
                 try {
                     req.source = Source.getSource(req.params.source);

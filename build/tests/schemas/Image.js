@@ -1,43 +1,43 @@
 "use strict";
 
-var path = require("path");
+const path = require("path");
 
-var tap = require("tap");
+const tap = require("tap");
 
-var init = require("../init");
-var Image = init.Image;
-var ImageImport = init.ImageImport;
+const init = require("../init");
+const Image = init.Image;
+const ImageImport = init.ImageImport;
 
-tap.test("getFilePath", { autoend: true }, function (t) {
-    var image = init.getImage();
+tap.test("getFilePath", { autoend: true }, t => {
+    const image = init.getImage();
     t.equal(image.getFilePath(), path.resolve(process.cwd(), "data/test/images/4266906334.jpg"), "Check file path");
 });
 
-tap.test("getOriginalURL", { autoend: true }, function (t) {
-    var image = init.getImage();
+tap.test("getOriginalURL", { autoend: true }, t => {
+    const image = init.getImage();
     t.equal(image.getOriginalURL(), "/data/test/images/4266906334.jpg", "Check Image URL");
 });
 
-tap.test("getScaledURL", { autoend: true }, function (t) {
-    var image = init.getImage();
+tap.test("getScaledURL", { autoend: true }, t => {
+    const image = init.getImage();
     t.equal(image.getScaledURL(), "/data/test/scaled/4266906334.jpg", "Check Scaled URL");
 });
 
-tap.test("getThumbURL", { autoend: true }, function (t) {
-    var image = init.getImage();
+tap.test("getThumbURL", { autoend: true }, t => {
+    const image = init.getImage();
     t.equal(image.getThumbURL(), "/data/test/thumbs/4266906334.jpg", "Check Thumb URL");
 });
 
-tap.test("getSource", { autoend: true }, function (t) {
-    var image = init.getImage();
-    var source = init.getSource();
+tap.test("getSource", { autoend: true }, t => {
+    const image = init.getImage();
+    const source = init.getSource();
     t.equal(image.getSource(), source, "Get Source");
 });
 
-tap.test("updateSimilarity: Existing Image", function (t) {
-    var image = init.getImage();
-    var oldSimilar = image.similarImages.slice(0);
-    image.updateSimilarity(function (err) {
+tap.test("updateSimilarity: Existing Image", t => {
+    const image = init.getImage();
+    const oldSimilar = image.similarImages.slice(0);
+    image.updateSimilarity(err => {
         t.error(err, "No error should be thrown.");
         t.notEqual(image.similarImages, oldSimilar, "Similarity updated.");
         t.equal(image.similarImages.length, 1, "Has the correct number of results.");
@@ -46,8 +46,8 @@ tap.test("updateSimilarity: Existing Image", function (t) {
     });
 });
 
-tap.test("updateSimilarity: Missing Image", function (t) {
-    var image = new Image({
+tap.test("updateSimilarity: Missing Image", t => {
+    const image = new Image({
         _id: "test/foo",
         source: "test",
         fileName: "sadfasdfds.jpg",
@@ -56,25 +56,25 @@ tap.test("updateSimilarity: Missing Image", function (t) {
         height: 115
     });
 
-    var oldSimilar = image.similarImages;
-    image.updateSimilarity(function (err) {
+    const oldSimilar = image.similarImages;
+    image.updateSimilarity(err => {
         t.error(err, "No error should be thrown.");
         t.equal(image.similarImages, oldSimilar, "Similarity not updated.");
         t.end();
     });
 });
 
-tap.test("indexSimilarity: Existing Image", function (t) {
-    var image = init.getImage();
-    image.indexSimilarity(function (err, indexed) {
+tap.test("indexSimilarity: Existing Image", t => {
+    const image = init.getImage();
+    image.indexSimilarity((err, indexed) => {
         t.error(err, "No error should be thrown.");
         t.equal(indexed, true, "Image is indexed.");
         t.end();
     });
 });
 
-tap.test("indexSimilarity: Missing Image", function (t) {
-    var image = new Image({
+tap.test("indexSimilarity: Missing Image", t => {
+    const image = new Image({
         _id: "test/foo",
         source: "test",
         fileName: "sadfasdfds.jpg",
@@ -83,15 +83,15 @@ tap.test("indexSimilarity: Missing Image", function (t) {
         height: 115
     });
 
-    image.indexSimilarity(function (err, indexed) {
+    image.indexSimilarity((err, indexed) => {
         t.error(err, "No error should be thrown.");
         t.equal(indexed, true, "Image is indexed.");
         t.end();
     });
 });
 
-tap.test("indexSimilarity: Small Image", function (t) {
-    var image = new Image({
+tap.test("indexSimilarity: Small Image", t => {
+    const image = new Image({
         _id: "test/foo2",
         source: "test",
         fileName: "sadfasdfds2.jpg",
@@ -100,22 +100,22 @@ tap.test("indexSimilarity: Small Image", function (t) {
         height: 90
     });
 
-    image.indexSimilarity(function (err, indexed) {
+    image.indexSimilarity((err, indexed) => {
         t.error(err, "No error should be thrown.");
         t.equal(indexed, undefined, "Image is not indexed.");
         t.end();
     });
 });
 
-tap.test("Image.fromFile: New Image", function (t) {
-    var batch = new ImageImport({
+tap.test("Image.fromFile: New Image", t => {
+    const batch = new ImageImport({
         _id: "testBatch",
         source: "test"
     });
 
-    var testFile = path.resolve(process.cwd(), "testData", "new1.jpg");
+    const testFile = path.resolve(process.cwd(), "testData", "new1.jpg");
 
-    Image.fromFile(batch, testFile, function (err, image, warnings) {
+    Image.fromFile(batch, testFile, (err, image, warnings) => {
         t.error(err, "No error should be thrown.");
         t.ok(image, "Image exists.");
         t.equal(warnings.length, 0, "No warnings.");
@@ -125,15 +125,15 @@ tap.test("Image.fromFile: New Image", function (t) {
     });
 });
 
-tap.test("Image.fromFile: New Image (Empty File)", function (t) {
-    var batch = new ImageImport({
+tap.test("Image.fromFile: New Image (Empty File)", t => {
+    const batch = new ImageImport({
         _id: "testBatch",
         source: "test"
     });
 
-    var testFile = path.resolve(process.cwd(), "testData", "empty.jpg");
+    const testFile = path.resolve(process.cwd(), "testData", "empty.jpg");
 
-    Image.fromFile(batch, testFile, function (err, image, warnings) {
+    Image.fromFile(batch, testFile, (err, image, warnings) => {
         t.ok(err, "Has error object.");
         t.equal(err.message, "EMPTY_IMAGE", "Has error message.");
         t.notOk(image, "No image object");
@@ -142,15 +142,15 @@ tap.test("Image.fromFile: New Image (Empty File)", function (t) {
     });
 });
 
-tap.test("Image.fromFile: New Image (Corrupted File)", function (t) {
-    var batch = new ImageImport({
+tap.test("Image.fromFile: New Image (Corrupted File)", t => {
+    const batch = new ImageImport({
         _id: "testBatch",
         source: "test"
     });
 
-    var testFile = path.resolve(process.cwd(), "testData", "corrupted.jpg");
+    const testFile = path.resolve(process.cwd(), "testData", "corrupted.jpg");
 
-    Image.fromFile(batch, testFile, function (err, image, warnings) {
+    Image.fromFile(batch, testFile, (err, image, warnings) => {
         t.ok(err, "Has error object.");
         t.equal(err.message, "MALFORMED_IMAGE", "Has error message.");
         t.notOk(image, "No image object");
@@ -159,15 +159,15 @@ tap.test("Image.fromFile: New Image (Corrupted File)", function (t) {
     });
 });
 
-tap.test("Image.fromFile: New Image (Small File)", function (t) {
-    var batch = new ImageImport({
+tap.test("Image.fromFile: New Image (Small File)", t => {
+    const batch = new ImageImport({
         _id: "testBatch",
         source: "test"
     });
 
-    var testFile = path.resolve(process.cwd(), "testData", "test-small.jpg");
+    const testFile = path.resolve(process.cwd(), "testData", "test-small.jpg");
 
-    Image.fromFile(batch, testFile, function (err, image, warnings) {
+    Image.fromFile(batch, testFile, (err, image, warnings) => {
         t.error(err, "No error should be thrown.");
         t.ok(image, "Image exists.");
         t.same(warnings, ["TOO_SMALL"], "One warning.");
@@ -175,15 +175,15 @@ tap.test("Image.fromFile: New Image (Small File)", function (t) {
     });
 });
 
-tap.test("Image.fromFile: Updating Image", function (t) {
-    var batch = new ImageImport({
+tap.test("Image.fromFile: Updating Image", t => {
+    const batch = new ImageImport({
         _id: "testBatch",
         source: "test"
     });
 
-    var testFile = path.resolve(process.cwd(), "testData", "nosimilar.jpg");
+    const testFile = path.resolve(process.cwd(), "testData", "nosimilar.jpg");
 
-    Image.fromFile(batch, testFile, function (err, image, warnings) {
+    Image.fromFile(batch, testFile, (err, image, warnings) => {
         t.error(err, "No error should be thrown.");
         t.ok(image, "Image exists.");
         t.same(warnings, ["NEW_VERSION"], "One warning.");
@@ -191,17 +191,17 @@ tap.test("Image.fromFile: Updating Image", function (t) {
     });
 });
 
-tap.test("Image.fromFile: Updating Image (files already exist)", function (t) {
-    var batch = new ImageImport({
+tap.test("Image.fromFile: Updating Image (files already exist)", t => {
+    const batch = new ImageImport({
         _id: "testBatch",
         source: "test"
     });
 
-    var testFile = path.resolve(process.cwd(), "testData", "foo.jpg");
+    const testFile = path.resolve(process.cwd(), "testData", "foo.jpg");
 
-    Image.fromFile(batch, testFile, function () {
+    Image.fromFile(batch, testFile, () => {
         // Run this twice to have the images be put into place already
-        Image.fromFile(batch, testFile, function (err, image, warnings) {
+        Image.fromFile(batch, testFile, (err, image, warnings) => {
             t.error(err, "No error should be thrown.");
             t.ok(image, "Image exists.");
             t.equal(warnings.length, 0, "No warnings.");

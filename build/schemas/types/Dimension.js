@@ -1,18 +1,14 @@
 "use strict";
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+const pd = require("parse-dimensions");
+const React = require("react");
 
-var pd = require("parse-dimensions");
-var React = require("react");
+const DimensionFilter = React.createFactory(require("../../views/types/filter/Dimension.js"));
+const DimensionDisplay = React.createFactory(require("../../views/types/view/Dimension.js"));
 
-var DimensionFilter = React.createFactory(require("../../views/types/filter/Dimension.js"));
-var DimensionDisplay = React.createFactory(require("../../views/types/view/Dimension.js"));
+const numRange = bucket => bucket.to ? `${bucket.from || 0}-${bucket.to}${bucket.unit}` : `${bucket.from}${bucket.unit}+`;
 
-var numRange = function numRange(bucket) {
-    return bucket.to ? (bucket.from || 0) + "-" + bucket.to + bucket.unit : "" + bucket.from + bucket.unit + "+";
-};
-
-var Dimension = function Dimension(options) {
+const Dimension = function (options) {
     this.options = options;
     this.defaultUnit = options.defaultUnit || "mm";
     this.defaultSearchUnit = options.defaultSearchUnit || "cm";
@@ -31,234 +27,244 @@ var Dimension = function Dimension(options) {
 };
 
 Dimension.prototype = {
-    searchName: function searchName() {
+    searchName() {
         return this.options.searchName || this.options.name;
     },
-    value: function value(query) {
-        var heightMin = query[this.searchName() + ".heightMin"];
-        var heightMax = query[this.searchName() + ".heightMax"];
-        var widthMin = query[this.searchName() + ".widthMin"];
-        var widthMax = query[this.searchName() + ".widthMax"];
-        var unit = query[this.searchName() + ".unit"] || this.defaultSearchUnit || this.defaultUnit;
+
+    value(query) {
+        const heightMin = query[`${this.searchName()}.heightMin`];
+        const heightMax = query[`${this.searchName()}.heightMax`];
+        const widthMin = query[`${this.searchName()}.widthMin`];
+        const widthMax = query[`${this.searchName()}.widthMax`];
+        const unit = query[`${this.searchName()}.unit`] || this.defaultSearchUnit || this.defaultUnit;
 
         if (heightMin || heightMax || widthMin || widthMax) {
-            return { heightMin: heightMin, heightMax: heightMax, widthMin: widthMin, widthMax: widthMax, unit: unit };
+            return { heightMin, heightMax, widthMin, widthMax, unit };
         }
     },
-    searchTitle: function searchTitle(value, i18n) {
-        var defaultUnit = this.defaultUnit;
-        var unit = value.unit || this.defaultSearchUnit || this.defaultUnit;
-        var title = [];
+
+    searchTitle(value, i18n) {
+        const defaultUnit = this.defaultUnit;
+        const unit = value.unit || this.defaultSearchUnit || this.defaultUnit;
+        const title = [];
 
         if (value.heightMin || value.heightMax) {
-            var name = this.options.heightTitle(i18n);
-            var range = numRange({
+            const name = this.options.heightTitle(i18n);
+            const range = numRange({
                 from: pd.convertNumber(value.heightMin, defaultUnit, unit),
                 to: pd.convertNumber(value.heightMax, defaultUnit, unit),
-                unit: unit
+                unit
             });
-            title.push(name + ": " + range);
+            title.push(`${name}: ${range}`);
         }
 
         if (value.widthMin || value.widthMax) {
-            var _name = this.options.widthTitle(i18n);
-            var _range = numRange({
+            const name = this.options.widthTitle(i18n);
+            const range = numRange({
                 from: pd.convertNumber(value.widthMin, defaultUnit, unit),
                 to: pd.convertNumber(value.widthMax, defaultUnit, unit),
-                unit: unit
+                unit
             });
-            title.push(_name + ": " + _range);
+            title.push(`${name}: ${range}`);
         }
 
         return title.join(", ");
     },
-    fields: function fields(value) {
-        var ret = {};
-        var defaultUnit = this.defaultSearchUnit || this.defaultUnit;
+
+    fields(value) {
+        const ret = {};
+        const defaultUnit = this.defaultSearchUnit || this.defaultUnit;
 
         if (value.heightMin) {
-            ret[this.searchName() + ".heightMin"] = value.heightMin;
+            ret[`${this.searchName()}.heightMin`] = value.heightMin;
         }
 
         if (value.heightMax) {
-            ret[this.searchName() + ".heightMax"] = value.heightMax;
+            ret[`${this.searchName()}.heightMax`] = value.heightMax;
         }
 
         if (value.widthMin) {
-            ret[this.searchName() + ".widthMin"] = value.widthMin;
+            ret[`${this.searchName()}.widthMin`] = value.widthMin;
         }
 
         if (value.widthMax) {
-            ret[this.searchName() + ".widthMax"] = value.widthMax;
+            ret[`${this.searchName()}.widthMax`] = value.widthMax;
         }
 
         if (value.unit && value.unit !== defaultUnit) {
-            ret[this.searchName() + ".unit"] = value.unit;
+            ret[`${this.searchName()}.unit`] = value.unit;
         }
 
         return ret;
     },
-    breadcrumb: function breadcrumb(value, i18n) {
-        var breadcrumbs = [];
+
+    breadcrumb(value, i18n) {
+        const breadcrumbs = [];
 
         if (value.heightMin || value.heightMax) {
-            var title = this.options.heightTitle(i18n);
-            var range = numRange({
+            const title = this.options.heightTitle(i18n);
+            const range = numRange({
                 from: value.heightMin,
                 to: value.heightMax,
                 unit: value.unit
             });
 
             breadcrumbs.push({
-                title: title + ": " + range,
-                url: _defineProperty({}, this.options.name, {
-                    heightMin: value.heightMin,
-                    heightMax: value.heightMax
-                })
+                title: `${title}: ${range}`,
+                url: {
+                    [this.options.name]: {
+                        heightMin: value.heightMin,
+                        heightMax: value.heightMax
+                    }
+                }
             });
         }
 
         if (value.widthMin || value.widthMax) {
-            var _title = this.options.widthTitle(i18n);
-            var _range2 = numRange({
+            const title = this.options.widthTitle(i18n);
+            const range = numRange({
                 from: value.widthMin,
                 to: value.widthMax,
                 unit: value.unit
             });
 
             breadcrumbs.push({
-                title: _title + ": " + _range2,
-                url: _defineProperty({}, this.options.name, {
-                    widthMin: value.widthMin,
-                    widthMax: value.widthMax
-                })
+                title: `${title}: ${range}`,
+                url: {
+                    [this.options.name]: {
+                        widthMin: value.widthMin,
+                        widthMax: value.widthMax
+                    }
+                }
             });
         }
 
         return breadcrumbs;
     },
-    filter: function filter(value) {
-        var filters = [];
+
+    filter(value) {
+        const filters = [];
 
         if (value.widthMin) {
             filters.push({
-                range: _defineProperty({}, this.options.name + ".width", {
-                    gte: pd.convertNumber(parseFloat(value.widthMin), value.unit, this.defaultUnit)
-                })
+                range: {
+                    [`${this.options.name}.width`]: {
+                        gte: pd.convertNumber(parseFloat(value.widthMin), value.unit, this.defaultUnit)
+                    }
+                }
             });
         }
 
         if (value.widthMax) {
             filters.push({
-                range: _defineProperty({}, this.options.name + ".width", {
-                    lte: pd.convertNumber(parseFloat(value.widthMax), value.unit, this.defaultUnit)
-                })
+                range: {
+                    [`${this.options.name}.width`]: {
+                        lte: pd.convertNumber(parseFloat(value.widthMax), value.unit, this.defaultUnit)
+                    }
+                }
             });
         }
 
         if (value.heightMin) {
             filters.push({
-                range: _defineProperty({}, this.options.name + ".height", {
-                    gte: pd.convertNumber(parseFloat(value.heightMin), value.unit, this.defaultUnit)
-                })
+                range: {
+                    [`${this.options.name}.height`]: {
+                        gte: pd.convertNumber(parseFloat(value.heightMin), value.unit, this.defaultUnit)
+                    }
+                }
             });
         }
 
         if (value.heightMax) {
             filters.push({
-                range: _defineProperty({}, this.options.name + ".height", {
-                    lte: pd.convertNumber(parseFloat(value.heightMax), value.unit, this.defaultUnit)
-                })
+                range: {
+                    [`${this.options.name}.height`]: {
+                        lte: pd.convertNumber(parseFloat(value.heightMax), value.unit, this.defaultUnit)
+                    }
+                }
             });
         }
 
         return filters;
     },
-    facet: function facet() {
-        var _this = this,
-            _ref;
 
-        var defaultUnit = this.defaultUnit;
-        var unit = this.defaultSearchUnit || this.defaultUnit;
+    facet() {
+        const defaultUnit = this.defaultUnit;
+        const unit = this.defaultSearchUnit || this.defaultUnit;
 
-        var formatFacetBucket = function formatFacetBucket(bucket) {
-            var text = numRange({
+        const formatFacetBucket = bucket => {
+            const text = numRange({
                 from: pd.convertNumber(bucket.from, defaultUnit, unit),
                 to: pd.convertNumber(bucket.to, defaultUnit, unit),
-                unit: unit
+                unit
             });
 
             return {
-                text: text,
+                text,
                 count: bucket.doc_count,
-                url: _defineProperty({}, _this.options.name, {
-                    widthMin: bucket.from,
-                    widthMax: bucket.to,
-                    unit: unit
-                })
+                url: {
+                    [this.options.name]: {
+                        widthMin: bucket.from,
+                        widthMax: bucket.to,
+                        unit
+                    }
+                }
             };
         };
 
-        var ranges = [{ to: 99 }, { from: 100, to: 199 }, { from: 200, to: 299 }, { from: 300, to: 399 }, { from: 400, to: 499 }, { from: 500, to: 599 }, { from: 600, to: 699 }, { from: 700, to: 799 }, { from: 800, to: 899 }, { from: 900, to: 999 }, { from: 1000, to: 1249 }, { from: 1250, to: 1599 }, { from: 1500, to: 1749 }, { from: 1750, to: 1999 }, { from: 2000 }];
+        const ranges = [{ to: 99 }, { from: 100, to: 199 }, { from: 200, to: 299 }, { from: 300, to: 399 }, { from: 400, to: 499 }, { from: 500, to: 599 }, { from: 600, to: 699 }, { from: 700, to: 799 }, { from: 800, to: 899 }, { from: 900, to: 999 }, { from: 1000, to: 1249 }, { from: 1250, to: 1599 }, { from: 1500, to: 1749 }, { from: 1750, to: 1999 }, { from: 2000 }];
 
-        return _ref = {}, _defineProperty(_ref, this.options.name + ".width", {
-            title: function title(i18n) {
-                return _this.options.widthTitle(i18n);
-            },
+        return {
+            [`${this.options.name}.width`]: {
+                title: i18n => this.options.widthTitle(i18n),
 
-            facet: function facet() {
-                return {
+                facet: () => ({
                     range: {
-                        field: _this.options.name + ".width",
-                        ranges: ranges
+                        field: `${this.options.name}.width`,
+                        ranges
                     }
-                };
+                }),
+
+                formatBuckets: buckets => buckets.map(formatFacetBucket)
             },
 
-            formatBuckets: function formatBuckets(buckets) {
-                return buckets.map(formatFacetBucket);
-            }
-        }), _defineProperty(_ref, this.options.name + ".height", {
-            title: function title(i18n) {
-                return _this.options.heightTitle(i18n);
-            },
+            [`${this.options.name}.height`]: {
+                title: i18n => this.options.heightTitle(i18n),
 
-            facet: function facet() {
-                return {
+                facet: () => ({
                     range: {
-                        field: _this.options.name + ".height",
-                        ranges: ranges
+                        field: `${this.options.name}.height`,
+                        ranges
                     }
-                };
-            },
+                }),
 
-            formatBuckets: function formatBuckets(buckets) {
-                return buckets.map(formatFacetBucket);
+                formatBuckets: buckets => buckets.map(formatFacetBucket)
             }
-        }), _ref;
+        };
     },
-    renderFilter: function renderFilter(value, values, i18n) {
+
+    renderFilter(value, values, i18n) {
         return DimensionFilter({
             name: this.options.name,
             searchName: this.searchName(),
             placeholder: this.options.placeholder(i18n),
             heightTitle: this.options.heightTitle(i18n),
             widthTitle: this.options.widthTitle(i18n),
-            value: value
+            value
         });
     },
-    renderView: function renderView(value) {
+
+    renderView(value) {
         return DimensionDisplay({
             name: this.options.name,
             type: this.options.type,
-            value: value,
+            value,
             defaultUnit: this.defaultSearchUnit
         });
     },
-    schema: function schema(Schema) {
-        var _this2 = this;
 
-        var DimensionSchema = new Schema({
+    schema(Schema) {
+        const DimensionSchema = new Schema({
             // An ID for the dimension, computed from the original +
             // width/height properties before validation.
             _id: String,
@@ -279,8 +285,8 @@ Dimension.prototype = {
         });
 
         DimensionSchema.methods = {
-            toJSON: function toJSON() {
-                var obj = this.toObject();
+            toJSON() {
+                const obj = this.toObject();
                 delete obj.original;
                 return obj;
             }
@@ -294,15 +300,9 @@ Dimension.prototype = {
 
         return {
             type: [DimensionSchema],
-            convert: function convert(obj) {
-                return typeof obj === "string" ? pd.parseDimension(obj, true, _this2.defaultUnit) : pd.convertDimension(obj, _this2.defaultUnit);
-            },
-            validateArray: function validateArray(val) {
-                return (val.width || val.height) && val.unit;
-            },
-            validationMsg: function validationMsg(req) {
-                return req.gettext("Dimensions must have a " + "unit specified and at least a width or height.");
-            }
+            convert: obj => typeof obj === "string" ? pd.parseDimension(obj, true, this.defaultUnit) : pd.convertDimension(obj, this.defaultUnit),
+            validateArray: val => (val.width || val.height) && val.unit,
+            validationMsg: req => req.gettext("Dimensions must have a " + "unit specified and at least a width or height.")
         };
     }
 };

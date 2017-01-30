@@ -6,7 +6,7 @@ $(document).on("click", ".toggle-facets", function () {
     $(this).remove();
 });
 
-var updatePrivateDisplay = function updatePrivateDisplay() {
+var updatePrivateDisplay = function () {
     var showPrivate = localStorage.showPrivate === "true";
     $("html").toggleClass("revealed", showPrivate);
     $("input.toggle-private").prop("checked", showPrivate);
@@ -24,10 +24,10 @@ $(document).on("input", "input[data-id]", function (e) {
 
     $.ajax({
         url: window.location.pathname.replace(/^(\/.*?\/.*?)\/.*$/, "$1/" + e.target.value + "/json"),
-        success: function success() {
+        success: function () {
             $(e.target).parents("tr").addClass("has-error").removeClass("has-success");
         },
-        error: function error() {
+        error: function () {
             $(e.target).parents("tr").addClass("has-success").removeClass("has-error");
         }
     });
@@ -48,14 +48,14 @@ $(function () {
             ajax: {
                 url: "/" + $(this).data("record") + "/search",
                 dataType: "json",
-                data: function data(params) {
+                data: function (params) {
                     return {
                         format: "json",
                         filter: (params.term || "") + "*",
                         page: params.page
                     };
                 },
-                processResults: function processResults(data) {
+                processResults: function (data) {
                     return {
                         results: data.records.map(function (record) {
                             return {

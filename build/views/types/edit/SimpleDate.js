@@ -1,8 +1,8 @@
 "use strict";
 
-var React = require("react");
+const React = require("react");
 
-var SimpleDateEdit = React.createClass({
+const SimpleDateEdit = React.createClass({
     displayName: "SimpleDateEdit",
 
     propTypes: {
@@ -10,8 +10,8 @@ var SimpleDateEdit = React.createClass({
         value: React.PropTypes.instanceOf(Date)
     },
 
-    render: function render() {
-        var dateString = "";
+    render() {
+        let dateString = "";
 
         if (this.props.value) {
             dateString = this.props.value.toISOString().replace(/T.*$/, "");

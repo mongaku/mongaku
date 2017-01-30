@@ -1,8 +1,8 @@
 "use strict";
 
-var db = require("../lib/db");
+const db = require("../lib/db");
 
-var Location = new db.schema({
+const Location = new db.schema({
     // An ID for the name, computed from all the properties
     // before validation.
     _id: String,

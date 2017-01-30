@@ -1,13 +1,13 @@
 "use strict";
 
-var record = require("../../lib/record");
+const record = require("../../lib/record");
 
-var search = require("./search");
+const search = require("./search");
 
-module.exports = function (req, res, next, tmplParams) {
-    var fields = Object.assign({}, req.query, req.params);
+module.exports = (req, res, next, tmplParams) => {
+    const fields = Object.assign({}, req.query, req.params);
 
-    search(fields, req, function (err, data, expectedURL) {
+    search(fields, req, (err, data, expectedURL) => {
         if (err) {
             return next(new Error(req.gettext("Error connecting to database.")));
         }
@@ -20,11 +20,11 @@ module.exports = function (req, res, next, tmplParams) {
             return res.status(200).send(data);
         }
 
-        var type = req.params.type;
-        var Record = record(type);
-        Record.getFacets(req, function (err, globalFacets) {
-            var tmplData = Object.assign(data, tmplParams, {
-                globalFacets: globalFacets
+        const type = req.params.type;
+        const Record = record(type);
+        Record.getFacets(req, (err, globalFacets) => {
+            const tmplData = Object.assign(data, tmplParams, {
+                globalFacets
             });
             res.render("Search", tmplData);
         });

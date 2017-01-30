@@ -1,14 +1,14 @@
 "use strict";
 
-var mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
-var config = require("./config");
+const config = require("./config");
 
 // Get Mongoose using native promises
 mongoose.Promise = global.Promise;
 
 /* istanbul ignore next */
-var connect = function connect(callback) {
+const connect = callback => {
     /* istanbul ignore else */
     if (config.NODE_ENV === "test") {
         return process.nextTick(callback);
@@ -17,7 +17,7 @@ var connect = function connect(callback) {
     console.log("Connecting...");
     mongoose.connect(config.MONGODB_URL);
 
-    mongoose.connection.on("error", function (err) {
+    mongoose.connection.on("error", err => {
         console.error("Mongo Connection Error:", err);
         callback(err);
     });
@@ -30,9 +30,9 @@ module.exports = {
     schema: mongoose.Schema,
     types: mongoose.Types,
 
-    connect: connect,
+    connect,
 
-    model: function model(name, schema) {
+    model(name, schema) {
         return mongoose.model(name, schema);
     }
 };

@@ -1,25 +1,23 @@
 "use strict";
 
-var React = require("react");
+const React = require("react");
 
-var options = require("../lib/options");
+const options = require("../lib/options");
 
-var Page = require("./Page.js");
+const Page = require("./Page.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
-var _require = require("./Wrapper.js"),
-    childContextTypes = _require.childContextTypes;
+const { childContextTypes } = require("./Wrapper.js");
 
-var SearchForm = function SearchForm(_ref, _ref2) {
-    var type = _ref.type;
-    var lang = _ref2.lang,
-        URL = _ref2.URL,
-        gettext = _ref2.gettext,
-        user = _ref2.user;
-
-    var title = options.types[type].name({ gettext: gettext });
-    var sources = user && user.getEditableSourcesByType(type);
+const SearchForm = ({ type }, {
+    lang,
+    URL,
+    gettext,
+    user
+}) => {
+    const title = options.types[type].name({ gettext });
+    const sources = user && user.getEditableSourcesByType(type);
 
     return React.createElement(
         "div",
@@ -31,7 +29,7 @@ var SearchForm = function SearchForm(_ref, _ref2) {
         ),
         React.createElement(
             "form",
-            { action: URL("/" + type + "/search"), method: "GET",
+            { action: URL(`/${type}/search`), method: "GET",
                 className: "form-search form-inline"
             },
             React.createElement(
@@ -50,13 +48,13 @@ var SearchForm = function SearchForm(_ref, _ref2) {
             " ",
             React.createElement(
                 "a",
-                { href: URL("/" + type + "/search"), className: "btn btn-default" },
+                { href: URL(`/${type}/search`), className: "btn btn-default" },
                 gettext("Browse All")
             ),
             " ",
             sources && sources.length > 0 && React.createElement(
                 "a",
-                { href: URL("/" + type + "/create"), className: "btn btn-success" },
+                { href: URL(`/${type}/create`), className: "btn btn-success" },
                 gettext("Create New")
             )
         )
@@ -68,125 +66,113 @@ SearchForm.propTypes = {
 };
 SearchForm.contextTypes = childContextTypes;
 
-var ImageUploadForms = function ImageUploadForms(_ref3, _ref4) {
-    var type = _ref3.type;
-    var lang = _ref4.lang,
-        gettext = _ref4.gettext,
-        URL = _ref4.URL;
-    return React.createElement(
-        "div",
+const ImageUploadForms = ({ type }, { lang, gettext, URL }) => React.createElement(
+    "div",
+    null,
+    React.createElement(
+        "h3",
         null,
-        React.createElement(
-            "h3",
-            null,
-            gettext("Search by Image:")
-        ),
-        React.createElement(
-            "p",
-            null,
-            gettext("Upload an image to find other " + "similar images.")
-        ),
+        gettext("Search by Image:")
+    ),
+    React.createElement(
+        "p",
+        null,
+        gettext("Upload an image to find other " + "similar images.")
+    ),
+    React.createElement(
+        "div",
+        { className: "panel panel-default" },
         React.createElement(
             "div",
-            { className: "panel panel-default" },
+            { className: "panel-heading" },
             React.createElement(
-                "div",
-                { className: "panel-heading" },
-                React.createElement(
-                    "h3",
-                    { className: "panel-title" },
-                    gettext("Upload an Image")
-                )
-            ),
-            React.createElement(
-                "div",
-                { className: "panel-body" },
-                React.createElement(
-                    "form",
-                    { action: URL("/" + type + "/file-upload"), method: "POST",
-                        encType: "multipart/form-data"
-                    },
-                    React.createElement("input", { type: "hidden", name: "lang",
-                        value: lang
-                    }),
-                    React.createElement(
-                        "div",
-                        { className: "form-inline" },
-                        React.createElement(
-                            "div",
-                            { className: "form-group" },
-                            React.createElement("input", { type: "file", id: "file", name: "file",
-                                className: "form-control"
-                            })
-                        ),
-                        " ",
-                        React.createElement("input", { type: "submit", className: "btn btn-primary",
-                            value: gettext("Search by Image")
-                        })
-                    )
-                )
+                "h3",
+                { className: "panel-title" },
+                gettext("Upload an Image")
             )
         ),
         React.createElement(
             "div",
-            { className: "panel panel-default" },
+            { className: "panel-body" },
             React.createElement(
-                "div",
-                { className: "panel-heading" },
+                "form",
+                { action: URL(`/${type}/file-upload`), method: "POST",
+                    encType: "multipart/form-data"
+                },
+                React.createElement("input", { type: "hidden", name: "lang",
+                    value: lang
+                }),
                 React.createElement(
-                    "h3",
-                    { className: "panel-title" },
-                    gettext("Paste Image URL")
-                )
-            ),
-            React.createElement(
-                "div",
-                { className: "panel-body" },
-                React.createElement(
-                    "form",
-                    { action: URL("/" + type + "/url-upload"), method: "GET" },
-                    React.createElement("input", { type: "hidden", name: "lang",
-                        value: lang
-                    }),
+                    "div",
+                    { className: "form-inline" },
                     React.createElement(
                         "div",
-                        { className: "form-inline" },
-                        React.createElement(
-                            "div",
-                            { className: "form-group" },
-                            React.createElement("input", { type: "text", id: "url", name: "url",
-                                defaultValue: "http://",
-                                className: "form-control"
-                            })
-                        ),
-                        " ",
-                        React.createElement("input", { type: "submit",
-                            value: gettext("Search by Image"),
-                            className: "btn btn-primary"
+                        { className: "form-group" },
+                        React.createElement("input", { type: "file", id: "file", name: "file",
+                            className: "form-control"
                         })
-                    )
+                    ),
+                    " ",
+                    React.createElement("input", { type: "submit", className: "btn btn-primary",
+                        value: gettext("Search by Image")
+                    })
                 )
             )
         )
-    );
-};
+    ),
+    React.createElement(
+        "div",
+        { className: "panel panel-default" },
+        React.createElement(
+            "div",
+            { className: "panel-heading" },
+            React.createElement(
+                "h3",
+                { className: "panel-title" },
+                gettext("Paste Image URL")
+            )
+        ),
+        React.createElement(
+            "div",
+            { className: "panel-body" },
+            React.createElement(
+                "form",
+                { action: URL(`/${type}/url-upload`), method: "GET" },
+                React.createElement("input", { type: "hidden", name: "lang",
+                    value: lang
+                }),
+                React.createElement(
+                    "div",
+                    { className: "form-inline" },
+                    React.createElement(
+                        "div",
+                        { className: "form-group" },
+                        React.createElement("input", { type: "text", id: "url", name: "url",
+                            defaultValue: "http://",
+                            className: "form-control"
+                        })
+                    ),
+                    " ",
+                    React.createElement("input", { type: "submit",
+                        value: gettext("Search by Image"),
+                        className: "btn btn-primary"
+                    })
+                )
+            )
+        )
+    )
+);
 
 ImageUploadForms.propTypes = {
     type: require("react").PropTypes.string.isRequired
 };
 ImageUploadForms.contextTypes = childContextTypes;
 
-var Source = function Source(_ref5, _ref6) {
-    var type = _ref5.type,
-        source = _ref5.source;
-    var lang = _ref6.lang,
-        stringNum = _ref6.stringNum,
-        gettext = _ref6.gettext;
+const Source = ({ type, source }, { lang, stringNum, gettext }) => {
 
-
-    var typeName = options.types[type].name({ gettext: gettext });
-    var recordCount = stringNum(source.numRecords);
-    var desc = recordCount + " " + typeName;
+    const typeName = options.types[type].name({ gettext });
+    const recordCount = stringNum(source.numRecords);
+    const desc = `${recordCount} ${typeName}`;
 
     return React.createElement(
         "div",
@@ -220,41 +206,29 @@ Source.propTypes = {
 };
 Source.contextTypes = childContextTypes;
 
-var Sources = function Sources(_ref7, _ref8) {
-    var type = _ref7.type,
-        sources = _ref7.sources;
-    var gettext = _ref8.gettext;
-    return React.createElement(
-        "div",
+const Sources = ({ type, sources }, { gettext }) => React.createElement(
+    "div",
+    null,
+    React.createElement(
+        "h3",
         null,
-        React.createElement(
-            "h3",
-            null,
-            gettext("Browse by Collection:")
-        ),
-        React.createElement(
-            "div",
-            { className: "sources" },
-            sources.map(function (source) {
-                return React.createElement(Source, {
-                    key: source._id,
-                    source: source,
-                    type: type
-                });
-            })
-        )
-    );
-};
+        gettext("Browse by Collection:")
+    ),
+    React.createElement(
+        "div",
+        { className: "sources" },
+        sources.map(source => React.createElement(Source, {
+            key: source._id,
+            source: source,
+            type: type
+        }))
+    )
+);
 
 Sources.contextTypes = childContextTypes;
 
-var Type = function Type(_ref9) {
-    var type = _ref9.type,
-        sources = _ref9.sources;
-
-    var sourcesByType = sources.filter(function (source) {
-        return source.type === type;
-    });
+const Type = ({ type, sources }) => {
+    const sourcesByType = sources.filter(source => source.type === type);
 
     return React.createElement(
         "div",
@@ -265,18 +239,13 @@ var Type = function Type(_ref9) {
     );
 };
 
-var Home = function Home(_ref10) {
-    var sources = _ref10.sources;
-    return React.createElement(
-        Page,
-        {
-            splash: options.views.homeSplash && React.createElement(options.views.homeSplash, null)
-        },
-        Object.keys(options.types).map(function (type) {
-            return React.createElement(Type, { key: type, sources: sources, type: type });
-        })
-    );
-};
+const Home = ({ sources }) => React.createElement(
+    Page,
+    {
+        splash: options.views.homeSplash && React.createElement(options.views.homeSplash, null)
+    },
+    Object.keys(options.types).map(type => React.createElement(Type, { key: type, sources: sources, type: type }))
+);
 
 Home.propTypes = {
     sources: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({

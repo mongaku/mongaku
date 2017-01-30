@@ -1,15 +1,15 @@
 "use strict";
 
-var db = require("./db");
+const db = require("./db");
 
-var models = {};
+const models = {};
 
-module.exports = function (name) {
+module.exports = name => {
     if (models[name]) {
         return models[name];
     }
 
-    var schema = require("../schemas/" + name + ".js");
+    const schema = require(`../schemas/${name}.js`);
 
     models[name] = db.model(name, schema);
 

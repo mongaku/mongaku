@@ -1,11 +1,11 @@
 "use strict";
 
-var tap = require("tap");
-var request = require("request").defaults({ jar: true });
+const tap = require("tap");
+const request = require("request").defaults({ jar: true });
 
 require("../init");
 
-var login = function login(callback) {
+const login = callback => {
     request.post({
         url: "http://localhost:3000/login",
         form: {
@@ -15,28 +15,28 @@ var login = function login(callback) {
     }, callback);
 };
 
-tap.test("Login Page", function (t) {
-    var url = "http://localhost:3000/login";
-    request.get(url, function (err, res) {
+tap.test("Login Page", t => {
+    const url = "http://localhost:3000/login";
+    request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
         t.end();
     });
 });
 
-tap.test("Logout Page", function (t) {
-    var url = "http://localhost:3000/logout";
-    request.get(url, function (err, res) {
+tap.test("Logout Page", t => {
+    const url = "http://localhost:3000/logout";
+    request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
         t.end();
     });
 });
 
-tap.test("Login then Logout", function (t) {
-    login(function () {
-        var url = "http://localhost:3000/logout";
-        request.get(url, function (err, res) {
+tap.test("Login then Logout", t => {
+    login(() => {
+        const url = "http://localhost:3000/logout";
+        request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 200);
             t.end();
@@ -44,14 +44,14 @@ tap.test("Login then Logout", function (t) {
     });
 });
 
-tap.test("Incorrect Login", function (t) {
+tap.test("Incorrect Login", t => {
     request.post({
         url: "http://localhost:3000/login",
         form: {
             email: "foo",
             password: "bar"
         }
-    }, function (err, res) {
+    }, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 302);
         t.end();

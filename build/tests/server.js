@@ -1,13 +1,13 @@
 "use strict";
 
-var init = require("./init");
+const init = require("./init");
 
-init.init(function (err) {
+init.init(err => {
     if (err) {
         console.error(err);
     } else {
         console.log("STARTED");
-        var cron = require("../server/cron");
+        const cron = require("../server/cron");
         cron.start();
     }
 });

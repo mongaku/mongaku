@@ -1,10 +1,8 @@
 "use strict";
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+const React = require("react");
 
-var React = require("react");
-
-var LocationView = React.createClass({
+const LocationView = React.createClass({
     displayName: "LocationView",
 
     propTypes: {
@@ -17,11 +15,12 @@ var LocationView = React.createClass({
         })).isRequired
     },
 
-    renderName: function renderName(location) {
-        var _searchURL;
-
-        var searchURL = require("../../../logic/shared/search-url");
-        var url = searchURL(this.props, (_searchURL = {}, _defineProperty(_searchURL, this.props.name, location.name), _defineProperty(_searchURL, "type", this.props.type), _searchURL));
+    renderName(location) {
+        const searchURL = require("../../../logic/shared/search-url");
+        const url = searchURL(this.props, {
+            [this.props.name]: location.name,
+            type: this.props.type
+        });
 
         return React.createElement(
             "span",
@@ -34,25 +33,22 @@ var LocationView = React.createClass({
             React.createElement("br", null)
         );
     },
-    render: function render() {
-        var _this = this;
 
+    render() {
         return React.createElement(
             "div",
             null,
-            this.props.value.map(function (location) {
-                return React.createElement(
+            this.props.value.map(location => React.createElement(
+                "span",
+                { key: location._id },
+                location.name && this.renderName(location),
+                location.city && React.createElement(
                     "span",
-                    { key: location._id },
-                    location.name && _this.renderName(location),
-                    location.city && React.createElement(
-                        "span",
-                        null,
-                        location.city,
-                        React.createElement("br", null)
-                    )
-                );
-            })
+                    null,
+                    location.city,
+                    React.createElement("br", null)
+                )
+            ))
         );
     }
 });

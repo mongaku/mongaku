@@ -1,23 +1,19 @@
 "use strict";
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var async = require("async");
-var validUrl = require("valid-url");
-var jdp = require("jsondiffpatch").create({
-    objectHash: function objectHash(obj) {
-        return obj._id;
-    }
+const async = require("async");
+const validUrl = require("valid-url");
+const jdp = require("jsondiffpatch").create({
+    objectHash: obj => obj._id
 });
 
-var recordModel = require("../lib/record");
-var models = require("../lib/models");
-var urls = require("../lib/urls");
-var config = require("../lib/config");
-var options = require("../lib/options");
-var metadata = require("../lib/metadata");
+const recordModel = require("../lib/record");
+const models = require("../lib/models");
+const urls = require("../lib/urls");
+const config = require("../lib/config");
+const options = require("../lib/options");
+const metadata = require("../lib/metadata");
 
-var Record = {};
+const Record = {};
 
 Record.schema = {
     // UUID of the image (Format: SOURCE/ID)
@@ -29,13 +25,8 @@ Record.schema = {
     // Source ID
     id: {
         type: String,
-        validate: function validate(v) {
-            return (/^[a-z0-9_-]+$/i.test(v)
-            );
-        },
-        validationMsg: function validationMsg(req) {
-            return req.gettext("IDs can only contain " + "letters, numbers, underscores, and hyphens.");
-        },
+        validate: v => /^[a-z0-9_-]+$/i.test(v),
+        validationMsg: req => req.gettext("IDs can only contain " + "letters, numbers, underscores, and hyphens."),
         required: true,
         es_indexed: true
     },
@@ -92,12 +83,8 @@ Record.schema = {
     // A link to the record at its source
     url: {
         type: String,
-        validate: function validate(v) {
-            return validUrl.isHttpsUri(v) || validUrl.isHttpUri(v);
-        },
-        validationMsg: function validationMsg(req) {
-            return req.gettext("`url` must be properly-" + "formatted URL.");
-        }
+        validate: v => validUrl.isHttpsUri(v) || validUrl.isHttpUri(v),
+        validationMsg: req => req.gettext("`url` must be properly-" + "formatted URL.")
     },
 
     // A hash to use to render an image representing the record
@@ -108,28 +95,16 @@ Record.schema = {
     // The images associated with the record
     images: {
         type: [{ type: String, ref: "Image" }],
-        validateArray: function validateArray(v) {
-            return (/^\w+\/[a-z0-9_-]+\.jpe?g$/i.test(v)
-            );
-        },
-        validationMsg: function validationMsg(req) {
-            return req.gettext("Images must be a valid " + "image file name. For example: `image.jpg`.");
-        },
-        convert: function convert(name, data) {
-            return data.source + "/" + name;
-        }
+        validateArray: v => /^\w+\/[a-z0-9_-]+\.jpe?g$/i.test(v),
+        validationMsg: req => req.gettext("Images must be a valid " + "image file name. For example: `image.jpg`."),
+        convert: (name, data) => `${data.source}/${name}`
     },
 
     // Images associated with the record that haven't been uploaded yet
     missingImages: {
         type: [String],
-        validateArray: function validateArray(v) {
-            return (/^\w+\/[a-z0-9_-]+\.jpe?g$/i.test(v)
-            );
-        },
-        validationMsg: function validationMsg(req) {
-            return req.gettext("Images must be a valid " + "image file name. For example: `image.jpg`.");
-        }
+        validateArray: v => /^\w+\/[a-z0-9_-]+\.jpe?g$/i.test(v),
+        validationMsg: req => req.gettext("Images must be a valid " + "image file name. For example: `image.jpg`.")
     },
 
     // Keep track of if the record needs to update its record similarity
@@ -168,54 +143,60 @@ Record.schema = {
 };
 
 Record.methods = {
-    getURL: function getURL(locale) {
+    getURL(locale) {
         return recordModel(this.type).getURLFromID(locale, this._id);
     },
-    getEditURL: function getEditURL(locale) {
-        return this.getURL(locale) + "/edit";
+
+    getEditURL(locale) {
+        return `${this.getURL(locale)}/edit`;
     },
-    getCreateURL: function getCreateURL(locale) {
-        return urls.gen(locale, "/" + this.type + "/" + this.source + "/create");
+
+    getCreateURL(locale) {
+        return urls.gen(locale, `/${this.type}/${this.source}/create`);
     },
-    getCloneURL: function getCloneURL(locale) {
-        return this.getURL(locale) + "/clone";
+
+    getCloneURL(locale) {
+        return `${this.getURL(locale)}/clone`;
     },
-    getRemoveImageURL: function getRemoveImageURL(locale) {
-        return this.getURL(locale) + "/remove-image";
+
+    getRemoveImageURL(locale) {
+        return `${this.getURL(locale)}/remove-image`;
     },
-    getOriginalURL: function getOriginalURL() {
-        return urls.genData("/" + this.source + "/images/" + this.defaultImageHash + ".jpg");
+
+    getOriginalURL() {
+        return urls.genData(`/${this.source}/images/${this.defaultImageHash}.jpg`);
     },
-    getThumbURL: function getThumbURL() {
+
+    getThumbURL() {
         if (!this.defaultImageHash) {
             return options.types[this.type].defaultImage;
         }
 
-        return urls.genData("/" + this.source + "/thumbs/" + this.defaultImageHash + ".jpg");
+        return urls.genData(`/${this.source}/thumbs/${this.defaultImageHash}.jpg`);
     },
-    getTitle: function getTitle(i18n) {
+
+    getTitle(i18n) {
         return options.types[this.type].recordTitle(this, i18n);
     },
-    getSource: function getSource() {
+
+    getSource() {
         return models("Source").getSource(this.source);
     },
-    getImages: function getImages(callback) {
-        async.mapLimit(this.images, 4, function (id, callback) {
+
+    getImages(callback) {
+        async.mapLimit(this.images, 4, (id, callback) => {
             if (typeof id !== "string") {
-                return process.nextTick(function () {
-                    return callback(null, id);
-                });
+                return process.nextTick(() => callback(null, id));
             }
             models("Image").findById(id, callback);
         }, callback);
     },
-    getDynamicValues: function getDynamicValues(i18n, callback) {
-        var _this = this;
 
-        var model = metadata.model(this.type);
+    getDynamicValues(i18n, callback) {
+        const model = metadata.model(this.type);
 
-        async.mapValues(model, function (propModel, propName, callback) {
-            var value = _this[propName];
+        async.mapValues(model, (propModel, propName, callback) => {
+            const value = this[propName];
             if (propModel.loadDynamicValue && value !== undefined) {
                 propModel.loadDynamicValue(value, i18n, callback);
             } else {
@@ -223,107 +204,83 @@ Record.methods = {
             }
         }, callback);
     },
-    updateSimilarity: function updateSimilarity(callback) {
-        var _this2 = this;
 
+    updateSimilarity(callback) {
         /* istanbul ignore if */
         if (config.NODE_ENV !== "test") {
             console.log("Updating Similarity", this._id);
         }
 
-        this.getImages(function (err, images) {
+        this.getImages((err, images) => {
             /* istanbul ignore if */
             if (err) {
                 return callback(err);
             }
 
             // Calculate record matches before saving
-            var matches = images.map(function (image) {
-                return image.similarImages;
-            }).reduce(function (a, b) {
-                return a.concat(b);
-            }, []);
-            var scores = matches.reduce(function (obj, match) {
+            const matches = images.map(image => image.similarImages).reduce((a, b) => a.concat(b), []);
+            const scores = matches.reduce((obj, match) => {
                 obj[match._id] = Math.max(match.score, obj[match._id] || 0);
                 return obj;
             }, {});
 
             if (matches.length === 0) {
-                _this2.needsSimilarUpdate = false;
+                this.needsSimilarUpdate = false;
                 return callback();
             }
 
-            var matchIds = matches.map(function (match) {
-                return match._id;
-            });
-            var query = matches.map(function (match) {
-                return {
-                    images: match._id
-                };
-            });
+            const matchIds = matches.map(match => match._id);
+            const query = matches.map(match => ({
+                images: match._id
+            }));
 
-            recordModel(_this2.type).find({
+            recordModel(this.type).find({
                 $or: query,
-                _id: { $ne: _this2._id }
-            }, function (err, records) {
+                _id: { $ne: this._id }
+            }, (err, records) => {
                 /* istanbul ignore if */
                 if (err) {
                     return callback(err);
                 }
 
-                _this2.similarRecords = records.map(function (similar) {
-                    var score = similar.images.map(function (image) {
-                        return scores[image] || 0;
-                    }).reduce(function (a, b) {
-                        return a + b;
-                    });
+                this.similarRecords = records.map(similar => {
+                    const score = similar.images.map(image => scores[image] || 0).reduce((a, b) => a + b);
 
                     return {
                         _id: similar._id,
                         record: similar._id,
-                        images: similar.images.filter(function (id) {
-                            return matchIds.indexOf(id) >= 0;
-                        }),
-                        score: score,
+                        images: similar.images.filter(id => matchIds.indexOf(id) >= 0),
+                        score,
                         source: similar.source
                     };
-                }).filter(function (similar) {
-                    return similar.score > 0;
-                }).sort(function (a, b) {
-                    return b.score - a.score;
-                });
+                }).filter(similar => similar.score > 0).sort((a, b) => b.score - a.score);
 
-                _this2.needsSimilarUpdate = false;
+                this.needsSimilarUpdate = false;
                 callback();
             });
         });
     },
-    loadImages: function loadImages(loadSimilarRecords, callback) {
-        var _this3 = this;
 
-        async.parallel([function (callback) {
-            _this3.getImages(function (err, images) {
+    loadImages(loadSimilarRecords, callback) {
+        async.parallel([callback => {
+            this.getImages((err, images) => {
                 // We filter out any invalid/un-found images
                 // TODO: We should log out some details on when this
                 // happens (hopefully never).
-                _this3.images = images.filter(function (image) {
-                    return !!image;
-                });
+                this.images = images.filter(image => !!image);
                 callback();
             });
-        }, function (callback) {
+        }, callback => {
             if (!loadSimilarRecords) {
                 return process.nextTick(callback);
             }
 
-            async.mapLimit(_this3.similarRecords, 4, function (similar, callback) {
+            async.mapLimit(this.similarRecords, 4, (similar, callback) => {
                 if (similar.recordModel) {
-                    return process.nextTick(function () {
-                        return callback(null, similar);
-                    });
+                    return process.nextTick(() => callback(null, similar));
                 }
 
-                recordModel(_this3.type).findById(similar.record, function (err, record) {
+                recordModel(this.type).findById(similar.record, (err, record) => {
                     /* istanbul ignore if */
                     if (err || !record) {
                         return callback();
@@ -332,22 +289,20 @@ Record.methods = {
                     similar.recordModel = record;
                     callback(null, similar);
                 });
-            }, function (err, similar) {
+            }, (err, similar) => {
                 // We filter out any invalid/un-found records
                 // TODO: We should log out some details on when this
                 // happens (hopefully never).
-                _this3.similarRecords = similar.filter(function (similar) {
-                    return !!similar;
-                });
+                this.similarRecords = similar.filter(similar => !!similar);
                 callback();
             });
         }], callback);
     }
 };
 
-var internal = ["_id", "__v", "created", "modified", "defaultImageHash", "batch", "needsSimilarUpdate", "similarRecords"];
+const internal = ["_id", "__v", "created", "modified", "defaultImageHash", "batch", "needsSimilarUpdate", "similarRecords"];
 
-var getExpectedType = function getExpectedType(options, value) {
+const getExpectedType = (options, value) => {
     if (Array.isArray(options.type)) {
         return Array.isArray(value) ? false : "array";
     }
@@ -368,20 +323,18 @@ var getExpectedType = function getExpectedType(options, value) {
     return typeof value === "string" ? false : "string";
 };
 
-var stripProp = function stripProp(obj, name) {
+const stripProp = (obj, name) => {
     if (!obj) {
         return obj;
     }
 
     delete obj[name];
 
-    for (var prop in obj) {
-        var value = obj[prop];
+    for (const prop in obj) {
+        const value = obj[prop];
         if (Array.isArray(value)) {
-            value.forEach(function (item) {
-                return stripProp(item, name);
-            });
-        } else if ((typeof value === "undefined" ? "undefined" : _typeof(value)) === "object") {
+            value.forEach(item => stripProp(item, name));
+        } else if (typeof value === "object") {
             stripProp(value, name);
         }
     }
@@ -390,42 +343,41 @@ var stripProp = function stripProp(obj, name) {
 };
 
 Record.statics = {
-    getURLFromID: function getURLFromID(locale, id) {
-        var type = this.getType();
-        return urls.gen(locale, "/" + type + "/" + id);
+    getURLFromID(locale, id) {
+        const type = this.getType();
+        return urls.gen(locale, `/${type}/${id}`);
     },
-    fromData: function fromData(tmpData, req, callback) {
-        var Record = recordModel(this.getType());
-        var Image = models("Image");
 
-        var lint = this.lintData(tmpData, req);
-        var warnings = lint.warnings;
+    fromData(tmpData, req, callback) {
+        const Record = recordModel(this.getType());
+        const Image = models("Image");
+
+        const lint = this.lintData(tmpData, req);
+        const warnings = lint.warnings;
 
         if (lint.error) {
-            return process.nextTick(function () {
-                return callback(new Error(lint.error));
-            });
+            return process.nextTick(() => callback(new Error(lint.error)));
         }
 
-        var data = lint.data;
-        var recordId = data.source + "/" + data.id;
-        var missingImages = [];
-        var typeOptions = options.types[this.getType()];
+        const data = lint.data;
+        const recordId = `${data.source}/${data.id}`;
+        const missingImages = [];
+        const typeOptions = options.types[this.getType()];
 
-        Record.findById(recordId, function (err, record) {
-            var creating = !record;
+        Record.findById(recordId, (err, record) => {
+            const creating = !record;
 
-            async.mapLimit(data.images || [], 2, function (imageId, callback) {
-                Image.findById(imageId, function (err, image) {
+            async.mapLimit(data.images || [], 2, (imageId, callback) => {
+                Image.findById(imageId, (err, image) => {
                     if (!image) {
-                        var fileName = imageId.replace(/^\w+[/]/, "");
+                        const fileName = imageId.replace(/^\w+[/]/, "");
                         missingImages.push(imageId);
-                        warnings.push(req.format(req.gettext("Image file not found: %(fileName)s"), { fileName: fileName }));
+                        warnings.push(req.format(req.gettext("Image file not found: %(fileName)s"), { fileName }));
                     }
 
                     callback(null, image);
                 });
-            }, function (err, images) {
+            }, (err, images) => {
                 /* istanbul ignore if */
                 if (err) {
                     return callback(new Error(req.gettext("Error accessing image data.")));
@@ -433,12 +385,10 @@ Record.statics = {
 
                 if (typeOptions.hasImages()) {
                     // Filter out any missing images
-                    var filteredImages = images.filter(function (image) {
-                        return !!image;
-                    });
+                    const filteredImages = images.filter(image => !!image);
 
                     if (filteredImages.length === 0) {
-                        var errMsg = req.gettext("No images found.");
+                        const errMsg = req.gettext("No images found.");
 
                         if (typeOptions.imagesRequired) {
                             return callback(new Error(errMsg));
@@ -449,14 +399,12 @@ Record.statics = {
                         data.defaultImageHash = filteredImages[0].hash;
                     }
 
-                    data.images = filteredImages.map(function (image) {
-                        return image._id;
-                    });
+                    data.images = filteredImages.map(image => image._id);
                     data.missingImages = missingImages;
                 }
 
-                var model = record;
-                var original = void 0;
+                let model = record;
+                let original;
 
                 if (creating) {
                     model = new Record(data);
@@ -465,10 +413,9 @@ Record.statics = {
                     model.set(data);
 
                     // Delete missing fields
-                    var schema = Record.schema;
+                    const { schema } = Record;
 
-
-                    for (var field in schema.paths) {
+                    for (const field in schema.paths) {
                         // Skip internal fields
                         if (internal.indexOf(field) >= 0) {
                             continue;
@@ -480,14 +427,12 @@ Record.statics = {
                     }
                 }
 
-                model.validate(function (err) {
+                model.validate(err => {
                     /* istanbul ignore if */
                     if (err) {
-                        var msg = req.gettext("There was an error with the data format.");
-                        var errors = Object.keys(err.errors).map(function (path) {
-                            return err.errors[path].message;
-                        }).join(", ");
-                        return callback(new Error(msg + " " + errors));
+                        const msg = req.gettext("There was an error with the data format.");
+                        const errors = Object.keys(err.errors).map(path => err.errors[path].message).join(", ");
+                        return callback(new Error(`${msg} ${errors}`));
                     }
 
                     if (!creating) {
@@ -499,32 +444,31 @@ Record.statics = {
             });
         });
     },
-    lintData: function lintData(data, req, optionalSchema) {
-        var _this4 = this;
 
-        var schema = optionalSchema || recordModel(this.getType()).schema;
+    lintData(data, req, optionalSchema) {
+        const schema = optionalSchema || recordModel(this.getType()).schema;
 
-        var cleaned = {};
-        var warnings = [];
-        var error = void 0;
+        const cleaned = {};
+        const warnings = [];
+        let error;
 
-        for (var field in data) {
-            var _options = schema.path(field);
+        for (const field in data) {
+            const options = schema.path(field);
 
-            if (!_options || internal.indexOf(field) >= 0) {
-                warnings.push(req.format(req.gettext("Unrecognized field `%(field)s`."), { field: field }));
+            if (!options || internal.indexOf(field) >= 0) {
+                warnings.push(req.format(req.gettext("Unrecognized field `%(field)s`."), { field }));
                 continue;
             }
         }
 
-        var _loop = function _loop(_field) {
+        for (const field in schema.paths) {
             // Skip internal fields
-            if (internal.indexOf(_field) >= 0) {
-                return "continue";
+            if (internal.indexOf(field) >= 0) {
+                continue;
             }
 
-            var value = data && data[_field];
-            var options = schema.path(_field).options;
+            let value = data && data[field];
+            const options = schema.path(field).options;
 
             if (value !== "" && value !== null && value !== undefined && (value.length === undefined || value.length > 0)) {
                 // Coerce single items that should be arrays into arrays
@@ -537,82 +481,55 @@ Record.statics = {
                     value = parseFloat(value);
                 }
 
-                var expectedType = getExpectedType(options, value);
+                const expectedType = getExpectedType(options, value);
 
                 if (expectedType) {
                     value = null;
-                    warnings.push(req.format(req.gettext("`%(field)s` is the wrong type. Expected a " + "%(type)s."), { field: _field, type: expectedType }));
+                    warnings.push(req.format(req.gettext("`%(field)s` is the wrong type. Expected a " + "%(type)s."), { field, type: expectedType }));
                 } else if (Array.isArray(options.type)) {
                     // Convert the value to its expected form, if a
                     // conversion method exists.
                     if (options.convert) {
-                        value = value.map(function (obj) {
-                            return options.convert(obj, data);
-                        });
+                        value = value.map(obj => options.convert(obj, data));
                     }
 
                     if (options.type[0].type) {
-                        value = value.filter(function (entry) {
-                            var expectedType = getExpectedType(options.type[0], entry);
+                        value = value.filter(entry => {
+                            const expectedType = getExpectedType(options.type[0], entry);
 
                             if (expectedType) {
-                                warnings.push(req.format(req.gettext("`%(field)s` value is the wrong type." + " Expected a %(type)s."), { field: _field, type: expectedType }));
+                                warnings.push(req.format(req.gettext("`%(field)s` value is the wrong type." + " Expected a %(type)s."), { field, type: expectedType }));
                                 return undefined;
                             }
 
                             return entry;
                         });
                     } else {
-                        value = value.map(function (entry) {
-                            var results = _this4.lintData(entry, req, options.type[0]);
+                        value = value.map(entry => {
+                            const results = this.lintData(entry, req, options.type[0]);
 
                             if (results.error) {
-                                warnings.push("`" + _field + "`: " + results.error);
+                                warnings.push(`\`${field}\`: ${results.error}`);
                                 return undefined;
                             }
 
-                            var _iteratorNormalCompletion = true;
-                            var _didIteratorError = false;
-                            var _iteratorError = undefined;
-
-                            try {
-                                for (var _iterator = results.warnings[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                                    var warning = _step.value;
-
-                                    warnings.push("`" + _field + "`: " + warning);
-                                }
-                            } catch (err) {
-                                _didIteratorError = true;
-                                _iteratorError = err;
-                            } finally {
-                                try {
-                                    if (!_iteratorNormalCompletion && _iterator.return) {
-                                        _iterator.return();
-                                    }
-                                } finally {
-                                    if (_didIteratorError) {
-                                        throw _iteratorError;
-                                    }
-                                }
+                            for (const warning of results.warnings) {
+                                warnings.push(`\`${field}\`: ${warning}`);
                             }
 
                             return results.data;
-                        }).filter(function (entry) {
-                            return !!entry;
-                        });
+                        }).filter(entry => !!entry);
                     }
 
                     // Validate the array entries
                     if (options.validateArray) {
-                        var _results = value.filter(function (entry) {
-                            return options.validateArray(entry);
-                        });
+                        const results = value.filter(entry => options.validateArray(entry));
 
-                        if (value.length !== _results.length) {
+                        if (value.length !== results.length) {
                             warnings.push(options.validationMsg(req));
                         }
 
-                        value = _results;
+                        value = results;
                     }
                 } else {
                     // Validate the value
@@ -625,49 +542,39 @@ Record.statics = {
 
             if (value === null || value === undefined || value === "" || value.length === 0) {
                 if (options.required) {
-                    error = req.format(req.gettext("Required field `%(field)s` is empty."), { field: _field });
-                    return "break";
+                    error = req.format(req.gettext("Required field `%(field)s` is empty."), { field });
+                    break;
                 } else if (options.recommended) {
-                    warnings.push(req.format(req.gettext("Recommended field `%(field)s` is empty."), { field: _field }));
+                    warnings.push(req.format(req.gettext("Recommended field `%(field)s` is empty."), { field }));
                 }
             } else {
-                cleaned[_field] = value;
+                cleaned[field] = value;
             }
-        };
-
-        _loop2: for (var _field in schema.paths) {
-            var _ret = _loop(_field);
-
-            switch (_ret) {
-                case "continue":
-                    continue;
-
-                case "break":
-                    break _loop2;}
         }
 
         if (error) {
-            return { error: error, warnings: warnings };
+            return { error, warnings };
         }
 
-        return { data: cleaned, warnings: warnings };
+        return { data: cleaned, warnings };
     },
-    updateSimilarity: function updateSimilarity(callback) {
+
+    updateSimilarity(callback) {
         recordModel(this.getType()).findOne({
             needsSimilarUpdate: true
-        }, function (err, record) {
+        }, (err, record) => {
             if (err || !record) {
                 return callback(err);
             }
 
-            record.updateSimilarity(function (err) {
+            record.updateSimilarity(err => {
                 /* istanbul ignore if */
                 if (err) {
                     console.error(err);
                     return callback(err);
                 }
 
-                record.save(function (err) {
+                record.save(err => {
                     /* istanbul ignore if */
                     if (err) {
                         return callback(err);
@@ -678,57 +585,33 @@ Record.statics = {
             });
         });
     },
-    getFacets: function getFacets(req, callback) {
-        var _this5 = this;
 
+    getFacets(req, callback) {
         if (!this.facetCache) {
             this.facetCache = {};
         }
 
         if (this.facetCache[req.lang]) {
-            return process.nextTick(function () {
-                return callback(null, _this5.facetCache[req.lang]);
-            });
+            return process.nextTick(() => callback(null, this.facetCache[req.lang]));
         }
 
-        var search = require("../logic/shared/search");
+        const search = require("../logic/shared/search");
 
         search({
             type: this.getType(),
             noRedirect: true
-        }, req, function (err, results) {
+        }, req, (err, results) => {
             if (err) {
                 return callback(err);
             }
 
-            var facets = {};
+            const facets = {};
 
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
-
-            try {
-                for (var _iterator2 = results.facets[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var facet = _step2.value;
-
-                    facets[facet.field] = facet.buckets;
-                }
-            } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                        _iterator2.return();
-                    }
-                } finally {
-                    if (_didIteratorError2) {
-                        throw _iteratorError2;
-                    }
-                }
+            for (const facet of results.facets) {
+                facets[facet.field] = facet.buckets;
             }
 
-            _this5.facetCache[req.lang] = facets;
+            this.facetCache[req.lang] = facets;
             callback(null, facets);
         });
     }

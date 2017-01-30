@@ -1,8 +1,8 @@
 "use strict";
 
-var config = require("./config");
+const config = require("./config");
 
-var similar = void 0;
+let similar;
 
 /* istanbul ignore else */
 if (config.PASTEC_URL) {

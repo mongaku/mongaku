@@ -2,43 +2,36 @@
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var React = require("react");
+const React = require("react");
 
-var metadata = require("../lib/metadata");
-var options = require("../lib/options");
+const metadata = require("../lib/metadata");
+const options = require("../lib/options");
 
-var Page = require("./Page.js");
+const Page = require("./Page.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
-var _require = require("./Wrapper.js"),
-    childContextTypes = _require.childContextTypes;
+const { childContextTypes } = require("./Wrapper.js");
 
-var Filters = function Filters(_ref, _ref2) {
-    var type = _ref.type,
-        globalFacets = _ref.globalFacets;
-    var gettext = _ref2.gettext;
-
-    var model = metadata.model(type);
+const Filters = ({ type, globalFacets }, { gettext }) => {
+    const model = metadata.model(type);
 
     return React.createElement(
         "div",
         null,
-        options.types[type].filters.map(function (type) {
-            var typeSchema = model[type];
+        options.types[type].filters.map(type => {
+            const typeSchema = model[type];
 
             if (!typeSchema.renderFilter) {
                 return null;
             }
 
-            var values = (globalFacets[type] || []).map(function (bucket) {
-                return bucket.text;
-            }).sort();
+            const values = (globalFacets[type] || []).map(bucket => bucket.text).sort();
 
             return React.createElement(
                 "div",
                 { key: type },
-                typeSchema.renderFilter(values[type], values, { gettext: gettext })
+                typeSchema.renderFilter(values[type], values, { gettext })
             );
         })
     );
@@ -93,35 +86,31 @@ Filters.propTypes = {
 };
 Filters.contextTypes = childContextTypes;
 
-var SourceFilter = function SourceFilter(_ref3, _ref4) {
-    var values = _ref3.values,
-        sources = _ref3.sources;
-    var gettext = _ref4.gettext;
-    return React.createElement(
-        "div",
-        { className: "form-group" },
-        React.createElement(
-            "label",
-            { htmlFor: "source", className: "control-label" },
-            gettext("Source")
-        ),
-        React.createElement(
-            "select",
-            { name: "source", style: { width: "100%" },
-                className: "form-control select2-select",
-                defaultValue: values.source,
-                "data-placeholder": gettext("Filter by source...")
-            },
-            sources && sources.map(function (source) {
-                return React.createElement(
-                    "option",
-                    { value: source._id, key: source._id },
-                    source.name
-                );
-            })
-        )
-    );
-};
+const SourceFilter = ({
+    values,
+    sources
+}, { gettext }) => React.createElement(
+    "div",
+    { className: "form-group" },
+    React.createElement(
+        "label",
+        { htmlFor: "source", className: "control-label" },
+        gettext("Source")
+    ),
+    React.createElement(
+        "select",
+        { name: "source", style: { width: "100%" },
+            className: "form-control select2-select",
+            defaultValue: values.source,
+            "data-placeholder": gettext("Filter by source...")
+        },
+        sources && sources.map(source => React.createElement(
+            "option",
+            { value: source._id, key: source._id },
+            source.name
+        ))
+    )
+);
 
 SourceFilter.propTypes = {
     title: require("react").PropTypes.string.isRequired,
@@ -172,13 +161,11 @@ SourceFilter.propTypes = {
 };
 SourceFilter.contextTypes = childContextTypes;
 
-var SimilarityFilter = function SimilarityFilter(_ref5, _ref6) {
-    var queries = _ref5.queries,
-        values = _ref5.values;
-    var gettext = _ref6.gettext,
-        getTitle = _ref6.getTitle;
-
-    var similarity = queries.similar.filters;
+const SimilarityFilter = ({
+    queries,
+    values
+}, { gettext, getTitle }) => {
+    const similarity = queries.similar.filters;
 
     return React.createElement(
         "div",
@@ -194,13 +181,11 @@ var SimilarityFilter = function SimilarityFilter(_ref5, _ref6) {
                 className: "form-control select2-select",
                 defaultValue: values.similar
             },
-            Object.keys(similarity).map(function (id) {
-                return React.createElement(
-                    "option",
-                    { value: id, key: id },
-                    getTitle(similarity[id])
-                );
-            })
+            Object.keys(similarity).map(id => React.createElement(
+                "option",
+                { value: id, key: id },
+                getTitle(similarity[id])
+            ))
         )
     );
 };
@@ -254,13 +239,11 @@ SimilarityFilter.propTypes = {
 };
 SimilarityFilter.contextTypes = childContextTypes;
 
-var ImageFilter = function ImageFilter(_ref7, _ref8) {
-    var queries = _ref7.queries,
-        values = _ref7.values;
-    var gettext = _ref8.gettext,
-        getTitle = _ref8.getTitle;
-
-    var images = queries.images.filters;
+const ImageFilter = ({
+    queries,
+    values
+}, { gettext, getTitle }) => {
+    const images = queries.images.filters;
 
     return React.createElement(
         "div",
@@ -282,13 +265,11 @@ var ImageFilter = function ImageFilter(_ref7, _ref8) {
                 { value: "" },
                 gettext("Filter by image...")
             ),
-            Object.keys(images).map(function (id) {
-                return React.createElement(
-                    "option",
-                    { value: id, key: id },
-                    getTitle(images[id])
-                );
-            })
+            Object.keys(images).map(id => React.createElement(
+                "option",
+                { value: id, key: id },
+                getTitle(images[id])
+            ))
         )
     );
 };
@@ -342,34 +323,30 @@ ImageFilter.propTypes = {
 };
 ImageFilter.contextTypes = childContextTypes;
 
-var Sorts = function Sorts(_ref9, _ref10) {
-    var values = _ref9.values,
-        sorts = _ref9.sorts;
-    var gettext = _ref10.gettext;
-    return React.createElement(
-        "div",
-        { className: "form-group" },
-        React.createElement(
-            "label",
-            { htmlFor: "source", className: "control-label" },
-            gettext("Sort")
-        ),
-        React.createElement(
-            "select",
-            { name: "sort", style: { width: "100%" },
-                className: "form-control select2-select",
-                defaultValue: values.sort
-            },
-            sorts && sorts.map(function (sort) {
-                return React.createElement(
-                    "option",
-                    { value: sort.id, key: sort.id },
-                    sort.name
-                );
-            })
-        )
-    );
-};
+const Sorts = ({
+    values,
+    sorts
+}, { gettext }) => React.createElement(
+    "div",
+    { className: "form-group" },
+    React.createElement(
+        "label",
+        { htmlFor: "source", className: "control-label" },
+        gettext("Sort")
+    ),
+    React.createElement(
+        "select",
+        { name: "sort", style: { width: "100%" },
+            className: "form-control select2-select",
+            defaultValue: values.sort
+        },
+        sorts && sorts.map(sort => React.createElement(
+            "option",
+            { value: sort.id, key: sort.id },
+            sort.name
+        ))
+    )
+);
 
 Sorts.propTypes = {
     title: require("react").PropTypes.string.isRequired,
@@ -420,19 +397,12 @@ Sorts.propTypes = {
 };
 Sorts.contextTypes = childContextTypes;
 
-var SearchForm = function SearchForm(props, _ref11) {
-    var URL = _ref11.URL,
-        lang = _ref11.lang,
-        gettext = _ref11.gettext;
-    var type = props.type,
-        values = props.values,
-        sorts = props.sorts,
-        sources = props.sources;
-
-    var searchURL = URL("/" + type + "/search");
-    var typeOptions = options.types[type];
-    var placeholder = typeOptions.getSearchPlaceholder({ gettext: gettext });
-    var showImageFilter = typeOptions.hasImages() || !typeOptions.requiresImages();
+const SearchForm = (props, { URL, lang, gettext }) => {
+    const { type, values, sorts, sources } = props;
+    const searchURL = URL(`/${type}/search`);
+    const typeOptions = options.types[type];
+    const placeholder = typeOptions.getSearchPlaceholder({ gettext });
+    const showImageFilter = typeOptions.hasImages() || !typeOptions.requiresImages();
 
     return React.createElement(
         "form",
@@ -516,22 +486,19 @@ SearchForm.propTypes = {
 };
 SearchForm.contextTypes = childContextTypes;
 
-var FacetBucket = function FacetBucket(_ref12) {
-    var bucket = _ref12.bucket;
-    return React.createElement(
-        "li",
-        null,
-        React.createElement(
-            "a",
-            { href: bucket.url },
-            bucket.text
-        ),
-        " ",
-        "(",
-        bucket.count,
-        ")"
-    );
-};
+const FacetBucket = ({ bucket }) => React.createElement(
+    "li",
+    null,
+    React.createElement(
+        "a",
+        { href: bucket.url },
+        bucket.text
+    ),
+    " ",
+    "(",
+    bucket.count,
+    ")"
+);
 
 FacetBucket.propTypes = {
     bucket: require("react").PropTypes.shape({
@@ -540,17 +507,13 @@ FacetBucket.propTypes = {
         url: require("react").PropTypes.string.isRequired
     }).isRequired
 };
-var Facet = function Facet(_ref13, _ref14) {
-    var facet = _ref13.facet,
-        type = _ref13.type;
-    var format = _ref14.format,
-        gettext = _ref14.gettext;
-
-    var minFacetCount = options.types[type].minFacetCount || 1;
-    var extra = null;
-    var buckets = facet.buckets.filter(function (bucket) {
-        return bucket.count >= minFacetCount;
-    });
+const Facet = ({
+    facet,
+    type
+}, { format, gettext }) => {
+    const minFacetCount = options.types[type].minFacetCount || 1;
+    let extra = null;
+    let buckets = facet.buckets.filter(bucket => bucket.count >= minFacetCount);
 
     if (buckets.length <= 1) {
         return null;
@@ -579,9 +542,7 @@ var Facet = function Facet(_ref13, _ref14) {
             React.createElement(
                 "ul",
                 null,
-                buckets.map(function (bucket) {
-                    return React.createElement(FacetBucket, { bucket: bucket, key: bucket.url });
-                })
+                buckets.map(bucket => React.createElement(FacetBucket, { bucket: bucket, key: bucket.url }))
             ),
             extra && React.createElement(
                 "div",
@@ -597,9 +558,7 @@ var Facet = function Facet(_ref13, _ref14) {
                     React.createElement(
                         "ul",
                         null,
-                        extra.map(function (bucket) {
-                            return React.createElement(FacetBucket, { bucket: bucket, key: bucket.url });
-                        })
+                        extra.map(bucket => React.createElement(FacetBucket, { bucket: bucket, key: bucket.url }))
                     )
                 )
             )
@@ -621,18 +580,15 @@ Facet.propTypes = {
 };
 Facet.contextTypes = childContextTypes;
 
-var Facets = function Facets(props) {
-    var facets = props.facets;
-
+const Facets = props => {
+    const { facets } = props;
     return React.createElement(
         "div",
         { className: "hidden-xs hidden-sm" },
-        facets && facets.map(function (facet) {
-            return React.createElement(Facet, _extends({}, props, {
-                facet: facet,
-                key: facet.name
-            }));
-        })
+        facets && facets.map(facet => React.createElement(Facet, _extends({}, props, {
+            facet: facet,
+            key: facet.name
+        })))
     );
 };
 
@@ -683,14 +639,8 @@ Facets.propTypes = {
     values: require("react").PropTypes.shape({}).isRequired,
     queries: require("react").PropTypes.shape({}).isRequired
 };
-var Sidebar = function Sidebar(props, _ref15) {
-    var format = _ref15.format,
-        gettext = _ref15.gettext,
-        stringNum = _ref15.stringNum;
-    var total = props.total,
-        start = props.start,
-        end = props.end;
-
+const Sidebar = (props, { format, gettext, stringNum }) => {
+    const { total, start, end } = props;
 
     return React.createElement(
         "div",
@@ -775,32 +725,27 @@ Sidebar.propTypes = {
 };
 Sidebar.contextTypes = childContextTypes;
 
-var Breadcrumb = function Breadcrumb(_ref16, _ref17) {
-    var crumb = _ref16.crumb;
-    var format = _ref17.format,
-        gettext = _ref17.gettext;
-    return React.createElement(
-        "a",
-        { href: crumb.url,
-            className: "btn btn-default btn-xs",
-            title: format(gettext("Remove %(query)s"), { query: crumb.name })
-        },
-        React.createElement("span", { className: "glyphicon glyphicon-remove-sign",
-            style: { verticalAlign: -1 }, "aria-hidden": "true"
-        }),
-        " ",
-        React.createElement(
-            "span",
-            { "aria-hidden": "true" },
-            crumb.name
-        ),
-        React.createElement(
-            "span",
-            { className: "sr-only" },
-            format(gettext("Remove %(query)s"), { query: crumb.name })
-        )
-    );
-};
+const Breadcrumb = ({ crumb }, { format, gettext }) => React.createElement(
+    "a",
+    { href: crumb.url,
+        className: "btn btn-default btn-xs",
+        title: format(gettext("Remove %(query)s"), { query: crumb.name })
+    },
+    React.createElement("span", { className: "glyphicon glyphicon-remove-sign",
+        style: { verticalAlign: -1 }, "aria-hidden": "true"
+    }),
+    " ",
+    React.createElement(
+        "span",
+        { "aria-hidden": "true" },
+        crumb.name
+    ),
+    React.createElement(
+        "span",
+        { className: "sr-only" },
+        format(gettext("Remove %(query)s"), { query: crumb.name })
+    )
+);
 
 Breadcrumb.propTypes = {
     crumb: require("react").PropTypes.shape({
@@ -810,9 +755,8 @@ Breadcrumb.propTypes = {
 };
 Breadcrumb.contextTypes = childContextTypes;
 
-var Breadcrumbs = function Breadcrumbs(props) {
-    var breadcrumbs = props.breadcrumbs;
-
+const Breadcrumbs = props => {
+    const { breadcrumbs } = props;
 
     if (!breadcrumbs) {
         return null;
@@ -827,9 +771,7 @@ var Breadcrumbs = function Breadcrumbs(props) {
             React.createElement(
                 "div",
                 { className: "btn-group", role: "group" },
-                breadcrumbs.map(function (crumb) {
-                    return React.createElement(Breadcrumb, _extends({}, props, { crumb: crumb, key: crumb.url }));
-                })
+                breadcrumbs.map(crumb => React.createElement(Breadcrumb, _extends({}, props, { crumb: crumb, key: crumb.url })))
             )
         )
     );
@@ -882,66 +824,58 @@ Breadcrumbs.propTypes = {
     values: require("react").PropTypes.shape({}).isRequired,
     queries: require("react").PropTypes.shape({}).isRequired
 };
-var NoResults = function NoResults(props, _ref18) {
-    var gettext = _ref18.gettext;
-    return React.createElement(
+const NoResults = (props, { gettext }) => React.createElement(
+    "div",
+    { className: "row" },
+    React.createElement(
         "div",
-        { className: "row" },
+        { className: "col-xs-12" },
         React.createElement(
             "div",
-            { className: "col-xs-12" },
-            React.createElement(
-                "div",
-                { className: "alert alert-info", role: "alert" },
-                gettext("No results found. Please refine your query.")
-            )
+            { className: "alert alert-info", role: "alert" },
+            gettext("No results found. Please refine your query.")
         )
-    );
-};
+    )
+);
 
 NoResults.contextTypes = childContextTypes;
 
-var Pagination = function Pagination(_ref19, _ref20) {
-    var prev = _ref19.prev,
-        next = _ref19.next;
-    var gettext = _ref20.gettext;
-    return React.createElement(
-        "nav",
-        null,
-        React.createElement(
-            "ul",
-            { className: "pager" },
-            prev && React.createElement(
-                "li",
-                { className: "previous" },
+const Pagination = ({ prev, next }, { gettext }) => React.createElement(
+    "nav",
+    null,
+    React.createElement(
+        "ul",
+        { className: "pager" },
+        prev && React.createElement(
+            "li",
+            { className: "previous" },
+            React.createElement(
+                "a",
+                { href: prev },
                 React.createElement(
-                    "a",
-                    { href: prev },
-                    React.createElement(
-                        "span",
-                        { "aria-hidden": "true" },
-                        "\u2190"
-                    ),
-                    gettext("Previous")
-                )
-            ),
-            next && React.createElement(
-                "li",
-                { className: "next" },
+                    "span",
+                    { "aria-hidden": "true" },
+                    "\u2190"
+                ),
+                gettext("Previous")
+            )
+        ),
+        next && React.createElement(
+            "li",
+            { className: "next" },
+            React.createElement(
+                "a",
+                { href: next },
+                gettext("Next"),
                 React.createElement(
-                    "a",
-                    { href: next },
-                    gettext("Next"),
-                    React.createElement(
-                        "span",
-                        { "aria-hidden": "true" },
-                        "\u2192"
-                    )
+                    "span",
+                    { "aria-hidden": "true" },
+                    "\u2192"
                 )
             )
         )
-    );
-};
+    )
+);
 
 Pagination.propTypes = {
     title: require("react").PropTypes.string.isRequired,
@@ -992,14 +926,9 @@ Pagination.propTypes = {
 };
 Pagination.contextTypes = childContextTypes;
 
-var ImageResultFooter = function ImageResultFooter(props, _ref21) {
-    var URL = _ref21.URL,
-        lang = _ref21.lang;
-    var record = props.record,
-        sources = props.sources,
-        type = props.type;
-
-    var resultFooter = options.types[type].views.resultFooter;
+const ImageResultFooter = (props, { URL, lang }) => {
+    const { record, sources, type } = props;
+    const resultFooter = options.types[type].views.resultFooter;
 
     if (resultFooter) {
         return React.createElement(
@@ -1044,11 +973,8 @@ var ImageResultFooter = function ImageResultFooter(props, _ref21) {
 
 ImageResultFooter.contextTypes = childContextTypes;
 
-var ImageResult = function ImageResult(props, _ref22) {
-    var URL = _ref22.URL,
-        getTitle = _ref22.getTitle;
-    var record = props.record;
-
+const ImageResult = (props, { URL, getTitle }) => {
+    const { record } = props;
 
     return React.createElement(
         "div",
@@ -1074,22 +1000,17 @@ var ImageResult = function ImageResult(props, _ref22) {
 
 ImageResult.contextTypes = childContextTypes;
 
-var TextResult = function TextResult(_ref23, _ref24) {
-    var record = _ref23.record;
-    var URL = _ref24.URL,
-        getTitle = _ref24.getTitle;
-    return React.createElement(
-        "div",
-        { className: "col-xs-12" },
-        React.createElement(
-            "a",
-            { href: URL(record),
-                title: getTitle(record)
-            },
-            getTitle(record)
-        )
-    );
-};
+const TextResult = ({ record }, { URL, getTitle }) => React.createElement(
+    "div",
+    { className: "col-xs-12" },
+    React.createElement(
+        "a",
+        { href: URL(record),
+            title: getTitle(record)
+        },
+        getTitle(record)
+    )
+);
 
 TextResult.propTypes = {
     record: require("react").PropTypes.shape({
@@ -1105,12 +1026,9 @@ TextResult.propTypes = {
 };
 TextResult.contextTypes = childContextTypes;
 
-var Results = function Results(props) {
-    var breadcrumbs = props.breadcrumbs,
-        records = props.records,
-        type = props.type;
-
-    var imageResult = options.types[type].hasImages();
+const Results = props => {
+    const { breadcrumbs, records, type } = props;
+    const imageResult = options.types[type].hasImages();
 
     return React.createElement(
         "div",
@@ -1121,9 +1039,7 @@ var Results = function Results(props) {
         React.createElement(
             "div",
             { className: "row" },
-            records.map(function (record) {
-                return imageResult ? React.createElement(ImageResult, _extends({}, props, { record: record, key: record._id })) : React.createElement(TextResult, _extends({}, props, { record: record, key: record._id }));
-            })
+            records.map(record => imageResult ? React.createElement(ImageResult, _extends({}, props, { record: record, key: record._id })) : React.createElement(TextResult, _extends({}, props, { record: record, key: record._id })))
         ),
         React.createElement(Pagination, props)
     );
@@ -1176,10 +1092,8 @@ Results.propTypes = {
     values: require("react").PropTypes.shape({}).isRequired,
     queries: require("react").PropTypes.shape({}).isRequired
 };
-var Search = function Search(props) {
-    var title = props.title,
-        url = props.url;
-
+const Search = props => {
+    const { title, url } = props;
 
     return React.createElement(
         Page,

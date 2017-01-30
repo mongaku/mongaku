@@ -1,9 +1,7 @@
 "use strict";
 
 module.exports = {
-    getSearchPlaceholder: function getSearchPlaceholder() {
-        return "";
-    },
+    getSearchPlaceholder: () => "",
 
     searchNumRecords: 100,
 
@@ -14,14 +12,11 @@ module.exports = {
     urlRequired: false,
     noURLs: false,
 
-    name: function name(i18n) {
-        return i18n.gettext("Records");
-    },
+    name: i18n => i18n.gettext("Records"),
 
-    recordTitle: function recordTitle(record) {
+    recordTitle(record) {
         return record.title;
     },
-
 
     defaultImage: "/images/broken-image.svg",
 
@@ -41,13 +36,15 @@ module.exports = {
 
     searchURLs: {},
 
-    hasImages: function hasImages() {
+    hasImages() {
         return !this.noImages;
     },
-    requiresImages: function requiresImages() {
+
+    requiresImages() {
         return this.hasImages() && this.imagesRequired;
     },
-    hasImageSearch: function hasImageSearch() {
+
+    hasImageSearch() {
         return this.hasImages() && !this.noImageSearch;
     }
 };

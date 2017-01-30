@@ -1,11 +1,11 @@
 "use strict";
 
-var async = require("async");
+const async = require("async");
 
-var models = require("../lib/models");
-var config = require("../lib/config");
+const models = require("../lib/models");
+const config = require("../lib/config");
 
-var Import = {};
+const Import = {};
 
 Import.schema = {
     // An ID for the import, based on the source and time
@@ -43,65 +43,65 @@ Import.schema = {
 };
 
 Import.methods = {
-    getSource: function getSource() {
+    getSource() {
         return models("Source").getSource(this.source);
     },
-    saveState: function saveState(state, callback) {
+
+    saveState(state, callback) {
         this.state = state;
         this.save(callback);
     },
-    getCurState: function getCurState() {
-        var _this = this;
 
-        return this.getStates().find(function (state) {
-            return state.id === _this.state;
-        });
+    getCurState() {
+        return this.getStates().find(state => state.id === this.state);
     },
-    getNextState: function getNextState() {
-        var states = this.getStates();
+
+    getNextState() {
+        const states = this.getStates();
         return states[states.indexOf(this.getCurState()) + 1];
     },
-    getStateName: function getStateName(req) {
-        var curState = this.getCurState();
+
+    getStateName(req) {
+        const curState = this.getCurState();
         return curState ? curState.name(req) : req.format(req.gettext("Error: %(error)s"), { error: this.getError(req) });
     },
-    canAdvance: function canAdvance() {
-        var curState = this.getCurState();
+
+    canAdvance() {
+        const curState = this.getCurState();
         if (!curState) {
             return false;
         }
         return !!curState.advance;
     },
-    advance: function advance(callback) {
-        var _this2 = this;
 
-        var state = this.getCurState();
-        var nextState = this.getNextState();
+    advance(callback) {
+        const state = this.getCurState();
+        const nextState = this.getNextState();
 
         if (!this.canAdvance()) {
             return process.nextTick(callback);
         }
 
-        this.saveState(nextState.id, function (err) {
+        this.saveState(nextState.id, err => {
             /* istanbul ignore if */
             if (err) {
                 return callback(err);
             }
 
-            state.advance(_this2, function (err) {
+            state.advance(this, err => {
                 // If there was an error then we save the error message
                 // and set the state of the batch to "error" to avoid
                 // retries.
                 if (err) {
-                    _this2.error = err.message;
-                    return _this2.saveState("error", callback);
+                    this.error = err.message;
+                    return this.saveState("error", callback);
                 }
 
                 // Advance to the next state
-                var nextState = _this2.getNextState();
+                const nextState = this.getNextState();
                 if (nextState) {
-                    _this2.markModified("results");
-                    _this2.saveState(nextState.id, callback);
+                    this.markModified("results");
+                    this.saveState(nextState.id, callback);
                 } else {
                     callback();
                 }
@@ -111,23 +111,19 @@ Import.methods = {
 };
 
 Import.statics = {
-    advance: function advance(callback) {
-        var _this3 = this;
-
+    advance(callback) {
         this.find({
             state: {
                 $nin: ["completed", "error"]
             }
-        }, "_id state", {}, function (err, batches) {
+        }, "_id state", {}, (err, batches) => {
             if (err || !batches || batches.length === 0) {
                 return callback(err);
             }
 
-            var queues = {};
+            const queues = {};
 
-            batches.filter(function (batch) {
-                return batch.canAdvance();
-            }).forEach(function (batch) {
+            batches.filter(batch => batch.canAdvance()).forEach(batch => {
                 if (!queues[batch.state]) {
                     queues[batch.state] = [];
                 }
@@ -136,16 +132,16 @@ Import.statics = {
             });
 
             // Run all the queues in parallel
-            async.each(Object.keys(queues), function (queueName, callback) {
-                var queue = queues[queueName];
+            async.each(Object.keys(queues), (queueName, callback) => {
+                const queue = queues[queueName];
 
                 // But do each queue in series
-                async.eachLimit(queue, 1, function (batch, callback) {
+                async.eachLimit(queue, 1, (batch, callback) => {
                     // We now load the complete batch with all fields intact
-                    _this3.findById(batch._id, function (err, batch) {
+                    this.findById(batch._id, (err, batch) => {
                         /* istanbul ignore if */
                         if (config.NODE_ENV !== "test") {
-                            console.log("Advancing " + batch._id + " to " + (batch.getNextState().id + "..."));
+                            console.log(`Advancing ${batch._id} to ` + `${batch.getNextState().id}...`);
                         }
                         batch.advance(callback);
                     });

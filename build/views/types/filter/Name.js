@@ -1,8 +1,8 @@
 "use strict";
 
-var React = require("react");
+const React = require("react");
 
-var NameFilter = React.createClass({
+const NameFilter = React.createClass({
     displayName: "NameFilter",
 
     propTypes: {
@@ -14,8 +14,8 @@ var NameFilter = React.createClass({
         values: React.PropTypes.arrayOf(React.PropTypes.string)
     },
 
-    render: function render() {
-        var searchName = this.props.searchName || this.props.name;
+    render() {
+        const searchName = this.props.searchName || this.props.name;
 
         return React.createElement(
             "div",
@@ -37,13 +37,11 @@ var NameFilter = React.createClass({
                     { value: "" },
                     this.props.placeholder
                 ),
-                this.props.values.map(function (name) {
-                    return React.createElement(
-                        "option",
-                        { value: name, key: name },
-                        name
-                    );
-                })
+                this.props.values.map(name => React.createElement(
+                    "option",
+                    { value: name, key: name },
+                    name
+                ))
             )
         );
     }

@@ -1,40 +1,32 @@
 "use strict";
 
-var models = require("../../lib/models");
-var metadata = require("../../lib/metadata");
+const models = require("../../lib/models");
+const metadata = require("../../lib/metadata");
 
-var defaultFacets = {
+const defaultFacets = {
     source: {
-        title: function title(i18n) {
-            return i18n.gettext("Source");
-        },
+        title: i18n => i18n.gettext("Source"),
 
-        facet: function facet() {
-            return {
-                terms: {
-                    field: "source.raw"
-                }
-            };
-        },
+        facet: () => ({
+            terms: {
+                field: "source.raw"
+            }
+        }),
 
-        formatBuckets: function formatBuckets(buckets) {
-            return buckets.map(function (bucket) {
-                return {
-                    text: models("Source").getSource(bucket.key).name,
-                    count: bucket.doc_count,
-                    url: { source: bucket.key }
-                };
-            });
-        }
+        formatBuckets: buckets => buckets.map(bucket => ({
+            text: models("Source").getSource(bucket.key).name,
+            count: bucket.doc_count,
+            url: { source: bucket.key }
+        }))
     }
 };
 
-module.exports = function (type) {
-    var facets = Object.assign({}, defaultFacets);
-    var model = metadata.model(type);
+module.exports = type => {
+    const facets = Object.assign({}, defaultFacets);
+    const model = metadata.model(type);
 
-    for (var name in model) {
-        var typeModel = model[name];
+    for (const name in model) {
+        const typeModel = model[name];
 
         if (typeModel.facet) {
             Object.assign(facets, typeModel.facet());
