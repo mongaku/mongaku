@@ -17,6 +17,18 @@ type ImageType = {
     getThumbURL: () => string,
 };
 
+type UnpopulatedRecordType = {
+    _id: string,
+    type: string,
+    url: string,
+    images: Array<string>,
+    getOriginalURL: () => string,
+    getThumbURL: () => string,
+    getTitle: () => string,
+    getSource: () => Source,
+    getURL: (lang: string) => string,
+};
+
 type RecordType = {
     _id: string,
     type: string,
@@ -37,7 +49,7 @@ type Source = {
 
 type Match = {
     _id: string,
-    recordModel: RecordType,
+    recordModel: UnpopulatedRecordType,
     score: number,
 };
 
@@ -141,7 +153,7 @@ const Images = (props: Props & {record: RecordType}) => {
                     record={record}
                     image={image}
                     active={i === 0}
-                    key={image._id}
+                    key={i}
                 />)}
             </div>
 

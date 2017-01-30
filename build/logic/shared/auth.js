@@ -10,7 +10,7 @@ module.exports = function (req, res, next) {
         if (!req.user) {
             req.session.redirectTo = req.originalUrl;
             res.redirect(urls.gen(req.lang, "/login"));
-        } else if (!req.user.siteAdmin && req.user.sourceAdmin.indexOf(req.params.source) < 0) {
+        } else if (!req.user.canEditSource(req.params.source)) {
             next(new Error(req.gettext("Authorization required.")));
         } else {
             next();

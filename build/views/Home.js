@@ -15,9 +15,11 @@ var SearchForm = function SearchForm(_ref, _ref2) {
     var type = _ref.type;
     var lang = _ref2.lang,
         URL = _ref2.URL,
-        gettext = _ref2.gettext;
+        gettext = _ref2.gettext,
+        user = _ref2.user;
 
     var title = options.types[type].name({ gettext: gettext });
+    var sources = user && user.getEditableSourcesByType(type);
 
     return React.createElement(
         "div",
@@ -52,7 +54,7 @@ var SearchForm = function SearchForm(_ref, _ref2) {
                 gettext("Browse All")
             ),
             " ",
-            React.createElement(
+            sources && sources.length > 0 && React.createElement(
                 "a",
                 { href: URL("/" + type + "/create"), className: "btn btn-success" },
                 gettext("Create New")

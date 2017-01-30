@@ -349,9 +349,7 @@ module.exports = function(app) {
 
         createRedirect(req, res) {
             const type = req.params.type;
-            const sources = Source.getSourcesByType(type).filter((source) =>
-                req.user.siteAdmin ||
-                req.user.sourceAdmin.indexOf(source._id) >= 0);
+            const sources = req.user.getEditableSourcesByType(type);
 
             if (sources.length === 1) {
                 return res.redirect(urls.gen(req.lang,
@@ -359,7 +357,7 @@ module.exports = function(app) {
             }
 
             // TODO(jeresig): Figure out a better way to handle multiple sources
-            res.status(404).send({
+            res.status(404).render("Error", {
                 error: req.gettext("Page not found."),
             });
         },
@@ -507,7 +505,7 @@ module.exports = function(app) {
         routes() {
             app.get("/:type/search", cache(1), this.search);
             app.get("/:type/facets", cache(1), this.facets);
-            app.get("/:type/create", cache(1), this.createRedirect);
+            app.get("/:type/create", auth, this.createRedirect);
             app.get("/:type/source/:source", cache(1), this.bySource);
             app.get("/:type/:source/create", auth, this.createView);
             app.post("/:type/:source/create", auth, this.create);

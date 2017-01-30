@@ -83,6 +83,20 @@ User.methods = {
             /* istanbul ignore next */
             return "";
         }
+    },
+    canEditSource: function canEditSource(source) {
+        return this.siteAdmin || this.sourceAdmin.indexOf(source) >= 0;
+    },
+    getEditableSourcesByType: function getEditableSourcesByType(type) {
+        var _this = this;
+
+        var Source = models("Source");
+        var sources = Source.getSourcesByType(type).map(function (source) {
+            return source._id;
+        }).filter(function (source) {
+            return _this.canEditSource(source);
+        });
+        return sources;
     }
 };
 

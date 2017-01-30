@@ -136,7 +136,7 @@ var Images = function Images(props) {
                         record: record,
                         image: image,
                         active: i === 0,
-                        key: image._id
+                        key: i
                     }));
                 })
             ),
@@ -216,12 +216,7 @@ Metadata.propTypes = {
             _id: require("react").PropTypes.string.isRequired,
             type: require("react").PropTypes.string.isRequired,
             url: require("react").PropTypes.string.isRequired,
-            images: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
-                _id: require("react").PropTypes.string.isRequired,
-                getOriginalURL: require("react").PropTypes.func.isRequired,
-                getScaledURL: require("react").PropTypes.func.isRequired,
-                getThumbURL: require("react").PropTypes.func.isRequired
-            })).isRequired,
+            images: require("react").PropTypes.arrayOf(require("react").PropTypes.string).isRequired,
             getOriginalURL: require("react").PropTypes.func.isRequired,
             getThumbURL: require("react").PropTypes.func.isRequired,
             getTitle: require("react").PropTypes.func.isRequired,
@@ -287,12 +282,7 @@ Details.propTypes = {
             _id: require("react").PropTypes.string.isRequired,
             type: require("react").PropTypes.string.isRequired,
             url: require("react").PropTypes.string.isRequired,
-            images: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
-                _id: require("react").PropTypes.string.isRequired,
-                getOriginalURL: require("react").PropTypes.func.isRequired,
-                getScaledURL: require("react").PropTypes.func.isRequired,
-                getThumbURL: require("react").PropTypes.func.isRequired
-            })).isRequired,
+            images: require("react").PropTypes.arrayOf(require("react").PropTypes.string).isRequired,
             getOriginalURL: require("react").PropTypes.func.isRequired,
             getThumbURL: require("react").PropTypes.func.isRequired,
             getTitle: require("react").PropTypes.func.isRequired,
@@ -362,12 +352,7 @@ Sources.propTypes = {
             _id: require("react").PropTypes.string.isRequired,
             type: require("react").PropTypes.string.isRequired,
             url: require("react").PropTypes.string.isRequired,
-            images: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
-                _id: require("react").PropTypes.string.isRequired,
-                getOriginalURL: require("react").PropTypes.func.isRequired,
-                getScaledURL: require("react").PropTypes.func.isRequired,
-                getThumbURL: require("react").PropTypes.func.isRequired
-            })).isRequired,
+            images: require("react").PropTypes.arrayOf(require("react").PropTypes.string).isRequired,
             getOriginalURL: require("react").PropTypes.func.isRequired,
             getThumbURL: require("react").PropTypes.func.isRequired,
             getTitle: require("react").PropTypes.func.isRequired,
@@ -462,12 +447,7 @@ MainRecord.propTypes = {
             _id: require("react").PropTypes.string.isRequired,
             type: require("react").PropTypes.string.isRequired,
             url: require("react").PropTypes.string.isRequired,
-            images: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
-                _id: require("react").PropTypes.string.isRequired,
-                getOriginalURL: require("react").PropTypes.func.isRequired,
-                getScaledURL: require("react").PropTypes.func.isRequired,
-                getThumbURL: require("react").PropTypes.func.isRequired
-            })).isRequired,
+            images: require("react").PropTypes.arrayOf(require("react").PropTypes.string).isRequired,
             getOriginalURL: require("react").PropTypes.func.isRequired,
             getThumbURL: require("react").PropTypes.func.isRequired,
             getTitle: require("react").PropTypes.func.isRequired,
@@ -591,12 +571,7 @@ Similar.propTypes = {
             _id: require("react").PropTypes.string.isRequired,
             type: require("react").PropTypes.string.isRequired,
             url: require("react").PropTypes.string.isRequired,
-            images: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
-                _id: require("react").PropTypes.string.isRequired,
-                getOriginalURL: require("react").PropTypes.func.isRequired,
-                getScaledURL: require("react").PropTypes.func.isRequired,
-                getThumbURL: require("react").PropTypes.func.isRequired
-            })).isRequired,
+            images: require("react").PropTypes.arrayOf(require("react").PropTypes.string).isRequired,
             getOriginalURL: require("react").PropTypes.func.isRequired,
             getThumbURL: require("react").PropTypes.func.isRequired,
             getTitle: require("react").PropTypes.func.isRequired,
@@ -672,12 +647,7 @@ Record.propTypes = {
             _id: require("react").PropTypes.string.isRequired,
             type: require("react").PropTypes.string.isRequired,
             url: require("react").PropTypes.string.isRequired,
-            images: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
-                _id: require("react").PropTypes.string.isRequired,
-                getOriginalURL: require("react").PropTypes.func.isRequired,
-                getScaledURL: require("react").PropTypes.func.isRequired,
-                getThumbURL: require("react").PropTypes.func.isRequired
-            })).isRequired,
+            images: require("react").PropTypes.arrayOf(require("react").PropTypes.string).isRequired,
             getOriginalURL: require("react").PropTypes.func.isRequired,
             getThumbURL: require("react").PropTypes.func.isRequired,
             getTitle: require("react").PropTypes.func.isRequired,

@@ -91,7 +91,7 @@ const Logo = (props, {getTitle, URL}: Context) => <span>
 </span>;
 
 const NavLink = ({type, title}: Props & {type: string},
-        {URL, lang, gettext}: Context) => <li className="dropdown">
+        {URL, lang, gettext, user}: Context) => <li className="dropdown">
     <a
         href={URL(`/${type}/search`)}
         className="dropdown-toggle"
@@ -135,11 +135,11 @@ const NavLink = ({type, title}: Props & {type: string},
                 {gettext("Browse All")}
             </a>
         </li>
-        <li>
+        {user && user.getEditableSourcesByType(type).length > 0 && <li>
             <a href={URL(`/${type}/create`)}>
                 {gettext("Create New")}
             </a>
-        </li>
+        </li>}
     </ul>
 </li>;
 
@@ -227,15 +227,15 @@ const Header = (props, {
 
         <div id="header-navbar" className="collapse navbar-collapse">
             <ul className="nav navbar-nav">
-                {!multipleTypes && <li>
-                    <a href={URL(`/${types[0]}/search`)}>
-                        {gettext("Browse All")}
-                    </a>
-                </li>}
                 {Object.keys(options.types).map((type) => {
                     const title = options.types[type].name({gettext});
                     return <NavLink type={type} title={title} key={type} />;
                 })}
+                {!user && <li>
+                    <a href={URL("/login")}>
+                        {gettext("Login")}
+                    </a>
+                </li>}
                 {user && <li>
                     <a href={URL("/logout")}>
                         {gettext("Logout")}

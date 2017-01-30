@@ -88,6 +88,19 @@ User.methods = {
             return "";
         }
     },
+
+    canEditSource(source: string) {
+        return this.siteAdmin ||
+            this.sourceAdmin.indexOf(source) >= 0;
+    },
+
+    getEditableSourcesByType(type: string) {
+        const Source = models("Source");
+        const sources = Source.getSourcesByType(type)
+            .map((source) => source._id)
+            .filter((source) => this.canEditSource(source));
+        return sources;
+    },
 };
 
 module.exports = User;

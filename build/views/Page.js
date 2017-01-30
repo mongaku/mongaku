@@ -101,7 +101,8 @@ var NavLink = function NavLink(_ref4, _ref5) {
         title = _ref4.title;
     var URL = _ref5.URL,
         lang = _ref5.lang,
-        gettext = _ref5.gettext;
+        gettext = _ref5.gettext,
+        user = _ref5.user;
     return React.createElement(
         "li",
         { className: "dropdown" },
@@ -162,7 +163,7 @@ var NavLink = function NavLink(_ref4, _ref5) {
                     gettext("Browse All")
                 )
             ),
-            React.createElement(
+            user && user.getEditableSourcesByType(type).length > 0 && React.createElement(
                 "li",
                 null,
                 React.createElement(
@@ -296,19 +297,19 @@ var Header = function Header(props, _ref8) {
                 React.createElement(
                     "ul",
                     { className: "nav navbar-nav" },
-                    !multipleTypes && React.createElement(
-                        "li",
-                        null,
-                        React.createElement(
-                            "a",
-                            { href: URL("/" + types[0] + "/search") },
-                            gettext("Browse All")
-                        )
-                    ),
                     Object.keys(options.types).map(function (type) {
                         var title = options.types[type].name({ gettext: gettext });
                         return React.createElement(NavLink, { type: type, title: title, key: type });
                     }),
+                    !user && React.createElement(
+                        "li",
+                        null,
+                        React.createElement(
+                            "a",
+                            { href: URL("/login") },
+                            gettext("Login")
+                        )
+                    ),
                     user && React.createElement(
                         "li",
                         null,

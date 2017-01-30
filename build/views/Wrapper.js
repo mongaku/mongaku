@@ -29,6 +29,7 @@ var Wrapper = function (_React$Component) {
         value: function getChildContext() {
             var _props = this.props,
                 originalUrl = _props.originalUrl,
+                user = _props.user,
                 lang = _props.lang,
                 gettext = _props.gettext,
                 format = _props.format;
@@ -38,6 +39,7 @@ var Wrapper = function (_React$Component) {
                 lang: lang,
                 gettext: gettext,
                 format: format,
+                user: user,
 
                 getOtherURL: function getOtherURL(locale) {
                     return urls.gen(locale, originalUrl);
@@ -123,6 +125,7 @@ Wrapper.childContextTypes = {
     lang: React.PropTypes.string,
     gettext: React.PropTypes.func,
     format: React.PropTypes.func,
+    user: React.PropTypes.any,
     getOtherURL: React.PropTypes.func,
     URL: React.PropTypes.func,
     fullName: React.PropTypes.func,

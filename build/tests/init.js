@@ -14,6 +14,9 @@ var iconv = require("iconv-lite");
 // Force ICONV to pre-load its encodings
 iconv.getCodec("utf8");
 
+// Force dynamically loaded modules to load now
+require("negotiator/lib/mediaType");
+
 // Load in global ENV
 process.env.BASE_DATA_DIR = path.resolve(process.cwd(), "data");
 

@@ -21,8 +21,14 @@ type Props = {
     sources: Array<SourceType>,
 };
 
-const SearchForm = ({type}: {type: string}, {lang, URL, gettext}: Context) => {
+const SearchForm = ({type}: {type: string}, {
+    lang,
+    URL,
+    gettext,
+    user,
+}: Context) => {
     const title = options.types[type].name({gettext});
+    const sources = user && user.getEditableSourcesByType(type);
 
     return <div>
         <h3>{title}</h3>
@@ -45,9 +51,11 @@ const SearchForm = ({type}: {type: string}, {lang, URL, gettext}: Context) => {
                 {gettext("Browse All")}
             </a>
             {" "}
-            <a href={URL(`/${type}/create`)} className="btn btn-success">
-                {gettext("Create New")}
-            </a>
+            {sources && sources.length > 0 &&
+                <a href={URL(`/${type}/create`)} className="btn btn-success">
+                    {gettext("Create New")}
+                </a>
+            }
         </form>
     </div>;
 };
