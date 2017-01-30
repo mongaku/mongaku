@@ -7,6 +7,8 @@ const React = require("react");
 
 const urls = require("../lib/urls");
 
+import type {User} from "./types.js";
+
 class Wrapper extends React.Component {
     getChildContext() {
         const {originalUrl, user, lang, gettext, format} = this.props;
@@ -80,6 +82,7 @@ class Wrapper extends React.Component {
     props: {
         originalUrl: string,
         lang: string,
+        user: User,
         gettext: (text: string) => string,
         format: (text: string, options: {}) => string,
         children?: React.Element<*>,

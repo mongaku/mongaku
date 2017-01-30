@@ -96,7 +96,7 @@
     "tap": "9.0.3"
   },
   "pre-commit": [
-    "test",
+    "lint",
     "extract-i18n"
   ],
   "nyc": {

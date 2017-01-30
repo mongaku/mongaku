@@ -15,6 +15,8 @@ var React = require("react");
 
 var urls = require("../lib/urls");
 
+var babelPluginFlowReactPropTypes_proptype_User = require("./types.js").babelPluginFlowReactPropTypes_proptype_User || require("react").PropTypes.any;
+
 var Wrapper = function (_React$Component) {
     _inherits(Wrapper, _React$Component);
 
@@ -115,6 +117,7 @@ var Wrapper = function (_React$Component) {
 Wrapper.propTypes = {
     originalUrl: require("react").PropTypes.string.isRequired,
     lang: require("react").PropTypes.string.isRequired,
+    user: babelPluginFlowReactPropTypes_proptype_User,
     gettext: require("react").PropTypes.func.isRequired,
     format: require("react").PropTypes.func.isRequired,
     children: require("react").PropTypes.any
