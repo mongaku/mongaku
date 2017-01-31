@@ -14,6 +14,7 @@ iconv.getCodec("utf8");
 
 // Force dynamically loaded modules to load now
 require("negotiator/lib/mediaType");
+require("nyc/node_modules/istanbul-lib-instrument");
 
 // Load in global ENV
 process.env.BASE_DATA_DIR = path.resolve(process.cwd(), "data");
@@ -850,6 +851,11 @@ const init = done => {
     }], () => {
         mockfs({
             "package.json": pkgFile,
+            "node_modules": {
+                ".cache": {
+                    "nyc": {}
+                }
+            },
             "testData": testFiles,
             "data": {
                 "test": {

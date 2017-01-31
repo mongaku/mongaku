@@ -13,7 +13,7 @@ module.exports = function(app) {
     const auth = require("./shared/auth");
 
     const importRecords = (req, res) => {
-        const batchState = (batch) => batch.getCurState().name(req);
+        const batchState = (batch) => batch.getStateName(req);
         const batchError = (err) => RecordImport.getError(req, err);
 
         RecordImport.findById(req.query.records, (err, batch) => {
