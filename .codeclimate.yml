@@ -10,8 +10,7 @@ engines:
 ratings:
   paths:
   - "**.js"
-  - "**.jsx"
 exclude_paths:
-- config/**/*
-- public/**/*
+- src/public/**/*
 - locales/**/*
+- build/**/*
