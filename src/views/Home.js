@@ -2,8 +2,6 @@
 
 const React = require("react");
 
-const options = require("../lib/options");
-
 const Page = require("./Page.js");
 
 import type {Context} from "./types.js";
@@ -26,8 +24,9 @@ const SearchForm = ({type}: {type: string}, {
     URL,
     gettext,
     user,
+    options,
 }: Context) => {
-    const title = options.types[type].name({gettext});
+    const title = options.types[type].name;
     const sources = user && user.getEditableSourcesByType(type);
 
     return <div>
@@ -128,9 +127,9 @@ const ImageUploadForms = ({type}: {type: string},
 ImageUploadForms.contextTypes = childContextTypes;
 
 const Source = ({type, source}: {type: string, source: SourceType},
-    {lang, stringNum, gettext}: Context) => {
+    {lang, stringNum, options}: Context) => {
 
-    const typeName = options.types[type].name({gettext});
+    const typeName = options.types[type].name;
     const recordCount = stringNum(source.numRecords);
     const desc = `${recordCount} ${typeName}`;
 
@@ -159,22 +158,19 @@ const Sources = ({type, sources}: Props & {type: string},
 
 Sources.contextTypes = childContextTypes;
 
-const Type = ({type, sources}: Props & {type: string}) => {
+const Type = ({type, sources}: Props & {type: string}, {options}: Context) => {
     const sourcesByType = sources.filter((source) => source.type === type);
 
     return <div className="col-sm-8 col-sm-offset-2 upload-box">
         <SearchForm type={type} />
-        {options.types[type].hasImageSearch() &&
+        {options.types[type].hasImageSearch &&
             <ImageUploadForms type={type} />}
         {sourcesByType.length > 1 &&
             <Sources type={type} sources={sourcesByType} />}
     </div>;
 };
 
-const Home = ({sources}: Props) => <Page
-    splash={options.views.homeSplash &&
-        <options.views.homeSplash />}
->
+const Home = ({sources}: Props, {options}: Context) => <Page>
     {Object.keys(options.types).map((type) =>
         <Type key={type} sources={sources} type={type} />)}
 </Page>;

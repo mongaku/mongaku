@@ -13,7 +13,6 @@ const SimpleNumber = function(options) {
     searchName
     title(i18n)
     placeholder(i18n)
-    multiple: Bool
     recommended: Bool
     hidden: Bool
     */
@@ -37,7 +36,6 @@ SimpleNumber.prototype = {
             name: this.options.name,
             type: this.options.type,
             value,
-            multiline: this.options.multiline,
         });
     },
 
@@ -46,7 +44,6 @@ SimpleNumber.prototype = {
             name: this.options.name,
             type: this.options.type,
             value,
-            multiline: this.options.multiline,
             hidden: this.options.hidden,
         });
     },

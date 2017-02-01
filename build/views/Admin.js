@@ -4,8 +4,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 const React = require("react");
 
-const options = require("../lib/options");
-
 const Page = require("./Page.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
@@ -446,14 +444,15 @@ UploadDataForm.contextTypes = childContextTypes;
 const Admin = (props, {
     format,
     gettext,
-    fullName
+    fullName,
+    options
 }) => {
     const {
         imageImport,
         dataImport,
         source
     } = props;
-    const hasImages = options.types[source.type].hasImages();
+    const hasImages = options.types[source.type].hasImages;
     const title = format(gettext("%(name)s Admin Area"), {
         name: fullName(source)
     });

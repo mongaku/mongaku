@@ -2,8 +2,6 @@
 
 const React = require("react");
 
-const options = require("../lib/options");
-
 const Page = require("./Page.js");
 
 import type {Context} from "./types.js";
@@ -264,13 +262,14 @@ const Admin = (props: Props, {
     format,
     gettext,
     fullName,
+    options,
 }: Context) => {
     const {
         imageImport,
         dataImport,
         source,
     } = props;
-    const hasImages = options.types[source.type].hasImages();
+    const hasImages = options.types[source.type].hasImages;
     const title = format(gettext("%(name)s Admin Area"), {
         name: fullName(source),
     });

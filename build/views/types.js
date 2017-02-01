@@ -1,5 +1,22 @@
 "use strict";
 
+// Methods and properties defined in view-methods.js and i18n.js
+if (typeof exports !== "undefined") Object.defineProperty(exports, "babelPluginFlowReactPropTypes_proptype_Options", {
+    value: require("react").PropTypes.shape({
+        getShortTitle: require("react").PropTypes.string.isRequired,
+        getTitle: require("react").PropTypes.string.isRequired,
+        noIndex: require("react").PropTypes.bool.isRequired,
+        usei18nSubdomain: require("react").PropTypes.bool.isRequired,
+        maxUploadSize: require("react").PropTypes.number.isRequired,
+        imageThumbSize: require("react").PropTypes.string.isRequired,
+        imageScaledSize: require("react").PropTypes.string.isRequired,
+        locales: require("react").PropTypes.shape({}).isRequired,
+        types: require("react").PropTypes.shape({}).isRequired
+    })
+});
+
+// LinkedRecord
+
 // From User.js
 if (typeof exports !== "undefined") Object.defineProperty(exports, "babelPluginFlowReactPropTypes_proptype_Context", {
     value: require("react").PropTypes.shape({
@@ -15,12 +32,20 @@ if (typeof exports !== "undefined") Object.defineProperty(exports, "babelPluginF
         relativeDate: require("react").PropTypes.func.isRequired,
         user: require("react").PropTypes.any,
         gettext: require("react").PropTypes.func.isRequired,
-        format: require("react").PropTypes.func.isRequired
+        format: require("react").PropTypes.func.isRequired,
+        options: require("react").PropTypes.shape({
+            getShortTitle: require("react").PropTypes.string.isRequired,
+            getTitle: require("react").PropTypes.string.isRequired,
+            noIndex: require("react").PropTypes.bool.isRequired,
+            usei18nSubdomain: require("react").PropTypes.bool.isRequired,
+            maxUploadSize: require("react").PropTypes.number.isRequired,
+            imageThumbSize: require("react").PropTypes.string.isRequired,
+            imageScaledSize: require("react").PropTypes.string.isRequired,
+            locales: require("react").PropTypes.shape({}).isRequired,
+            types: require("react").PropTypes.shape({}).isRequired
+        }).isRequired
     })
 });
-
-// Methods and properties defined in view-methods.js and i18n.js
-
 if (typeof exports !== "undefined") Object.defineProperty(exports, "babelPluginFlowReactPropTypes_proptype_User", {
     value: require("react").PropTypes.shape({
         email: require("react").PropTypes.string.isRequired,

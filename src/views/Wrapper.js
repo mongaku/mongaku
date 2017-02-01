@@ -7,17 +7,18 @@ const React = require("react");
 
 const urls = require("../lib/urls");
 
-import type {User} from "./types.js";
+import type {User, Options} from "./types.js";
 
 class Wrapper extends React.Component {
     getChildContext() {
-        const {originalUrl, user, lang, gettext, format} = this.props;
+        const {originalUrl, user, options, lang, gettext, format} = this.props;
 
         return {
             lang,
             gettext,
             format,
             user,
+            options,
 
             getOtherURL(locale: string): string {
                 return urls.gen(locale, originalUrl);
@@ -83,6 +84,7 @@ class Wrapper extends React.Component {
         originalUrl: string,
         lang: string,
         user: User,
+        options: Options,
         gettext: (text: string) => string,
         format: (text: string, options: {}) => string,
         children?: React.Element<*>,
@@ -98,6 +100,7 @@ Wrapper.childContextTypes = {
     gettext: React.PropTypes.func,
     format: React.PropTypes.func,
     user: React.PropTypes.any,
+    options: React.PropTypes.any,
     getOtherURL: React.PropTypes.func,
     URL: React.PropTypes.func,
     fullName: React.PropTypes.func,

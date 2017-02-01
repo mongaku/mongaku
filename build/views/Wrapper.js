@@ -7,17 +7,20 @@ const React = require("react");
 
 const urls = require("../lib/urls");
 
+var babelPluginFlowReactPropTypes_proptype_Options = require("./types.js").babelPluginFlowReactPropTypes_proptype_Options || require("react").PropTypes.any;
+
 var babelPluginFlowReactPropTypes_proptype_User = require("./types.js").babelPluginFlowReactPropTypes_proptype_User || require("react").PropTypes.any;
 
 class Wrapper extends React.Component {
     getChildContext() {
-        const { originalUrl, user, lang, gettext, format } = this.props;
+        const { originalUrl, user, options, lang, gettext, format } = this.props;
 
         return {
             lang,
             gettext,
             format,
             user,
+            options,
 
             getOtherURL(locale) {
                 return urls.gen(locale, originalUrl);
@@ -76,6 +79,7 @@ Wrapper.propTypes = {
     originalUrl: require("react").PropTypes.string.isRequired,
     lang: require("react").PropTypes.string.isRequired,
     user: babelPluginFlowReactPropTypes_proptype_User,
+    options: babelPluginFlowReactPropTypes_proptype_Options,
     gettext: require("react").PropTypes.func.isRequired,
     format: require("react").PropTypes.func.isRequired,
     children: require("react").PropTypes.any
@@ -85,6 +89,7 @@ Wrapper.childContextTypes = {
     gettext: React.PropTypes.func,
     format: React.PropTypes.func,
     user: React.PropTypes.any,
+    options: React.PropTypes.any,
     getOtherURL: React.PropTypes.func,
     URL: React.PropTypes.func,
     fullName: React.PropTypes.func,

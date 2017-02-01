@@ -2,8 +2,6 @@
 
 const React = require("react");
 
-const options = require("../lib/options");
-
 const Page = require("./Page.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
@@ -14,9 +12,10 @@ const SearchForm = ({ type }, {
     lang,
     URL,
     gettext,
-    user
+    user,
+    options
 }) => {
-    const title = options.types[type].name({ gettext });
+    const title = options.types[type].name;
     const sources = user && user.getEditableSourcesByType(type);
 
     return React.createElement(
@@ -168,9 +167,9 @@ ImageUploadForms.propTypes = {
 };
 ImageUploadForms.contextTypes = childContextTypes;
 
-const Source = ({ type, source }, { lang, stringNum, gettext }) => {
+const Source = ({ type, source }, { lang, stringNum, options }) => {
 
-    const typeName = options.types[type].name({ gettext });
+    const typeName = options.types[type].name;
     const recordCount = stringNum(source.numRecords);
     const desc = `${recordCount} ${typeName}`;
 
@@ -227,23 +226,21 @@ const Sources = ({ type, sources }, { gettext }) => React.createElement(
 
 Sources.contextTypes = childContextTypes;
 
-const Type = ({ type, sources }) => {
+const Type = ({ type, sources }, { options }) => {
     const sourcesByType = sources.filter(source => source.type === type);
 
     return React.createElement(
         "div",
         { className: "col-sm-8 col-sm-offset-2 upload-box" },
         React.createElement(SearchForm, { type: type }),
-        options.types[type].hasImageSearch() && React.createElement(ImageUploadForms, { type: type }),
+        options.types[type].hasImageSearch && React.createElement(ImageUploadForms, { type: type }),
         sourcesByType.length > 1 && React.createElement(Sources, { type: type, sources: sourcesByType })
     );
 };
 
-const Home = ({ sources }) => React.createElement(
+const Home = ({ sources }, { options }) => React.createElement(
     Page,
-    {
-        splash: options.views.homeSplash && React.createElement(options.views.homeSplash, null)
-    },
+    null,
     Object.keys(options.types).map(type => React.createElement(Type, { key: type, sources: sources, type: type }))
 );
 
