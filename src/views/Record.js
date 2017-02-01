@@ -3,7 +3,6 @@
 const React = require("react");
 
 const metadata = require("../lib/metadata");
-const options = require("../lib/options");
 
 const Page = require("./Page.js");
 
@@ -33,6 +32,7 @@ type RecordType = {
     _id: string,
     type: string,
     url: string,
+    title?: string,
     images: Array<ImageType>,
     getOriginalURL: () => string,
     getThumbURL: () => string,
@@ -71,8 +71,8 @@ const hasValue = (records, type) => {
 const Title = (props: Props & {record: RecordType}) => {
     const {record, records} = props;
     const size = Math.max(Math.round(12 / records.length), 3);
-    const title = options.types[record.type]
-        .recordTitle(record, props);
+    // TODO(jeresig): Fix recordTitle to be i18n
+    const title = record.title || "";
 
     return <th className={`col-xs-${size} text-center`}>
         <h1 className="panel-title">{title}</h1>
@@ -163,7 +163,7 @@ const Images = (props: Props & {record: RecordType}) => {
     </td>;
 };
 
-const Metadata = (props: Props) => {
+const Metadata = (props: Props, {options}: Context) => {
     const {records, sources} = props;
     const firstRecord = records[0];
 
@@ -198,6 +198,8 @@ const Metadata = (props: Props) => {
             <Sources {...props} />}
     </tbody>;
 };
+
+Metadata.contextTypes = childContextTypes;
 
 const Details = ({records}: Props, {gettext}: Context) => <tr>
     <th className="text-right">
@@ -343,8 +345,7 @@ const Script = () => <script
 const Record = (props: Props, {URL}: Context) => {
     const {records, similar} = props;
     const record = records[0];
-    const title = options.types[record.type]
-        .recordTitle(record, props);
+    const title = record.title || "";
     const social = {
         imgURL: record.getOriginalURL(),
         title,

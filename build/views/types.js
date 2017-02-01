@@ -7,6 +7,8 @@ if (typeof exports !== "undefined") Object.defineProperty(exports, "babelPluginF
         getTitle: require("react").PropTypes.string.isRequired,
         noIndex: require("react").PropTypes.bool.isRequired,
         usei18nSubdomain: require("react").PropTypes.bool.isRequired,
+        faviconUrl: require("react").PropTypes.string,
+        logoUrl: require("react").PropTypes.string,
         maxUploadSize: require("react").PropTypes.number.isRequired,
         imageThumbSize: require("react").PropTypes.string.isRequired,
         imageScaledSize: require("react").PropTypes.string.isRequired,
@@ -15,7 +17,6 @@ if (typeof exports !== "undefined") Object.defineProperty(exports, "babelPluginF
     })
 });
 
-// LinkedRecord
 
 // From User.js
 if (typeof exports !== "undefined") Object.defineProperty(exports, "babelPluginFlowReactPropTypes_proptype_Context", {
@@ -38,6 +39,8 @@ if (typeof exports !== "undefined") Object.defineProperty(exports, "babelPluginF
             getTitle: require("react").PropTypes.string.isRequired,
             noIndex: require("react").PropTypes.bool.isRequired,
             usei18nSubdomain: require("react").PropTypes.bool.isRequired,
+            faviconUrl: require("react").PropTypes.string,
+            logoUrl: require("react").PropTypes.string,
             maxUploadSize: require("react").PropTypes.number.isRequired,
             imageThumbSize: require("react").PropTypes.string.isRequired,
             imageScaledSize: require("react").PropTypes.string.isRequired,

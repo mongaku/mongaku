@@ -5,7 +5,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 const React = require("react");
 
 const metadata = require("../lib/metadata");
-const options = require("../lib/options");
 
 const Page = require("./Page.js");
 
@@ -140,7 +139,7 @@ ImageForm.contextTypes = childContextTypes;
 const IDForm = ({
     record,
     type
-}, { gettext }) => {
+}, { gettext, options }) => {
     if (options.types[type].autoID || record && record._id) {
         return null;
     }
@@ -180,7 +179,7 @@ IDForm.propTypes = {
 };
 IDForm.contextTypes = childContextTypes;
 
-const Contents = (props, { gettext }) => {
+const Contents = (props, { gettext, options }) => {
     const {
         type,
         globalFacets,
@@ -311,7 +310,7 @@ CloneButton.propTypes = {
 };
 CloneButton.contextTypes = childContextTypes;
 
-const EditRecord = (props, { lang, format, gettext }) => {
+const EditRecord = (props, { lang, format, gettext, options }) => {
     const { record, type, mode } = props;
     const postURL = record ? record._id ? record.getEditURL(lang) : record.getCreateURL(lang) : "";
 
@@ -319,10 +318,11 @@ const EditRecord = (props, { lang, format, gettext }) => {
 
     if (!record || mode === "create") {
         title = format(gettext("%(recordName)s: Create New"), {
-            recordName: options.types[type].name({ gettext })
+            recordName: options.types[type].name
         });
     } else {
-        const recordTitle = options.types[type].recordTitle(record, { gettext });
+        // NOTE(jeresig): Fix recordTitle i18n
+        const recordTitle = record.title || "";
 
         if (mode === "clone") {
             title = format(gettext("Cloning '%(recordTitle)s'"), { recordTitle });

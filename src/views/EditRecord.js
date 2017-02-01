@@ -3,7 +3,6 @@
 const React = require("react");
 
 const metadata = require("../lib/metadata");
-const options = require("../lib/options");
 
 const Page = require("./Page.js");
 
@@ -13,9 +12,9 @@ const {childContextTypes} = require("./Wrapper.js");
 type Props = {
     dynamicValues: {},
     globalFacets?: {
-        [name: string]: {
+        [name: string]: Array<{
             text: string,
-        },
+        }>,
     },
     mode: "create" | "edit" | "clone",
     record?: Record,
@@ -26,6 +25,7 @@ type Record = {
     _id?: string,
     id?: string,
     type: string,
+    title?: string,
     images: Array<ImageType>,
     getEditURL: (lang: string) => string,
     getCloneURL: (lang: string) => string,
@@ -139,7 +139,7 @@ ImageForm.contextTypes = childContextTypes;
 const IDForm = ({
     record,
     type,
-}: Props, {gettext}: Context) => {
+}: Props, {gettext, options}: Context) => {
     if (options.types[type].autoID || record && record._id) {
         return null;
     }
@@ -164,7 +164,7 @@ const IDForm = ({
 
 IDForm.contextTypes = childContextTypes;
 
-const Contents = (props: Props, {gettext}: Context) => {
+const Contents = (props: Props, {gettext, options}: Context) => {
     const {
         type,
         globalFacets,
@@ -255,7 +255,8 @@ const CloneButton = ({record, mode}: Props, {gettext, lang}: Context) =>
 
 CloneButton.contextTypes = childContextTypes;
 
-const EditRecord = (props: Props, {lang, format, gettext}: Context) => {
+const EditRecord = (props: Props,
+        {lang, format, gettext, options}: Context) => {
     const {record, type, mode} = props;
     const postURL = record ?
         (record._id ?
@@ -267,11 +268,11 @@ const EditRecord = (props: Props, {lang, format, gettext}: Context) => {
 
     if (!record || mode === "create") {
         title = format(gettext("%(recordName)s: Create New"), {
-            recordName: options.types[type].name({gettext}),
+            recordName: options.types[type].name,
         });
     } else {
-        const recordTitle = options.types[type]
-            .recordTitle(record, {gettext});
+        // NOTE(jeresig): Fix recordTitle i18n
+        const recordTitle = record.title || "";
 
         if (mode === "clone") {
             title = format(gettext("Cloning '%(recordTitle)s'"), {recordTitle});

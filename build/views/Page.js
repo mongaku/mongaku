@@ -2,22 +2,17 @@
 
 const React = require("react");
 
-const options = require("../lib/options");
-
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
 const { childContextTypes } = require("./Wrapper.js");
-
-const types = Object.keys(options.types);
-const multipleTypes = types.length > 1;
 
 const Head = ({
     title,
     social,
     style,
     noIndex
-}, { URL, getTitle, lang }) => {
-    const siteTitle = getTitle(options);
+}, { URL, lang, options }) => {
+    const siteTitle = options.getTitle;
     let pageTitle = siteTitle;
 
     if (title) {
@@ -78,11 +73,11 @@ Head.propTypes = {
 };
 Head.contextTypes = childContextTypes;
 
-const Logo = (props, { getTitle, URL }) => React.createElement(
+const Logo = (props, { URL, options }) => React.createElement(
     "span",
     null,
-    React.createElement("img", { alt: getTitle(options),
-        src: URL(options.logoUrl),
+    React.createElement("img", { alt: options.getTitle,
+        src: URL(options.logoUrl || ""),
         height: "40", width: "40"
     }),
     " "
@@ -162,10 +157,10 @@ const NavLink = ({ type, title }, { URL, lang, gettext, user }) => React.createE
 
 NavLink.contextTypes = childContextTypes;
 
-const SearchForm = (props, { gettext, URL }) => React.createElement(
+const SearchForm = (props, { gettext, URL, options }) => React.createElement(
     "form",
     {
-        action: URL(`/${types[0]}/search`),
+        action: URL(`/${Object.keys(options.types)[0]}/search`),
         method: "GET",
         className: "navbar-form navbar-right search form-inline hidden-xs"
     },
@@ -188,7 +183,8 @@ SearchForm.contextTypes = childContextTypes;
 const LocaleMenu = (props, {
     lang,
     URL,
-    getOtherURL
+    getOtherURL,
+    options
 }) => React.createElement(
     "li",
     { className: "dropdown" },
@@ -231,8 +227,8 @@ LocaleMenu.contextTypes = childContextTypes;
 const Header = (props, {
     gettext,
     URL,
-    getShortTitle,
-    user
+    user,
+    options
 }) => React.createElement(
     "div",
     {
@@ -263,7 +259,7 @@ const Header = (props, {
                 "a",
                 { className: "navbar-brand", href: URL("/") },
                 options.logoUrl && React.createElement(Logo, null),
-                getShortTitle(options)
+                options.getShortTitle
             )
         ),
         React.createElement(
@@ -273,7 +269,7 @@ const Header = (props, {
                 "ul",
                 { className: "nav navbar-nav" },
                 Object.keys(options.types).map(type => {
-                    const title = options.types[type].name({ gettext });
+                    const title = options.types[type].name;
                     return React.createElement(NavLink, { type: type, title: title, key: type });
                 }),
                 !user && React.createElement(
@@ -296,7 +292,7 @@ const Header = (props, {
                 ),
                 Object.keys(options.locales).length > 1 && React.createElement(LocaleMenu, null)
             ),
-            multipleTypes && React.createElement(SearchForm, null)
+            Object.keys(options.types).length > 1 && React.createElement(SearchForm, null)
         )
     )
 );

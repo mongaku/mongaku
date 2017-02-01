@@ -5,7 +5,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 const React = require("react");
 
 const metadata = require("../lib/metadata");
-const options = require("../lib/options");
 
 const Page = require("./Page.js");
 
@@ -13,7 +12,7 @@ var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babel
 
 const { childContextTypes } = require("./Wrapper.js");
 
-const Filters = ({ type, globalFacets }, { gettext }) => {
+const Filters = ({ type, globalFacets, values }, { gettext, options }) => {
     const model = metadata.model(type);
 
     return React.createElement(
@@ -26,12 +25,12 @@ const Filters = ({ type, globalFacets }, { gettext }) => {
                 return null;
             }
 
-            const values = (globalFacets[type] || []).map(bucket => bucket.text).sort();
+            const allValues = (globalFacets[type] || []).map(bucket => bucket.text).sort();
 
             return React.createElement(
                 "div",
                 { key: type },
-                typeSchema.renderFilter(values[type], values, { gettext })
+                typeSchema.renderFilter(values[type], allValues, { gettext })
             );
         })
     );
@@ -397,12 +396,12 @@ Sorts.propTypes = {
 };
 Sorts.contextTypes = childContextTypes;
 
-const SearchForm = (props, { URL, lang, gettext }) => {
+const SearchForm = (props, { URL, lang, gettext, options }) => {
     const { type, values, sorts, sources } = props;
     const searchURL = URL(`/${type}/search`);
     const typeOptions = options.types[type];
-    const placeholder = typeOptions.getSearchPlaceholder({ gettext });
-    const showImageFilter = typeOptions.hasImages() || !typeOptions.requiresImages();
+    const placeholder = typeOptions.getSearchPlaceholder;
+    const showImageFilter = typeOptions.hasImages || !typeOptions.requiresImages;
 
     return React.createElement(
         "form",
@@ -424,7 +423,7 @@ const SearchForm = (props, { URL, lang, gettext }) => {
         ),
         React.createElement(Filters, props),
         sources && sources.length > 1 && React.createElement(SourceFilter, props),
-        typeOptions.hasImageSearch() && React.createElement(SimilarityFilter, props),
+        typeOptions.hasImageSearch && React.createElement(SimilarityFilter, props),
         showImageFilter && React.createElement(ImageFilter, props),
         sorts && sorts.length > 0 && React.createElement(Sorts, props),
         React.createElement(
@@ -510,7 +509,7 @@ FacetBucket.propTypes = {
 const Facet = ({
     facet,
     type
-}, { format, gettext }) => {
+}, { format, gettext, options }) => {
     const minFacetCount = options.types[type].minFacetCount || 1;
     let extra = null;
     let buckets = facet.buckets.filter(bucket => bucket.count >= minFacetCount);
@@ -926,24 +925,7 @@ Pagination.propTypes = {
 };
 Pagination.contextTypes = childContextTypes;
 
-const ImageResultFooter = (props, { URL, lang }) => {
-    const { record, sources, type } = props;
-    const resultFooter = options.types[type].views.resultFooter;
-
-    if (resultFooter) {
-        return React.createElement(
-            "div",
-            { className: "details" },
-            React.createElement(
-                "div",
-                { className: "wrap" },
-                React.createElement("resultFooter", _extends({}, props, {
-                    record: record
-                }))
-            )
-        );
-    }
-
+const ImageResultFooter = ({ record, sources }, { URL, lang }) => {
     // Don't show the source selection if there isn't more than one source
     if (!sources || sources.length <= 1) {
         return null;
@@ -1026,9 +1008,9 @@ TextResult.propTypes = {
 };
 TextResult.contextTypes = childContextTypes;
 
-const Results = props => {
+const Results = (props, { options }) => {
     const { breadcrumbs, records, type } = props;
-    const imageResult = options.types[type].hasImages();
+    const imageResult = options.types[type].hasImages;
 
     return React.createElement(
         "div",
@@ -1092,6 +1074,8 @@ Results.propTypes = {
     values: require("react").PropTypes.shape({}).isRequired,
     queries: require("react").PropTypes.shape({}).isRequired
 };
+Results.contextTypes = childContextTypes;
+
 const Search = props => {
     const { title, url } = props;
 

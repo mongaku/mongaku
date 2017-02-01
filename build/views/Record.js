@@ -5,7 +5,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 const React = require("react");
 
 const metadata = require("../lib/metadata");
-const options = require("../lib/options");
 
 const Page = require("./Page.js");
 
@@ -24,7 +23,8 @@ const hasValue = (records, type) => {
 const Title = props => {
     const { record, records } = props;
     const size = Math.max(Math.round(12 / records.length), 3);
-    const title = options.types[record.type].recordTitle(record, props);
+    // TODO(jeresig): Fix recordTitle to be i18n
+    const title = record.title || "";
 
     return React.createElement(
         "th",
@@ -134,7 +134,7 @@ const Images = props => {
     );
 };
 
-const Metadata = props => {
+const Metadata = (props, { options }) => {
     const { records, sources } = props;
     const firstRecord = records[0];
 
@@ -183,6 +183,7 @@ Metadata.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         url: require("react").PropTypes.string.isRequired,
+        title: require("react").PropTypes.string,
         images: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
             _id: require("react").PropTypes.string.isRequired,
             getOriginalURL: require("react").PropTypes.func.isRequired,
@@ -216,6 +217,8 @@ Metadata.propTypes = {
         getURL: require("react").PropTypes.func.isRequired
     })).isRequired
 };
+Metadata.contextTypes = childContextTypes;
+
 const Details = ({ records }, { gettext }) => React.createElement(
     "tr",
     null,
@@ -245,6 +248,7 @@ Details.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         url: require("react").PropTypes.string.isRequired,
+        title: require("react").PropTypes.string,
         images: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
             _id: require("react").PropTypes.string.isRequired,
             getOriginalURL: require("react").PropTypes.func.isRequired,
@@ -313,6 +317,7 @@ Sources.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         url: require("react").PropTypes.string.isRequired,
+        title: require("react").PropTypes.string,
         images: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
             _id: require("react").PropTypes.string.isRequired,
             getOriginalURL: require("react").PropTypes.func.isRequired,
@@ -402,6 +407,7 @@ MainRecord.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         url: require("react").PropTypes.string.isRequired,
+        title: require("react").PropTypes.string,
         images: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
             _id: require("react").PropTypes.string.isRequired,
             getOriginalURL: require("react").PropTypes.func.isRequired,
@@ -520,6 +526,7 @@ Similar.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         url: require("react").PropTypes.string.isRequired,
+        title: require("react").PropTypes.string,
         images: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
             _id: require("react").PropTypes.string.isRequired,
             getOriginalURL: require("react").PropTypes.func.isRequired,
@@ -566,7 +573,7 @@ const Script = () => React.createElement("script", {
 const Record = (props, { URL }) => {
     const { records, similar } = props;
     const record = records[0];
-    const title = options.types[record.type].recordTitle(record, props);
+    const title = record.title || "";
     const social = {
         imgURL: record.getOriginalURL(),
         title,
@@ -595,6 +602,7 @@ Record.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         url: require("react").PropTypes.string.isRequired,
+        title: require("react").PropTypes.string,
         images: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
             _id: require("react").PropTypes.string.isRequired,
             getOriginalURL: require("react").PropTypes.func.isRequired,

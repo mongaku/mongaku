@@ -2,13 +2,8 @@
 
 const React = require("react");
 
-const options = require("../lib/options");
-
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
-
-const types = Object.keys(options.types);
-const multipleTypes = types.length > 1;
 
 type Props = {
     children?: React.Element<*>,
@@ -29,8 +24,8 @@ const Head = ({
     social,
     style,
     noIndex,
-}: Props, {URL, getTitle, lang}: Context) => {
-    const siteTitle = getTitle(options);
+}: Props, {URL, lang, options}: Context) => {
+    const siteTitle = options.getTitle;
     let pageTitle = siteTitle;
 
     if (title) {
@@ -82,9 +77,9 @@ const Head = ({
 
 Head.contextTypes = childContextTypes;
 
-const Logo = (props, {getTitle, URL}: Context) => <span>
-    <img alt={getTitle(options)}
-        src={URL(options.logoUrl)}
+const Logo = (props, {URL, options}: Context) => <span>
+    <img alt={options.getTitle}
+        src={URL(options.logoUrl || "")}
         height="40" width="40"
     />
     {" "}
@@ -145,8 +140,8 @@ const NavLink = ({type, title}: Props & {type: string},
 
 NavLink.contextTypes = childContextTypes;
 
-const SearchForm = (props, {gettext, URL}: Context) => <form
-    action={URL(`/${types[0]}/search`)}
+const SearchForm = (props, {gettext, URL, options}: Context) => <form
+    action={URL(`/${Object.keys(options.types)[0]}/search`)}
     method="GET"
     className={"navbar-form navbar-right search form-inline hidden-xs"}
 >
@@ -168,6 +163,7 @@ const LocaleMenu = (props, {
     lang,
     URL,
     getOtherURL,
+    options,
 }: Context) => <li className="dropdown">
     <a href="" className="dropdown-toggle"
         data-toggle="dropdown" role="button"
@@ -203,8 +199,8 @@ LocaleMenu.contextTypes = childContextTypes;
 const Header = (props, {
     gettext,
     URL,
-    getShortTitle,
     user,
+    options,
 }: Context) => <div
     className="navbar navbar-default navbar-static-top"
 >
@@ -221,14 +217,14 @@ const Header = (props, {
             </button>
             <a className="navbar-brand" href={URL("/")}>
                 {options.logoUrl && <Logo />}
-                {getShortTitle(options)}
+                {options.getShortTitle}
             </a>
         </div>
 
         <div id="header-navbar" className="collapse navbar-collapse">
             <ul className="nav navbar-nav">
                 {Object.keys(options.types).map((type) => {
-                    const title = options.types[type].name({gettext});
+                    const title = options.types[type].name;
                     return <NavLink type={type} title={title} key={type} />;
                 })}
                 {!user && <li>
@@ -245,7 +241,7 @@ const Header = (props, {
                     <LocaleMenu />}
             </ul>
 
-            {multipleTypes && <SearchForm />}
+            {Object.keys(options.types).length > 1 && <SearchForm />}
         </div>
     </div>
 </div>;

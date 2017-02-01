@@ -3,7 +3,6 @@
 const React = require("react");
 
 const metadata = require("../lib/metadata");
-const options = require("../lib/options");
 
 const Page = require("./Page.js");
 
@@ -66,9 +65,9 @@ type Props = {
     facets?: Array<FacetType>,
     records: Array<RecordType>,
     globalFacets: {
-        [key: string]: {
+        [key: string]: Array<{
             text: string,
-        },
+        }>,
     },
     values: {
         [key: string]: string,
@@ -84,7 +83,8 @@ type Props = {
     },
 };
 
-const Filters = ({type, globalFacets}: Props, {gettext}: Context) => {
+const Filters = ({type, globalFacets, values}: Props,
+        {gettext, options}: Context) => {
     const model = metadata.model(type);
 
     return <div>
@@ -95,11 +95,11 @@ const Filters = ({type, globalFacets}: Props, {gettext}: Context) => {
                 return null;
             }
 
-            const values = (globalFacets[type] || [])
+            const allValues = (globalFacets[type] || [])
                 .map((bucket) => bucket.text).sort();
 
             return <div key={type}>
-                {typeSchema.renderFilter(values[type], values, {gettext})}
+                {typeSchema.renderFilter(values[type], allValues, {gettext})}
             </div>;
         })}
     </div>;
@@ -204,13 +204,13 @@ const Sorts = ({
 
 Sorts.contextTypes = childContextTypes;
 
-const SearchForm = (props: Props, {URL, lang, gettext}: Context) => {
+const SearchForm = (props: Props, {URL, lang, gettext, options}: Context) => {
     const {type, values, sorts, sources} = props;
     const searchURL = URL(`/${type}/search`);
     const typeOptions = options.types[type];
-    const placeholder = typeOptions.getSearchPlaceholder({gettext});
-    const showImageFilter = typeOptions.hasImages() ||
-        !typeOptions.requiresImages();
+    const placeholder = typeOptions.getSearchPlaceholder;
+    const showImageFilter = typeOptions.hasImages ||
+        !typeOptions.requiresImages;
 
     return <form action={searchURL} method="GET">
         <input type="hidden" name="lang" value={lang}/>
@@ -228,7 +228,7 @@ const SearchForm = (props: Props, {URL, lang, gettext}: Context) => {
         {/* Don't show the source selection if there isn't more than
             one source */}
         {sources && sources.length > 1 && <SourceFilter {...props} />}
-        {typeOptions.hasImageSearch() &&
+        {typeOptions.hasImageSearch &&
             <SimilarityFilter {...props} />}
         {showImageFilter && <ImageFilter {...props} />}
         {sorts && sorts.length > 0 && <Sorts {...props} />}
@@ -250,7 +250,7 @@ const FacetBucket = ({bucket}: {bucket: Bucket}) => <li>
 const Facet = ({
     facet,
     type,
-}: {type: string, facet: FacetType}, {format, gettext}: Context) => {
+}: {type: string, facet: FacetType}, {format, gettext, options}: Context) => {
     const minFacetCount = options.types[type].minFacetCount || 1;
     let extra = null;
     let buckets = facet.buckets
@@ -403,23 +403,8 @@ const Pagination = ({prev, next}: Props, {gettext}: Context) => <nav>
 
 Pagination.contextTypes = childContextTypes;
 
-const ImageResultFooter = (props: Props & {record: RecordType},
+const ImageResultFooter = ({record, sources}: Props & {record: RecordType},
         {URL, lang}: Context) => {
-    const {record, sources, type} = props;
-    const resultFooter = options.types[type]
-        .views.resultFooter;
-
-    if (resultFooter) {
-        return <div className="details">
-            <div className="wrap">
-                <resultFooter
-                    {...props}
-                    record={record}
-                />
-            </div>
-        </div>;
-    }
-
     // Don't show the source selection if there isn't more than one source
     if (!sources || sources.length <= 1) {
         return null;
@@ -475,9 +460,9 @@ const TextResult = ({record}: {record: RecordType},
 
 TextResult.contextTypes = childContextTypes;
 
-const Results = (props: Props) => {
+const Results = (props: Props, {options}: Context) => {
     const {breadcrumbs, records, type} = props;
-    const imageResult = options.types[type].hasImages();
+    const imageResult = options.types[type].hasImages;
 
     return <div className="results-main col-sm-9 col-sm-pull-3">
         {breadcrumbs && breadcrumbs.length > 0 && <Breadcrumbs {...props} />}
@@ -492,6 +477,8 @@ const Results = (props: Props) => {
         <Pagination {...props} />
     </div>;
 };
+
+Results.contextTypes = childContextTypes;
 
 const Search = (props: Props) => {
     const {title, url} = props;

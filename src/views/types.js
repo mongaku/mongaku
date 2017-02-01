@@ -2,6 +2,7 @@
 
 type BaseModelType = {
     title: string,
+    placeholder?: string,
     recommended?: boolean,
     required?: boolean,
     searchName?: string,
@@ -10,54 +11,69 @@ type BaseModelType = {
 };
 
 type Dimension = BaseModelType & {
-    title: string,
-    recommended?: boolean,
-    required?: boolean,
-    searchName?: string,
-    multiple?: boolean,
-    hidden?: boolean,
     type: "Dimension",
-};
-
-type FixedString = BaseModelType & {
-    title: string,
-    recommended?: boolean,
-    required?: boolean,
-    searchName?: string,
-    multiple?: boolean,
-    hidden?: boolean,
-    type: "FixedString",
-    allowUnknown?: boolean,
-};
-
-// LinkedRecord
-
-type Location = BaseModelType & {
-    type: "Location",
-    placeholder?: string,
-};
-
-type Name = BaseModelType & {
-    type: "Name",
-    placeholder: string,
-};
-
-type SimpleDate = BaseModelType & {
-    type: "SimpleDate",
-    interval?: string,
-    format?: string,
+    defaultUnit?: string,
+    defaultSearchUnit?: string,
+    widthTitle: string,
+    heightTitle: string,
     placeholder?: {
         start: number,
         end: number,
     },
 };
 
+type FixedString = BaseModelType & {
+    type: "FixedString",
+    allowUnknown?: boolean,
+    url?: string,
+    values?: {
+        [name: string]: {
+            title: string,
+        },
+    },
+};
+
+type LinkedRecord = BaseModelType & {
+    type: "LinkedRecord",
+    recordType: string,
+};
+
+type Location = BaseModelType & {
+    type: "Location",
+};
+
+type Name = BaseModelType & {
+    type: "Name",
+};
+
+type SimpleDate = BaseModelType & {
+    type: "SimpleDate",
+    interval?: string,
+    format?: string,
+};
+
+type SimpleNumber = BaseModelType & {
+    type: "SimpleNumber",
+};
+
 type SimpleString = BaseModelType & {
     type: "SimpleString",
 };
 
-type ModelType = Dimension | FixedString | Location | Name | SimpleDate |
-    SimpleString;
+type YearRange = BaseModelType & {
+    type: "YearRange",
+    ranges?: Array<{
+        from?: number,
+        to?: number,
+    }>,
+    placeholder?: {
+        start: number,
+        end: number,
+    },
+};
+
+type ModelType = Dimension | FixedString | LinkedRecord | Location | Name |
+    SimpleDate | SimpleNumber | SimpleString | YearRange;
 
 type TypeOptions = {
     getSearchPlaceholder: string,
@@ -67,6 +83,7 @@ type TypeOptions = {
     noImageSearch: boolean,
     urlRequired: boolean,
     noURLs: boolean,
+    minFacetCount?: number,
     name: string,
     defaultImage: string,
     filters: Array<string>,
@@ -88,6 +105,8 @@ export type Options = {
     getTitle: string,
     noIndex: boolean,
     usei18nSubdomain: boolean,
+    faviconUrl?: string,
+    logoUrl?: string,
     maxUploadSize: number,
     imageThumbSize: string,
     imageScaledSize: string,
