@@ -4,9 +4,14 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 const React = require("react");
 
-const metadata = require("../lib/metadata");
-
 const Page = require("./Page.js");
+const FixedStringEdit = require("./types/edit/FixedString.js");
+const LinkedRecordEdit = require("./types/edit/LinkedRecord.js");
+const NameEdit = require("./types/edit/Name.js");
+const SimpleDateEdit = require("./types/edit/SimpleDate.js");
+const YearRangeEdit = require("./types/edit/YearRange.js");
+
+var babelPluginFlowReactPropTypes_proptype_ModelType = require("./types.js").babelPluginFlowReactPropTypes_proptype_ModelType || require("react").PropTypes.any;
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
@@ -179,21 +184,108 @@ IDForm.propTypes = {
 };
 IDForm.contextTypes = childContextTypes;
 
+const TypeEdit = ({
+    value,
+    allValues,
+    typeSchema
+}) => {
+    const { searchName, name, type, multiple } = typeSchema;
+    const searchField = searchName || name;
+
+    if (typeSchema.type === "Dimension") {
+        return null;
+    } else if (typeSchema.type === "FixedString") {
+        const expectedValues = typeSchema.values || {};
+        let values = Object.keys(expectedValues).map(id => ({
+            id,
+            name: expectedValues[id].name
+        }));
+
+        if (values.length === 0) {
+            values = allValues.map(text => ({
+                id: text,
+                name: text
+            }));
+        }
+
+        return React.createElement(FixedStringEdit, {
+            name: name,
+            type: type,
+            value: value,
+            values: values,
+            searchField: searchField,
+            multiple: multiple
+        });
+    } else if (typeSchema.type === "LinkedRecord") {
+        return React.createElement(LinkedRecordEdit, {
+            name: name,
+            type: type,
+            value: value,
+            searchField: searchField,
+            multiple: multiple,
+            recordType: typeSchema.recordType,
+            placeholder: typeSchema.placeholder
+        });
+    } else if (typeSchema.type === "Location") {
+        return null;
+    } else if (typeSchema.type === "Name") {
+        return React.createElement(NameEdit, {
+            name: name,
+            type: type,
+            value: value,
+            multiple: multiple,
+            names: allValues
+        });
+    } else if (typeSchema.type === "SimpleDate") {
+        return React.createElement(SimpleDateEdit, {
+            name: name,
+            type: type,
+            value: value
+        });
+    } else if (typeSchema.type === "SimpleNumber") {
+        return React.createElement(FixedStringEdit, {
+            name: name,
+            type: type,
+            value: value
+        });
+    } else if (typeSchema.type === "SimpleString") {
+        return React.createElement(FixedStringEdit, {
+            name: name,
+            type: type,
+            value: value,
+            multiline: typeSchema.multiline
+        });
+    } else if (typeSchema.type === "YearRange") {
+        return React.createElement(YearRangeEdit, {
+            name: name,
+            type: type,
+            value: value
+        });
+    }
+
+    return null;
+};
+
+TypeEdit.propTypes = {
+    value: require("react").PropTypes.any.isRequired,
+    allValues: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
+    typeSchema: babelPluginFlowReactPropTypes_proptype_ModelType
+};
 const Contents = (props, { gettext, options }) => {
     const {
         type,
         globalFacets,
         dynamicValues
     } = props;
-    const model = metadata.model(type);
-    const types = Object.keys(options.types[type].model);
+    const { model } = options.types[type];
+    const types = Object.keys(model);
     let hasPrivate = false;
 
     const fields = types.map(type => {
         const typeSchema = model[type];
         const dynamicValue = dynamicValues[type];
         const values = (globalFacets && globalFacets[type] || []).map(bucket => bucket.text).sort();
-        const isPrivate = typeSchema.options.private;
+        const isPrivate = typeSchema.private;
 
         hasPrivate = hasPrivate || isPrivate;
 
@@ -203,12 +295,16 @@ const Contents = (props, { gettext, options }) => {
             React.createElement(
                 "th",
                 { className: "text-right" },
-                typeSchema.options.title({ gettext })
+                typeSchema.title
             ),
             React.createElement(
                 "td",
                 { "data-private": isPrivate },
-                typeSchema.renderEdit(dynamicValue, values, { gettext })
+                React.createElement(TypeEdit, {
+                    value: dynamicValue,
+                    allValues: values,
+                    typeSchema: typeSchema
+                })
             )
         );
     });

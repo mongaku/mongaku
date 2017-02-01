@@ -3,7 +3,6 @@
 const React = require("react");
 
 const FixedStringDisplay = React.createFactory(require("../../views/types/view/FixedString.js"));
-const SimpleDateEdit = React.createFactory(require("../../views/types/edit/SimpleDate.js"));
 
 const SimpleDate = function (options) {
     this.options = options;
@@ -49,15 +48,6 @@ SimpleDate.prototype = {
 
     renderView(value) {
         return FixedStringDisplay({
-            name: this.options.name,
-            type: this.options.type,
-            value,
-            multiline: this.options.multiline
-        });
-    },
-
-    renderEdit(value) {
-        return SimpleDateEdit({
             name: this.options.name,
             type: this.options.type,
             value,

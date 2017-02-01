@@ -1,11 +1,5 @@
 "use strict";
 
-const React = require("react");
-
-//const LinkedRecordDisplay = React.createFactory(
-//    require("../../views/types/view/LinkedRecord.js"));
-const LinkedRecordEdit = React.createFactory(require("../../views/types/edit/LinkedRecord.js"));
-
 const LinkedRecord = function (options) {
     this.options = options;
     /*
@@ -56,17 +50,6 @@ LinkedRecord.prototype = {
             value,
         });
         */
-    },
-
-    renderEdit(value, allValues, i18n) {
-        return LinkedRecordEdit({
-            name: this.options.name,
-            type: this.options.type,
-            value,
-            multiple: this.options.multiple,
-            recordType: this.options.recordType,
-            placeholder: this.options.placeholder(i18n)
-        });
     },
 
     schema() {

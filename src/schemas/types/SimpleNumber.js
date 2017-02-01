@@ -2,8 +2,6 @@ const React = require("react");
 
 const FixedStringDisplay = React.createFactory(
     require("../../views/types/view/FixedString.js"));
-const FixedStringEdit = React.createFactory(
-    require("../../views/types/edit/FixedString.js"));
 
 const SimpleNumber = function(options) {
     this.options = options;
@@ -36,15 +34,6 @@ SimpleNumber.prototype = {
             name: this.options.name,
             type: this.options.type,
             value,
-        });
-    },
-
-    renderEdit(value) {
-        return FixedStringEdit({
-            name: this.options.name,
-            type: this.options.type,
-            value,
-            hidden: this.options.hidden,
         });
     },
 

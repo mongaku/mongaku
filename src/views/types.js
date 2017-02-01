@@ -1,8 +1,10 @@
 // @flow
 
 type BaseModelType = {
+    name: string,
     title: string,
     placeholder?: string,
+    private?: boolean,
     recommended?: boolean,
     required?: boolean,
     searchName?: string,
@@ -28,7 +30,7 @@ type FixedString = BaseModelType & {
     url?: string,
     values?: {
         [name: string]: {
-            title: string,
+            name: string,
         },
     },
 };
@@ -58,6 +60,7 @@ type SimpleNumber = BaseModelType & {
 
 type SimpleString = BaseModelType & {
     type: "SimpleString",
+    multiline?: boolean,
 };
 
 type YearRange = BaseModelType & {
@@ -72,8 +75,8 @@ type YearRange = BaseModelType & {
     },
 };
 
-type ModelType = Dimension | FixedString | LinkedRecord | Location | Name |
-    SimpleDate | SimpleNumber | SimpleString | YearRange;
+export type ModelType = Dimension | FixedString | LinkedRecord | Location |
+    Name | SimpleDate | SimpleNumber | SimpleString | YearRange;
 
 type TypeOptions = {
     getSearchPlaceholder: string,

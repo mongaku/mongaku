@@ -4,7 +4,6 @@ const React = require("react");
 
 const FixedStringFilter = React.createFactory(require("../../views/types/filter/FixedString.js"));
 const FixedStringDisplay = React.createFactory(require("../../views/types/view/FixedString.js"));
-const FixedStringEdit = React.createFactory(require("../../views/types/edit/FixedString.js"));
 
 const FixedString = function (options) {
     this.options = options;
@@ -13,7 +12,7 @@ const FixedString = function (options) {
     type
     searchName
     allowUnknown: Bool
-    values: {Key: title(i18n)}
+    values: {Key: name(i18n)}
     title(i18n)
     placeholder(i18n)
     url(value)
@@ -113,26 +112,6 @@ FixedString.prototype = {
             value,
             values: this.getValueArray(i18n),
             searchField: this.options.searchField
-        });
-    },
-
-    renderEdit(value, allValues, i18n) {
-        let values = this.getValueArray(i18n);
-
-        if (values.length === 0) {
-            values = allValues.map(text => ({
-                id: text,
-                name: text
-            }));
-        }
-
-        return FixedStringEdit({
-            name: this.options.name,
-            type: this.options.type,
-            value,
-            values,
-            searchField: this.options.searchField,
-            multiple: this.options.multiple
         });
     },
 

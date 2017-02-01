@@ -5,7 +5,6 @@ const yearRange = require("yearrange");
 
 const YearRangeFilter = React.createFactory(require("../../views/types/filter/YearRange.js"));
 const YearRangeDisplay = React.createFactory(require("../../views/types/view/YearRange.js"));
-const YearRangeEdit = React.createFactory(require("../../views/types/edit/YearRange.js"));
 
 const numRange = bucket => bucket.to ? `${bucket.from || 0}-${bucket.to}` : `${bucket.from}+`;
 
@@ -201,14 +200,6 @@ YearRange.prototype = {
 
     renderView(value) {
         return YearRangeDisplay({
-            name: this.options.name,
-            type: this.options.type,
-            value
-        });
-    },
-
-    renderEdit(value) {
-        return YearRangeEdit({
             name: this.options.name,
             type: this.options.type,
             value

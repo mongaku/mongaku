@@ -6,8 +6,6 @@ const NameFilter = React.createFactory(
     require("../../views/types/filter/Name.js"));
 const NameDisplay = React.createFactory(
     require("../../views/types/view/Name.js"));
-const NameEdit = React.createFactory(
-    require("../../views/types/edit/Name.js"));
 
 const Name = function(options) {
     this.options = options;
@@ -97,16 +95,6 @@ Name.prototype = {
             name: this.options.name,
             type: this.options.type,
             value,
-            multiple: this.options.multiple,
-        });
-    },
-
-    renderEdit(value, names) {
-        return NameEdit({
-            name: this.options.name,
-            type: this.options.type,
-            value,
-            names,
             multiple: this.options.multiple,
         });
     },

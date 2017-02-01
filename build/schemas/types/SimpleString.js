@@ -3,7 +3,6 @@
 const React = require("react");
 
 const FixedStringDisplay = React.createFactory(require("../../views/types/view/FixedString.js"));
-const FixedStringEdit = React.createFactory(require("../../views/types/edit/FixedString.js"));
 
 const SimpleString = function (options) {
     this.options = options;
@@ -33,15 +32,6 @@ SimpleString.prototype = {
 
     renderView(value) {
         return FixedStringDisplay({
-            name: this.options.name,
-            type: this.options.type,
-            value,
-            multiline: this.options.multiline
-        });
-    },
-
-    renderEdit(value) {
-        return FixedStringEdit({
             name: this.options.name,
             type: this.options.type,
             value,
