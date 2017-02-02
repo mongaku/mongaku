@@ -42,16 +42,6 @@ LinkedRecord.prototype = {
         });
     },
 
-    renderView() {
-        /*
-        return LinkedRecordDisplay({
-            name: this.options.name,
-            type: this.options.type,
-            value,
-        });
-        */
-    },
-
     schema() {
         const type = {
             type: String,

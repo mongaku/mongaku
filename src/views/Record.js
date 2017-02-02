@@ -2,11 +2,14 @@
 
 const React = require("react");
 
-const metadata = require("../lib/metadata");
-
 const Page = require("./Page.js");
+const DimensionView = require("./types/view/Dimension.js");
+const FixedStringView = require("./types/view/FixedString.js");
+const LocationView = require("./types/view/Location.js");
+const NameView = require("./types/view/Name.js");
+const YearRangeView = require("./types/view/YearRange.js");
 
-import type {Context} from "./types.js";
+import type {Context, ModelType} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
 
 type ImageType = {
@@ -163,6 +166,89 @@ const Images = (props: Props & {record: RecordType}) => {
     </td>;
 };
 
+const TypeView = ({
+    value,
+    typeSchema,
+}: {
+    value: any,
+    typeSchema: ModelType,
+}) => {
+    const {name, type, multiple} = typeSchema;
+
+    if (typeSchema.type === "Dimension") {
+        return <DimensionView
+            name={name}
+            type={type}
+            value={value}
+            defaultUnit={typeSchema.defaultUnit}
+        />;
+
+    } else if (typeSchema.type === "FixedString") {
+        const expectedValues = typeSchema.values || {};
+        const values = Object.keys(expectedValues).map((id) => ({
+            id,
+            name: expectedValues[id].name,
+        }));
+
+        return <FixedStringView
+            name={name}
+            type={type}
+            value={value}
+            values={values}
+            multiple={multiple}
+        />;
+
+    } else if (typeSchema.type === "LinkedRecord") {
+        return null;
+
+    } else if (typeSchema.type === "Location") {
+        return <LocationView
+            name={name}
+            type={type}
+            value={value}
+        />;
+
+    } else if (typeSchema.type === "Name") {
+        return <NameView
+            name={name}
+            type={type}
+            value={value}
+            multiple={multiple}
+        />;
+
+    } else if (typeSchema.type === "SimpleDate") {
+        return <FixedStringView
+            name={name}
+            type={type}
+            value={value}
+        />;
+
+    } else if (typeSchema.type === "SimpleNumber") {
+        return <FixedStringView
+            name={name}
+            type={type}
+            value={value}
+        />;
+
+    } else if (typeSchema.type === "SimpleString") {
+        return <FixedStringView
+            name={name}
+            type={type}
+            value={value}
+            multiline={typeSchema.multiline}
+        />;
+
+    } else if (typeSchema.type === "YearRange") {
+        return <YearRangeView
+            name={name}
+            type={type}
+            value={value}
+        />;
+    }
+
+    return null;
+};
+
 const Metadata = (props: Props, {options}: Context) => {
     const {records, sources} = props;
     const firstRecord = records[0];
@@ -172,8 +258,8 @@ const Metadata = (props: Props, {options}: Context) => {
     }
 
     // We assume that all the records are the same type
-    const type = records[0].type;
-    const model = metadata.model(type);
+    const type = firstRecord.type;
+    const {model} = options.types[type];
 
     return <tbody>
         {options.types[type].display.map((type) => {
@@ -186,10 +272,10 @@ const Metadata = (props: Props, {options}: Context) => {
 
             return <tr key={type}>
                 <th className="text-right">
-                    {typeSchema.options.title(props)}
+                    {typeSchema.title}
                 </th>
                 {records.map((record) => <td key={record._id}>
-                    {typeSchema.renderView(record[type], props)}
+                    <TypeView value={record[type]} typeSchema={typeSchema} />
                 </td>)}
             </tr>;
         })}

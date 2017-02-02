@@ -1,10 +1,6 @@
 "use strict";
 
-const React = require("react");
 const yearRange = require("yearrange");
-
-const YearRangeFilter = React.createFactory(require("../../views/types/filter/YearRange.js"));
-const YearRangeDisplay = React.createFactory(require("../../views/types/view/YearRange.js"));
 
 const numRange = bucket => bucket.to ? `${bucket.from || 0}-${bucket.to}` : `${bucket.from}+`;
 
@@ -186,24 +182,6 @@ YearRange.prototype = {
                 }
             }]
         };
-    },
-
-    renderFilter(value, values, i18n) {
-        return YearRangeFilter({
-            name: this.options.name,
-            searchName: this.searchName(),
-            value,
-            placeholder: this.options.placeholder(i18n),
-            title: this.options.title(i18n)
-        });
-    },
-
-    renderView(value) {
-        return YearRangeDisplay({
-            name: this.options.name,
-            type: this.options.type,
-            value
-        });
     },
 
     schema(Schema) {

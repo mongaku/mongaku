@@ -1,10 +1,6 @@
 "use strict";
 
 const pd = require("parse-dimensions");
-const React = require("react");
-
-const DimensionFilter = React.createFactory(require("../../views/types/filter/Dimension.js"));
-const DimensionDisplay = React.createFactory(require("../../views/types/view/Dimension.js"));
 
 const numRange = bucket => bucket.to ? `${bucket.from || 0}-${bucket.to}${bucket.unit}` : `${bucket.from}${bucket.unit}+`;
 
@@ -241,26 +237,6 @@ Dimension.prototype = {
                 formatBuckets: buckets => buckets.map(formatFacetBucket)
             }
         };
-    },
-
-    renderFilter(value, values, i18n) {
-        return DimensionFilter({
-            name: this.options.name,
-            searchName: this.searchName(),
-            placeholder: this.options.placeholder(i18n),
-            heightTitle: this.options.heightTitle(i18n),
-            widthTitle: this.options.widthTitle(i18n),
-            value
-        });
-    },
-
-    renderView(value) {
-        return DimensionDisplay({
-            name: this.options.name,
-            type: this.options.type,
-            value,
-            defaultUnit: this.defaultSearchUnit
-        });
     },
 
     schema(Schema) {

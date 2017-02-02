@@ -1,10 +1,3 @@
-const React = require("react");
-
-const LocationFilter = React.createFactory(
-    require("../../views/types/filter/Location.js"));
-const LocationDisplay = React.createFactory(
-    require("../../views/types/view/Location.js"));
-
 const Location = function(options) {
     this.options = options;
     /*
@@ -48,24 +41,6 @@ Location.prototype = {
                 },
             },
         };
-    },
-
-    renderFilter(value, values, i18n) {
-        return LocationFilter({
-            name: this.options.name,
-            searchName: this.searchName(),
-            value,
-            placeholder: this.options.placeholder(i18n),
-            title: this.options.title(i18n),
-        });
-    },
-
-    renderView(value) {
-        return LocationDisplay({
-            name: this.options.name,
-            type: this.options.type,
-            value,
-        });
     },
 
     schema(Schema) {

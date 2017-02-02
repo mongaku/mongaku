@@ -189,8 +189,7 @@ const TypeEdit = ({
     allValues,
     typeSchema
 }) => {
-    const { searchName, name, type, multiple } = typeSchema;
-    const searchField = searchName || name;
+    const { name, type, multiple } = typeSchema;
 
     if (typeSchema.type === "Dimension") {
         return null;
@@ -213,7 +212,6 @@ const TypeEdit = ({
             type: type,
             value: value,
             values: values,
-            searchField: searchField,
             multiple: multiple
         });
     } else if (typeSchema.type === "LinkedRecord") {
@@ -221,7 +219,6 @@ const TypeEdit = ({
             name: name,
             type: type,
             value: value,
-            searchField: searchField,
             multiple: multiple,
             recordType: typeSchema.recordType,
             placeholder: typeSchema.placeholder

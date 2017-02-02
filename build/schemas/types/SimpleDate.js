@@ -1,9 +1,5 @@
 "use strict";
 
-const React = require("react");
-
-const FixedStringDisplay = React.createFactory(require("../../views/types/view/FixedString.js"));
-
 const SimpleDate = function (options) {
     this.options = options;
 
@@ -44,15 +40,6 @@ SimpleDate.prototype = {
         const title = this.options.title(i18n);
         const date = this.formatDate(value, i18n);
         return `${title}: ${date}`;
-    },
-
-    renderView(value) {
-        return FixedStringDisplay({
-            name: this.options.name,
-            type: this.options.type,
-            value,
-            multiline: this.options.multiline
-        });
     },
 
     filter(value) {

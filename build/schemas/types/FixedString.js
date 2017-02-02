@@ -1,10 +1,5 @@
 "use strict";
 
-const React = require("react");
-
-const FixedStringFilter = React.createFactory(require("../../views/types/filter/FixedString.js"));
-const FixedStringDisplay = React.createFactory(require("../../views/types/view/FixedString.js"));
-
 const FixedString = function (options) {
     this.options = options;
     /*
@@ -75,44 +70,6 @@ FixedString.prototype = {
                 }))
             }
         };
-    },
-
-    getValueArray(i18n) {
-        return Object.keys(this.options.values).map(id => ({
-            id,
-            name: this.options.values[id].name(i18n)
-        }));
-    },
-
-    renderFilter(value, allValues, i18n) {
-        let values = this.getValueArray(i18n);
-
-        if (values.length === 0) {
-            values = allValues.map(text => ({
-                id: text,
-                name: text
-            }));
-        }
-
-        return FixedStringFilter({
-            name: this.options.name,
-            searchName: this.searchName(),
-            value,
-            values,
-            placeholder: this.options.placeholder(i18n),
-            title: this.options.title(i18n),
-            multiple: this.options.multiple
-        });
-    },
-
-    renderView(value, i18n) {
-        return FixedStringDisplay({
-            name: this.options.name,
-            type: this.options.type,
-            value,
-            values: this.getValueArray(i18n),
-            searchField: this.options.searchField
-        });
     },
 
     schema() {

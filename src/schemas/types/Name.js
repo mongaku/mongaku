@@ -1,11 +1,4 @@
-const React = require("react");
-
 const YearRange = require("./YearRange.js");
-
-const NameFilter = React.createFactory(
-    require("../../views/types/filter/Name.js"));
-const NameDisplay = React.createFactory(
-    require("../../views/types/view/Name.js"));
 
 const Name = function(options) {
     this.options = options;
@@ -76,27 +69,6 @@ Name.prototype = {
                 })),
             },
         };
-    },
-
-    renderFilter(value, values, i18n) {
-        return NameFilter({
-            name: this.options.name,
-            searchName: this.searchName(),
-            placeholder: this.options.placeholder(i18n),
-            title: this.options.title(i18n),
-            value,
-            values,
-            multiple: this.options.multiple,
-        });
-    },
-
-    renderView(value) {
-        return NameDisplay({
-            name: this.options.name,
-            type: this.options.type,
-            value,
-            multiple: this.options.multiple,
-        });
     },
 
     schema(Schema) {

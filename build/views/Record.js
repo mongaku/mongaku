@@ -4,9 +4,14 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 const React = require("react");
 
-const metadata = require("../lib/metadata");
-
 const Page = require("./Page.js");
+const DimensionView = require("./types/view/Dimension.js");
+const FixedStringView = require("./types/view/FixedString.js");
+const LocationView = require("./types/view/Location.js");
+const NameView = require("./types/view/Name.js");
+const YearRangeView = require("./types/view/YearRange.js");
+
+var babelPluginFlowReactPropTypes_proptype_ModelType = require("./types.js").babelPluginFlowReactPropTypes_proptype_ModelType || require("react").PropTypes.any;
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
@@ -134,6 +139,82 @@ const Images = props => {
     );
 };
 
+const TypeView = ({
+    value,
+    typeSchema
+}) => {
+    const { name, type, multiple } = typeSchema;
+
+    if (typeSchema.type === "Dimension") {
+        return React.createElement(DimensionView, {
+            name: name,
+            type: type,
+            value: value,
+            defaultUnit: typeSchema.defaultUnit
+        });
+    } else if (typeSchema.type === "FixedString") {
+        const expectedValues = typeSchema.values || {};
+        const values = Object.keys(expectedValues).map(id => ({
+            id,
+            name: expectedValues[id].name
+        }));
+
+        return React.createElement(FixedStringView, {
+            name: name,
+            type: type,
+            value: value,
+            values: values,
+            multiple: multiple
+        });
+    } else if (typeSchema.type === "LinkedRecord") {
+        return null;
+    } else if (typeSchema.type === "Location") {
+        return React.createElement(LocationView, {
+            name: name,
+            type: type,
+            value: value
+        });
+    } else if (typeSchema.type === "Name") {
+        return React.createElement(NameView, {
+            name: name,
+            type: type,
+            value: value,
+            multiple: multiple
+        });
+    } else if (typeSchema.type === "SimpleDate") {
+        return React.createElement(FixedStringView, {
+            name: name,
+            type: type,
+            value: value
+        });
+    } else if (typeSchema.type === "SimpleNumber") {
+        return React.createElement(FixedStringView, {
+            name: name,
+            type: type,
+            value: value
+        });
+    } else if (typeSchema.type === "SimpleString") {
+        return React.createElement(FixedStringView, {
+            name: name,
+            type: type,
+            value: value,
+            multiline: typeSchema.multiline
+        });
+    } else if (typeSchema.type === "YearRange") {
+        return React.createElement(YearRangeView, {
+            name: name,
+            type: type,
+            value: value
+        });
+    }
+
+    return null;
+};
+
+TypeView.propTypes = {
+    value: require("react").PropTypes.any.isRequired,
+    typeSchema: babelPluginFlowReactPropTypes_proptype_ModelType
+};
 const Metadata = (props, { options }) => {
     const { records, sources } = props;
     const firstRecord = records[0];
@@ -143,8 +224,8 @@ const Metadata = (props, { options }) => {
     }
 
     // We assume that all the records are the same type
-    const type = records[0].type;
-    const model = metadata.model(type);
+    const type = firstRecord.type;
+    const { model } = options.types[type];
 
     return React.createElement(
         "tbody",
@@ -163,12 +244,12 @@ const Metadata = (props, { options }) => {
                 React.createElement(
                     "th",
                     { className: "text-right" },
-                    typeSchema.options.title(props)
+                    typeSchema.title
                 ),
                 records.map(record => React.createElement(
                     "td",
                     { key: record._id },
-                    typeSchema.renderView(record[type], props)
+                    React.createElement(TypeView, { value: record[type], typeSchema: typeSchema })
                 ))
             );
         }),
