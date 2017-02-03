@@ -238,6 +238,8 @@ const Type = ({ type, sources }, { options }) => {
     );
 };
 
+Type.contextTypes = childContextTypes;
+
 const Home = ({ sources }, { options }) => React.createElement(
     Page,
     null,
@@ -253,4 +255,6 @@ Home.propTypes = {
         getURL: require("react").PropTypes.func.isRequired
     })).isRequired
 };
+Home.contextTypes = childContextTypes;
+
 module.exports = Home;

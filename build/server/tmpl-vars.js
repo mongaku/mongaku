@@ -33,7 +33,7 @@ module.exports = app => {
         }
 
         Object.assign(res.locals, {
-            options: optionsCache,
+            options: langOptions,
             user,
             originalUrl
         });

@@ -10,13 +10,7 @@ const engine = (filePath, options, callback) => {
 
     const wrapped = React.createElement(
         Wrapper,
-        {
-            originalUrl: options.originalUrl,
-            user: options.user,
-            lang: options.lang,
-            gettext: options.gettext,
-            format: options.format
-        },
+        options,
         React.createElement(View, options)
     );
 

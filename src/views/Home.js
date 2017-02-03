@@ -170,9 +170,13 @@ const Type = ({type, sources}: Props & {type: string}, {options}: Context) => {
     </div>;
 };
 
+Type.contextTypes = childContextTypes;
+
 const Home = ({sources}: Props, {options}: Context) => <Page>
     {Object.keys(options.types).map((type) =>
         <Type key={type} sources={sources} type={type} />)}
 </Page>;
+
+Home.contextTypes = childContextTypes;
 
 module.exports = Home;

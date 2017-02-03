@@ -253,7 +253,6 @@ tap.test("uploadData: Default File", (t) => {
             url,
             formData,
         }, (err, res, body) => {
-            console.log(body);
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 302);
             t.match(res.headers.location, "/artworks/source/test/admin");

@@ -6,13 +6,7 @@ const Wrapper = require("../views/Wrapper.js");
 const engine = (filePath: string, options: Object, callback: Function) => {
     const View = require(filePath);
 
-    const wrapped = <Wrapper
-        originalUrl={options.originalUrl}
-        user={options.user}
-        lang={options.lang}
-        gettext={options.gettext}
-        format={options.format}
-    >
+    const wrapped = <Wrapper {...options}>
         <View {...options} />
     </Wrapper>;
 
