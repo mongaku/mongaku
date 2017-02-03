@@ -1,5 +1,7 @@
 const React = require("react");
 
+const {childContextTypes} = require("../../Wrapper.js");
+
 const LocationView = React.createClass({
     propTypes: {
         name: React.PropTypes.string.isRequired,
@@ -13,9 +15,11 @@ const LocationView = React.createClass({
         ).isRequired,
     },
 
+    contextTypes: childContextTypes,
+
     renderName(location) {
-        const searchURL = require("../../../logic/shared/search-url");
-        const url = searchURL(this.props, {
+        const {searchURL} = this.context;
+        const url = searchURL({
             [this.props.name]: location.name,
             type: this.props.type,
         });

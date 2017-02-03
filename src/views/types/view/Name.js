@@ -1,5 +1,7 @@
 const React = require("react");
 
+const {childContextTypes} = require("../../Wrapper.js");
+
 const NameView = React.createClass({
     propTypes: {
         name: React.PropTypes.string.isRequired,
@@ -13,13 +15,15 @@ const NameView = React.createClass({
         ).isRequired,
     },
 
+    contextTypes: childContextTypes,
+
     renderPseudonym(name) {
         if (!name.pseudoynm || name.name === name.pseudoynm) {
             return null;
         }
 
-        const searchURL = require("../../../logic/shared/search-url");
-        const pseudoURL = searchURL(this.props, {
+        const {searchURL} = this.context;
+        const pseudoURL = searchURL({
             filter: name.pseudonym,
             type: this.props.type,
         });
@@ -30,8 +34,8 @@ const NameView = React.createClass({
     },
 
     renderName(name) {
-        const searchURL = require("../../../logic/shared/search-url");
-        const url = searchURL(this.props, {
+        const {searchURL} = this.context;
+        const url = searchURL({
             [this.props.name]: name.name,
             type: this.props.type,
         });

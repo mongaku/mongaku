@@ -185,11 +185,12 @@ IDForm.propTypes = {
 IDForm.contextTypes = childContextTypes;
 
 const TypeEdit = ({
+    type,
     value,
     allValues,
     typeSchema
 }) => {
-    const { name, type, multiple } = typeSchema;
+    const { name, multiple } = typeSchema;
 
     if (typeSchema.type === "Dimension") {
         return null;
@@ -264,6 +265,7 @@ const TypeEdit = ({
 };
 
 TypeEdit.propTypes = {
+    type: require("react").PropTypes.string.isRequired,
     value: require("react").PropTypes.any.isRequired,
     allValues: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
     typeSchema: babelPluginFlowReactPropTypes_proptype_ModelType
@@ -278,10 +280,10 @@ const Contents = (props, { gettext, options }) => {
     const types = Object.keys(model);
     let hasPrivate = false;
 
-    const fields = types.map(type => {
-        const typeSchema = model[type];
-        const dynamicValue = dynamicValues[type];
-        const values = (globalFacets && globalFacets[type] || []).map(bucket => bucket.text).sort();
+    const fields = types.map(modelType => {
+        const typeSchema = model[modelType];
+        const dynamicValue = dynamicValues[modelType];
+        const values = (globalFacets && globalFacets[modelType] || []).map(bucket => bucket.text).sort();
         const isPrivate = typeSchema.private;
 
         hasPrivate = hasPrivate || isPrivate;
@@ -298,6 +300,7 @@ const Contents = (props, { gettext, options }) => {
                 "td",
                 { "data-private": isPrivate },
                 React.createElement(TypeEdit, {
+                    type: type,
                     value: dynamicValue,
                     allValues: values,
                     typeSchema: typeSchema

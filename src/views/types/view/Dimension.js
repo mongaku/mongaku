@@ -3,7 +3,7 @@ const pd = require("parse-dimensions");
 
 const DimensionView = React.createClass({
     propTypes: {
-        defaultUnit: React.PropTypes.string.isRequired,
+        defaultUnit: React.PropTypes.string,
         name: React.PropTypes.string.isRequired,
         value: React.PropTypes.arrayOf(
             React.PropTypes.shape({
@@ -13,6 +13,12 @@ const DimensionView = React.createClass({
                 unit: React.PropTypes.string,
             })
         ).isRequired,
+    },
+
+    defaultProps: () => {
+        return {
+            defaultUnit: "mm",
+        };
     },
 
     getDimension(item) {

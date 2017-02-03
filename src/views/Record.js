@@ -167,13 +167,17 @@ const Images = (props: Props & {record: RecordType}) => {
 };
 
 const TypeView = ({
+    name,
+    type,
     value,
     typeSchema,
 }: {
+    name: string,
+    type: string,
     value: any,
     typeSchema: ModelType,
 }) => {
-    const {name, type, multiple} = typeSchema;
+    const {multiple} = typeSchema;
 
     if (typeSchema.type === "Dimension") {
         return <DimensionView
@@ -258,11 +262,11 @@ const Metadata = (props: Props, {options}: Context) => {
     }
 
     // We assume that all the records are the same type
-    const type = firstRecord.type;
-    const {model} = options.types[type];
+    const recordType = firstRecord.type;
+    const {model} = options.types[recordType];
 
     return <tbody>
-        {options.types[type].display.map((type) => {
+        {options.types[recordType].display.map((type) => {
             const typeSchema = model[type];
 
             // Hide if it there isn't at least one value to display
@@ -275,13 +279,17 @@ const Metadata = (props: Props, {options}: Context) => {
                     {typeSchema.title}
                 </th>
                 {records.map((record) => <td key={record._id}>
-                    <TypeView value={record[type]} typeSchema={typeSchema} />
+                    <TypeView
+                        name={type}
+                        type={recordType}
+                        value={record[type]}
+                        typeSchema={typeSchema}
+                    />
                 </td>)}
             </tr>;
         })}
         {hasValue(records, "url") && <Details {...props} />}
-        {sources.length > 1 &&
-            <Sources {...props} />}
+        {sources.length > 1 && <Sources {...props} />}
     </tbody>;
 };
 

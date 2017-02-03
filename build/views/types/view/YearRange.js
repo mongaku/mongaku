@@ -2,6 +2,8 @@
 
 const React = require("react");
 
+const { childContextTypes } = require("../../Wrapper.js");
+
 const getDate = item => {
     if (item.original) {
         return item.original;
@@ -28,10 +30,12 @@ const YearRangeView = React.createClass({
         value: React.PropTypes.arrayOf(dateRangeType).isRequired
     },
 
-    renderDate(date) {
-        const searchURL = require("../../../logic/shared/search-url");
+    contextTypes: childContextTypes,
 
-        const url = searchURL(this.props, {
+    renderDate(date) {
+        const { searchURL } = this.context;
+
+        const url = searchURL({
             [this.props.name]: {
                 start: date.start,
                 end: date.end

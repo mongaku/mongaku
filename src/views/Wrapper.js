@@ -6,6 +6,7 @@ const moment = require("moment");
 const React = require("react");
 
 const urls = require("../lib/urls");
+const searchURL = require("../logic/shared/search-url");
 
 import type {User, Options} from "./types.js";
 
@@ -77,6 +78,10 @@ class Wrapper extends React.Component {
             fixedDate(date: Date): string {
                 return moment(date).locale(lang).format("LLL");
             },
+
+            searchURL(params: Object): string {
+                return searchURL({lang}, params);
+            },
         };
     }
 
@@ -110,6 +115,7 @@ Wrapper.childContextTypes = {
     stringNum: React.PropTypes.func,
     relativeDate: React.PropTypes.func,
     fixedDate: React.PropTypes.func,
+    searchURL: React.PropTypes.func,
 };
 
 module.exports = Wrapper;

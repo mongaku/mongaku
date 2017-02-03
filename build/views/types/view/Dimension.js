@@ -7,7 +7,7 @@ const DimensionView = React.createClass({
     displayName: "DimensionView",
 
     propTypes: {
-        defaultUnit: React.PropTypes.string.isRequired,
+        defaultUnit: React.PropTypes.string,
         name: React.PropTypes.string.isRequired,
         value: React.PropTypes.arrayOf(React.PropTypes.shape({
             _id: React.PropTypes.string.isRequired,
@@ -15,6 +15,12 @@ const DimensionView = React.createClass({
             width: React.PropTypes.number,
             unit: React.PropTypes.string
         })).isRequired
+    },
+
+    defaultProps: () => {
+        return {
+            defaultUnit: "mm"
+        };
     },
 
     getDimension(item) {

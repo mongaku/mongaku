@@ -2,6 +2,8 @@
 
 const React = require("react");
 
+const { childContextTypes } = require("../../Wrapper.js");
+
 const FixedStringView = React.createClass({
     displayName: "FixedStringView",
 
@@ -14,6 +16,8 @@ const FixedStringView = React.createClass({
             name: React.PropTypes.string.isRequired
         }))
     },
+
+    contextTypes: childContextTypes,
 
     getTitle(value) {
         if (!this.props.values) {
@@ -34,9 +38,9 @@ const FixedStringView = React.createClass({
             return null;
         }
 
-        const searchURL = require("../../../logic/shared/search-url");
+        const { searchURL } = this.context;
         const title = this.getTitle(value);
-        const url = searchURL(this.props, {
+        const url = searchURL({
             [this.props.name]: value,
             type: this.props.type
         });

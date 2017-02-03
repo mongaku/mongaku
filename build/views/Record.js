@@ -140,10 +140,12 @@ const Images = props => {
 };
 
 const TypeView = ({
+    name,
+    type,
     value,
     typeSchema
 }) => {
-    const { name, type, multiple } = typeSchema;
+    const { multiple } = typeSchema;
 
     if (typeSchema.type === "Dimension") {
         return React.createElement(DimensionView, {
@@ -212,6 +214,8 @@ const TypeView = ({
 };
 
 TypeView.propTypes = {
+    name: require("react").PropTypes.string.isRequired,
+    type: require("react").PropTypes.string.isRequired,
     value: require("react").PropTypes.any.isRequired,
     typeSchema: babelPluginFlowReactPropTypes_proptype_ModelType
 };
@@ -224,13 +228,13 @@ const Metadata = (props, { options }) => {
     }
 
     // We assume that all the records are the same type
-    const type = firstRecord.type;
-    const { model } = options.types[type];
+    const recordType = firstRecord.type;
+    const { model } = options.types[recordType];
 
     return React.createElement(
         "tbody",
         null,
-        options.types[type].display.map(type => {
+        options.types[recordType].display.map(type => {
             const typeSchema = model[type];
 
             // Hide if it there isn't at least one value to display
@@ -249,7 +253,12 @@ const Metadata = (props, { options }) => {
                 records.map(record => React.createElement(
                     "td",
                     { key: record._id },
-                    React.createElement(TypeView, { value: record[type], typeSchema: typeSchema })
+                    React.createElement(TypeView, {
+                        name: type,
+                        type: recordType,
+                        value: record[type],
+                        typeSchema: typeSchema
+                    })
                 ))
             );
         }),

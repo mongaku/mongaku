@@ -102,6 +102,16 @@ for (const file of fs.readdirSync(typeFilterDir)) {
     }
 }
 
+const typeEditFiles = {};
+const typeEditDir = path.resolve(__dirname, "..", "views", "types", "edit");
+
+for (const file of fs.readdirSync(typeEditDir)) {
+    if (file.indexOf(".js") >= 0) {
+        typeEditFiles[file] =
+            fs.readFileSync(path.resolve(typeEditDir, file));
+    }
+}
+
 // Public files used to render the site
 const publicFiles = {};
 const publicDir = path.resolve(__dirname, "..", "public");
@@ -960,6 +970,7 @@ const init = (done) => {
                     "types": {
                         "filter": typeFilterFiles,
                         "view": typeViewFiles,
+                        "edit": typeEditFiles,
                     },
                 }, viewFiles),
             },

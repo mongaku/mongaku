@@ -133,6 +133,7 @@ export type Context = {
     stringNum: (num: number) => string,
     fixedDate: (date: Date) => string,
     relativeDate: (date: Date) => string,
+    searchURL: (params: {}) => string,
     user?: User,
     gettext: (text: string) => string,
     format: (text: string, options: {}) => string,

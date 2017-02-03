@@ -6,6 +6,7 @@ const moment = require("moment");
 const React = require("react");
 
 const urls = require("../lib/urls");
+const searchURL = require("../logic/shared/search-url");
 
 var babelPluginFlowReactPropTypes_proptype_Options = require("./types.js").babelPluginFlowReactPropTypes_proptype_Options || require("react").PropTypes.any;
 
@@ -66,6 +67,10 @@ class Wrapper extends React.Component {
 
             fixedDate(date) {
                 return moment(date).locale(lang).format("LLL");
+            },
+
+            searchURL(params) {
+                return searchURL({ lang }, params);
             }
         };
     }
@@ -98,7 +103,8 @@ Wrapper.childContextTypes = {
     getShortTitle: React.PropTypes.func,
     stringNum: React.PropTypes.func,
     relativeDate: React.PropTypes.func,
-    fixedDate: React.PropTypes.func
+    fixedDate: React.PropTypes.func,
+    searchURL: React.PropTypes.func
 };
 
 module.exports = Wrapper;

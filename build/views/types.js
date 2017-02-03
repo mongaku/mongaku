@@ -31,6 +31,7 @@ if (typeof exports !== "undefined") Object.defineProperty(exports, "babelPluginF
         stringNum: require("react").PropTypes.func.isRequired,
         fixedDate: require("react").PropTypes.func.isRequired,
         relativeDate: require("react").PropTypes.func.isRequired,
+        searchURL: require("react").PropTypes.func.isRequired,
         user: require("react").PropTypes.any,
         gettext: require("react").PropTypes.func.isRequired,
         format: require("react").PropTypes.func.isRequired,

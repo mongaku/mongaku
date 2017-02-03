@@ -168,15 +168,17 @@ const IDForm = ({
 IDForm.contextTypes = childContextTypes;
 
 const TypeEdit = ({
+    type,
     value,
     allValues,
     typeSchema,
 }: {
+    type: string,
     value: any,
     allValues: Array<any>,
     typeSchema: ModelType,
 }) => {
-    const {name, type, multiple} = typeSchema;
+    const {name, multiple} = typeSchema;
 
     if (typeSchema.type === "Dimension") {
         return null;
@@ -268,10 +270,10 @@ const Contents = (props: Props, {gettext, options}: Context) => {
     const types = Object.keys(model);
     let hasPrivate = false;
 
-    const fields = types.map((type) => {
-        const typeSchema = model[type];
-        const dynamicValue = dynamicValues[type];
-        const values = (globalFacets && globalFacets[type] || [])
+    const fields = types.map((modelType) => {
+        const typeSchema = model[modelType];
+        const dynamicValue = dynamicValues[modelType];
+        const values = (globalFacets && globalFacets[modelType] || [])
             .map((bucket) => bucket.text).sort();
         const isPrivate = typeSchema.private;
 
@@ -283,6 +285,7 @@ const Contents = (props: Props, {gettext, options}: Context) => {
             </th>
             <td data-private={isPrivate}>
                 <TypeEdit
+                    type={type}
                     value={dynamicValue}
                     allValues={values}
                     typeSchema={typeSchema}
