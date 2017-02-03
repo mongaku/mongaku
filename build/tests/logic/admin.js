@@ -240,7 +240,7 @@ tap.test("uploadData: Default File", t => {
         request.post({
             url,
             formData
-        }, (err, res, body) => {
+        }, (err, res) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 302);
             t.match(res.headers.location, "/artworks/source/test/admin");
