@@ -112,8 +112,9 @@ const Images = (props: Props & {title: string}) => {
         <td>
             <div>
                 <div>
-                    {record && record.images.map((image) => <Image
+                    {record && record.images.map((image, i) => <Image
                         {...props}
+                        key={i}
                         image={image}
                         title={title}
                     />)}
@@ -168,17 +169,19 @@ const IDForm = ({
 IDForm.contextTypes = childContextTypes;
 
 const TypeEdit = ({
+    name,
     type,
     value,
     allValues,
     typeSchema,
 }: {
+    name: string,
     type: string,
     value: any,
     allValues: Array<any>,
     typeSchema: ModelType,
 }) => {
-    const {name, multiple} = typeSchema;
+    const {multiple} = typeSchema;
 
     if (typeSchema.type === "Dimension") {
         return null;
@@ -279,12 +282,13 @@ const Contents = (props: Props, {gettext, options}: Context) => {
 
         hasPrivate = hasPrivate || isPrivate;
 
-        return <tr key={type}>
+        return <tr key={modelType}>
             <th className="text-right">
                 {typeSchema.title}
             </th>
             <td data-private={isPrivate}>
                 <TypeEdit
+                    name={modelType}
                     type={type}
                     value={dynamicValue}
                     allValues={values}
@@ -387,6 +391,14 @@ const EditRecord = (props: Props,
         {mode === "edit" && <CloneButton {...props} />}
         <div className="row">
             <div className="col-md-12 imageholder">
+                <div className="responsive-table">
+                    <table className="table table-hover">
+                        <thead>
+                            <Title title={title} />
+                            <Images {...props} title={title} />
+                        </thead>
+                    </table>
+                </div>
                 <form
                     action={postURL}
                     method="POST"
@@ -396,10 +408,6 @@ const EditRecord = (props: Props,
                     <input type="hidden" name="lang" value={lang} />
                     <div className="responsive-table">
                         <table className="table table-hover">
-                            <thead>
-                                <Title title={title} />
-                                <Images {...props} title={title} />
-                            </thead>
                             <Contents {...props} />
                         </table>
                     </div>

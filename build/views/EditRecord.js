@@ -109,7 +109,8 @@ const Images = props => {
                 React.createElement(
                     "div",
                     null,
-                    record && record.images.map(image => React.createElement(Image, _extends({}, props, {
+                    record && record.images.map((image, i) => React.createElement(Image, _extends({}, props, {
+                        key: i,
                         image: image,
                         title: title
                     })))
@@ -185,12 +186,13 @@ IDForm.propTypes = {
 IDForm.contextTypes = childContextTypes;
 
 const TypeEdit = ({
+    name,
     type,
     value,
     allValues,
     typeSchema
 }) => {
-    const { name, multiple } = typeSchema;
+    const { multiple } = typeSchema;
 
     if (typeSchema.type === "Dimension") {
         return null;
@@ -265,6 +267,7 @@ const TypeEdit = ({
 };
 
 TypeEdit.propTypes = {
+    name: require("react").PropTypes.string.isRequired,
     type: require("react").PropTypes.string.isRequired,
     value: require("react").PropTypes.any.isRequired,
     allValues: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
@@ -290,7 +293,7 @@ const Contents = (props, { gettext, options }) => {
 
         return React.createElement(
             "tr",
-            { key: type },
+            { key: modelType },
             React.createElement(
                 "th",
                 { className: "text-right" },
@@ -300,6 +303,7 @@ const Contents = (props, { gettext, options }) => {
                 "td",
                 { "data-private": isPrivate },
                 React.createElement(TypeEdit, {
+                    name: modelType,
                     type: type,
                     value: dynamicValue,
                     allValues: values,
@@ -438,6 +442,20 @@ const EditRecord = (props, { lang, format, gettext, options }) => {
                 "div",
                 { className: "col-md-12 imageholder" },
                 React.createElement(
+                    "div",
+                    { className: "responsive-table" },
+                    React.createElement(
+                        "table",
+                        { className: "table table-hover" },
+                        React.createElement(
+                            "thead",
+                            null,
+                            React.createElement(Title, { title: title }),
+                            React.createElement(Images, _extends({}, props, { title: title }))
+                        )
+                    )
+                ),
+                React.createElement(
                     "form",
                     {
                         action: postURL,
@@ -452,12 +470,6 @@ const EditRecord = (props, { lang, format, gettext, options }) => {
                         React.createElement(
                             "table",
                             { className: "table table-hover" },
-                            React.createElement(
-                                "thead",
-                                null,
-                                React.createElement(Title, { title: title }),
-                                React.createElement(Images, _extends({}, props, { title: title }))
-                            ),
                             React.createElement(Contents, props)
                         )
                     )

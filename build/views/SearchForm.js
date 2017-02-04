@@ -15,11 +15,12 @@ var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babel
 const { childContextTypes } = require("./Wrapper.js");
 
 const TypeFilter = ({
+    name,
     value,
     allValues,
     typeSchema
 }) => {
-    const { searchName, name, multiple } = typeSchema;
+    const { searchName, multiple } = typeSchema;
     const searchField = searchName || name;
 
     if (typeSchema.type === "Dimension") {
@@ -94,7 +95,8 @@ const TypeFilter = ({
 };
 
 TypeFilter.propTypes = {
-    value: require("react").PropTypes.any.isRequired,
+    name: require("react").PropTypes.string.isRequired,
+    value: require("react").PropTypes.any,
     allValues: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
     typeSchema: babelPluginFlowReactPropTypes_proptype_ModelType
 };
@@ -104,16 +106,17 @@ const Filters = ({ type, globalFacets, values }, { options }) => {
     return React.createElement(
         "div",
         null,
-        options.types[type].filters.map(type => {
-            const typeSchema = model[type];
+        options.types[type].filters.map(modelType => {
+            const typeSchema = model[modelType];
 
-            const allValues = (globalFacets[type] || []).map(bucket => bucket.text).sort();
+            const allValues = (globalFacets[modelType] || []).map(bucket => bucket.text).sort();
 
             return React.createElement(
                 "div",
-                { key: type },
+                { key: modelType },
                 React.createElement(TypeFilter, {
-                    value: values[type],
+                    name: modelType,
+                    value: values[modelType],
                     allValues: allValues,
                     typeSchema: typeSchema
                 })

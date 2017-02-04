@@ -63,15 +63,17 @@ type Props = {
 };
 
 const TypeFilter = ({
+    name,
     value,
     allValues,
     typeSchema,
 }: {
-    value: any,
+    name: string,
+    value?: any,
     allValues: Array<any>,
     typeSchema: ModelType,
 }) => {
-    const {searchName, name, multiple} = typeSchema;
+    const {searchName, multiple} = typeSchema;
     const searchField = searchName || name;
 
     if (typeSchema.type === "Dimension") {
@@ -158,15 +160,16 @@ const Filters = ({type, globalFacets, values}: Props,
     const {model} = options.types[type];
 
     return <div>
-        {options.types[type].filters.map((type) => {
-            const typeSchema = model[type];
+        {options.types[type].filters.map((modelType) => {
+            const typeSchema = model[modelType];
 
-            const allValues = (globalFacets[type] || [])
+            const allValues = (globalFacets[modelType] || [])
                 .map((bucket) => bucket.text).sort();
 
-            return <div key={type}>
+            return <div key={modelType}>
                 <TypeFilter
-                    value={values[type]}
+                    name={modelType}
+                    value={values[modelType]}
                     allValues={allValues}
                     typeSchema={typeSchema}
                 />
