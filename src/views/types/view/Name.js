@@ -1,56 +1,68 @@
+// @flow
+
 const React = require("react");
 
+import type {Context} from "../../types.js";
 const {childContextTypes} = require("../../Wrapper.js");
 
-const NameView = React.createClass({
-    propTypes: {
-        name: React.PropTypes.string.isRequired,
-        type: React.PropTypes.string.isRequired,
-        value: React.PropTypes.arrayOf(
-            React.PropTypes.shape({
-                _id: React.PropTypes.string.isRequired,
-                name: React.PropTypes.string.isRequired,
-                pseudonym: React.PropTypes.string,
-            })
-        ).isRequired,
-    },
+type NameType = {
+    _id: string,
+    name: string,
+    pseudonym?: string,
+};
 
-    contextTypes: childContextTypes,
+type Props = {
+    name: string,
+    type: string,
+    value: Array<NameType>,
+};
 
-    renderPseudonym(name) {
-        if (!name.pseudoynm || name.name === name.pseudoynm) {
-            return null;
-        }
+const Pseudonym = ({
+    type,
+    nameObject,
+}: {type: string, nameObject: NameType}, {searchURL}: Context) => {
+    const pseudoURL = searchURL({
+        filter: nameObject.pseudonym,
+        type,
+    });
 
-        const {searchURL} = this.context;
-        const pseudoURL = searchURL({
-            filter: name.pseudonym,
-            type: this.props.type,
-        });
+    return <span>
+        {" "}(<a href={pseudoURL}>{nameObject.pseudonym}</a>)
+    </span>;
+};
 
-        return <span>
-            {" "}(<a href={pseudoURL}>{name.pseudonym}</a>)
-        </span>;
-    },
+Pseudonym.contextTypes = childContextTypes;
 
-    renderName(name) {
-        const {searchURL} = this.context;
-        const url = searchURL({
-            [this.props.name]: name.name,
-            type: this.props.type,
-        });
+const Name = ({
+    name,
+    type,
+    nameObject,
+}: Props & {nameObject: NameType}, {searchURL}: Context) => {
+    const url = searchURL({
+        [name]: nameObject.name,
+        type,
+    });
 
-        return <span key={name._id}>
-            <a href={url}>{name.name}</a>
-            {this.renderPseudonym(name)}
-        </span>;
-    },
+    return <span key={nameObject._id}>
+        <a href={url}>{nameObject.name}</a>
+        {name.pseudoynm && name.name !== name.pseudoynm && <Pseudonym
+            type={type}
+            nameObject={nameObject}
+        />}
+    </span>;
+};
 
-    render() {
-        return <div>
-            {this.props.value.map((name) => this.renderName(name))}
-        </div>;
-    },
-});
+Name.contextTypes = childContextTypes;
+
+const NameView = (props: Props) => {
+    const {value} = props;
+    return <div>
+        {value.map((name) => <Name
+            {...props}
+            key={name._id}
+            nameObject={name}
+        />)}
+    </div>;
+};
 
 module.exports = NameView;

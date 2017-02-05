@@ -1,75 +1,92 @@
 "use strict";
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 const React = require("react");
+
+var babelPluginFlowReactPropTypes_proptype_Context = require("../../types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
 const { childContextTypes } = require("../../Wrapper.js");
 
-const NameView = React.createClass({
-    displayName: "NameView",
+const Pseudonym = ({
+    type,
+    nameObject
+}, { searchURL }) => {
+    const pseudoURL = searchURL({
+        filter: nameObject.pseudonym,
+        type
+    });
 
-    propTypes: {
-        name: React.PropTypes.string.isRequired,
-        type: React.PropTypes.string.isRequired,
-        value: React.PropTypes.arrayOf(React.PropTypes.shape({
-            _id: React.PropTypes.string.isRequired,
-            name: React.PropTypes.string.isRequired,
-            pseudonym: React.PropTypes.string
-        })).isRequired
-    },
+    return React.createElement(
+        "span",
+        null,
+        " ",
+        "(",
+        React.createElement(
+            "a",
+            { href: pseudoURL },
+            nameObject.pseudonym
+        ),
+        ")"
+    );
+};
 
-    contextTypes: childContextTypes,
+Pseudonym.propTypes = {
+    type: require("react").PropTypes.string.isRequired,
+    nameObject: require("react").PropTypes.shape({
+        _id: require("react").PropTypes.string.isRequired,
+        name: require("react").PropTypes.string.isRequired,
+        pseudonym: require("react").PropTypes.string
+    }).isRequired
+};
+Pseudonym.contextTypes = childContextTypes;
 
-    renderPseudonym(name) {
-        if (!name.pseudoynm || name.name === name.pseudoynm) {
-            return null;
-        }
+const Name = ({
+    name,
+    type,
+    nameObject
+}, { searchURL }) => {
+    const url = searchURL({
+        [name]: nameObject.name,
+        type
+    });
 
-        const { searchURL } = this.context;
-        const pseudoURL = searchURL({
-            filter: name.pseudonym,
-            type: this.props.type
-        });
+    return React.createElement(
+        "span",
+        { key: nameObject._id },
+        React.createElement(
+            "a",
+            { href: url },
+            nameObject.name
+        ),
+        name.pseudoynm && name.name !== name.pseudoynm && React.createElement(Pseudonym, {
+            type: type,
+            nameObject: nameObject
+        })
+    );
+};
 
-        return React.createElement(
-            "span",
-            null,
-            " ",
-            "(",
-            React.createElement(
-                "a",
-                { href: pseudoURL },
-                name.pseudonym
-            ),
-            ")"
-        );
-    },
+Name.contextTypes = childContextTypes;
 
-    renderName(name) {
-        const { searchURL } = this.context;
-        const url = searchURL({
-            [this.props.name]: name.name,
-            type: this.props.type
-        });
+const NameView = props => {
+    const { value } = props;
+    return React.createElement(
+        "div",
+        null,
+        value.map(name => React.createElement(Name, _extends({}, props, {
+            key: name._id,
+            nameObject: name
+        })))
+    );
+};
 
-        return React.createElement(
-            "span",
-            { key: name._id },
-            React.createElement(
-                "a",
-                { href: url },
-                name.name
-            ),
-            this.renderPseudonym(name)
-        );
-    },
-
-    render() {
-        return React.createElement(
-            "div",
-            null,
-            this.props.value.map(name => this.renderName(name))
-        );
-    }
-});
-
+NameView.propTypes = {
+    name: require("react").PropTypes.string.isRequired,
+    type: require("react").PropTypes.string.isRequired,
+    value: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
+        _id: require("react").PropTypes.string.isRequired,
+        name: require("react").PropTypes.string.isRequired,
+        pseudonym: require("react").PropTypes.string
+    })).isRequired
+};
 module.exports = NameView;

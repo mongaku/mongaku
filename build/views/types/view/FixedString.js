@@ -1,73 +1,79 @@
 "use strict";
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 const React = require("react");
+
+var babelPluginFlowReactPropTypes_proptype_Context = require("../../types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
 const { childContextTypes } = require("../../Wrapper.js");
 
-const FixedStringView = React.createClass({
-    displayName: "FixedStringView",
-
-    propTypes: {
-        name: React.PropTypes.string.isRequired,
-        type: React.PropTypes.string.isRequired,
-        value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.arrayOf(React.PropTypes.string)]).isRequired,
-        values: React.PropTypes.arrayOf(React.PropTypes.shape({
-            id: React.PropTypes.string.isRequired,
-            name: React.PropTypes.string.isRequired
-        }))
-    },
-
-    contextTypes: childContextTypes,
-
-    getTitle(value) {
-        if (!this.props.values) {
-            return value;
-        }
-
-        for (const map of this.props.values) {
-            if (map.id === value) {
-                return map.name;
-            }
-        }
-
+const getTitle = (value, values) => {
+    if (!values) {
         return value;
-    },
-
-    renderValue(value) {
-        if (!value) {
-            return null;
-        }
-
-        const { searchURL } = this.context;
-        const title = this.getTitle(value);
-        const url = searchURL({
-            [this.props.name]: value,
-            type: this.props.type
-        });
-
-        return React.createElement(
-            "a",
-            { href: url },
-            title
-        );
-    },
-
-    renderValues(values) {
-        return React.createElement(
-            "span",
-            null,
-            values.map((value, i) => React.createElement(
-                "span",
-                { key: i },
-                this.renderValue(value),
-                values.length - 1 === i ? "" : ", "
-            ))
-        );
-    },
-
-    render() {
-        return Array.isArray(this.props.value) ? this.renderValues(this.props.value) : this.renderValue(this.props.value);
     }
-});
 
+    for (const map of values) {
+        if (map.id === value) {
+            return map.name;
+        }
+    }
+
+    return value;
+};
+
+const Value = ({
+    stringValue,
+    name,
+    type,
+    values
+}, { searchURL }) => {
+    if (!stringValue) {
+        return null;
+    }
+
+    const title = getTitle(stringValue, values);
+    const url = searchURL({
+        [name]: stringValue,
+        type
+    });
+
+    return React.createElement(
+        "a",
+        { href: url },
+        title
+    );
+};
+
+Value.contextType = childContextTypes;
+
+const Values = props => {
+    const { stringValues } = props;
+
+    return React.createElement(
+        "span",
+        null,
+        stringValues.map((value, i) => React.createElement(
+            "span",
+            { key: i },
+            React.createElement(Value, _extends({}, props, { stringValue: value })),
+            stringValues.length - 1 === i ? "" : ", "
+        ))
+    );
+};
+
+const FixedStringView = props => {
+    const { value } = props;
+    return Array.isArray(value) ? React.createElement(Values, _extends({}, props, { stringValues: value })) : React.createElement(Value, _extends({}, props, { stringValue: value }));
+};
+
+FixedStringView.propTypes = {
+    name: require("react").PropTypes.string.isRequired,
+    type: require("react").PropTypes.string.isRequired,
+    value: require("react").PropTypes.oneOfType([require("react").PropTypes.string, require("react").PropTypes.arrayOf(require("react").PropTypes.string)]).isRequired,
+    values: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
+        id: require("react").PropTypes.string.isRequired,
+        name: require("react").PropTypes.string.isRequired
+    }))
+};
 module.exports = FixedStringView;
