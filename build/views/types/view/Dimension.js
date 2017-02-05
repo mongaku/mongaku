@@ -3,49 +3,51 @@
 const React = require("react");
 const pd = require("parse-dimensions");
 
-const DimensionView = React.createClass({
-    displayName: "DimensionView",
+const getDimension = (oldDimension, defaultUnit = "mm") => {
+    const { label } = oldDimension;
+    const dimension = pd.convertDimension(oldDimension, defaultUnit);
+    const unit = dimension.unit;
+    return [dimension.width, unit, " x ", dimension.height, unit, label ? ` (${label})` : ""].join("");
+};
 
-    propTypes: {
-        defaultUnit: React.PropTypes.string,
-        name: React.PropTypes.string.isRequired,
-        value: React.PropTypes.arrayOf(React.PropTypes.shape({
-            _id: React.PropTypes.string.isRequired,
-            height: React.PropTypes.number,
-            width: React.PropTypes.number,
-            unit: React.PropTypes.string
-        })).isRequired
-    },
+const Dimension = ({
+    dimension,
+    defaultUnit
+}) => React.createElement(
+    "span",
+    null,
+    getDimension(dimension, defaultUnit),
+    React.createElement("br", null)
+);
 
-    defaultProps: () => {
-        return {
-            defaultUnit: "mm"
-        };
-    },
+Dimension.propTypes = {
+    defaultUnit: require("react").PropTypes.string,
+    dimension: require("react").PropTypes.shape({
+        _id: require("react").PropTypes.string.isRequired,
+        height: require("react").PropTypes.number,
+        width: require("react").PropTypes.number,
+        unit: require("react").PropTypes.string,
+        label: require("react").PropTypes.string
+    }).isRequired
+};
+const DimensionView = ({ value, defaultUnit }) => React.createElement(
+    "span",
+    null,
+    value.map(dimension => React.createElement(Dimension, {
+        key: dimension._id,
+        dimension: dimension,
+        defaultUnit: defaultUnit
+    }))
+);
 
-    getDimension(item) {
-        const label = item.label;
-        const dimension = pd.convertDimension(item, this.props.defaultUnit);
-        const unit = dimension.unit;
-        return [dimension.width, unit, " x ", dimension.height, unit, label ? ` (${label})` : ""].join("");
-    },
-
-    renderDimension(dimension) {
-        return React.createElement(
-            "span",
-            { key: dimension._id },
-            this.getDimension(dimension),
-            React.createElement("br", null)
-        );
-    },
-
-    render() {
-        return React.createElement(
-            "span",
-            null,
-            this.props.value.map(dimension => this.renderDimension(dimension))
-        );
-    }
-});
-
+DimensionView.propTypes = {
+    defaultUnit: require("react").PropTypes.string,
+    value: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
+        _id: require("react").PropTypes.string.isRequired,
+        height: require("react").PropTypes.number,
+        width: require("react").PropTypes.number,
+        unit: require("react").PropTypes.string,
+        label: require("react").PropTypes.string
+    })).isRequired
+};
 module.exports = DimensionView;

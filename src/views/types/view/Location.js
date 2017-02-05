@@ -1,42 +1,52 @@
+// @flow
+
 const React = require("react");
 
+import type {Context} from "../../types.js";
 const {childContextTypes} = require("../../Wrapper.js");
 
-const LocationView = React.createClass({
-    propTypes: {
-        name: React.PropTypes.string.isRequired,
-        type: React.PropTypes.string.isRequired,
-        value: React.PropTypes.arrayOf(
-            React.PropTypes.shape({
-                _id: React.PropTypes.string.isRequired,
-                city: React.PropTypes.string,
-                name: React.PropTypes.string,
-            })
-        ).isRequired,
-    },
+type LocationType = {
+    _id: string,
+    city?: string,
+    name?: string,
+};
 
-    contextTypes: childContextTypes,
+type Props = {
+    name: string,
+    type: string,
+    value: Array<LocationType>,
+};
 
-    renderName(location) {
-        const {searchURL} = this.context;
-        const url = searchURL({
-            [this.props.name]: location.name,
-            type: this.props.type,
-        });
+const Location = ({
+    name,
+    type,
+    location,
+}: Props & {location: LocationType}, {searchURL}: Context) => {
+    const url = searchURL({
+        [name]: location.name,
+        type,
+    });
 
-        return <span>
+    return <span>
+        {location.name && <span>
             <a href={url}>{location.name}</a><br/>
-        </span>;
-    },
+        </span>}
+        {location.city && <span>{location.city}<br/></span>}
+    </span>;
+};
 
-    render() {
-        return <div>
-            {this.props.value.map((location) => <span key={location._id}>
-                {location.name && this.renderName(location)}
-                {location.city && <span>{location.city}<br/></span>}
-            </span>)}
-        </div>;
-    },
-});
+Location.contextTypes = childContextTypes;
+
+const LocationView = (props: Props) => {
+    const {value} = props;
+
+    return <div>
+        {value.map((location) => <Location
+            {...props}
+            key={location._id}
+            location={location}
+        />)}
+    </div>;
+};
 
 module.exports = LocationView;

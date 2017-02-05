@@ -1,60 +1,70 @@
+// @flow
+
 const React = require("react");
 
+import type {Context} from "../../types.js";
 const {childContextTypes} = require("../../Wrapper.js");
 
-const getDate = (item) => {
-    if (item.original) {
-        return item.original;
+type YearRangeType = {
+    _id: string,
+    original?: string,
+    circa?: string,
+    start: number,
+    end: number,
+};
+
+type Props = {
+    name: string,
+    type: string,
+    value: Array<YearRangeType>,
+};
+
+const getDate = (date: YearRange): string => {
+    if (date.original) {
+        return date.original;
     }
 
-    if (item.start || item.end) {
-        return (item.circa ? "ca. " : "") +
-            item.start + (item.end && item.end !== item.start ?
-            `-${item.end}` : "");
+    if (date.start || date.end) {
+        // TODO(jeresig): Handle "ca. " for non-English locales
+        return (date.circa ? "ca. " : "") +
+            date.start + (date.end && date.end !== date.start ?
+            `-${date.end}` : "");
     }
 
     return "";
 };
 
-const dateRangeType = React.PropTypes.shape({
-    end: React.PropTypes.number,
-    start: React.PropTypes.number,
-});
+const YearRange = ({
+    name,
+    type,
+    date,
+}: Props & {date: YearRangeType}, {searchURL}: Context) => {
+    const url = searchURL({
+        [name]: {
+            start: date.start,
+            end: date.end,
+        },
+        type,
+    });
 
-const YearRangeView = React.createClass({
-    propTypes: {
-        name: React.PropTypes.string.isRequired,
-        type: React.PropTypes.string.isRequired,
-        value: React.PropTypes.arrayOf(
-            dateRangeType
-        ).isRequired,
-    },
+    return <span key={date._id}>
+        <a href={url}>
+            {getDate(date)}
+        </a><br/>
+    </span>;
+};
 
-    contextTypes: childContextTypes,
+YearRange.contextTypes = childContextTypes;
 
-    renderDate(date) {
-        const {searchURL} = this.context;
-
-        const url = searchURL({
-            [this.props.name]: {
-                start: date.start,
-                end: date.end,
-            },
-            type: this.props.type,
-        });
-
-        return <span key={date._id}>
-            <a href={url}>
-                {getDate(date)}
-            </a><br/>
-        </span>;
-    },
-
-    render() {
-        return <span>
-            {this.props.value.map((date) => this.renderDate(date))}
-        </span>;
-    },
-});
+const YearRangeView = (props: Props) => {
+    const {value} = props;
+    return <span>
+        {value.map((date) => <YearRange
+            {...props}
+            date={date}
+            key={date._id}
+        />)}
+    </span>;
+};
 
 module.exports = YearRangeView;

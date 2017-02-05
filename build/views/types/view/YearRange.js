@@ -1,67 +1,74 @@
 "use strict";
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 const React = require("react");
+
+var babelPluginFlowReactPropTypes_proptype_Context = require("../../types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
 const { childContextTypes } = require("../../Wrapper.js");
 
-const getDate = item => {
-    if (item.original) {
-        return item.original;
+const getDate = date => {
+    if (date.original) {
+        return date.original;
     }
 
-    if (item.start || item.end) {
-        return (item.circa ? "ca. " : "") + item.start + (item.end && item.end !== item.start ? `-${item.end}` : "");
+    if (date.start || date.end) {
+        // TODO(jeresig): Handle "ca. " for non-English locales
+        return (date.circa ? "ca. " : "") + date.start + (date.end && date.end !== date.start ? `-${date.end}` : "");
     }
 
     return "";
 };
 
-const dateRangeType = React.PropTypes.shape({
-    end: React.PropTypes.number,
-    start: React.PropTypes.number
-});
+const YearRange = ({
+    name,
+    type,
+    date
+}, { searchURL }) => {
+    const url = searchURL({
+        [name]: {
+            start: date.start,
+            end: date.end
+        },
+        type
+    });
 
-const YearRangeView = React.createClass({
-    displayName: "YearRangeView",
+    return React.createElement(
+        "span",
+        { key: date._id },
+        React.createElement(
+            "a",
+            { href: url },
+            getDate(date)
+        ),
+        React.createElement("br", null)
+    );
+};
 
-    propTypes: {
-        name: React.PropTypes.string.isRequired,
-        type: React.PropTypes.string.isRequired,
-        value: React.PropTypes.arrayOf(dateRangeType).isRequired
-    },
+YearRange.contextTypes = childContextTypes;
 
-    contextTypes: childContextTypes,
+const YearRangeView = props => {
+    const { value } = props;
+    return React.createElement(
+        "span",
+        null,
+        value.map(date => React.createElement(YearRange, _extends({}, props, {
+            date: date,
+            key: date._id
+        })))
+    );
+};
 
-    renderDate(date) {
-        const { searchURL } = this.context;
-
-        const url = searchURL({
-            [this.props.name]: {
-                start: date.start,
-                end: date.end
-            },
-            type: this.props.type
-        });
-
-        return React.createElement(
-            "span",
-            { key: date._id },
-            React.createElement(
-                "a",
-                { href: url },
-                getDate(date)
-            ),
-            React.createElement("br", null)
-        );
-    },
-
-    render() {
-        return React.createElement(
-            "span",
-            null,
-            this.props.value.map(date => this.renderDate(date))
-        );
-    }
-});
-
+YearRangeView.propTypes = {
+    name: require("react").PropTypes.string.isRequired,
+    type: require("react").PropTypes.string.isRequired,
+    value: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
+        _id: require("react").PropTypes.string.isRequired,
+        original: require("react").PropTypes.string,
+        circa: require("react").PropTypes.string,
+        start: require("react").PropTypes.number.isRequired,
+        end: require("react").PropTypes.number.isRequired
+    })).isRequired
+};
 module.exports = YearRangeView;
