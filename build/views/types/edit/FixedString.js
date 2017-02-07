@@ -1,90 +1,106 @@
 "use strict";
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 const React = require("react");
 
-const FixedStringEdit = React.createClass({
-    displayName: "FixedStringEdit",
-
-    propTypes: {
-        multiline: React.PropTypes.bool,
-        multiple: React.PropTypes.bool,
-        name: React.PropTypes.string.isRequired,
-        type: React.PropTypes.string.isRequired,
-        value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.arrayOf(React.PropTypes.string)]).isRequired,
-        values: React.PropTypes.arrayOf(React.PropTypes.shape({
-            id: React.PropTypes.string.isRequired,
-            name: React.PropTypes.string.isRequired
-        }))
-    },
-
-    getValue(value) {
-        if (!this.props.values) {
-            return value;
-        }
-
-        for (const map of this.props.values) {
-            if (map.id === value) {
-                return map.name;
-            }
-        }
-
+const getValue = (value, values) => {
+    if (!values) {
         return value;
-    },
+    }
 
-    renderValue(value) {
-        const defaultValue = this.getValue(value);
-
-        if (this.props.multiline) {
-            return React.createElement("textarea", {
-                name: this.props.name,
-                className: "form-control",
-                defaultValue: defaultValue
-            });
+    for (const map of values) {
+        if (map.id === value) {
+            return map.name;
         }
+    }
 
-        return React.createElement("input", {
-            name: this.props.name,
-            type: "text",
+    return value;
+};
+
+const Value = ({
+    name,
+    stringValue,
+    values,
+    multiline
+}) => {
+    const defaultValue = getValue(stringValue, values);
+
+    if (multiline) {
+        return React.createElement("textarea", {
+            name: name,
             className: "form-control",
             defaultValue: defaultValue
         });
-    },
+    }
 
-    renderValues(values) {
-        return React.createElement(
+    return React.createElement("input", {
+        name: name,
+        type: "text",
+        className: "form-control",
+        defaultValue: defaultValue
+    });
+};
+
+const Values = props => {
+    const { stringValues } = props;
+
+    return React.createElement(
+        "span",
+        null,
+        stringValues.map((value, i) => React.createElement(
             "span",
-            null,
-            values.map((value, i) => React.createElement(
-                "span",
-                { key: i },
-                this.renderValue(value),
-                values.length - 1 === i ? "" : ", "
+            { key: i },
+            React.createElement(Value, _extends({}, props, { stringValue: value })),
+            stringValues.length - 1 === i ? "" : ", "
+        ))
+    );
+};
+
+const FixedStringEdit = props => {
+    const {
+        name,
+        value,
+        values,
+        multiple
+    } = props;
+
+    if (values && Array.isArray(values) && values.length > 0) {
+        const formValues = Array.isArray(value) ? value.map(value => ({
+            id: value,
+            name: getValue(value, values)
+        })) : [{
+            id: value,
+            name: getValue(value, values)
+        }];
+
+        return React.createElement(
+            "select",
+            {
+                name: name,
+                className: "form-control select2-select",
+                defaultValue: values,
+                multiple: multiple
+            },
+            formValues.map(value => React.createElement(
+                "option",
+                { value: value.id, key: value.id },
+                value.name
             ))
         );
-    },
-
-    render() {
-        if (this.props.values && this.props.values.length > 0) {
-            const values = Array.isArray(this.props.value) ? this.props.value.map(value => this.getValue(value)) : this.getValue(this.props.value);
-
-            return React.createElement(
-                "select",
-                {
-                    name: this.props.name,
-                    className: "form-control select2-select",
-                    defaultValue: values,
-                    multiple: this.props.multiple
-                },
-                this.props.values.map(value => React.createElement(
-                    "option",
-                    { value: value.id, key: value.id },
-                    value.name
-                ))
-            );
-        }
-
-        return Array.isArray(this.props.value) ? this.renderValues(this.props.value) : this.renderValue(this.props.value);
     }
-});
 
+    return Array.isArray(value) ? React.createElement(Values, _extends({}, props, { stringValues: value })) : React.createElement(Value, _extends({}, props, { stringValue: value }));
+};
+
+FixedStringEdit.propTypes = {
+    name: require("react").PropTypes.string.isRequired,
+    multiline: require("react").PropTypes.bool,
+    value: require("react").PropTypes.oneOfType([require("react").PropTypes.string, require("react").PropTypes.arrayOf(require("react").PropTypes.string)]).isRequired,
+    values: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
+        id: require("react").PropTypes.string.isRequired,
+        name: require("react").PropTypes.string.isRequired
+    })),
+    multiple: require("react").PropTypes.bool
+};
 module.exports = FixedStringEdit;

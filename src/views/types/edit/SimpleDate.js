@@ -1,26 +1,26 @@
+// @flow
+
 const React = require("react");
 
-const SimpleDateEdit = React.createClass({
-    propTypes: {
-        name: React.PropTypes.string.isRequired,
-        value: React.PropTypes.instanceOf(Date),
-    },
+const SimpleDateEdit = ({
+    name,
+    value,
+}: {
+    name: string,
+    value?: Date,
+}) => {
+    let dateString = "";
 
-    render() {
-        let dateString = "";
+    if (value) {
+        dateString = value.toISOString().replace(/T.*$/, "");
+    }
 
-        if (this.props.value) {
-            dateString = this.props.value.toISOString()
-                .replace(/T.*$/, "");
-        }
-
-        return <input
-            name={this.props.name}
-            type="date"
-            className="form-control"
-            defaultValue={dateString}
-        />;
-    },
-});
+    return <input
+        name={name}
+        type="date"
+        className="form-control"
+        defaultValue={dateString}
+    />;
+};
 
 module.exports = SimpleDateEdit;

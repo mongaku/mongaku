@@ -2,44 +2,45 @@
 
 const React = require("react");
 
-const valueType = React.PropTypes.shape({
-    id: React.PropTypes.string.isRequired,
-    title: React.PropTypes.string.isRequired
-});
+const LinkedRecordEdit = ({
+    name,
+    recordType,
+    value,
+    placeholder,
+    multiple
+}) => {
+    const defaultValue = Array.isArray(value) ? value.map(value => value.id) : value && value.id;
+    const values = Array.isArray(value) ? value : value ? [value] : [];
 
-const LinkedRecordEdit = React.createClass({
-    displayName: "LinkedRecordEdit",
+    return React.createElement(
+        "select",
+        {
+            name: name,
+            className: "form-control select2-remote",
+            defaultValue: defaultValue,
+            multiple: multiple,
+            "data-record": recordType,
+            "data-placeholder": placeholder
+        },
+        values.map(value => React.createElement(
+            "option",
+            { value: value.id, key: value.id },
+            value.title
+        ))
+    );
+};
 
-    propTypes: {
-        multiple: React.PropTypes.bool,
-        name: React.PropTypes.string.isRequired,
-        placeholder: React.PropTypes.string,
-        recordType: React.PropTypes.string.isRequired,
-        value: React.PropTypes.oneOfType([valueType, React.PropTypes.arrayOf(valueType)])
-    },
-
-    render() {
-        const value = this.props.value;
-        const defaultValue = Array.isArray(value) ? value.map(value => value.id) : value && value.id;
-        const values = Array.isArray(value) ? value : value ? [value] : [];
-
-        return React.createElement(
-            "select",
-            {
-                name: this.props.name,
-                className: "form-control select2-remote",
-                defaultValue: defaultValue,
-                multiple: this.props.multiple,
-                "data-record": this.props.recordType,
-                "data-placeholder": this.props.placeholder
-            },
-            values.map(value => React.createElement(
-                "option",
-                { value: value.id, key: value.id },
-                value.title
-            ))
-        );
-    }
-});
-
+LinkedRecordEdit.propTypes = {
+    name: require("react").PropTypes.string.isRequired,
+    recordType: require("react").PropTypes.string.isRequired,
+    value: require("react").PropTypes.oneOfType([require("react").PropTypes.shape({
+        id: require("react").PropTypes.string.isRequired,
+        title: require("react").PropTypes.string.isRequired
+    }), require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
+        id: require("react").PropTypes.string.isRequired,
+        title: require("react").PropTypes.string.isRequired
+    }))]),
+    placeholder: require("react").PropTypes.string,
+    multiple: require("react").PropTypes.bool
+};
 module.exports = LinkedRecordEdit;
