@@ -3,7 +3,6 @@
 type BaseModelType = {
     name: string,
     title: string,
-    placeholder?: string,
     private?: boolean,
     recommended?: boolean,
     required?: boolean,
@@ -19,13 +18,14 @@ type Dimension = BaseModelType & {
     widthTitle: string,
     heightTitle: string,
     placeholder?: {
-        start: number,
-        end: number,
+        max?: number,
+        min?: number,
     },
 };
 
 type FixedString = BaseModelType & {
     type: "FixedString",
+    placeholder?: string,
     allowUnknown?: boolean,
     url?: string,
     values?: {
@@ -37,29 +37,35 @@ type FixedString = BaseModelType & {
 
 type LinkedRecord = BaseModelType & {
     type: "LinkedRecord",
+    placeholder?: string,
     recordType: string,
 };
 
 type Location = BaseModelType & {
     type: "Location",
+    placeholder?: string,
 };
 
 type Name = BaseModelType & {
     type: "Name",
+    placeholder?: string,
 };
 
 type SimpleDate = BaseModelType & {
     type: "SimpleDate",
+    placeholder?: string,
     interval?: string,
     format?: string,
 };
 
 type SimpleNumber = BaseModelType & {
     type: "SimpleNumber",
+    placeholder?: string,
 };
 
 type SimpleString = BaseModelType & {
     type: "SimpleString",
+    placeholder?: string,
     multiline?: boolean,
 };
 
