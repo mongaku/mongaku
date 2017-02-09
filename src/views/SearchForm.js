@@ -78,7 +78,6 @@ const TypeFilter = ({
 
     if (typeSchema.type === "Dimension") {
         return <DimensionFilter
-            name={name}
             value={value}
             searchName={searchField}
             placeholder={typeSchema.placeholder}
@@ -101,7 +100,6 @@ const TypeFilter = ({
         }
 
         return <FixedStringFilter
-            name={name}
             value={value}
             values={values}
             searchName={searchField}
@@ -115,7 +113,6 @@ const TypeFilter = ({
 
     } else if (typeSchema.type === "Location") {
         return <LocationFilter
-            name={name}
             value={value}
             searchName={searchField}
             placeholder={typeSchema.placeholder}
@@ -124,7 +121,6 @@ const TypeFilter = ({
 
     } else if (typeSchema.type === "Name") {
         return <NameFilter
-            name={name}
             value={value}
             values={allValues}
             searchName={searchField}
@@ -144,7 +140,6 @@ const TypeFilter = ({
 
     } else if (typeSchema.type === "YearRange") {
         return <YearRangeFilter
-            name={name}
             value={value}
             searchName={searchField}
             placeholder={typeSchema.placeholder}

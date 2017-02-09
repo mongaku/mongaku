@@ -1,43 +1,43 @@
+// @flow
+
 const React = require("react");
 
-const FixedStringFilter = React.createClass({
-    propTypes: {
-        multiple: React.PropTypes.bool,
-        name: React.PropTypes.string.isRequired,
-        placeholder: React.PropTypes.string,
-        searchName: React.PropTypes.string,
-        title: React.PropTypes.string.isRequired,
-        value: React.PropTypes.string,
-        values: React.PropTypes.arrayOf(
-            React.PropTypes.shape({
-                id: React.PropTypes.string.isRequired,
-                name: React.PropTypes.string.isRequired,
-            })
-        ),
-    },
+type Props = {
+    multiple?: boolean,
+    placeholder?: string,
+    searchName: string,
+    title: string,
+    value?: string,
+    values: Array<{
+        id: string,
+        name: string,
+    }>,
+};
 
-    render() {
-        const searchName = this.props.searchName || this.props.name;
-
-        return <div className="form-group">
-            <label htmlFor={searchName} className="control-label">
-                {this.props.title}
-            </label>
-            <select name={searchName} style={{width: "100%"}}
-                className="form-control select2-select"
-                defaultValue={this.props.value}
-                data-placeholder={this.props.placeholder}
-                multiple={this.props.multiple}
-            >
-                <option value="">{this.props.placeholder}</option>
-                {this.props.values.map((type) =>
-                    <option value={type.id} key={type.id}>
-                        {type.name}
-                    </option>
-                )}
-            </select>
-        </div>;
-    },
-});
+const FixedStringFilter = ({
+    multiple,
+    placeholder,
+    searchName,
+    title,
+    value,
+    values,
+}: Props) => <div className="form-group">
+    <label htmlFor={searchName} className="control-label">
+        {title}
+    </label>
+    <select name={searchName} style={{width: "100%"}}
+        className="form-control select2-select"
+        defaultValue={value}
+        data-placeholder={placeholder}
+        multiple={multiple}
+    >
+        <option value="">{placeholder}</option>
+        {values.map((type) =>
+            <option value={type.id} key={type.id}>
+                {type.name}
+            </option>
+        )}
+    </select>
+</div>;
 
 module.exports = FixedStringFilter;

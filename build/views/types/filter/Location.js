@@ -2,35 +2,32 @@
 
 const React = require("react");
 
-const LocationFilter = React.createClass({
-    displayName: "LocationFilter",
+const LocationFilter = ({
+    placeholder,
+    searchName,
+    title,
+    value
+}) => React.createElement(
+    "div",
+    { className: "form-group" },
+    React.createElement(
+        "label",
+        { htmlFor: searchName, className: "control-label" },
+        title
+    ),
+    React.createElement("input", {
+        type: "text",
+        name: searchName,
+        placeholder: placeholder,
+        defaultValue: value,
+        className: "form-control"
+    })
+);
 
-    propTypes: {
-        name: React.PropTypes.string.isRequired,
-        placeholder: React.PropTypes.string,
-        searchName: React.PropTypes.string,
-        title: React.PropTypes.string.isRequired,
-        value: React.PropTypes.string
-    },
-
-    render() {
-        const searchName = this.props.searchName || this.props.name;
-
-        return React.createElement(
-            "div",
-            { className: "form-group" },
-            React.createElement(
-                "label",
-                { htmlFor: searchName, className: "control-label" },
-                this.props.title
-            ),
-            React.createElement("input", { type: "text", name: searchName,
-                placeholder: this.props.placeholder,
-                defaultValue: this.props.value,
-                className: "form-control"
-            })
-        );
-    }
-});
-
+LocationFilter.propTypes = {
+    placeholder: require("react").PropTypes.string,
+    searchName: require("react").PropTypes.string.isRequired,
+    title: require("react").PropTypes.string.isRequired,
+    value: require("react").PropTypes.string
+};
 module.exports = LocationFilter;

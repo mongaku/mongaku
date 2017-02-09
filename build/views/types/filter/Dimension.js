@@ -67,7 +67,6 @@ const DimensionFilter = ({
 
 DimensionFilter.propTypes = {
     heightTitle: require("react").PropTypes.string.isRequired,
-    name: require("react").PropTypes.string.isRequired,
     placeholder: require("react").PropTypes.shape({
         max: require("react").PropTypes.number,
         min: require("react").PropTypes.number

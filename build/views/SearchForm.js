@@ -25,7 +25,6 @@ const TypeFilter = ({
 
     if (typeSchema.type === "Dimension") {
         return React.createElement(DimensionFilter, {
-            name: name,
             value: value,
             searchName: searchField,
             placeholder: typeSchema.placeholder,
@@ -47,7 +46,6 @@ const TypeFilter = ({
         }
 
         return React.createElement(FixedStringFilter, {
-            name: name,
             value: value,
             values: values,
             searchName: searchField,
@@ -59,7 +57,6 @@ const TypeFilter = ({
         return null;
     } else if (typeSchema.type === "Location") {
         return React.createElement(LocationFilter, {
-            name: name,
             value: value,
             searchName: searchField,
             placeholder: typeSchema.placeholder,
@@ -67,7 +64,6 @@ const TypeFilter = ({
         });
     } else if (typeSchema.type === "Name") {
         return React.createElement(NameFilter, {
-            name: name,
             value: value,
             values: allValues,
             searchName: searchField,
@@ -83,7 +79,6 @@ const TypeFilter = ({
         return null;
     } else if (typeSchema.type === "YearRange") {
         return React.createElement(YearRangeFilter, {
-            name: name,
             value: value,
             searchName: searchField,
             placeholder: typeSchema.placeholder,

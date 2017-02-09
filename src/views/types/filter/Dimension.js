@@ -4,7 +4,6 @@ const React = require("react");
 
 type Props = {
     heightTitle: string,
-    name: string,
     placeholder?: {
         max?: number,
         min?: number,
