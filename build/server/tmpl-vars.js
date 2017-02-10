@@ -4,8 +4,7 @@
  * Some vars to pass in to the templates.
  */
 
-const cloneDeepWith = require('lodash.clonedeepwith');
-
+const clone = require("../lib/clone");
 const options = require("../lib/options");
 
 module.exports = app => {
@@ -17,18 +16,7 @@ module.exports = app => {
         let langOptions = optionsCache[lang];
 
         if (!langOptions) {
-            langOptions = cloneDeepWith(options, (value, key, object) => {
-                if (blacklist.includes(key)) {
-                    return null;
-                }
-
-                if (typeof value === "function") {
-                    return value.call(object, req) || "";
-                }
-
-                return undefined;
-            });
-
+            langOptions = clone(options, req, blacklist);
             optionsCache[lang] = langOptions;
         }
 
