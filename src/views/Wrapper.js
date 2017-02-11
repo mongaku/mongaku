@@ -25,11 +25,8 @@ class Wrapper extends React.Component {
                 return urls.gen(locale, originalUrl);
             },
 
-            URL(path: string | {getURL: (lang: string) => string},
-                    query?: Object): string {
-                let url = typeof path.getURL === "function" ?
-                    path.getURL(lang) :
-                    urls.gen(lang, path);
+            URL(path: string, query?: Object): string {
+                let url = urls.gen(lang, path);
 
                 if (query) {
                     url = url + (url.indexOf("?") >= 0 ? "&" : "?") +
@@ -37,29 +34,6 @@ class Wrapper extends React.Component {
                 }
 
                 return url;
-            },
-
-            fullName(item: {getFullName: (lang: string) => string} |
-                    {name: string} | string): string {
-                return typeof item.getFullName === "function" ?
-                    item.getFullName(lang) :
-                    typeof item.name === "string" ?
-                        item.name :
-                        typeof item === "string" ?
-                            item :
-                            "";
-            },
-
-            shortName(item: {getShortName: (lang: string) => string}): string {
-                return item.getShortName(lang);
-            },
-
-            getTitle(item: {getTitle: () => string}): string {
-                return item.getTitle({lang, gettext, format});
-            },
-
-            getShortTitle(item: {getShortTitle: () => string}): string {
-                return item.getShortTitle({lang, gettext, format});
             },
 
             // Format a number using commas
@@ -108,10 +82,6 @@ Wrapper.childContextTypes = {
     options: React.PropTypes.any,
     getOtherURL: React.PropTypes.func,
     URL: React.PropTypes.func,
-    fullName: React.PropTypes.func,
-    shortName: React.PropTypes.func,
-    getTitle: React.PropTypes.func,
-    getShortTitle: React.PropTypes.func,
     stringNum: React.PropTypes.func,
     relativeDate: React.PropTypes.func,
     fixedDate: React.PropTypes.func,

@@ -17,6 +17,8 @@ type Props = {
         type: string,
         getExpectedFiles: () => Array<string>,
         getURL: (lang: string) => string,
+        getFullName: (lang: string) => string,
+        getShortName: (lang: string) => string,
     },
 };
 
@@ -48,7 +50,7 @@ const ImageImport = ({
     format,
     gettext,
     relativeDate,
-    URL,
+    lang,
 }: Context) => {
     const results = batch.getFilteredResults();
     let columns;
@@ -68,7 +70,7 @@ const ImageImport = ({
     }
 
     return <tr>
-        <td><a href={URL(batch)}>{batch.fileName}</a></td>
+        <td><a href={batch.getURL(lang)}>{batch.fileName}</a></td>
         <td>{relativeDate(batch.modified)}</td>
         {columns}
     </tr>;
@@ -154,7 +156,7 @@ const DataImport = ({
     format,
     gettext,
     relativeDate,
-    URL,
+    lang,
 }: Context) => {
     const results = batch.getFilteredResults();
     let columns;
@@ -167,7 +169,7 @@ const DataImport = ({
     } else {
         columns = [
             batch.state === "process.completed" && <td key="finalize">
-                <a href={URL(batch)} className="btn btn-success btn-xs">
+                <a href={batch.getURL(lang)} className="btn btn-success btn-xs">
                     {gettext("Finalize Import")}
                 </a>
             </td>,
@@ -183,7 +185,7 @@ const DataImport = ({
     }
 
     return <tr>
-        <td><a href={URL(batch)}>{batch.fileName}</a></td>
+        <td><a href={batch.getURL(lang)}>{batch.fileName}</a></td>
         <td>{relativeDate(batch.modified)}</td>
         {columns}
     </tr>;
@@ -261,8 +263,8 @@ UploadDataForm.contextTypes = childContextTypes;
 const Admin = (props: Props, {
     format,
     gettext,
-    fullName,
     options,
+    lang,
 }: Context) => {
     const {
         imageImport,
@@ -271,7 +273,7 @@ const Admin = (props: Props, {
     } = props;
     const hasImages = options.types[source.type].hasImages;
     const title = format(gettext("%(name)s Admin Area"), {
-        name: fullName(source),
+        name: source.getFullName(lang),
     });
 
     return <Page title={title}>

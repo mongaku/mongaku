@@ -226,7 +226,7 @@ const Pagination = ({prev, next}: Props, {gettext}: Context) => <nav>
 Pagination.contextTypes = childContextTypes;
 
 const ImageResultFooter = ({record, sources}: Props & {record: RecordType},
-        {URL, lang}: Context) => {
+        {lang}: Context) => {
     // Don't show the source selection if there isn't more than one source
     if (!sources || sources.length <= 1) {
         return null;
@@ -236,7 +236,7 @@ const ImageResultFooter = ({record, sources}: Props & {record: RecordType},
         <div className="wrap">
             <span>
                 <a className="pull-right"
-                    href={URL(record.getSource())}
+                    href={record.getSource().getURL(lang)}
                     title={record.getSource().getFullName(lang)}
                 >
                     {record.getSource().getShortName(lang)}
@@ -249,17 +249,17 @@ const ImageResultFooter = ({record, sources}: Props & {record: RecordType},
 ImageResultFooter.contextTypes = childContextTypes;
 
 const ImageResult = (props: Props & {record: RecordType},
-        {URL, getTitle}: Context) => {
+        {lang}: Context) => {
     const {record} = props;
 
     return <div className="img col-xs-6 col-sm-4 col-md-3">
         <div className="img-wrap">
-            <a href={URL(record)}
-                title={getTitle(record)}
+            <a href={record.getURL(lang)}
+                title={record.getTitle(lang)}
             >
                 <img src={record.getThumbURL()}
-                    alt={getTitle(record)}
-                    title={getTitle(record)}
+                    alt={record.getTitle(lang)}
+                    title={record.getTitle(lang)}
                     className="img-responsive center-block"
                 />
             </a>
@@ -270,15 +270,15 @@ const ImageResult = (props: Props & {record: RecordType},
 
 ImageResult.contextTypes = childContextTypes;
 
-const TextResult = ({record}: {record: RecordType},
-        {URL, getTitle}: Context) =>
-<div className="col-xs-12">
-    <a href={URL(record)}
-        title={getTitle(record)}
-    >
-        {getTitle(record)}
-    </a>
-</div>;
+const TextResult = ({record}: {record: RecordType}, {lang}: Context) => (
+    <div className="col-xs-12">
+        <a href={record.getURL(lang)}
+            title={record.getTitle(lang)}
+        >
+            {record.getTitle(lang)}
+        </a>
+    </div>
+);
 
 TextResult.contextTypes = childContextTypes;
 

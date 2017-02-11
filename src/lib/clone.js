@@ -23,9 +23,12 @@ module.exports = (
             return null;
         }
 
-        if (typeof value === "function" && value.length === 1 &&
-                value[0] === "i18n") {
-            return value.call(object, i18n) || "";
+        if (typeof value === "function" && value.length === 1) {
+            if (value[0] === "i18n") {
+                return value.call(object, i18n) || "";
+            } else if (value[0] === "lang") {
+                return value.call(object, i18n.lang) || "";
+            }
         }
 
         return undefined;

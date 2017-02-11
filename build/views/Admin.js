@@ -18,7 +18,7 @@ const ImageImport = ({
     format,
     gettext,
     relativeDate,
-    URL
+    lang
 }) => {
     const results = batch.getFilteredResults();
     let columns;
@@ -57,7 +57,7 @@ const ImageImport = ({
             null,
             React.createElement(
                 "a",
-                { href: URL(batch) },
+                { href: batch.getURL(lang) },
                 batch.fileName
             )
         ),
@@ -137,7 +137,9 @@ ImageImports.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         getExpectedFiles: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired
+        getURL: require("react").PropTypes.func.isRequired,
+        getFullName: require("react").PropTypes.func.isRequired,
+        getShortName: require("react").PropTypes.func.isRequired
     }).isRequired
 };
 ImageImports.contextTypes = childContextTypes;
@@ -201,7 +203,9 @@ UploadImagesForm.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         getExpectedFiles: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired
+        getURL: require("react").PropTypes.func.isRequired,
+        getFullName: require("react").PropTypes.func.isRequired,
+        getShortName: require("react").PropTypes.func.isRequired
     }).isRequired
 };
 UploadImagesForm.contextTypes = childContextTypes;
@@ -214,7 +218,7 @@ const DataImport = ({
     format,
     gettext,
     relativeDate,
-    URL
+    lang
 }) => {
     const results = batch.getFilteredResults();
     let columns;
@@ -231,7 +235,7 @@ const DataImport = ({
             { key: "finalize" },
             React.createElement(
                 "a",
-                { href: URL(batch), className: "btn btn-success btn-xs" },
+                { href: batch.getURL(lang), className: "btn btn-success btn-xs" },
                 gettext("Finalize Import")
             )
         ), batch.state !== "process.completed" && React.createElement(
@@ -273,7 +277,7 @@ const DataImport = ({
             null,
             React.createElement(
                 "a",
-                { href: URL(batch) },
+                { href: batch.getURL(lang) },
                 batch.fileName
             )
         ),
@@ -368,7 +372,9 @@ DataImports.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         getExpectedFiles: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired
+        getURL: require("react").PropTypes.func.isRequired,
+        getFullName: require("react").PropTypes.func.isRequired,
+        getShortName: require("react").PropTypes.func.isRequired
     }).isRequired
 };
 DataImports.contextTypes = childContextTypes;
@@ -436,7 +442,9 @@ UploadDataForm.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         getExpectedFiles: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired
+        getURL: require("react").PropTypes.func.isRequired,
+        getFullName: require("react").PropTypes.func.isRequired,
+        getShortName: require("react").PropTypes.func.isRequired
     }).isRequired
 };
 UploadDataForm.contextTypes = childContextTypes;
@@ -444,8 +452,8 @@ UploadDataForm.contextTypes = childContextTypes;
 const Admin = (props, {
     format,
     gettext,
-    fullName,
-    options
+    options,
+    lang
 }) => {
     const {
         imageImport,
@@ -454,7 +462,7 @@ const Admin = (props, {
     } = props;
     const hasImages = options.types[source.type].hasImages;
     const title = format(gettext("%(name)s Admin Area"), {
-        name: fullName(source)
+        name: source.getFullName(lang)
     });
 
     return React.createElement(
@@ -481,7 +489,9 @@ Admin.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         getExpectedFiles: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired
+        getURL: require("react").PropTypes.func.isRequired,
+        getFullName: require("react").PropTypes.func.isRequired,
+        getShortName: require("react").PropTypes.func.isRequired
     }).isRequired
 };
 Admin.contextTypes = childContextTypes;

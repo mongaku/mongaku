@@ -39,6 +39,7 @@ const ImportResult = (props: Props, {
     format,
     gettext,
     stringNum,
+    lang,
 }: Context) => {
     const {
         batch,
@@ -52,7 +53,7 @@ const ImportResult = (props: Props, {
     const showAll = format(gettext(
         "Show all %(count)s results..."),
         {count: stringNum(allResults.length)});
-    const expandURL = URL(batch, {expanded: id});
+    const expandURL = URL(batch.getURL(lang), {expanded: id});
     const isExpanded = (expanded === id || allResults.length <= numShow);
     const results = expanded ? allResults : allResults.slice(0, numShow);
 

@@ -435,7 +435,7 @@ Pagination.propTypes = {
 };
 Pagination.contextTypes = childContextTypes;
 
-const ImageResultFooter = ({ record, sources }, { URL, lang }) => {
+const ImageResultFooter = ({ record, sources }, { lang }) => {
     // Don't show the source selection if there isn't more than one source
     if (!sources || sources.length <= 1) {
         return null;
@@ -453,7 +453,7 @@ const ImageResultFooter = ({ record, sources }, { URL, lang }) => {
                 React.createElement(
                     "a",
                     { className: "pull-right",
-                        href: URL(record.getSource()),
+                        href: record.getSource().getURL(lang),
                         title: record.getSource().getFullName(lang)
                     },
                     record.getSource().getShortName(lang)
@@ -465,7 +465,7 @@ const ImageResultFooter = ({ record, sources }, { URL, lang }) => {
 
 ImageResultFooter.contextTypes = childContextTypes;
 
-const ImageResult = (props, { URL, getTitle }) => {
+const ImageResult = (props, { lang }) => {
     const { record } = props;
 
     return React.createElement(
@@ -476,12 +476,12 @@ const ImageResult = (props, { URL, getTitle }) => {
             { className: "img-wrap" },
             React.createElement(
                 "a",
-                { href: URL(record),
-                    title: getTitle(record)
+                { href: record.getURL(lang),
+                    title: record.getTitle(lang)
                 },
                 React.createElement("img", { src: record.getThumbURL(),
-                    alt: getTitle(record),
-                    title: getTitle(record),
+                    alt: record.getTitle(lang),
+                    title: record.getTitle(lang),
                     className: "img-responsive center-block"
                 })
             )
@@ -492,15 +492,15 @@ const ImageResult = (props, { URL, getTitle }) => {
 
 ImageResult.contextTypes = childContextTypes;
 
-const TextResult = ({ record }, { URL, getTitle }) => React.createElement(
+const TextResult = ({ record }, { lang }) => React.createElement(
     "div",
     { className: "col-xs-12" },
     React.createElement(
         "a",
-        { href: URL(record),
-            title: getTitle(record)
+        { href: record.getURL(lang),
+            title: record.getTitle(lang)
         },
-        getTitle(record)
+        record.getTitle(lang)
     )
 );
 

@@ -200,7 +200,7 @@ SourceFilter.contextTypes = childContextTypes;
 const SimilarityFilter = ({
     queries,
     values,
-}: Props, {gettext, getTitle}: Context) => {
+}: Props, {gettext, lang}: Context) => {
     const similarity = queries.similar.filters;
 
     return <div className="form-group">
@@ -213,7 +213,7 @@ const SimilarityFilter = ({
         >
             {Object.keys(similarity).map((id) =>
                 <option value={id} key={id}>
-                    {getTitle(similarity[id])}
+                    {similarity[id].getTitle(lang)}
                 </option>
             )}
         </select>
@@ -225,7 +225,7 @@ SimilarityFilter.contextTypes = childContextTypes;
 const ImageFilter = ({
     queries,
     values,
-}: Props, {gettext, getTitle}: Context) => {
+}: Props, {gettext, lang}: Context) => {
     const images = queries.images.filters;
 
     return <div className="form-group">
@@ -242,7 +242,7 @@ const ImageFilter = ({
             </option>
             {Object.keys(images).map((id) =>
                 <option value={id} key={id}>
-                    {getTitle(images[id])}
+                    {images[id].getTitle(lang)}
                 </option>
             )}
         </select>

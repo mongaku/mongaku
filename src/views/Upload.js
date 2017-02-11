@@ -30,6 +30,8 @@ type Source = {
     _id: string,
     name: string,
     getURL: (lang: string) => string,
+    getFullName: (lang: string) => string,
+    getShortName: (lang: string) => string,
 };
 
 type MatchType = {
@@ -68,21 +70,18 @@ UploadedImage.contextTypes = childContextTypes;
 const Match = ({
     match: {recordModel, score},
 }: Props & {match: MatchType}, {
-    getTitle,
-    URL,
     format,
     gettext,
-    fullName,
-    shortName,
+    lang,
 }: Context) => {
     const source = recordModel.getSource();
 
     return <div className="img col-md-6 col-sm-4 col-xs-6">
         <div className="img-wrap">
-            <a href={URL(recordModel)}>
+            <a href={recordModel.getURL(lang)}>
                 <img src={recordModel.getThumbURL()}
-                    alt={getTitle(recordModel)}
-                    title={getTitle(recordModel)}
+                    alt={recordModel.getTitle(lang)}
+                    title={recordModel.getTitle(lang)}
                     className="img-responsive center-block"
                 />
             </a>
@@ -93,10 +92,10 @@ const Match = ({
                     {score: score})}</span>
 
                 <a className="pull-right"
-                    href={URL(source)}
-                    title={fullName(source)}
+                    href={source.getURL(lang)}
+                    title={source.getFullName(lang)}
                 >
-                    {shortName(source)}
+                    {source.getShortName(lang)}
                 </a>
             </div>
         </div>

@@ -173,18 +173,24 @@ const DeletedResult = ({
 
 DeletedResult.contextTypes = childContextTypes;
 
-const ConfirmButtons = ({ batch }, { URL, gettext }) => React.createElement(
+const ConfirmButtons = ({ batch }, { URL, gettext, lang }) => React.createElement(
     "p",
     null,
     React.createElement(
         "a",
-        { href: URL(batch, { finalize: true }), className: "btn btn-success" },
+        {
+            href: URL(batch.getURL(lang), { finalize: true }),
+            className: "btn btn-success"
+        },
         gettext("Finalize Import")
     ),
     " ",
     React.createElement(
         "a",
-        { href: URL(batch, { abandon: true }), className: "btn btn-danger" },
+        {
+            href: URL(batch.getURL(lang), { abandon: true }),
+            className: "btn btn-danger"
+        },
         gettext("Abandon Import")
     )
 );

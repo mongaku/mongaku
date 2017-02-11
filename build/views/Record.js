@@ -46,15 +46,15 @@ const Image = ({
     image,
     record,
     active
-}, { getTitle }) => React.createElement(
+}, { lang }) => React.createElement(
     "div",
     { className: `item ${active ? "active" : ""}` },
     React.createElement(
         "a",
         { href: image.getOriginalURL() },
         React.createElement("img", { src: image.getScaledURL(),
-            alt: getTitle(record),
-            title: getTitle(record),
+            alt: record.getTitle(lang),
+            title: record.getTitle(lang),
             className: "img-responsive center-block"
         })
     )
@@ -304,7 +304,9 @@ Metadata.propTypes = {
     sources: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         name: require("react").PropTypes.string.isRequired,
-        getURL: require("react").PropTypes.func.isRequired
+        getURL: require("react").PropTypes.func.isRequired,
+        getFullName: require("react").PropTypes.func.isRequired,
+        getShortName: require("react").PropTypes.func.isRequired
     })).isRequired
 };
 Metadata.contextTypes = childContextTypes;
@@ -369,16 +371,14 @@ Details.propTypes = {
     sources: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         name: require("react").PropTypes.string.isRequired,
-        getURL: require("react").PropTypes.func.isRequired
+        getURL: require("react").PropTypes.func.isRequired,
+        getFullName: require("react").PropTypes.func.isRequired,
+        getShortName: require("react").PropTypes.func.isRequired
     })).isRequired
 };
 Details.contextTypes = childContextTypes;
 
-const Sources = ({ records }, {
-    gettext,
-    URL,
-    fullName
-}) => React.createElement(
+const Sources = ({ records }, { gettext, lang }) => React.createElement(
     "tr",
     null,
     React.createElement(
@@ -394,8 +394,8 @@ const Sources = ({ records }, {
             { key: record._id },
             React.createElement(
                 "a",
-                { href: URL(source) },
-                fullName(source)
+                { href: source.getURL(lang) },
+                source.getFullName(lang)
             )
         );
     })
@@ -438,13 +438,15 @@ Sources.propTypes = {
     sources: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         name: require("react").PropTypes.string.isRequired,
-        getURL: require("react").PropTypes.func.isRequired
+        getURL: require("react").PropTypes.func.isRequired,
+        getFullName: require("react").PropTypes.func.isRequired,
+        getShortName: require("react").PropTypes.func.isRequired
     })).isRequired
 };
 Sources.contextTypes = childContextTypes;
 
 const MainRecord = (props, {
-    URL,
+    lang,
     gettext
 }) => {
     const { similar, compare, records } = props;
@@ -455,7 +457,7 @@ const MainRecord = (props, {
         { className: `${recordWidth} imageholder` },
         (compare || records.length > 1) && React.createElement(
             "a",
-            { href: URL(records[0]),
+            { href: records[0].getURL(lang),
                 className: "btn btn-success"
             },
             "\xAB ",
@@ -528,7 +530,9 @@ MainRecord.propTypes = {
     sources: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         name: require("react").PropTypes.string.isRequired,
-        getURL: require("react").PropTypes.func.isRequired
+        getURL: require("react").PropTypes.func.isRequired,
+        getFullName: require("react").PropTypes.func.isRequired,
+        getShortName: require("react").PropTypes.func.isRequired
     })).isRequired
 };
 MainRecord.contextTypes = childContextTypes;
@@ -536,21 +540,18 @@ MainRecord.contextTypes = childContextTypes;
 const SimilarMatch = ({
     match: { recordModel, score }
 }, {
-    URL,
-    getTitle,
     format,
     gettext,
-    fullName,
-    shortName
+    lang
 }) => React.createElement(
     "div",
     { className: "img col-md-12 col-xs-6 col-sm-4" },
     React.createElement(
         "a",
-        { href: URL(recordModel) },
+        { href: recordModel.getURL(lang) },
         React.createElement("img", { src: recordModel.getThumbURL(),
-            alt: getTitle(recordModel),
-            title: getTitle(recordModel),
+            alt: recordModel.getTitle(lang),
+            title: recordModel.getTitle(lang),
             className: "img-responsive center-block"
         })
     ),
@@ -568,10 +569,10 @@ const SimilarMatch = ({
             React.createElement(
                 "a",
                 { className: "pull-right",
-                    href: URL(recordModel.getSource()),
-                    title: fullName(recordModel.getSource())
+                    href: recordModel.getSource().getURL(lang),
+                    title: recordModel.getSource().getFullName(lang)
                 },
-                shortName(recordModel.getSource())
+                recordModel.getSource().getShortName(lang)
             )
         )
     )
@@ -647,7 +648,9 @@ Similar.propTypes = {
     sources: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         name: require("react").PropTypes.string.isRequired,
-        getURL: require("react").PropTypes.func.isRequired
+        getURL: require("react").PropTypes.func.isRequired,
+        getFullName: require("react").PropTypes.func.isRequired,
+        getShortName: require("react").PropTypes.func.isRequired
     })).isRequired
 };
 Similar.contextTypes = childContextTypes;
@@ -660,14 +663,14 @@ const Script = () => React.createElement("script", {
     ` }
 });
 
-const Record = (props, { URL }) => {
+const Record = (props, { lang }) => {
     const { records, similar } = props;
     const record = records[0];
     const title = record.title || "";
     const social = {
         imgURL: record.getOriginalURL(),
         title,
-        url: URL(record)
+        url: record.getURL(lang)
     };
 
     return React.createElement(
@@ -723,7 +726,9 @@ Record.propTypes = {
     sources: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         name: require("react").PropTypes.string.isRequired,
-        getURL: require("react").PropTypes.func.isRequired
+        getURL: require("react").PropTypes.func.isRequired,
+        getFullName: require("react").PropTypes.func.isRequired,
+        getShortName: require("react").PropTypes.func.isRequired
     })).isRequired
 };
 Record.contextTypes = childContextTypes;

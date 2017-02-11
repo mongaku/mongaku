@@ -75,12 +75,9 @@ UploadedImage.contextTypes = childContextTypes;
 const Match = ({
     match: { recordModel, score }
 }, {
-    getTitle,
-    URL,
     format,
     gettext,
-    fullName,
-    shortName
+    lang
 }) => {
     const source = recordModel.getSource();
 
@@ -92,10 +89,10 @@ const Match = ({
             { className: "img-wrap" },
             React.createElement(
                 "a",
-                { href: URL(recordModel) },
+                { href: recordModel.getURL(lang) },
                 React.createElement("img", { src: recordModel.getThumbURL(),
-                    alt: getTitle(recordModel),
-                    title: getTitle(recordModel),
+                    alt: recordModel.getTitle(lang),
+                    title: recordModel.getTitle(lang),
                     className: "img-responsive center-block"
                 })
             )
@@ -114,10 +111,10 @@ const Match = ({
                 React.createElement(
                     "a",
                     { className: "pull-right",
-                        href: URL(source),
-                        title: fullName(source)
+                        href: source.getURL(lang),
+                        title: source.getFullName(lang)
                     },
-                    shortName(source)
+                    source.getShortName(lang)
                 )
             )
         )

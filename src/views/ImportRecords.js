@@ -153,12 +153,18 @@ const DeletedResult = ({
 
 DeletedResult.contextTypes = childContextTypes;
 
-const ConfirmButtons = ({batch}: Props, {URL, gettext}: Context) => <p>
-    <a href={URL(batch, {finalize: true})} className="btn btn-success">
+const ConfirmButtons = ({batch}: Props, {URL, gettext, lang}: Context) => <p>
+    <a
+        href={URL(batch.getURL(lang), {finalize: true})}
+        className="btn btn-success"
+    >
         {gettext("Finalize Import")}
     </a>
     {" "}
-    <a href={URL(batch, {abandon: true})} className="btn btn-danger">
+    <a
+        href={URL(batch.getURL(lang), {abandon: true})}
+        className="btn btn-danger"
+    >
         {gettext("Abandon Import")}
     </a>
 </p>;

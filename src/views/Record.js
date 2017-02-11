@@ -48,6 +48,8 @@ type Source = {
     _id: string,
     name: string,
     getURL: (lang: string) => string,
+    getFullName: (lang: string) => string,
+    getShortName: (lang: string) => string,
 };
 
 type Match = {
@@ -90,11 +92,11 @@ const Image = ({
     record: RecordType,
     image: ImageType,
     active: boolean,
-}, {getTitle}: Context) => <div className={`item ${active ? "active" : ""}`}>
+}, {lang}: Context) => <div className={`item ${active ? "active" : ""}`}>
     <a href={image.getOriginalURL()}>
         <img src={image.getScaledURL()}
-            alt={getTitle(record)}
-            title={getTitle(record)}
+            alt={record.getTitle(lang)}
+            title={record.getTitle(lang)}
             className="img-responsive center-block"
         />
     </a>
@@ -310,11 +312,7 @@ const Details = ({records}: Props, {gettext}: Context) => <tr>
 
 Details.contextTypes = childContextTypes;
 
-const Sources = ({records}: Props, {
-    gettext,
-    URL,
-    fullName,
-}: Context) => <tr>
+const Sources = ({records}: Props, {gettext, lang}: Context) => <tr>
     <th className="text-right">
         {gettext("Source")}
     </th>
@@ -322,8 +320,8 @@ const Sources = ({records}: Props, {
         const source = record.getSource();
 
         return <td key={record._id}>
-            <a href={URL(source)}>
-                {fullName(source)}
+            <a href={source.getURL(lang)}>
+                {source.getFullName(lang)}
             </a>
         </td>;
     })}
@@ -332,7 +330,7 @@ const Sources = ({records}: Props, {
 Sources.contextTypes = childContextTypes;
 
 const MainRecord = (props: Props, {
-    URL,
+    lang,
     gettext,
 }: Context) => {
     const {similar, compare, records} = props;
@@ -341,7 +339,7 @@ const MainRecord = (props: Props, {
 
     return <div className={`${recordWidth} imageholder`}>
         {(compare || records.length > 1) &&
-            <a href={URL(records[0])}
+            <a href={records[0].getURL(lang)}
                 className="btn btn-success"
             >
                 &laquo; {gettext("End Comparison")}
@@ -373,17 +371,14 @@ MainRecord.contextTypes = childContextTypes;
 const SimilarMatch = ({
     match: {recordModel, score},
 }: Props & {match: Match}, {
-    URL,
-    getTitle,
     format,
     gettext,
-    fullName,
-    shortName,
+    lang,
 }: Context) => <div className="img col-md-12 col-xs-6 col-sm-4">
-    <a href={URL(recordModel)}>
+    <a href={recordModel.getURL(lang)}>
         <img src={recordModel.getThumbURL()}
-            alt={getTitle(recordModel)}
-            title={getTitle(recordModel)}
+            alt={recordModel.getTitle(lang)}
+            title={recordModel.getTitle(lang)}
             className="img-responsive center-block"
         />
     </a>
@@ -393,10 +388,10 @@ const SimilarMatch = ({
                 "Score: %(score)s"), {score: score})}</span>
 
             <a className="pull-right"
-                href={URL(recordModel.getSource())}
-                title={fullName(recordModel.getSource())}
+                href={recordModel.getSource().getURL(lang)}
+                title={recordModel.getSource().getFullName(lang)}
             >
-                {shortName(recordModel.getSource())}
+                {recordModel.getSource().getShortName(lang)}
             </a>
         </div>
     </div>
@@ -436,14 +431,14 @@ const Script = () => <script
     `}}
 />;
 
-const Record = (props: Props, {URL}: Context) => {
+const Record = (props: Props, {lang}: Context) => {
     const {records, similar} = props;
     const record = records[0];
     const title = record.title || "";
     const social = {
         imgURL: record.getOriginalURL(),
         title,
-        url: URL(record),
+        url: record.getURL(lang),
     };
 
     return <Page
