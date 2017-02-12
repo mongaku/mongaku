@@ -6,6 +6,7 @@ const React = require("react");
 
 const Page = require("./Page.js");
 const ImportResult = require("./ImportResult.js");
+const { format, relativeDate, fixedDate } = require("./utils.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
@@ -91,12 +92,7 @@ ModelResult.propTypes = {
         warnings: require("react").PropTypes.arrayOf(require("react").PropTypes.string)
     }).isRequired
 };
-const ImportImages = (props, {
-    format,
-    gettext,
-    fixedDate,
-    relativeDate
-}) => {
+const ImportImages = (props, { lang, gettext }) => {
     const {
         adminURL,
         batchError,
@@ -105,8 +101,8 @@ const ImportImages = (props, {
     } = props;
     const title = format(gettext("Image Import: %(fileName)s"), { fileName: batch.fileName });
     const state = batch.state === "error" ? format(gettext("Error: %(error)s"), { error: batchError(batch.error || "") }) : batchState(batch);
-    const uploadDate = format(gettext("Uploaded: %(date)s"), { date: fixedDate(batch.created) });
-    const lastUpdated = format(gettext("Last Updated: %(date)s"), { date: relativeDate(batch.modified) });
+    const uploadDate = format(gettext("Uploaded: %(date)s"), { date: fixedDate(lang, batch.created) });
+    const lastUpdated = format(gettext("Last Updated: %(date)s"), { date: relativeDate(lang, batch.modified) });
 
     return React.createElement(
         Page,

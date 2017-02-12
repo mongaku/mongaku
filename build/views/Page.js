@@ -2,6 +2,8 @@
 
 const React = require("react");
 
+const { URL, getOtherURL } = require("./utils.js");
+
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
 const { childContextTypes } = require("./Wrapper.js");
@@ -11,7 +13,7 @@ const Head = ({
     social,
     style,
     noIndex
-}, { URL, lang, options }) => {
+}, { lang, options }) => {
     const siteTitle = options.getTitle;
     let pageTitle = siteTitle;
 
@@ -35,7 +37,7 @@ const Head = ({
         }),
         disableIndex && React.createElement("meta", { name: "robots", content: "noindex" }),
         options.faviconUrl && React.createElement("link", { rel: "icon", type: "image/x-icon",
-            href: URL(options.faviconUrl)
+            href: URL(lang, options.faviconUrl)
         }),
         React.createElement(
             "title",
@@ -43,17 +45,17 @@ const Head = ({
             pageTitle || title
         ),
         socialMeta,
-        React.createElement("link", { rel: "stylesheet", href: URL("/css/bootstrap.min.css") }),
+        React.createElement("link", { rel: "stylesheet", href: URL(lang, "/css/bootstrap.min.css") }),
         React.createElement("link", {
             rel: "stylesheet",
-            href: URL("/css/bootstrap-theme.min.css")
+            href: URL(lang, "/css/bootstrap-theme.min.css")
         }),
-        React.createElement("link", { rel: "stylesheet", href: URL("/css/select2.min.css") }),
+        React.createElement("link", { rel: "stylesheet", href: URL(lang, "/css/select2.min.css") }),
         React.createElement("link", {
             rel: "stylesheet",
-            href: URL("/css/select2-bootstrap.min.css")
+            href: URL(lang, "/css/select2-bootstrap.min.css")
         }),
-        React.createElement("link", { rel: "stylesheet", href: URL("/css/style.css") }),
+        React.createElement("link", { rel: "stylesheet", href: URL(lang, "/css/style.css") }),
         style
     );
 };
@@ -73,23 +75,23 @@ Head.propTypes = {
 };
 Head.contextTypes = childContextTypes;
 
-const Logo = (props, { URL, options }) => React.createElement(
+const Logo = (props, { lang, options }) => React.createElement(
     "span",
     null,
     React.createElement("img", { alt: options.getTitle,
-        src: URL(options.logoUrl || ""),
+        src: URL(lang, options.logoUrl || ""),
         height: "40", width: "40"
     }),
     " "
 );
 
-const NavLink = ({ type, title }, { URL, lang, gettext, user }) => React.createElement(
+const NavLink = ({ type, title }, { lang, gettext, user }) => React.createElement(
     "li",
     { className: "dropdown" },
     React.createElement(
         "a",
         {
-            href: URL(`/${type}/search`),
+            href: URL(lang, `/${type}/search`),
             className: "dropdown-toggle",
             "data-toggle": "dropdown",
             role: "button",
@@ -109,7 +111,7 @@ const NavLink = ({ type, title }, { URL, lang, gettext, user }) => React.createE
             React.createElement(
                 "form",
                 {
-                    action: URL(`/${type}/search`),
+                    action: URL(lang, `/${type}/search`),
                     method: "GET",
                     className: "form-search form-inline dropdown-search"
                 },
@@ -139,7 +141,7 @@ const NavLink = ({ type, title }, { URL, lang, gettext, user }) => React.createE
             null,
             React.createElement(
                 "a",
-                { href: URL(`/${type}/search`) },
+                { href: URL(lang, `/${type}/search`) },
                 gettext("Browse All")
             )
         ),
@@ -148,7 +150,7 @@ const NavLink = ({ type, title }, { URL, lang, gettext, user }) => React.createE
             null,
             React.createElement(
                 "a",
-                { href: URL(`/${type}/create`) },
+                { href: URL(lang, `/${type}/create`) },
                 gettext("Create New")
             )
         )
@@ -157,10 +159,10 @@ const NavLink = ({ type, title }, { URL, lang, gettext, user }) => React.createE
 
 NavLink.contextTypes = childContextTypes;
 
-const SearchForm = (props, { gettext, URL, options }) => React.createElement(
+const SearchForm = (props, { gettext, lang, options }) => React.createElement(
     "form",
     {
-        action: URL(`/${Object.keys(options.types)[0]}/search`),
+        action: URL(lang, `/${Object.keys(options.types)[0]}/search`),
         method: "GET",
         className: "navbar-form navbar-right search form-inline hidden-xs"
     },
@@ -182,8 +184,7 @@ SearchForm.contextTypes = childContextTypes;
 
 const LocaleMenu = (props, {
     lang,
-    URL,
-    getOtherURL,
+    originalUrl,
     options
 }) => React.createElement(
     "li",
@@ -195,7 +196,7 @@ const LocaleMenu = (props, {
             "aria-expanded": "false"
         },
         React.createElement("img", { alt: options.locales[lang],
-            src: URL(`/images/${lang}.png`),
+            src: URL(lang, `/images/${lang}.png`),
             width: "16", height: "11"
         }),
         " ",
@@ -210,8 +211,8 @@ const LocaleMenu = (props, {
             { key: locale },
             React.createElement(
                 "a",
-                { href: getOtherURL(locale) },
-                React.createElement("img", { src: URL(`/images/${locale}.png`),
+                { href: getOtherURL(originalUrl, locale) },
+                React.createElement("img", { src: URL(lang, `/images/${locale}.png`),
                     alt: options.locales[locale],
                     width: "16", height: "11"
                 }),
@@ -226,7 +227,7 @@ LocaleMenu.contextTypes = childContextTypes;
 
 const Header = (props, {
     gettext,
-    URL,
+    lang,
     user,
     options
 }) => React.createElement(
@@ -257,7 +258,7 @@ const Header = (props, {
             ),
             React.createElement(
                 "a",
-                { className: "navbar-brand", href: URL("/") },
+                { className: "navbar-brand", href: URL(lang, "/") },
                 options.logoUrl && React.createElement(Logo, null),
                 options.getShortTitle
             )
@@ -277,7 +278,7 @@ const Header = (props, {
                     null,
                     React.createElement(
                         "a",
-                        { href: URL("/login") },
+                        { href: URL(lang, "/login") },
                         gettext("Login")
                     )
                 ),
@@ -286,7 +287,7 @@ const Header = (props, {
                     null,
                     React.createElement(
                         "a",
-                        { href: URL("/logout") },
+                        { href: URL(lang, "/logout") },
                         gettext("Logout")
                     )
                 ),
@@ -299,13 +300,13 @@ const Header = (props, {
 
 Header.contextTypes = childContextTypes;
 
-const Scripts = ({ scripts }, { URL }) => React.createElement(
+const Scripts = ({ scripts }, { lang }) => React.createElement(
     "div",
     null,
-    React.createElement("script", { src: URL("/js/jquery.min.js") }),
-    React.createElement("script", { src: URL("/js/bootstrap.min.js") }),
-    React.createElement("script", { src: URL("/js/select2.min.js") }),
-    React.createElement("script", { src: URL("/js/app.js") }),
+    React.createElement("script", { src: URL(lang, "/js/jquery.min.js") }),
+    React.createElement("script", { src: URL(lang, "/js/bootstrap.min.js") }),
+    React.createElement("script", { src: URL(lang, "/js/select2.min.js") }),
+    React.createElement("script", { src: URL(lang, "/js/app.js") }),
     scripts
 );
 

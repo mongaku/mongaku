@@ -3,17 +3,18 @@
 const React = require("react");
 
 const Page = require("./Page.js");
+const {URL} = require("./utils.js");
 
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
 
-const Login = (props: {}, {gettext, URL}: Context) => {
+const Login = (props: {}, {lang, gettext}: Context) => {
     const title = gettext("Login");
 
     return <Page title={title}>
         <h1>{title}</h1>
 
-        <form action={URL("/login")} method="post">
+        <form action={URL(lang, "/login")} method="post">
             <div>
                 <label htmlFor="email">{gettext("Email Address:")}</label>
                 {" "}

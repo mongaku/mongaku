@@ -22,15 +22,9 @@ if (typeof exports !== "undefined") Object.defineProperty(exports, "babelPluginF
 if (typeof exports !== "undefined") Object.defineProperty(exports, "babelPluginFlowReactPropTypes_proptype_Context", {
     value: require("react").PropTypes.shape({
         lang: require("react").PropTypes.string.isRequired,
-        URL: require("react").PropTypes.func.isRequired,
-        getOtherURL: require("react").PropTypes.func.isRequired,
-        stringNum: require("react").PropTypes.func.isRequired,
-        fixedDate: require("react").PropTypes.func.isRequired,
-        relativeDate: require("react").PropTypes.func.isRequired,
-        searchURL: require("react").PropTypes.func.isRequired,
         user: require("react").PropTypes.any,
+        originalUrl: require("react").PropTypes.string.isRequired,
         gettext: require("react").PropTypes.func.isRequired,
-        format: require("react").PropTypes.func.isRequired,
         options: require("react").PropTypes.shape({
             getShortTitle: require("react").PropTypes.string.isRequired,
             getTitle: require("react").PropTypes.string.isRequired,

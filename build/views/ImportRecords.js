@@ -8,6 +8,7 @@ const record = require("../lib/record");
 
 const Page = require("./Page.js");
 const ImportResult = require("./ImportResult.js");
+const { format, relativeDate, fixedDate, URL } = require("./utils.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
@@ -173,13 +174,13 @@ const DeletedResult = ({
 
 DeletedResult.contextTypes = childContextTypes;
 
-const ConfirmButtons = ({ batch }, { URL, gettext, lang }) => React.createElement(
+const ConfirmButtons = ({ batch }, { gettext, lang }) => React.createElement(
     "p",
     null,
     React.createElement(
         "a",
         {
-            href: URL(batch.getURL(lang), { finalize: true }),
+            href: URL(lang, batch.getURL(lang), { finalize: true }),
             className: "btn btn-success"
         },
         gettext("Finalize Import")
@@ -188,7 +189,7 @@ const ConfirmButtons = ({ batch }, { URL, gettext, lang }) => React.createElemen
     React.createElement(
         "a",
         {
-            href: URL(batch.getURL(lang), { abandon: true }),
+            href: URL(lang, batch.getURL(lang), { abandon: true }),
             className: "btn btn-danger"
         },
         gettext("Abandon Import")
@@ -215,13 +216,7 @@ ConfirmButtons.propTypes = {
 };
 ConfirmButtons.contextTypes = childContextTypes;
 
-const ImportData = (props, {
-    gettext,
-    format,
-    fixedDate,
-    relativeDate,
-    URL
-}) => {
+const ImportData = (props, { lang, gettext }) => {
     const {
         batch,
         batchError,
@@ -231,11 +226,11 @@ const ImportData = (props, {
     const state = { batch };
     const title = format(gettext("Data Import: %(fileName)s"), { fileName: batch.fileName });
     const stateText = state === "error" ? format(gettext("Error: %(error)s"), { error: batchError(batch.error || "") }) : batchState(batch);
-    const uploadDate = format(gettext("Uploaded: %(date)s"), { date: fixedDate(batch.created) });
-    const lastUpdated = format(gettext("Last Updated: %(date)s"), { date: relativeDate(batch.modified) });
+    const uploadDate = format(gettext("Uploaded: %(date)s"), { date: fixedDate(lang, batch.created) });
+    const lastUpdated = format(gettext("Last Updated: %(date)s"), { date: relativeDate(lang, batch.modified) });
 
     const style = React.createElement("link", { rel: "stylesheet",
-        href: URL("/css/format-diff.css")
+        href: URL(lang, "/css/format-diff.css")
     });
 
     return React.createElement(

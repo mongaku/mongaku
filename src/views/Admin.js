@@ -3,6 +3,7 @@
 const React = require("react");
 
 const Page = require("./Page.js");
+const {format, relativeDate, URL} = require("./utils.js");
 
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
@@ -47,9 +48,7 @@ const ImageImport = ({
     batchError,
     batchState,
 }: Props & {batch: Import}, {
-    format,
     gettext,
-    relativeDate,
     lang,
 }: Context) => {
     const results = batch.getFilteredResults();
@@ -71,7 +70,7 @@ const ImageImport = ({
 
     return <tr>
         <td><a href={batch.getURL(lang)}>{batch.fileName}</a></td>
-        <td>{relativeDate(batch.modified)}</td>
+        <td>{relativeDate(lang, batch.modified)}</td>
         {columns}
     </tr>;
 };
@@ -104,14 +103,14 @@ const ImageImports = (props: Props, {gettext}: Context) => {
 ImageImports.contextTypes = childContextTypes;
 
 const UploadImagesForm = ({source}: Props,
-        {gettext, lang, URL}: Context) => <div className="panel panel-default">
+        {gettext, lang}: Context) => <div className="panel panel-default">
     <div className="panel-heading">
         <h3 className="panel-title">
             {gettext("Upload Images")}
         </h3>
     </div>
     <div className="panel-body">
-        <form action={URL(
+        <form action={URL(lang,
                 `/${source.type}/source/${source._id}/upload-images`)}
             method="POST" encType="multipart/form-data"
         >
@@ -153,9 +152,7 @@ const DataImport = ({
     batchError,
     batchState,
 }: Props & {batch: Import}, {
-    format,
     gettext,
-    relativeDate,
     lang,
 }: Context) => {
     const results = batch.getFilteredResults();
@@ -186,7 +183,7 @@ const DataImport = ({
 
     return <tr>
         <td><a href={batch.getURL(lang)}>{batch.fileName}</a></td>
-        <td>{relativeDate(batch.modified)}</td>
+        <td>{relativeDate(lang, batch.modified)}</td>
         {columns}
     </tr>;
 };
@@ -224,7 +221,6 @@ DataImports.contextTypes = childContextTypes;
 const UploadDataForm = ({source}: Props, {
     gettext,
     lang,
-    URL,
 }: Context) => <div className="panel panel-default">
     <div className="panel-heading">
         <h3 className="panel-title">
@@ -232,7 +228,7 @@ const UploadDataForm = ({source}: Props, {
         </h3>
     </div>
     <div className="panel-body">
-        <form action={URL(
+        <form action={URL(lang,
                 `/${source.type}/source/${source._id}/upload-data`)}
             method="POST" encType="multipart/form-data"
         >
@@ -261,7 +257,6 @@ const UploadDataForm = ({source}: Props, {
 UploadDataForm.contextTypes = childContextTypes;
 
 const Admin = (props: Props, {
-    format,
     gettext,
     options,
     lang,

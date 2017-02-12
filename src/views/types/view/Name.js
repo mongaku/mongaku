@@ -2,6 +2,8 @@
 
 const React = require("react");
 
+const {searchURL} = require("../../utils.js");
+
 import type {Context} from "../../types.js";
 const {childContextTypes} = require("../../Wrapper.js");
 
@@ -20,8 +22,8 @@ type Props = {
 const Pseudonym = ({
     type,
     nameObject,
-}: {type: string, nameObject: NameType}, {searchURL}: Context) => {
-    const pseudoURL = searchURL({
+}: {type: string, nameObject: NameType}, {lang}: Context) => {
+    const pseudoURL = searchURL(lang, {
         filter: nameObject.pseudonym,
         type,
     });
@@ -37,8 +39,8 @@ const Name = ({
     name,
     type,
     nameObject,
-}: Props & {nameObject: NameType}, {searchURL}: Context) => {
-    const url = searchURL({
+}: Props & {nameObject: NameType}, {lang}: Context) => {
+    const url = searchURL(lang, {
         [name]: nameObject.name,
         type,
     });

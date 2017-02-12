@@ -7,6 +7,7 @@ const FixedStringFilter = require("./types/filter/FixedString.js");
 const LocationFilter = require("./types/filter/Location.js");
 const NameFilter = require("./types/filter/Name.js");
 const YearRangeFilter = require("./types/filter/YearRange.js");
+const {URL} = require("./utils.js");
 
 import type {Context, ModelType} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
@@ -272,9 +273,9 @@ const Sorts = ({
 
 Sorts.contextTypes = childContextTypes;
 
-const SearchForm = (props: Props, {URL, lang, gettext, options}: Context) => {
+const SearchForm = (props: Props, {lang, gettext, options}: Context) => {
     const {type, values, sorts, sources} = props;
-    const searchURL = URL(`/${type}/search`);
+    const searchURL = URL(lang, `/${type}/search`);
     const typeOptions = options.types[type];
     const placeholder = typeOptions.getSearchPlaceholder;
     const showImageFilter = typeOptions.hasImages ||

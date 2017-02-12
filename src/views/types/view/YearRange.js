@@ -2,6 +2,8 @@
 
 const React = require("react");
 
+const {searchURL} = require("../../utils.js");
+
 import type {Context} from "../../types.js";
 const {childContextTypes} = require("../../Wrapper.js");
 
@@ -38,8 +40,8 @@ const YearRange = ({
     name,
     type,
     date,
-}: Props & {date: YearRangeType}, {searchURL}: Context) => {
-    const url = searchURL({
+}: Props & {date: YearRangeType}, {lang}: Context) => {
+    const url = searchURL(lang, {
         [name]: {
             start: date.start,
             end: date.end,

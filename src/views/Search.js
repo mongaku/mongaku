@@ -4,6 +4,7 @@ const React = require("react");
 
 const Page = require("./Page.js");
 const SearchForm = require("./SearchForm.js");
+const {format, stringNum} = require("./utils.js");
 
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
@@ -72,7 +73,7 @@ const FacetBucket = ({bucket}: {bucket: Bucket}) => <li>
 const Facet = ({
     facet,
     type,
-}: {type: string, facet: FacetType}, {format, gettext, options}: Context) => {
+}: {type: string, facet: FacetType}, {gettext, options}: Context) => {
     const minFacetCount = options.types[type].minFacetCount || 1;
     let extra = null;
     let buckets = facet.buckets
@@ -131,21 +132,21 @@ const Facets = (props: Props) => {
     </div>;
 };
 
-const Sidebar = (props: Props, {format, gettext, stringNum}: Context) => {
+const Sidebar = (props: Props, {lang, gettext}: Context) => {
     const {total, start, end} = props;
 
     return <div className="results-side col-sm-3 col-sm-push-9">
         <div className="panel panel-default facet">
             <div className="panel-heading">
                 <strong>{format(gettext("%(numRecords)s matches."),
-                    {numRecords: stringNum(total)})}
+                    {numRecords: stringNum(lang, total)})}
                 </strong>
                 <br/>
                 {!!end && <span>{format(
                     gettext("Viewing %(start)s to %(end)s."),
                     {
-                        start: stringNum(start || 1),
-                        end: stringNum(end),
+                        start: stringNum(lang, start || 1),
+                        end: stringNum(lang, end),
                     }
                 )}</span>}
             </div>
@@ -160,7 +161,7 @@ const Sidebar = (props: Props, {format, gettext, stringNum}: Context) => {
 Sidebar.contextTypes = childContextTypes;
 
 const Breadcrumb = ({crumb}: {crumb: BreadcrumbType},
-    {format, gettext}: Context) =>
+    {gettext}: Context) =>
 <a href={crumb.url}
     className="btn btn-default btn-xs"
     title={format(gettext("Remove %(query)s"),

@@ -4,6 +4,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 const React = require("react");
 
+const { searchURL } = require("../../utils.js");
+
 var babelPluginFlowReactPropTypes_proptype_Context = require("../../types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
 const { childContextTypes } = require("../../Wrapper.js");
@@ -12,8 +14,8 @@ const Location = ({
     name,
     type,
     location
-}, { searchURL }) => {
-    const url = searchURL({
+}, { lang }) => {
+    const url = searchURL(lang, {
         [name]: location.name,
         type
     });

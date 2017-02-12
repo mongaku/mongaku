@@ -10,6 +10,7 @@ const LinkedRecordEdit = require("./types/edit/LinkedRecord.js");
 const NameEdit = require("./types/edit/Name.js");
 const SimpleDateEdit = require("./types/edit/SimpleDate.js");
 const YearRangeEdit = require("./types/edit/YearRange.js");
+const { format } = require("./utils.js");
 
 var babelPluginFlowReactPropTypes_proptype_ModelType = require("./types.js").babelPluginFlowReactPropTypes_proptype_ModelType || require("react").PropTypes.any;
 
@@ -410,7 +411,7 @@ CloneButton.propTypes = {
 };
 CloneButton.contextTypes = childContextTypes;
 
-const EditRecord = (props, { lang, format, gettext, options }) => {
+const EditRecord = (props, { lang, gettext, options }) => {
     const { record, type, mode } = props;
     const postURL = record ? record._id ? record.getEditURL(lang) : record.getCreateURL(lang) : "";
 

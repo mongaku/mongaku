@@ -3,6 +3,7 @@
 const React = require("react");
 
 const Page = require("./Page.js");
+const { stringNum, URL } = require("./utils.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
@@ -10,7 +11,6 @@ const { childContextTypes } = require("./Wrapper.js");
 
 const SearchForm = ({ type }, {
     lang,
-    URL,
     gettext,
     user,
     options
@@ -28,7 +28,7 @@ const SearchForm = ({ type }, {
         ),
         React.createElement(
             "form",
-            { action: URL(`/${type}/search`), method: "GET",
+            { action: URL(lang, `/${type}/search`), method: "GET",
                 className: "form-search form-inline"
             },
             React.createElement(
@@ -47,13 +47,16 @@ const SearchForm = ({ type }, {
             " ",
             React.createElement(
                 "a",
-                { href: URL(`/${type}/search`), className: "btn btn-default" },
+                { href: URL(lang, `/${type}/search`), className: "btn btn-default" },
                 gettext("Browse All")
             ),
             " ",
             sources && sources.length > 0 && React.createElement(
                 "a",
-                { href: URL(`/${type}/create`), className: "btn btn-success" },
+                {
+                    href: URL(lang, `/${type}/create`),
+                    className: "btn btn-success"
+                },
                 gettext("Create New")
             )
         )
@@ -65,7 +68,7 @@ SearchForm.propTypes = {
 };
 SearchForm.contextTypes = childContextTypes;
 
-const ImageUploadForms = ({ type }, { lang, gettext, URL }) => React.createElement(
+const ImageUploadForms = ({ type }, { lang, gettext }) => React.createElement(
     "div",
     null,
     React.createElement(
@@ -95,7 +98,7 @@ const ImageUploadForms = ({ type }, { lang, gettext, URL }) => React.createEleme
             { className: "panel-body" },
             React.createElement(
                 "form",
-                { action: URL(`/${type}/file-upload`), method: "POST",
+                { action: URL(lang, `/${type}/file-upload`), method: "POST",
                     encType: "multipart/form-data"
                 },
                 React.createElement("input", { type: "hidden", name: "lang",
@@ -136,7 +139,7 @@ const ImageUploadForms = ({ type }, { lang, gettext, URL }) => React.createEleme
             { className: "panel-body" },
             React.createElement(
                 "form",
-                { action: URL(`/${type}/url-upload`), method: "GET" },
+                { action: URL(lang, `/${type}/url-upload`), method: "GET" },
                 React.createElement("input", { type: "hidden", name: "lang",
                     value: lang
                 }),
@@ -167,10 +170,10 @@ ImageUploadForms.propTypes = {
 };
 ImageUploadForms.contextTypes = childContextTypes;
 
-const Source = ({ type, source }, { lang, stringNum, options }) => {
+const Source = ({ type, source }, { lang, options }) => {
 
     const typeName = options.types[type].name;
-    const recordCount = stringNum(source.numRecords);
+    const recordCount = stringNum(lang, source.numRecords);
     const desc = `${recordCount} ${typeName}`;
 
     return React.createElement(

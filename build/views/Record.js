@@ -10,6 +10,7 @@ const FixedStringView = require("./types/view/FixedString.js");
 const LocationView = require("./types/view/Location.js");
 const NameView = require("./types/view/Name.js");
 const YearRangeView = require("./types/view/YearRange.js");
+const { format } = require("./utils.js");
 
 var babelPluginFlowReactPropTypes_proptype_ModelType = require("./types.js").babelPluginFlowReactPropTypes_proptype_ModelType || require("react").PropTypes.any;
 
@@ -540,7 +541,6 @@ MainRecord.contextTypes = childContextTypes;
 const SimilarMatch = ({
     match: { recordModel, score }
 }, {
-    format,
     gettext,
     lang
 }) => React.createElement(

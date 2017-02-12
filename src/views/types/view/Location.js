@@ -2,6 +2,8 @@
 
 const React = require("react");
 
+const {searchURL} = require("../../utils.js");
+
 import type {Context} from "../../types.js";
 const {childContextTypes} = require("../../Wrapper.js");
 
@@ -21,8 +23,8 @@ const Location = ({
     name,
     type,
     location,
-}: Props & {location: LocationType}, {searchURL}: Context) => {
-    const url = searchURL({
+}: Props & {location: LocationType}, {lang}: Context) => {
+    const url = searchURL(lang, {
         [name]: location.name,
         type,
     });

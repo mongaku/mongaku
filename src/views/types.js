@@ -130,15 +130,9 @@ export type Options = {
 // Methods and properties defined in view-methods.js and i18n.js
 export type Context = {
     lang: string,
-    URL: (path: string) => string,
-    getOtherURL: (lang: string) => string,
-    stringNum: (num: number) => string,
-    fixedDate: (date: Date) => string,
-    relativeDate: (date: Date) => string,
-    searchURL: (params: {}) => string,
     user?: User,
+    originalUrl: string,
     gettext: (text: string) => string,
-    format: (text: string, options: {}) => string,
     options: Options,
 };
 

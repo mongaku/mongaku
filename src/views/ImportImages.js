@@ -4,6 +4,7 @@ const React = require("react");
 
 const Page = require("./Page.js");
 const ImportResult = require("./ImportResult.js");
+const {format, relativeDate, fixedDate} = require("./utils.js");
 
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
@@ -95,12 +96,7 @@ const ModelResult = ({result: {model, fileName}}: {result: Result}) => {
     </div>;
 };
 
-const ImportImages = (props: Props, {
-    format,
-    gettext,
-    fixedDate,
-    relativeDate,
-}: Context) => {
+const ImportImages = (props: Props, {lang, gettext}: Context) => {
     const {
         adminURL,
         batchError,
@@ -114,9 +110,9 @@ const ImportImages = (props: Props, {
             {error: batchError(batch.error || "")}) :
         batchState(batch);
     const uploadDate = format(gettext("Uploaded: %(date)s"),
-        {date: fixedDate(batch.created)});
+        {date: fixedDate(lang, batch.created)});
     const lastUpdated = format(gettext("Last Updated: %(date)s"),
-        {date: relativeDate(batch.modified)});
+        {date: relativeDate(lang, batch.modified)});
 
     return <Page title={title}>
         <p><a href={adminURL} className="btn btn-primary">

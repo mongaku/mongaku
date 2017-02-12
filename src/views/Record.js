@@ -8,6 +8,7 @@ const FixedStringView = require("./types/view/FixedString.js");
 const LocationView = require("./types/view/Location.js");
 const NameView = require("./types/view/Name.js");
 const YearRangeView = require("./types/view/YearRange.js");
+const {format} = require("./utils.js");
 
 import type {Context, ModelType} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
@@ -371,7 +372,6 @@ MainRecord.contextTypes = childContextTypes;
 const SimilarMatch = ({
     match: {recordModel, score},
 }: Props & {match: Match}, {
-    format,
     gettext,
     lang,
 }: Context) => <div className="img col-md-12 col-xs-6 col-sm-4">

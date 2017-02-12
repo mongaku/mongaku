@@ -6,6 +6,7 @@ const record = require("../lib/record");
 
 const Page = require("./Page.js");
 const ImportResult = require("./ImportResult.js");
+const {format, relativeDate, fixedDate, URL} = require("./utils.js");
 
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
@@ -153,16 +154,16 @@ const DeletedResult = ({
 
 DeletedResult.contextTypes = childContextTypes;
 
-const ConfirmButtons = ({batch}: Props, {URL, gettext, lang}: Context) => <p>
+const ConfirmButtons = ({batch}: Props, {gettext, lang}: Context) => <p>
     <a
-        href={URL(batch.getURL(lang), {finalize: true})}
+        href={URL(lang, batch.getURL(lang), {finalize: true})}
         className="btn btn-success"
     >
         {gettext("Finalize Import")}
     </a>
     {" "}
     <a
-        href={URL(batch.getURL(lang), {abandon: true})}
+        href={URL(lang, batch.getURL(lang), {abandon: true})}
         className="btn btn-danger"
     >
         {gettext("Abandon Import")}
@@ -171,13 +172,7 @@ const ConfirmButtons = ({batch}: Props, {URL, gettext, lang}: Context) => <p>
 
 ConfirmButtons.contextTypes = childContextTypes;
 
-const ImportData = (props: Props, {
-    gettext,
-    format,
-    fixedDate,
-    relativeDate,
-    URL,
-}: Context) => {
+const ImportData = (props: Props, {lang, gettext}: Context) => {
     const {
         batch,
         batchError,
@@ -192,12 +187,12 @@ const ImportData = (props: Props, {
             {error: batchError(batch.error || "")}) :
         batchState(batch);
     const uploadDate = format(gettext("Uploaded: %(date)s"),
-        {date: fixedDate(batch.created)});
+        {date: fixedDate(lang, batch.created)});
     const lastUpdated = format(gettext("Last Updated: %(date)s"),
-        {date: relativeDate(batch.modified)});
+        {date: relativeDate(lang, batch.modified)});
 
     const style = <link rel="stylesheet"
-        href={URL("/css/format-diff.css")}
+        href={URL(lang, "/css/format-diff.css")}
     />;
 
     return <Page title={title} style={style}>

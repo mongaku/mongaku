@@ -3,6 +3,7 @@
 const React = require("react");
 
 const Page = require("./Page.js");
+const {stringNum, URL} = require("./utils.js");
 
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
@@ -21,7 +22,6 @@ type Props = {
 
 const SearchForm = ({type}: {type: string}, {
     lang,
-    URL,
     gettext,
     user,
     options,
@@ -31,7 +31,7 @@ const SearchForm = ({type}: {type: string}, {
 
     return <div>
         <h3>{title}</h3>
-        <form action={URL(`/${type}/search`)} method="GET"
+        <form action={URL(lang, `/${type}/search`)} method="GET"
             className="form-search form-inline"
         >
             <div className="form-group">
@@ -46,12 +46,15 @@ const SearchForm = ({type}: {type: string}, {
                 className="btn btn-primary"
             />
             {" "}
-            <a href={URL(`/${type}/search`)} className="btn btn-default">
+            <a href={URL(lang, `/${type}/search`)} className="btn btn-default">
                 {gettext("Browse All")}
             </a>
             {" "}
             {sources && sources.length > 0 &&
-                <a href={URL(`/${type}/create`)} className="btn btn-success">
+                <a
+                    href={URL(lang, `/${type}/create`)}
+                    className="btn btn-success"
+                >
                     {gettext("Create New")}
                 </a>
             }
@@ -62,7 +65,7 @@ const SearchForm = ({type}: {type: string}, {
 SearchForm.contextTypes = childContextTypes;
 
 const ImageUploadForms = ({type}: {type: string},
-        {lang, gettext, URL}: Context) => <div>
+        {lang, gettext}: Context) => <div>
     <h3>{gettext("Search by Image:")}</h3>
     <p>{gettext("Upload an image to find other " +
         "similar images.")}</p>
@@ -74,7 +77,7 @@ const ImageUploadForms = ({type}: {type: string},
             </h3>
         </div>
         <div className="panel-body">
-            <form action={URL(`/${type}/file-upload`)} method="POST"
+            <form action={URL(lang, `/${type}/file-upload`)} method="POST"
                 encType="multipart/form-data"
             >
                 <input type="hidden" name="lang"
@@ -102,7 +105,7 @@ const ImageUploadForms = ({type}: {type: string},
             </h3>
         </div>
         <div className="panel-body">
-            <form action={URL(`/${type}/url-upload`)} method="GET">
+            <form action={URL(lang, `/${type}/url-upload`)} method="GET">
                 <input type="hidden" name="lang"
                     value={lang}
                 />
@@ -127,10 +130,10 @@ const ImageUploadForms = ({type}: {type: string},
 ImageUploadForms.contextTypes = childContextTypes;
 
 const Source = ({type, source}: {type: string, source: SourceType},
-    {lang, stringNum, options}: Context) => {
+    {lang, options}: Context) => {
 
     const typeName = options.types[type].name;
-    const recordCount = stringNum(source.numRecords);
+    const recordCount = stringNum(lang, source.numRecords);
     const desc = `${recordCount} ${typeName}`;
 
     return <div>

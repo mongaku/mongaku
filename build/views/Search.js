@@ -6,6 +6,7 @@ const React = require("react");
 
 const Page = require("./Page.js");
 const SearchForm = require("./SearchForm.js");
+const { format, stringNum } = require("./utils.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
@@ -35,7 +36,7 @@ FacetBucket.propTypes = {
 const Facet = ({
     facet,
     type
-}, { format, gettext, options }) => {
+}, { gettext, options }) => {
     const minFacetCount = options.types[type].minFacetCount || 1;
     let extra = null;
     let buckets = facet.buckets.filter(bucket => bucket.count >= minFacetCount);
@@ -160,7 +161,7 @@ Facets.propTypes = {
     queries: require("react").PropTypes.any.isRequired,
     values: require("react").PropTypes.any.isRequired
 };
-const Sidebar = (props, { format, gettext, stringNum }) => {
+const Sidebar = (props, { lang, gettext }) => {
     const { total, start, end } = props;
 
     return React.createElement(
@@ -175,15 +176,15 @@ const Sidebar = (props, { format, gettext, stringNum }) => {
                 React.createElement(
                     "strong",
                     null,
-                    format(gettext("%(numRecords)s matches."), { numRecords: stringNum(total) })
+                    format(gettext("%(numRecords)s matches."), { numRecords: stringNum(lang, total) })
                 ),
                 React.createElement("br", null),
                 !!end && React.createElement(
                     "span",
                     null,
                     format(gettext("Viewing %(start)s to %(end)s."), {
-                        start: stringNum(start || 1),
-                        end: stringNum(end)
+                        start: stringNum(lang, start || 1),
+                        end: stringNum(lang, end)
                     })
                 )
             ),
@@ -242,7 +243,7 @@ Sidebar.propTypes = {
 };
 Sidebar.contextTypes = childContextTypes;
 
-const Breadcrumb = ({ crumb }, { format, gettext }) => React.createElement(
+const Breadcrumb = ({ crumb }, { gettext }) => React.createElement(
     "a",
     { href: crumb.url,
         className: "btn btn-default btn-xs",
