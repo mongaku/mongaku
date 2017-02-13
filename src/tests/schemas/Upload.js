@@ -1,7 +1,7 @@
 const tap = require("tap");
 
 const init = require("../init");
-const req = init.req;
+const {i18n} = init;
 
 tap.test("getURL", {autoend: true}, (t) => {
     const upload = init.getUpload();
@@ -21,7 +21,7 @@ tap.test("getThumbURL", {autoend: true}, (t) => {
 
 tap.test("getTitle", {autoend: true}, (t) => {
     const upload = init.getUpload();
-    t.equal(upload.getTitle(req), "Uploaded Image", "Check Title");
+    t.equal(upload.getTitle(i18n), "Uploaded Image", "Check Title");
 });
 
 tap.test("updateSimilarity", (t) => {

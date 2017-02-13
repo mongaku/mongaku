@@ -10,7 +10,7 @@ const {childContextTypes} = require("../../Wrapper.js");
 type YearRangeType = {
     _id: string,
     original?: string,
-    circa?: string,
+    circa?: boolean,
     start: number,
     end: number,
 };

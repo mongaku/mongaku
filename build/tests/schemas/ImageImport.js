@@ -5,13 +5,11 @@ const path = require("path");
 const tap = require("tap");
 
 const init = require("../init");
-const stub = init.stub;
-const req = init.req;
-const ImageImport = init.ImageImport;
+const { stub, i18n, ImageImport } = init;
 
 tap.test("getURL", { autoend: true }, t => {
     const batch = init.getBatch();
-    t.equal(batch.getURL(req.lang), "/artworks/source/test/admin?images=test/started", "Get URL");
+    t.equal(batch.getURL(i18n.lang), "/artworks/source/test/admin?images=test/started", "Get URL");
 });
 
 tap.test("getSource", { autoend: true }, t => {
@@ -24,14 +22,14 @@ tap.test("getCurState", { autoend: true }, t => {
     const batch = init.getBatch();
     const state = batch.getCurState();
     t.equal(state.id, "started", "Get State ID");
-    t.equal(state.name(req), "Awaiting processing...", "Get State Name");
+    t.equal(state.name(i18n), "Awaiting processing...", "Get State Name");
 });
 
 tap.test("getNextState", { autoend: true }, t => {
     const batch = init.getBatch();
     const state = batch.getNextState();
     t.equal(state.id, "process.started", "Get State ID");
-    t.equal(state.name(req), "Processing...", "Get State Name");
+    t.equal(state.name(i18n), "Processing...", "Get State Name");
 });
 
 tap.test("canAdvance", { autoend: true }, t => {
@@ -44,7 +42,7 @@ tap.test("saveState", t => {
     batch.saveState("process.started", () => {
         const state = batch.getCurState();
         t.equal(state.id, "process.started", "Get State ID");
-        t.equal(state.name(req), "Processing...", "Get State Name");
+        t.equal(state.name(i18n), "Processing...", "Get State Name");
         t.end();
     });
 });
@@ -54,8 +52,8 @@ tap.test("getError", { autoend: true }, t => {
     const errors = ["ERROR_READING_ZIP", "ZIP_FILE_EMPTY", "MALFORMED_IMAGE", "EMPTY_IMAGE", "NEW_VERSION", "TOO_SMALL", "ERROR_SAVING"];
     for (const error of errors) {
         batch.error = error;
-        t.ok(ImageImport.getError(req, batch.error), error);
-        t.notEqual(ImageImport.getError(req, batch.error), error, error);
+        t.ok(ImageImport.getError(i18n, batch.error), error);
+        t.notEqual(ImageImport.getError(i18n, batch.error), error, error);
     }
 });
 
@@ -216,7 +214,7 @@ tap.test("processImages (Empty File)", t => {
 
 tap.test("processImages (advance, started)", t => {
     const batch = init.getBatch();
-    t.equal(batch.getCurState().name(req), "Awaiting processing...");
+    t.equal(batch.getCurState().name(i18n), "Awaiting processing...");
     batch.advance(err => {
         t.error(err, "Error should be empty.");
 
@@ -235,7 +233,7 @@ tap.test("processImages (advance, started)", t => {
 
 tap.test("processImages (advance, process.started)", t => {
     const batch = init.getBatches()[1];
-    t.equal(batch.getCurState().name(req), "Processing...");
+    t.equal(batch.getCurState().name(i18n), "Processing...");
     batch.advance(err => {
         t.error(err, "Error should be empty.");
         t.equal(batch.results.length, 0);
@@ -246,7 +244,7 @@ tap.test("processImages (advance, process.started)", t => {
 
 tap.test("processImages (advance, process.completed)", t => {
     const batch = init.getBatches()[2];
-    t.equal(batch.getCurState().name(req), "Completed.");
+    t.equal(batch.getCurState().name(i18n), "Completed.");
     batch.advance(err => {
         t.error(err, "Error should be empty.");
 
@@ -265,7 +263,7 @@ tap.test("processImages (advance, process.completed)", t => {
 
 tap.test("processImages (advance, completed)", t => {
     const batch = init.getBatches()[4];
-    t.equal(batch.getCurState().name(req), "Completed.");
+    t.equal(batch.getCurState().name(i18n), "Completed.");
     batch.advance(err => {
         t.error(err, "Error should be empty.");
 

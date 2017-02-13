@@ -4,12 +4,14 @@ const urls = require("../../lib/urls");
 
 // Only allow certain users to access these pages
 module.exports = (req, res, next) => {
+    const {user, session, originalUrl, lang, i18n, params} = req;
+
     passport.authenticate("local", () => {
-        if (!req.user) {
-            req.session.redirectTo = req.originalUrl;
-            res.redirect(urls.gen(req.lang, "/login"));
-        } else if (!req.user.canEditSource(req.params.source)) {
-            next(new Error(req.gettext("Authorization required.")));
+        if (!user) {
+            session.redirectTo = originalUrl;
+            res.redirect(urls.gen(lang, "/login"));
+        } else if (!user.canEditSource(params.source)) {
+            next(new Error(i18n.gettext("Authorization required.")));
         } else {
             next();
         }

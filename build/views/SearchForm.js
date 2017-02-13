@@ -214,7 +214,7 @@ SourceFilter.contextTypes = childContextTypes;
 const SimilarityFilter = ({
     queries,
     values
-}, { gettext, lang }) => {
+}, { gettext }) => {
     const similarity = queries.similar.filters;
 
     return React.createElement(
@@ -234,7 +234,7 @@ const SimilarityFilter = ({
             Object.keys(similarity).map(id => React.createElement(
                 "option",
                 { value: id, key: id },
-                similarity[id].getTitle(lang)
+                similarity[id].getTitle
             ))
         )
     );
@@ -275,7 +275,7 @@ SimilarityFilter.contextTypes = childContextTypes;
 const ImageFilter = ({
     queries,
     values
-}, { gettext, lang }) => {
+}, { gettext }) => {
     const images = queries.images.filters;
 
     return React.createElement(
@@ -301,7 +301,7 @@ const ImageFilter = ({
             Object.keys(images).map(id => React.createElement(
                 "option",
                 { value: id, key: id },
-                images[id].getTitle(lang)
+                images[id].getTitle
             ))
         )
     );

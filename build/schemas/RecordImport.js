@@ -12,31 +12,31 @@ const Import = require("./Import");
 
 const states = [{
     id: "started",
-    name: req => req.gettext("Awaiting processing..."),
+    name: i18n => i18n.gettext("Awaiting processing..."),
     advance(batch, callback) {
         batch.processRecords(callback);
     }
 }, {
     id: "process.started",
-    name: req => req.gettext("Processing...")
+    name: i18n => i18n.gettext("Processing...")
 }, {
     id: "process.completed",
-    name: req => req.gettext("Confirmation required.")
+    name: i18n => i18n.gettext("Confirmation required.")
 }, {
     id: "import.started",
-    name: req => req.gettext("Importing data...")
+    name: i18n => i18n.gettext("Importing data...")
 }, {
     id: "import.completed",
-    name: req => req.gettext("Awaiting similarity sync..."),
+    name: i18n => i18n.gettext("Awaiting similarity sync..."),
     advance(batch, callback) {
         batch.updateSimilarity(callback);
     }
 }, {
     id: "similarity.sync.started",
-    name: req => req.gettext("Syncing similarity...")
+    name: i18n => i18n.gettext("Syncing similarity...")
 }, {
     id: "similarity.sync.completed",
-    name: req => req.gettext("Completed."),
+    name: i18n => i18n.gettext("Completed."),
     advance(batch, callback) {
         // NOTE(jeresig): Currently nothing needs to be done to finish
         // up the import, other than moving it to the "completed" state.
@@ -44,18 +44,18 @@ const states = [{
     }
 }, {
     id: "completed",
-    name: req => req.gettext("Completed.")
+    name: i18n => i18n.gettext("Completed.")
 }];
 
 const errors = {
-    ABANDONED: req => req.gettext("Data import abandoned."),
-    ERROR_READING_DATA: req => req.gettext("Error reading data from " + "provided data files."),
-    ERROR_SAVING: req => req.gettext("Error saving record."),
-    ERROR_DELETING: req => req.gettext("Error deleting existing record.")
+    ABANDONED: i18n => i18n.gettext("Data import abandoned."),
+    ERROR_READING_DATA: i18n => i18n.gettext("Error reading data from " + "provided data files."),
+    ERROR_SAVING: i18n => i18n.gettext("Error saving record."),
+    ERROR_DELETING: i18n => i18n.gettext("Error deleting existing record.")
 };
 
 // TODO(jeresig): Remove this.
-const req = {
+const i18n = {
     format: (msg, fields) => msg.replace(/%\((.*?)\)s/g, (all, name) => fields[name]),
     gettext: msg => msg,
     lang: "en"
@@ -80,8 +80,8 @@ Object.assign(RecordImport.methods, Import.methods, {
         return urls.gen(lang, `/${this.type}/source/${this.source}/admin?records=${this._id}`);
     },
 
-    getError(req) {
-        return models("RecordImport").getError(req, this.error);
+    getError(i18n) {
+        return models("RecordImport").getError(i18n, this.error);
     },
 
     getStates() {
@@ -123,7 +123,7 @@ Object.assign(RecordImport.methods, Import.methods, {
                 console.log("Processing Record:", data.id);
             }
 
-            Record.fromData(data, req, (err, record, warnings, isNew) => {
+            Record.fromData(data, i18n, (err, record, warnings, isNew) => {
                 result.state = "process.completed";
 
                 if (err) {
@@ -201,7 +201,7 @@ Object.assign(RecordImport.methods, Import.methods, {
             }
 
             if (result.result === "created" || result.result === "changed") {
-                Record.fromData(result.data, req, (err, record) => {
+                Record.fromData(result.data, i18n, (err, record) => {
                     record.save(err => {
                         /* istanbul ignore if */
                         if (err) {
@@ -294,9 +294,9 @@ Object.assign(RecordImport.statics, Import.statics, {
         return new RecordImport({ source, fileName, type });
     },
 
-    getError(req, error) {
+    getError(i18n, error) {
         const msg = errors[error];
-        return msg ? msg(req) : error;
+        return msg ? msg(i18n) : error;
     }
 });
 

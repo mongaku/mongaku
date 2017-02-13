@@ -39,7 +39,7 @@ module.exports = {
     },
 
     searchURL(lang, params) {
-        return searchURL({ lang }, params);
+        return searchURL(lang, params);
     },
 
     format(fmt = "", props) {

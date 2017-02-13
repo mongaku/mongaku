@@ -15,18 +15,18 @@ const Import = require("./Import");
 const states = [
     {
         id: "started",
-        name: (req) => req.gettext("Awaiting processing..."),
+        name: (i18n) => i18n.gettext("Awaiting processing..."),
         advance(batch, callback) {
             batch.processImages(callback);
         },
     },
     {
         id: "process.started",
-        name: (req) => req.gettext("Processing..."),
+        name: (i18n) => i18n.gettext("Processing..."),
     },
     {
         id: "process.completed",
-        name: (req) => req.gettext("Completed."),
+        name: (i18n) => i18n.gettext("Completed."),
         advance(batch, callback) {
             // NOTE(jeresig): Currently nothing needs to be done to finish
             // up the import, other than moving it to the "completed" state.
@@ -35,22 +35,22 @@ const states = [
     },
     {
         id: "completed",
-        name: (req) => req.gettext("Completed."),
+        name: (i18n) => i18n.gettext("Completed."),
     },
 ];
 
 const errors = {
-    ERROR_READING_ZIP: (req) => req.gettext("Error opening zip file."),
-    ZIP_FILE_EMPTY: (req) => req.gettext("Zip file has no images in it."),
-    MALFORMED_IMAGE: (req) => req.gettext("There was an error processing " +
+    ERROR_READING_ZIP: (i18n) => i18n.gettext("Error opening zip file."),
+    ZIP_FILE_EMPTY: (i18n) => i18n.gettext("Zip file has no images in it."),
+    MALFORMED_IMAGE: (i18n) => i18n.gettext("There was an error processing " +
         "the image. Perhaps it is malformed in some way."),
-    EMPTY_IMAGE: (req) => req.gettext("The image is empty."),
-    NEW_VERSION: (req) => req.gettext("A new version of the image was " +
+    EMPTY_IMAGE: (i18n) => i18n.gettext("The image is empty."),
+    NEW_VERSION: (i18n) => i18n.gettext("A new version of the image was " +
         "uploaded, replacing the old one."),
-    TOO_SMALL: (req) => req.gettext("The image is too small to work with " +
+    TOO_SMALL: (i18n) => i18n.gettext("The image is too small to work with " +
         "the image similarity algorithm. It must be at least 150px on " +
         "each side."),
-    ERROR_SAVING: (req) => req.gettext("Error saving image."),
+    ERROR_SAVING: (i18n) => i18n.gettext("Error saving image."),
 };
 
 const ImageImport = new db.schema(Object.assign({}, Import.schema, {
@@ -75,8 +75,8 @@ Object.assign(ImageImport.methods, Import.methods, {
             `/${this.source}/admin?images=${this._id}`);
     },
 
-    getError(req) {
-        return models("ImageImport").getError(req, this.error);
+    getError(i18n) {
+        return models("ImageImport").getError(i18n, this.error);
     },
 
     getStates() {
@@ -210,9 +210,9 @@ Object.assign(ImageImport.statics, Import.statics, {
         return new ImageImport({source, fileName});
     },
 
-    getError(req, error) {
+    getError(i18n, error) {
         const msg = errors[error];
-        return msg ? msg(req) : error;
+        return msg ? msg(i18n) : error;
     },
 });
 

@@ -56,7 +56,7 @@ type Props = {
         [key: string]: {
             filters: {
                 [key: string]: {
-                    getTitle: () => string,
+                    getTitle: string,
                 },
             },
         },
@@ -201,7 +201,7 @@ SourceFilter.contextTypes = childContextTypes;
 const SimilarityFilter = ({
     queries,
     values,
-}: Props, {gettext, lang}: Context) => {
+}: Props, {gettext}: Context) => {
     const similarity = queries.similar.filters;
 
     return <div className="form-group">
@@ -214,7 +214,7 @@ const SimilarityFilter = ({
         >
             {Object.keys(similarity).map((id) =>
                 <option value={id} key={id}>
-                    {similarity[id].getTitle(lang)}
+                    {similarity[id].getTitle}
                 </option>
             )}
         </select>
@@ -226,7 +226,7 @@ SimilarityFilter.contextTypes = childContextTypes;
 const ImageFilter = ({
     queries,
     values,
-}: Props, {gettext, lang}: Context) => {
+}: Props, {gettext}: Context) => {
     const images = queries.images.filters;
 
     return <div className="form-group">
@@ -243,7 +243,7 @@ const ImageFilter = ({
             </option>
             {Object.keys(images).map((id) =>
                 <option value={id} key={id}>
-                    {images[id].getTitle(lang)}
+                    {images[id].getTitle}
                 </option>
             )}
         </select>

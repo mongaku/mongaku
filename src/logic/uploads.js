@@ -22,7 +22,11 @@ module.exports = (app) => {
     const genTmpFile = () => path.join(os.tmpdir(),
         (new Date).getTime().toString());
 
-    const handleUpload = (req, res, next) => (err, file) => {
+    const handleUpload = ({
+        i18n,
+        params,
+        lang,
+    }, res, next) => (err, file) => {
         /* istanbul ignore if */
         if (err) {
             return next(err);
@@ -31,10 +35,10 @@ module.exports = (app) => {
         UploadImage.fromFile(file, (err, image) => {
             // TODO: Display better error message
             if (err) {
-                return next(new Error(req.gettext("Error processing image.")));
+                return next(new Error(i18n.gettext("Error processing image.")));
             }
 
-            Upload.fromImage(image, req.params.type, (err, upload) => {
+            Upload.fromImage(image, params.type, (err, upload) => {
                 /* istanbul ignore if */
                 if (err) {
                     return next(err);
@@ -55,7 +59,7 @@ module.exports = (app) => {
                         // TODO: Add in uploader's user name (once those exist)
                         upload.updateSimilarity(() => {
                             upload.save(() => res.redirect(
-                                upload.getURL(req.lang)));
+                                upload.getURL(lang)));
                         });
                     });
                 });
@@ -97,11 +101,11 @@ module.exports = (app) => {
 
     return {
         urlUpload(req, res, next) {
-            const url = req.query.url;
+            const {query: {url}, i18n} = req;
 
             // Handle the user accidentally hitting enter
             if (!url || url === "http://") {
-                return next(new Error(req.gettext("No image URL specified.")));
+                return next(new Error(i18n.gettext("No image URL specified.")));
             }
 
             download(url, (err, file) =>
@@ -109,6 +113,7 @@ module.exports = (app) => {
         },
 
         fileUpload(req, res, next) {
+            const {i18n} = req;
             const form = new formidable.IncomingForm();
             form.encoding = "utf-8";
             form.maxFieldsSize = options.maxUploadSize;
@@ -117,29 +122,27 @@ module.exports = (app) => {
                 /* istanbul ignore if */
                 if (err) {
                     return next(new Error(
-                        req.gettext("Error processing upload.")));
+                        i18n.gettext("Error processing upload.")));
                 }
-
-                req.lang = fields.lang;
 
                 if (files && files.file && files.file.path &&
                         files.file.size > 0) {
                     handleUpload(req, res, next)(null, files.file.path);
 
                 } else {
-                    next(new Error(req.gettext("No image specified.")));
+                    next(new Error(i18n.gettext("No image specified.")));
                 }
             });
         },
 
-        show(req, res) {
+        show({params, i18n}, res) {
             // TODO: Update similar matches if new image data has
             // since come in since it was last updated.
-            const _id = `uploads/${req.params.upload}`;
+            const _id = `uploads/${params.upload}`;
             Upload.findById(_id, (err, upload) => {
                 if (err || !upload) {
                     return res.status(404).render("Error", {
-                        title: req.gettext("Uploaded image not found."),
+                        title: i18n.gettext("Uploaded image not found."),
                     });
                 }
 
@@ -149,7 +152,7 @@ module.exports = (app) => {
                             similar.recordModel.loadImages(false, callback);
                         }, () => {
                             res.render("Upload", {
-                                title: upload.getTitle(req),
+                                title: upload.getTitle(i18n),
                                 similar: upload.similarRecords,
                                 image: upload.images[0],
                                 noIndex: true,

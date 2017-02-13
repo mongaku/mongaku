@@ -6,11 +6,11 @@ import type {User, Options} from "./types.js";
 
 class Wrapper extends React.Component {
     getChildContext() {
-        const {originalUrl, user, options, lang, gettext} = this.props;
+        const {originalUrl, user, options, i18n} = this.props;
 
         return {
-            lang,
-            gettext,
+            lang: i18n.lang,
+            gettext: (msg: string) => i18n.gettext(msg),
             user,
             options,
             originalUrl,
@@ -19,10 +19,12 @@ class Wrapper extends React.Component {
 
     props: {
         originalUrl: string,
-        lang: string,
         user: User,
         options: Options,
-        gettext: (text: string) => string,
+        i18n: {
+            lang: string,
+            gettext: (text: string) => string,
+        },
         children?: React.Element<*>,
     }
 

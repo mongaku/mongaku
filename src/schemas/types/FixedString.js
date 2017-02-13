@@ -86,7 +86,8 @@ FixedString.prototype = {
         if (values.length > 0 && !this.options.allowUnknown) {
             validate = {
                 validate: (val) => values.indexOf(val) >= 0,
-                validationMsg: (req) => req.format(req.gettext("`%(name)s` " +
+                validationMsg: (i18n) => i18n.format(
+                    i18n.gettext("`%(name)s` " +
                     "must be one of the following types: %(types)s."), {
                         name: this.options.name,
                         types: values.join(", "),

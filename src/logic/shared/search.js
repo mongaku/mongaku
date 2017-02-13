@@ -4,6 +4,7 @@ const record = require("../../lib/record");
 const models = require("../../lib/models");
 const urls = require("../../lib/urls");
 const options = require("../../lib/options");
+const clone = require("../../lib/clone");
 
 const facets = require("./facets");
 const queries = require("./queries");
@@ -48,9 +49,9 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
         aggregations[name] = typeFacets[name].facet();
     }
 
-    if (!fields.noRedirect) {
-        const curURL = urls.gen(i18n.lang, i18n.originalUrl);
-        const expectedURL = searchURL(i18n, values, true);
+    if (!fields.noRedirect && originalUrl) {
+        const curURL = urls.gen(i18n.lang, originalUrl);
+        const expectedURL = searchURL(i18n.lang, values, true);
 
         if (expectedURL !== curURL) {
             return callback(null, null, expectedURL);
@@ -86,14 +87,14 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
 
         // The link to the previous page of search results
         const prevStart = values.start - values.rows;
-        const prevLink = (values.start > 0 ? searchURL(i18n,
+        const prevLink = (values.start > 0 ? searchURL(i18n.lang,
             Object.assign({}, values, {
                 start: (prevStart > 0 ? prevStart : ""),
             }), true) : "");
 
         // The link to the next page of the search results
         const nextStart = values.start + values.rows;
-        const nextLink = (end < results.hits.total ? searchURL(i18n,
+        const nextLink = (end < results.hits.total ? searchURL(i18n.lang,
             Object.assign({}, values, {
                 start: nextStart,
             }), true) : "");
@@ -108,7 +109,7 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
                 const facet = typeFacets[name];
                 const buckets = facet.formatBuckets(aggregation.buckets, i18n)
                     .filter((bucket) => {
-                        bucket.url = searchURL(i18n,
+                        bucket.url = searchURL(i18n.lang,
                             Object.assign({}, values, bucket.url));
                         return bucket.count > 0;
                     });
@@ -147,7 +148,7 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
 
                 return {
                     name: typeQueries[param].searchTitle(values[param], i18n),
-                    url: searchURL(i18n, rmValues),
+                    url: searchURL(i18n.lang, rmValues),
                 };
             }).filter((crumb) => crumb.name);
 
@@ -166,7 +167,7 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
             sources: models("Source").getSourcesByType(values.type)
                 .filter((source) => source.numRecords > 0),
             values,
-            queries: typeQueries,
+            queries: clone(typeQueries, i18n),
             type: values.type,
             sorts: sortData,
             facets: facetData,

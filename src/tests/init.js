@@ -13,6 +13,7 @@ iconv.getCodec("utf8");
 // Force dynamically loaded modules to load now
 require("negotiator/lib/mediaType");
 require("nyc/node_modules/istanbul-lib-instrument");
+require("moment");
 
 // Load in global ENV
 process.env.BASE_DATA_DIR = path.resolve(process.cwd(), "data");
@@ -710,8 +711,8 @@ const bindStubs = () => {
 
     const fromData = Record.fromData;
 
-    sandbox.stub(Record, "fromData", (tmpData, req, callback) => {
-        fromData.call(Record, tmpData, req,
+    sandbox.stub(Record, "fromData", (tmpData, i18n, callback) => {
+        fromData.call(Record, tmpData, i18n,
             (err, record, warnings, creating) => {
                 if (record && !record.save.restore) {
                     sandbox.stub(record, "save", (callback) => {
@@ -912,7 +913,7 @@ const bindStubs = () => {
     });
 };
 
-const req = {
+const i18n = {
     format: (msg, fields) =>
         msg.replace(/%\((.*?)\)s/g, (all, name) => fields[name]),
     gettext: (msg) => msg,
@@ -1003,7 +1004,7 @@ module.exports = {
     getUploads: () => uploads,
     getUploadImage: () => uploadImage,
     getUser: () => user,
-    req,
+    i18n,
     Image,
     Record,
     ImageImport,

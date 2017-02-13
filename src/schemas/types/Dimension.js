@@ -307,7 +307,7 @@ Dimension.prototype = {
                 pd.parseDimension(obj, true, this.defaultUnit) :
                 pd.convertDimension(obj, this.defaultUnit),
             validateArray: (val) => (val.width || val.height) && val.unit,
-            validationMsg: (req) => req.gettext("Dimensions must have a " +
+            validationMsg: (i18n) => i18n.gettext("Dimensions must have a " +
                 "unit specified and at least a width or height."),
         };
     },

@@ -78,8 +78,8 @@ const Upload = new db.schema({
 });
 
 Upload.methods = Object.assign({}, Record.methods, {
-    getTitle(req) {
-        return req.gettext("Uploaded Image");
+    getTitle(i18n) {
+        return i18n.gettext("Uploaded Image");
     },
 
     getURL(locale) {

@@ -61,9 +61,9 @@ Import.methods = {
         return states[states.indexOf(this.getCurState()) + 1];
     },
 
-    getStateName(req) {
+    getStateName(i18n) {
         const curState = this.getCurState();
-        return curState ? curState.name(req) : req.format(req.gettext("Error: %(error)s"), { error: this.getError(req) });
+        return curState ? curState.name(i18n) : i18n.format(i18n.gettext("Error: %(error)s"), { error: this.getError(i18n) });
     },
 
     canAdvance() {

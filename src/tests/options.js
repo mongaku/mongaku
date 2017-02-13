@@ -143,11 +143,12 @@ module.exports = {
 
             searchURLs: {
                 "/type/:objectType": (req, res, next, search) => {
-                    const type = types[req.params.objectType];
+                    const {i18n, params} = req;
+                    const type = types[params.objectType];
 
                     if (!type) {
                         return res.status(404).render("Error", {
-                            title: req.gettext("Not found."),
+                            title: i18n.gettext("Not found."),
                         });
                     }
 

@@ -8,11 +8,11 @@ var babelPluginFlowReactPropTypes_proptype_User = require("./types.js").babelPlu
 
 class Wrapper extends React.Component {
     getChildContext() {
-        const { originalUrl, user, options, lang, gettext } = this.props;
+        const { originalUrl, user, options, i18n } = this.props;
 
         return {
-            lang,
-            gettext,
+            lang: i18n.lang,
+            gettext: msg => i18n.gettext(msg),
             user,
             options,
             originalUrl
@@ -26,10 +26,12 @@ class Wrapper extends React.Component {
 
 Wrapper.propTypes = {
     originalUrl: require("react").PropTypes.string.isRequired,
-    lang: require("react").PropTypes.string.isRequired,
     user: babelPluginFlowReactPropTypes_proptype_User,
     options: babelPluginFlowReactPropTypes_proptype_Options,
-    gettext: require("react").PropTypes.func.isRequired,
+    i18n: require("react").PropTypes.shape({
+        lang: require("react").PropTypes.string.isRequired,
+        gettext: require("react").PropTypes.func.isRequired
+    }).isRequired,
     children: require("react").PropTypes.any
 };
 Wrapper.childContextTypes = {

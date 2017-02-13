@@ -8,7 +8,7 @@ const NUM_PER_SITEMAP = 1000;
 
 module.exports = function(app) {
     return {
-        index(req, res) {
+        index({lang}, res) {
             const sitemaps = [];
 
             async.each(Object.keys(options.types), (type, callback) => {
@@ -19,7 +19,7 @@ module.exports = function(app) {
                     }
 
                     for (let i = 0; i < total; i += NUM_PER_SITEMAP) {
-                        const url = urls.gen(req.lang,
+                        const url = urls.gen(lang,
                             `/sitemap-${type}-${i}.xml`);
                         sitemaps.push(`<sitemap><loc>${url}</loc></sitemap>`);
                     }
@@ -44,9 +44,9 @@ module.exports = function(app) {
             });
         },
 
-        search(req, res) {
+        search({params, lang}, res) {
             // Query for the records in Elasticsearch
-            const Record = record(req.params.type);
+            const Record = record(params.type);
             Record.search({
                 bool: {
                     must: [
@@ -59,7 +59,7 @@ module.exports = function(app) {
                 },
             }, {
                 size: NUM_PER_SITEMAP,
-                from: req.params.start,
+                from: params.start,
             }, (err, results) => {
                 /* istanbul ignore if */
                 if (err) {
@@ -69,7 +69,7 @@ module.exports = function(app) {
                 }
 
                 const sitemaps = results.hits.hits.map((item) =>
-                    Record.getURLFromID(req.lang, item._id))
+                    Record.getURLFromID(lang, item._id))
                     .map((url) => `<url><loc>${url}</loc></url>`);
 
                 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

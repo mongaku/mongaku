@@ -68,7 +68,7 @@ YearRangeView.propTypes = {
     value: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         original: require("react").PropTypes.string,
-        circa: require("react").PropTypes.string,
+        circa: require("react").PropTypes.bool,
         start: require("react").PropTypes.number.isRequired,
         end: require("react").PropTypes.number.isRequired
     })).isRequired

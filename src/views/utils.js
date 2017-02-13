@@ -41,7 +41,7 @@ module.exports = {
     },
 
     searchURL(lang: string, params: Object): string {
-        return searchURL({lang}, params);
+        return searchURL(lang, params);
     },
 
     format(fmt: string = "", props: {[key: string]: any}): string {

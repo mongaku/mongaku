@@ -9,23 +9,26 @@ module.exports = (app) => {
         },
 
         loginRedirect(req, res, next) {
+            const {lang, session} = req;
+
             passport.authenticate("local", (err, user) => {
                 if (!user) {
-                    return res.redirect(urls.gen(req.lang, "/login"));
+                    return res.redirect(urls.gen(lang, "/login"));
                 }
 
                 req.login(user, () => {
-                    const redirectTo = req.session.redirectTo ||
-                        urls.gen(req.lang, "/");
-                    delete req.session.redirectTo;
+                    const redirectTo = session.redirectTo ||
+                        urls.gen(lang, "/");
+                    delete session.redirectTo;
                     res.redirect(redirectTo);
                 });
             })(req, res, next);
         },
 
         logout(req, res) {
+            const {lang} = req;
             req.logout();
-            res.redirect(urls.gen(req.lang, "/"));
+            res.redirect(urls.gen(lang, "/"));
         },
 
         routes() {

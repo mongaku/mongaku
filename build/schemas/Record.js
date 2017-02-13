@@ -352,14 +352,12 @@ Record.statics = {
         const Record = recordModel(this.getType());
         const Image = models("Image");
 
-        const lint = this.lintData(tmpData, i18n);
-        const warnings = lint.warnings;
+        const { error, warnings, data } = this.lintData(tmpData, i18n);
 
-        if (lint.error) {
-            return process.nextTick(() => callback(new Error(lint.error)));
+        if (error) {
+            return process.nextTick(() => callback(new Error(error)));
         }
 
-        const data = lint.data;
         const recordId = `${data.source}/${data.id}`;
         const missingImages = [];
         const typeOptions = options.types[this.getType()];
@@ -586,8 +584,8 @@ Record.statics = {
         });
     },
 
-    getFacets(req, callback) {
-        const { lang } = req;
+    getFacets(i18n, callback) {
+        const { lang } = i18n;
 
         if (!this.facetCache) {
             this.facetCache = {};
@@ -602,7 +600,7 @@ Record.statics = {
         search({
             type: this.getType(),
             noRedirect: true
-        }, req, (err, results) => {
+        }, { i18n }, (err, results) => {
             if (err) {
                 return callback(err);
             }

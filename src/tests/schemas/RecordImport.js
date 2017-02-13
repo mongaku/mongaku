@@ -4,12 +4,11 @@ const path = require("path");
 const tap = require("tap");
 
 const init = require("../init");
-const req = init.req;
-const RecordImport = init.RecordImport;
+const {i18n, RecordImport} = init;
 
 tap.test("getURL", {autoend: true}, (t) => {
     const batch = init.getRecordBatch();
-    t.equal(batch.getURL(req.lang),
+    t.equal(batch.getURL(i18n.lang),
         "/artworks/source/test/admin?records=test/started",
         "Get URL");
 });
@@ -24,20 +23,20 @@ tap.test("getCurState", {autoend: true}, (t) => {
     const batch = init.getRecordBatch();
     const state = batch.getCurState();
     t.equal(state.id, "started", "Get State ID");
-    t.equal(state.name(req), "Awaiting processing...", "Get State Name");
+    t.equal(state.name(i18n), "Awaiting processing...", "Get State Name");
 
     batch.state = "similarity.sync.started";
 
     const otherState = batch.getCurState();
     t.equal(otherState.id, "similarity.sync.started", "Get State ID");
-    t.equal(otherState.name(req), "Syncing similarity...", "Get State Name");
+    t.equal(otherState.name(i18n), "Syncing similarity...", "Get State Name");
 });
 
 tap.test("getNextState", {autoend: true}, (t) => {
     const batch = init.getRecordBatch();
     const state = batch.getNextState();
     t.equal(state.id, "process.started", "Get State ID");
-    t.equal(state.name(req), "Processing...", "Get State Name");
+    t.equal(state.name(i18n), "Processing...", "Get State Name");
 });
 
 tap.test("canAdvance", {autoend: true}, (t) => {
@@ -51,8 +50,8 @@ tap.test("getError", {autoend: true}, (t) => {
         "ERROR_DELETING"];
     for (const error of errors) {
         batch.error = error;
-        t.ok(RecordImport.getError(req, batch.error), error);
-        t.notEqual(RecordImport.getError(req, batch.error), error, error);
+        t.ok(RecordImport.getError(i18n, batch.error), error);
+        t.notEqual(RecordImport.getError(i18n, batch.error), error, error);
     }
 });
 
@@ -61,7 +60,7 @@ tap.test("saveState", (t) => {
     batch.saveState("process.started", () => {
         const state = batch.getCurState();
         t.equal(state.id, "process.started", "Get State ID");
-        t.equal(state.name(req), "Processing...", "Get State Name");
+        t.equal(state.name(i18n), "Processing...", "Get State Name");
         t.end();
     });
 });
@@ -104,7 +103,7 @@ tap.test("setResults (with error)", (t) => {
     batch.setResults([fs.createReadStream(dataFile)], (err) => {
         t.error(err, "Error should be empty.");
         t.equal(batch.error, error);
-        t.equal(batch.getError(req), error);
+        t.equal(batch.getError(i18n), error);
         t.equal(batch.state, "error");
         t.equal(batch.results.length, 0, "Check number of results");
         t.end();
@@ -375,7 +374,7 @@ tap.test("RecordImport.advance", (t) => {
         t.equal(batches.length, states.length);
         for (const batch of batches) {
             t.equal(batch.state, states.shift());
-            t.ok(batch.getCurState().name(req));
+            t.ok(batch.getCurState().name(i18n));
         }
     };
 
@@ -424,7 +423,7 @@ tap.test("RecordImport.advance", (t) => {
                                     RecordImport.advance((err) => {
                                         t.error(err, "Error should be empty.");
 
-                                        t.ok(batch.getCurState().name(req));
+                                        t.ok(batch.getCurState().name(i18n));
 
                                         getBatches((err, batches) => {
                                             checkStates(batches, []);
@@ -432,19 +431,19 @@ tap.test("RecordImport.advance", (t) => {
                                         });
                                     });
 
-                                    t.ok(batch.getCurState().name(req));
+                                    t.ok(batch.getCurState().name(i18n));
                                 });
                             });
 
-                            t.ok(batch.getCurState().name(req));
+                            t.ok(batch.getCurState().name(i18n));
                         });
                     });
 
-                    t.ok(batch.getCurState().name(req));
+                    t.ok(batch.getCurState().name(i18n));
                 });
             });
 
-            t.ok(batch.getCurState().name(req));
+            t.ok(batch.getCurState().name(i18n));
         });
     });
 });

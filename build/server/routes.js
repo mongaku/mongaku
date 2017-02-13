@@ -12,9 +12,9 @@ module.exports = function (app) {
         const auth = require(path.join(basePath, "shared", "auth.js"));
 
         app.use((req, res, next) => {
-            const url = req.path;
+            const { path } = req;
 
-            if (url === "/login" || url === "/logout") {
+            if (path === "/login" || path === "/logout") {
                 return next();
             }
 
@@ -45,9 +45,9 @@ module.exports = function (app) {
     });
 
     // Handle missing pages
-    app.use((req, res) => {
+    app.use(({ i18n }, res) => {
         res.status(404).render("Error", {
-            title: req.gettext("Page Not Found")
+            title: i18n.gettext("Page Not Found")
         });
     });
 };

@@ -123,9 +123,11 @@ module.exports = function (app) {
 
     return {
         admin(req, res, next) {
-            if (req.query.records) {
+            const { query } = req;
+
+            if (query.records) {
                 importRecords(req, res, next);
-            } else if (req.query.images) {
+            } else if (query.images) {
                 importImages(req, res, next);
             } else {
                 adminPage(req, res, next);
@@ -211,11 +213,11 @@ module.exports = function (app) {
 
         routes() {
             const source = (req, res, next) => {
-                const { i18n } = req;
+                const { i18n, params } = req;
                 const Source = models("Source");
 
                 try {
-                    req.source = Source.getSource(req.params.source);
+                    req.source = Source.getSource(params.source);
                     next();
                 } catch (e) {
                     return res.status(404).render("Error", {
