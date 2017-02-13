@@ -3,12 +3,13 @@ const record = require("../../lib/record");
 const search = require("./search");
 
 module.exports = (req, res, next, tmplParams) => {
-    const fields = Object.assign({}, req.query, req.params);
+    const {i18n, query, params} = req;
+    const fields = Object.assign({}, query, params);
 
     search(fields, req, (err, data, expectedURL) => {
         if (err) {
             return next(new Error(
-                req.gettext("Error connecting to database.")));
+                i18n.gettext("Error connecting to database.")));
         }
 
         if (expectedURL) {
@@ -19,9 +20,9 @@ module.exports = (req, res, next, tmplParams) => {
             return res.status(200).send(data);
         }
 
-        const type = req.params.type;
+        const type = params.type;
         const Record = record(type);
-        Record.getFacets(req, (err, globalFacets) => {
+        Record.getFacets(i18n, (err, globalFacets) => {
             const tmplData = Object.assign(data, tmplParams, {
                 globalFacets,
             });

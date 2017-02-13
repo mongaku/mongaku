@@ -24,33 +24,35 @@ module.exports = function (app) {
         },
 
         bySource(req, res, next) {
+            const { i18n } = req;
+
             try {
                 search(req, res, next, {
                     url: Source.getSource(req.params.source).url
                 });
             } catch (e) {
                 return res.status(404).render("Error", {
-                    title: req.gettext("Source not found.")
+                    title: i18n.gettext("Source not found.")
                 });
             }
         },
 
-        show(req, res, next) {
-            const typeName = req.params.type;
+        show({ i18n, originalUrl, params, query }, res, next) {
+            const typeName = params.type;
 
             if (!options.types[typeName]) {
                 return res.status(404).render("Error", {
-                    title: req.gettext("Page not found.")
+                    title: i18n.gettext("Page not found.")
                 });
             }
 
             if (options.types[typeName].alwaysEdit) {
-                return res.redirect(`${req.originalUrl}/edit`);
+                return res.redirect(`${originalUrl}/edit`);
             }
 
             const Record = record(typeName);
-            const compare = "compare" in req.query;
-            const id = `${req.params.source}/${req.params.recordName}`;
+            const compare = "compare" in query;
+            const id = `${params.source}/${params.recordName}`;
 
             Record.findById(id, (err, record) => {
                 if (err || !record) {
@@ -61,7 +63,7 @@ module.exports = function (app) {
 
                 record.loadImages(true, () => {
                     // TODO: Handle error loading images?
-                    const title = record.getTitle(req);
+                    const title = record.getTitle(i18n);
 
                     // Sort the similar records by score
                     record.similarRecords = record.similarRecords.sort((a, b) => b.score - a.score);
@@ -92,21 +94,21 @@ module.exports = function (app) {
             });
         },
 
-        editView(req, res) {
-            const type = req.params.type;
+        editView({ params, i18n }, res) {
+            const type = params.type;
             const Record = record(type);
-            const id = `${req.params.source}/${req.params.recordName}`;
+            const id = `${params.source}/${params.recordName}`;
 
             Record.findById(id, (err, record) => {
                 if (err || !record) {
                     return res.status(404).render("Error", {
-                        title: req.gettext("Not found.")
+                        title: i18n.gettext("Not found.")
                     });
                 }
 
                 record.loadImages(true, () => {
-                    Record.getFacets(req, (err, globalFacets) => {
-                        record.getDynamicValues(req, (err, dynamicValues) => {
+                    Record.getFacets(i18n, (err, globalFacets) => {
+                        record.getDynamicValues(i18n, (err, dynamicValues) => {
                             res.render("EditRecord", {
                                 mode: "edit",
                                 record,

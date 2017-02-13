@@ -1,8 +1,9 @@
 "use strict";
 
-const i18n = require("i18n-abide");
+const i18nAbide = require("i18n-abide");
 
 const options = require("../lib/options");
+const i18n = require("../lib/i18n");
 
 const defaultLocale = Object.keys(options.locales)[0] || "en";
 
@@ -14,7 +15,7 @@ module.exports = app => {
         next();
     });
 
-    app.use(i18n.abide({
+    app.use(i18nAbide.abide({
         supported_languages: Object.keys(options.locales),
         default_lang: defaultLocale,
         translation_directory: "translations",
@@ -40,6 +41,8 @@ module.exports = app => {
         }
 
         res.locals.setLocale(locale);
+
+        req.i18n = i18n(locale);
 
         next();
     });

@@ -26,7 +26,7 @@ Record.schema = {
     id: {
         type: String,
         validate: v => /^[a-z0-9_-]+$/i.test(v),
-        validationMsg: req => req.gettext("IDs can only contain " + "letters, numbers, underscores, and hyphens."),
+        validationMsg: i18n => i18n.gettext("IDs can only contain " + "letters, numbers, underscores, and hyphens."),
         required: true,
         es_indexed: true
     },
@@ -84,7 +84,7 @@ Record.schema = {
     url: {
         type: String,
         validate: v => validUrl.isHttpsUri(v) || validUrl.isHttpUri(v),
-        validationMsg: req => req.gettext("`url` must be properly-" + "formatted URL.")
+        validationMsg: i18n => i18n.gettext("`url` must be properly-" + "formatted URL.")
     },
 
     // A hash to use to render an image representing the record
@@ -96,7 +96,7 @@ Record.schema = {
     images: {
         type: [{ type: String, ref: "Image" }],
         validateArray: v => /^\w+\/[a-z0-9_-]+\.jpe?g$/i.test(v),
-        validationMsg: req => req.gettext("Images must be a valid " + "image file name. For example: `image.jpg`."),
+        validationMsg: i18n => i18n.gettext("Images must be a valid " + "image file name. For example: `image.jpg`."),
         convert: (name, data) => `${data.source}/${name}`
     },
 
@@ -104,7 +104,7 @@ Record.schema = {
     missingImages: {
         type: [String],
         validateArray: v => /^\w+\/[a-z0-9_-]+\.jpe?g$/i.test(v),
-        validationMsg: req => req.gettext("Images must be a valid " + "image file name. For example: `image.jpg`.")
+        validationMsg: i18n => i18n.gettext("Images must be a valid " + "image file name. For example: `image.jpg`.")
     },
 
     // Keep track of if the record needs to update its record similarity
@@ -348,11 +348,11 @@ Record.statics = {
         return urls.gen(locale, `/${type}/${id}`);
     },
 
-    fromData(tmpData, req, callback) {
+    fromData(tmpData, i18n, callback) {
         const Record = recordModel(this.getType());
         const Image = models("Image");
 
-        const lint = this.lintData(tmpData, req);
+        const lint = this.lintData(tmpData, i18n);
         const warnings = lint.warnings;
 
         if (lint.error) {
@@ -372,7 +372,7 @@ Record.statics = {
                     if (!image) {
                         const fileName = imageId.replace(/^\w+[/]/, "");
                         missingImages.push(imageId);
-                        warnings.push(req.format(req.gettext("Image file not found: %(fileName)s"), { fileName }));
+                        warnings.push(i18n.format(i18n.gettext("Image file not found: %(fileName)s"), { fileName }));
                     }
 
                     callback(null, image);
@@ -380,7 +380,7 @@ Record.statics = {
             }, (err, images) => {
                 /* istanbul ignore if */
                 if (err) {
-                    return callback(new Error(req.gettext("Error accessing image data.")));
+                    return callback(new Error(i18n.gettext("Error accessing image data.")));
                 }
 
                 if (typeOptions.hasImages()) {
@@ -388,7 +388,7 @@ Record.statics = {
                     const filteredImages = images.filter(image => !!image);
 
                     if (filteredImages.length === 0) {
-                        const errMsg = req.gettext("No images found.");
+                        const errMsg = i18n.gettext("No images found.");
 
                         if (typeOptions.imagesRequired) {
                             return callback(new Error(errMsg));
@@ -430,7 +430,7 @@ Record.statics = {
                 model.validate(err => {
                     /* istanbul ignore if */
                     if (err) {
-                        const msg = req.gettext("There was an error with the data format.");
+                        const msg = i18n.gettext("There was an error with the data format.");
                         const errors = Object.keys(err.errors).map(path => err.errors[path].message).join(", ");
                         return callback(new Error(`${msg} ${errors}`));
                     }
@@ -445,7 +445,7 @@ Record.statics = {
         });
     },
 
-    lintData(data, req, optionalSchema) {
+    lintData(data, i18n, optionalSchema) {
         const schema = optionalSchema || recordModel(this.getType()).schema;
 
         const cleaned = {};
@@ -456,7 +456,7 @@ Record.statics = {
             const options = schema.path(field);
 
             if (!options || internal.indexOf(field) >= 0) {
-                warnings.push(req.format(req.gettext("Unrecognized field `%(field)s`."), { field }));
+                warnings.push(i18n.format(i18n.gettext("Unrecognized field `%(field)s`."), { field }));
                 continue;
             }
         }
@@ -485,7 +485,7 @@ Record.statics = {
 
                 if (expectedType) {
                     value = null;
-                    warnings.push(req.format(req.gettext("`%(field)s` is the wrong type. Expected a " + "%(type)s."), { field, type: expectedType }));
+                    warnings.push(i18n.format(i18n.gettext("`%(field)s` is the wrong type. Expected a " + "%(type)s."), { field, type: expectedType }));
                 } else if (Array.isArray(options.type)) {
                     // Convert the value to its expected form, if a
                     // conversion method exists.
@@ -498,7 +498,7 @@ Record.statics = {
                             const expectedType = getExpectedType(options.type[0], entry);
 
                             if (expectedType) {
-                                warnings.push(req.format(req.gettext("`%(field)s` value is the wrong type." + " Expected a %(type)s."), { field, type: expectedType }));
+                                warnings.push(i18n.format(i18n.gettext("`%(field)s` value is the wrong type." + " Expected a %(type)s."), { field, type: expectedType }));
                                 return undefined;
                             }
 
@@ -506,7 +506,7 @@ Record.statics = {
                         });
                     } else {
                         value = value.map(entry => {
-                            const results = this.lintData(entry, req, options.type[0]);
+                            const results = this.lintData(entry, i18n, options.type[0]);
 
                             if (results.error) {
                                 warnings.push(`\`${field}\`: ${results.error}`);
@@ -526,7 +526,7 @@ Record.statics = {
                         const results = value.filter(entry => options.validateArray(entry));
 
                         if (value.length !== results.length) {
-                            warnings.push(options.validationMsg(req));
+                            warnings.push(options.validationMsg(i18n));
                         }
 
                         value = results;
@@ -535,17 +535,17 @@ Record.statics = {
                     // Validate the value
                     if (options.validate && !options.validate(value)) {
                         value = null;
-                        warnings.push(options.validationMsg(req));
+                        warnings.push(options.validationMsg(i18n));
                     }
                 }
             }
 
             if (value === null || value === undefined || value === "" || value.length === 0) {
                 if (options.required) {
-                    error = req.format(req.gettext("Required field `%(field)s` is empty."), { field });
+                    error = i18n.format(i18n.gettext("Required field `%(field)s` is empty."), { field });
                     break;
                 } else if (options.recommended) {
-                    warnings.push(req.format(req.gettext("Recommended field `%(field)s` is empty."), { field }));
+                    warnings.push(i18n.format(i18n.gettext("Recommended field `%(field)s` is empty."), { field }));
                 }
             } else {
                 cleaned[field] = value;
@@ -587,12 +587,14 @@ Record.statics = {
     },
 
     getFacets(req, callback) {
+        const { lang } = req;
+
         if (!this.facetCache) {
             this.facetCache = {};
         }
 
-        if (this.facetCache[req.lang]) {
-            return process.nextTick(() => callback(null, this.facetCache[req.lang]));
+        if (this.facetCache[lang]) {
+            return process.nextTick(() => callback(null, this.facetCache[lang]));
         }
 
         const search = require("../logic/shared/search");
@@ -611,7 +613,7 @@ Record.statics = {
                 facets[facet.field] = facet.buckets;
             }
 
-            this.facetCache[req.lang] = facets;
+            this.facetCache[lang] = facets;
             callback(null, facets);
         });
     }

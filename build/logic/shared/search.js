@@ -12,7 +12,7 @@ const queries = require("./queries");
 const searchURL = require("./search-url");
 const paramFilter = require("./param-filter");
 
-module.exports = (fields, req, callback) => {
+module.exports = (fields, { originalUrl, i18n }, callback) => {
     // Collect all the values from the request to construct
     // the search URL and matches later
     // Generate the filters and facets which will be fed in to Elasticsearch
@@ -23,7 +23,7 @@ module.exports = (fields, req, callback) => {
     const type = fields.type || Object.keys(options.types)[0];
 
     if (type && !options.types[type]) {
-        return callback(new Error(req.gettext("Page Not Found")));
+        return callback(new Error(i18n.gettext("Page Not Found")));
     }
 
     const typeFacets = facets(type);
@@ -51,8 +51,8 @@ module.exports = (fields, req, callback) => {
     }
 
     if (!fields.noRedirect) {
-        const curURL = urls.gen(req.lang, req.originalUrl);
-        const expectedURL = searchURL(req, values, true);
+        const curURL = urls.gen(i18n.lang, i18n.originalUrl);
+        const expectedURL = searchURL(i18n, values, true);
 
         if (expectedURL !== curURL) {
             return callback(null, null, expectedURL);
@@ -88,13 +88,13 @@ module.exports = (fields, req, callback) => {
 
         // The link to the previous page of search results
         const prevStart = values.start - values.rows;
-        const prevLink = values.start > 0 ? searchURL(req, Object.assign({}, values, {
+        const prevLink = values.start > 0 ? searchURL(i18n, Object.assign({}, values, {
             start: prevStart > 0 ? prevStart : ""
         }), true) : "";
 
         // The link to the next page of the search results
         const nextStart = values.start + values.rows;
-        const nextLink = end < results.hits.total ? searchURL(req, Object.assign({}, values, {
+        const nextLink = end < results.hits.total ? searchURL(i18n, Object.assign({}, values, {
             start: nextStart
         }), true) : "";
 
@@ -106,8 +106,8 @@ module.exports = (fields, req, callback) => {
             for (const name in aggregations) {
                 const aggregation = results.aggregations[name];
                 const facet = typeFacets[name];
-                const buckets = facet.formatBuckets(aggregation.buckets, req).filter(bucket => {
-                    bucket.url = searchURL(req, Object.assign({}, values, bucket.url));
+                const buckets = facet.formatBuckets(aggregation.buckets, i18n).filter(bucket => {
+                    bucket.url = searchURL(i18n, Object.assign({}, values, bucket.url));
                     return bucket.count > 0;
                 });
 
@@ -118,7 +118,7 @@ module.exports = (fields, req, callback) => {
 
                 facetData.push({
                     field: name,
-                    name: facet.title(req),
+                    name: facet.title(i18n),
                     buckets
                 });
             }
@@ -129,12 +129,12 @@ module.exports = (fields, req, callback) => {
         const sorts = options.types[values.type].sorts;
         const sortData = Object.keys(sorts).map(id => ({
             id: id,
-            name: sorts[id](req),
+            name: sorts[id](i18n),
             selected: values.sort === id
         }));
 
         // Figure out the title and breadcrumbs of the results
-        let title = req.gettext("Search Results");
+        let title = i18n.gettext("Search Results");
         const primary = paramFilter(values).primary;
         let breadcrumbs = [];
 
@@ -144,16 +144,16 @@ module.exports = (fields, req, callback) => {
                 delete rmValues[param];
 
                 return {
-                    name: typeQueries[param].searchTitle(values[param], req),
-                    url: searchURL(req, rmValues)
+                    name: typeQueries[param].searchTitle(values[param], i18n),
+                    url: searchURL(i18n, rmValues)
                 };
             }).filter(crumb => crumb.name);
         } else if (primary.length === 1) {
             const name = primary[0];
             const query = typeQueries[name];
-            title = query.searchTitle(values[name], req);
+            title = query.searchTitle(values[name], i18n);
         } else {
-            title = options.types[values.type].name(req);
+            title = options.types[values.type].name(i18n);
         }
 
         callback(null, {
