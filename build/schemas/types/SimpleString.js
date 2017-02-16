@@ -26,11 +26,31 @@ SimpleString.prototype = {
         return { [this.searchName()]: value };
     },
 
+    sort() {
+        return {
+            asc: [{
+                [`${this.options.name}.keyword`]: {
+                    order: "asc"
+                }
+            }],
+
+            desc: [{
+                [`${this.options.name}.keyword`]: {
+                    order: "desc"
+                }
+            }]
+        };
+    },
+
     schema() {
         const type = {
             type: String,
             es_indexed: true,
-            recommended: !!this.options.recommended
+            recommended: !!this.options.recommended,
+            // A keyword type to use for sorting/aggregations in Elasticsearch
+            es_fields: {
+                keyword: { type: "keyword" }
+            }
         };
 
         return this.options.multiple ? [type] : type;

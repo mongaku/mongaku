@@ -10,6 +10,7 @@ module.exports = (req, res, next, tmplParams) => {
 
     search(fields, req, (err, data, expectedURL) => {
         if (err) {
+            console.error(`Database error: ${err}`);
             return next(new Error(i18n.gettext("Error connecting to database.")));
         }
 
