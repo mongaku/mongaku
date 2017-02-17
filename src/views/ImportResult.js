@@ -26,11 +26,13 @@ type ImportResults = {
     warnings: Array<any>,
 };
 
+type Expanded = "models" | "unprocessed" | "created" | "changed" | "deleted" |
+        "errors" | "warnings";
+
 type Props = {
     batch: Import,
-    expanded?: string,
-    id: "models" | "unprocessed" | "created" | "changed" | "deleted" |
-        "errors" | "warnings",
+    expanded?: Expanded,
+    id: Expanded,
     numShow?: number,
     renderResult: (result: any, i: number) => React.Element<*>,
     title: string,
@@ -51,7 +53,7 @@ const ImportResult = (props: Props, {gettext, lang}: Context) => {
         {count: stringNum(lang, allResults.length)});
     const expandURL = URL(lang, batch.getURL(lang), {expanded: id});
     const isExpanded = (expanded === id || allResults.length <= numShow);
-    const results = expanded ? allResults : allResults.slice(0, numShow);
+    const results = isExpanded ? allResults : allResults.slice(0, numShow);
 
     if (results.length === 0) {
         return null;

@@ -121,13 +121,9 @@ const CreatedResult = ({
     result,
     batch,
 }: Props & {result: Result}, {lang}: Context) => {
-    if (!result.model) {
-        return null;
-    }
-
-    const title = batch.state === "completed" ?
+    const title = result.model && batch.state === "completed" ?
         <a href={getURLFromID(result.model, batch, lang)}>{result.model}</a> :
-        result.model;
+        result.data.id;
 
     return <div>
         <h4>{title}</h4>
@@ -179,7 +175,7 @@ const ImportData = (props: Props, {lang, gettext}: Context) => {
         batchState,
         adminURL,
     } = props;
-    const state = {batch};
+    const {state} = batch;
     const title = format(gettext("Data Import: %(fileName)s"),
         {fileName: batch.fileName});
     const stateText = state === "error" ?

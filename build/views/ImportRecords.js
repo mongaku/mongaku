@@ -127,15 +127,11 @@ const CreatedResult = ({
     result,
     batch
 }, { lang }) => {
-    if (!result.model) {
-        return null;
-    }
-
-    const title = batch.state === "completed" ? React.createElement(
+    const title = result.model && batch.state === "completed" ? React.createElement(
         "a",
         { href: getURLFromID(result.model, batch, lang) },
         result.model
-    ) : result.model;
+    ) : result.data.id;
 
     return React.createElement(
         "div",
@@ -223,7 +219,7 @@ const ImportData = (props, { lang, gettext }) => {
         batchState,
         adminURL
     } = props;
-    const state = { batch };
+    const { state } = batch;
     const title = format(gettext("Data Import: %(fileName)s"), { fileName: batch.fileName });
     const stateText = state === "error" ? format(gettext("Error: %(error)s"), { error: batchError(batch.error || "") }) : batchState(batch);
     const uploadDate = format(gettext("Uploaded: %(date)s"), { date: fixedDate(lang, batch.created) });

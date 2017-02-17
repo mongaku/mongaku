@@ -21,7 +21,7 @@ const ImportResult = (props, { gettext, lang }) => {
     const showAll = format(gettext("Show all %(count)s results..."), { count: stringNum(lang, allResults.length) });
     const expandURL = URL(lang, batch.getURL(lang), { expanded: id });
     const isExpanded = expanded === id || allResults.length <= numShow;
-    const results = expanded ? allResults : allResults.slice(0, numShow);
+    const results = isExpanded ? allResults : allResults.slice(0, numShow);
 
     if (results.length === 0) {
         return null;
@@ -81,7 +81,7 @@ ImportResult.propTypes = {
         modified: require("react").PropTypes.any.isRequired,
         state: require("react").PropTypes.string.isRequired
     }).isRequired,
-    expanded: require("react").PropTypes.string,
+    expanded: require("react").PropTypes.oneOf(["models", "unprocessed", "created", "changed", "deleted", "errors", "warnings"]),
     id: require("react").PropTypes.oneOf(["models", "unprocessed", "created", "changed", "deleted", "errors", "warnings"]).isRequired,
     numShow: require("react").PropTypes.number,
     renderResult: require("react").PropTypes.func.isRequired,
