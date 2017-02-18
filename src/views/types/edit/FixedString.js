@@ -10,12 +10,16 @@ type ValueType = {
 type Props = {
     name: string,
     multiline?: boolean,
-    value: string | Array<string>,
+    value?: string | Array<string>,
     values?: Array<ValueType>,
     multiple?: boolean,
 };
 
-const getValue = (value: string, values?: Array<ValueType>): string => {
+const getValue = (value?: string, values?: Array<ValueType>): string => {
+    if (!value) {
+        return "";
+    }
+
     if (!values) {
         return value;
     }
@@ -34,7 +38,7 @@ const Value = ({
     stringValue,
     values,
     multiline,
-}: Props & {stringValue: string}) => {
+}: Props & {stringValue?: string}) => {
     const defaultValue = getValue(stringValue, values);
 
     if (multiline) {

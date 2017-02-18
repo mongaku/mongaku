@@ -5,6 +5,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 const React = require("react");
 
 const getValue = (value, values) => {
+    if (!value) {
+        return "";
+    }
+
     if (!values) {
         return value;
     }
@@ -96,7 +100,7 @@ const FixedStringEdit = props => {
 FixedStringEdit.propTypes = {
     name: require("react").PropTypes.string.isRequired,
     multiline: require("react").PropTypes.bool,
-    value: require("react").PropTypes.oneOfType([require("react").PropTypes.string, require("react").PropTypes.arrayOf(require("react").PropTypes.string)]).isRequired,
+    value: require("react").PropTypes.oneOfType([require("react").PropTypes.string, require("react").PropTypes.arrayOf(require("react").PropTypes.string)]),
     values: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         id: require("react").PropTypes.string.isRequired,
         name: require("react").PropTypes.string.isRequired

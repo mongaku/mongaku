@@ -270,7 +270,7 @@ const TypeEdit = ({
 TypeEdit.propTypes = {
     name: require("react").PropTypes.string.isRequired,
     type: require("react").PropTypes.string.isRequired,
-    value: require("react").PropTypes.any.isRequired,
+    value: require("react").PropTypes.any,
     allValues: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
     typeSchema: babelPluginFlowReactPropTypes_proptype_ModelType
 };
@@ -423,7 +423,7 @@ const EditRecord = (props, { lang, gettext, options }) => {
         });
     } else {
         // NOTE(jeresig): Fix recordTitle i18n
-        const recordTitle = record.title || "";
+        const recordTitle = record.getTitle(props) || "";
 
         if (mode === "clone") {
             title = format(gettext("Cloning '%(recordTitle)s'"), { recordTitle });

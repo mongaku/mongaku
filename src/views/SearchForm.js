@@ -278,7 +278,7 @@ const SearchForm = (props: Props, {lang, gettext, options}: Context) => {
     const searchURL = URL(lang, `/${type}/search`);
     const typeOptions = options.types[type];
     const placeholder = typeOptions.getSearchPlaceholder;
-    const showImageFilter = typeOptions.hasImages ||
+    const showImageFilter = typeOptions.hasImages &&
         !typeOptions.requiresImages;
 
     return <form action={searchURL} method="GET">

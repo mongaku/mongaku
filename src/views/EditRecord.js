@@ -31,6 +31,7 @@ type Record = {
     type: string,
     title?: string,
     images: Array<ImageType>,
+    getTitle: () => string,
     getEditURL: (lang: string) => string,
     getCloneURL: (lang: string) => string,
     getCreateURL: (lang: string) => string,
@@ -178,7 +179,7 @@ const TypeEdit = ({
 }: {
     name: string,
     type: string,
-    value: any,
+    value?: any,
     allValues: Array<any>,
     typeSchema: ModelType,
 }) => {
@@ -378,7 +379,7 @@ const EditRecord = (props: Props,
         });
     } else {
         // NOTE(jeresig): Fix recordTitle i18n
-        const recordTitle = record.title || "";
+        const recordTitle = record.getTitle(props) || "";
 
         if (mode === "clone") {
             title = format(gettext("Cloning '%(recordTitle)s'"), {recordTitle});

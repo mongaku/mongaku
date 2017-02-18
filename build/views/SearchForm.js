@@ -401,7 +401,7 @@ const SearchForm = (props, { lang, gettext, options }) => {
     const searchURL = URL(lang, `/${type}/search`);
     const typeOptions = options.types[type];
     const placeholder = typeOptions.getSearchPlaceholder;
-    const showImageFilter = typeOptions.hasImages || !typeOptions.requiresImages;
+    const showImageFilter = typeOptions.hasImages && !typeOptions.requiresImages;
 
     return React.createElement(
         "form",
