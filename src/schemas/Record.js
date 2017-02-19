@@ -145,27 +145,31 @@ Record.schema = {
 };
 
 Record.methods = {
-    getURL(locale) {
-        return recordModel(this.type).getURLFromID(locale, this._id);
+    getURL(lang) {
+        return recordModel(this.type).getURLFromID(lang, this._id);
     },
 
-    getEditURL(locale) {
-        return `${this.getURL(locale)}/edit`;
+    getEditURL(lang) {
+        return `${this.getURL(lang)}/edit`;
     },
 
-    getCreateURL(locale) {
-        return urls.gen(locale, `/${this.type}/${this.source}/create`);
+    getCreateURL(lang) {
+        return urls.gen(lang, `/${this.type}/${this.source}/create`);
     },
 
-    getCloneURL(locale) {
-        return `${this.getURL(locale)}/clone`;
+    getCloneURL(lang) {
+        return `${this.getURL(lang)}/clone`;
     },
 
-    getRemoveImageURL(locale) {
-        return `${this.getURL(locale)}/remove-image`;
+    getRemoveImageURL(lang) {
+        return `${this.getURL(lang)}/remove-image`;
     },
 
     getOriginalURL() {
+        if (!this.defaultImageHash) {
+            return options.types[this.type].defaultImage;
+        }
+
         return urls.genData(
             `/${this.source}/images/${this.defaultImageHash}.jpg`);
     },
@@ -365,9 +369,9 @@ const stripProp = (obj, name) => {
 };
 
 Record.statics = {
-    getURLFromID(locale, id) {
+    getURLFromID(lang, id) {
         const type = this.getType();
-        return urls.gen(locale, `/${type}/${id}`);
+        return urls.gen(lang, `/${type}/${id}`);
     },
 
     fromData(tmpData, i18n, callback) {

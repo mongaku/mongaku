@@ -23,15 +23,14 @@ const Image = ({
     record,
     title
 }, {
-    lang,
     gettext
 }) => React.createElement(
     "div",
     { className: "img col-md-4 col-xs-12 col-sm-6", key: image._id },
     React.createElement(
         "a",
-        { href: image.getOriginalURL() },
-        React.createElement("img", { src: image.getScaledURL(),
+        { href: image.getOriginalURL },
+        React.createElement("img", { src: image.getScaledURL,
             alt: title,
             title: title,
             className: "img-responsive center-block"
@@ -43,15 +42,10 @@ const Image = ({
         React.createElement(
             "form",
             {
-                action: record && record.getRemoveImageURL(lang),
+                action: record && record.getRemoveImageURL,
                 method: "POST",
                 encType: "multipart/form-data"
             },
-            React.createElement("input", {
-                type: "hidden",
-                name: "lang",
-                value: lang
-            }),
             React.createElement("input", {
                 type: "hidden",
                 name: "image",
@@ -389,13 +383,16 @@ SubmitButton.propTypes = {
 };
 SubmitButton.contextTypes = childContextTypes;
 
-const CloneButton = ({ record, mode }, { gettext, lang }) => React.createElement(
+const CloneButton = ({
+    record,
+    mode
+}, { gettext }) => React.createElement(
     "div",
     { className: "row" },
     React.createElement(
         "a",
         {
-            href: record && record.getCloneURL(lang),
+            href: record && record.getCloneURL,
             className: "btn btn-primary pull-right"
         },
         gettext("Clone Record")
@@ -411,9 +408,9 @@ CloneButton.propTypes = {
 };
 CloneButton.contextTypes = childContextTypes;
 
-const EditRecord = (props, { lang, gettext, options }) => {
+const EditRecord = (props, { gettext, options }) => {
     const { record, type, mode } = props;
-    const postURL = record ? record._id ? record.getEditURL(lang) : record.getCreateURL(lang) : "";
+    const postURL = record ? record._id ? record.getEditURL : record.getCreateURL : "";
 
     let title = "";
 
@@ -422,8 +419,7 @@ const EditRecord = (props, { lang, gettext, options }) => {
             recordName: options.types[type].name
         });
     } else {
-        // NOTE(jeresig): Fix recordTitle i18n
-        const recordTitle = record.getTitle(props) || "";
+        const recordTitle = record.getTitle || "";
 
         if (mode === "clone") {
             title = format(gettext("Cloning '%(recordTitle)s'"), { recordTitle });
@@ -464,7 +460,6 @@ const EditRecord = (props, { lang, gettext, options }) => {
                         encType: "multipart/form-data",
                         "data-validate": true
                     },
-                    React.createElement("input", { type: "hidden", name: "lang", value: lang }),
                     React.createElement(
                         "div",
                         { className: "responsive-table" },

@@ -44,12 +44,12 @@ const Source = new db.schema({
 });
 
 Source.methods = {
-    getURL(locale) {
-        return urls.gen(locale, `/${this.type}/source/${this._id}`);
+    getURL(lang) {
+        return urls.gen(lang, `/${this.type}/source/${this._id}`);
     },
 
-    getAdminURL(locale) {
-        return `${this.getURL(locale)}/admin`;
+    getAdminURL(lang) {
+        return `${this.getURL(lang)}/admin`;
     },
 
     getDirBase() {

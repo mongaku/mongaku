@@ -6,7 +6,7 @@ const record = require("../../lib/record");
 const models = require("../../lib/models");
 const urls = require("../../lib/urls");
 const options = require("../../lib/options");
-const clone = require("../../lib/clone");
+const { cloneObject } = require("../../lib/clone");
 
 const facets = require("./facets");
 const queries = require("./queries");
@@ -162,7 +162,7 @@ module.exports = (fields, { originalUrl, i18n }, callback) => {
             breadcrumbs,
             sources: models("Source").getSourcesByType(values.type).filter(source => source.numRecords > 0),
             values,
-            queries: clone(typeQueries, i18n),
+            queries: cloneObject(typeQueries, i18n),
             type: values.type,
             sorts: sortData,
             facets: facetData,

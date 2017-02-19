@@ -3,6 +3,7 @@ const formidable = require("formidable");
 
 const db = require("../lib/db");
 const urls = require("../lib/urls");
+const {cloneModel} = require("../lib/clone");
 const record = require("../lib/record");
 const models = require("../lib/models");
 const options = require("../lib/options");
@@ -64,17 +65,31 @@ module.exports = function(app) {
                     // TODO: Handle error loading images?
                     const title = record.getTitle(i18n);
 
+                    const clonedRecord = cloneModel(record, i18n);
+
+                    clonedRecord.imageModels = record.images
+                        .map((image) => cloneModel(image));
+
                     // Sort the similar records by score
-                    record.similarRecords = record.similarRecords
+                    clonedRecord.similarRecords = record.similarRecords
                         .sort((a, b) => b.score - a.score);
 
                     if (!compare) {
+                        const similarRecords = record.similarRecords
+                            .map((match) => ({
+                                _id: match._id,
+                                score: match.score,
+                                recordModel:
+                                    cloneModel(match.recordModel, i18n),
+                            }));
+
                         return res.render("Record", {
                             title,
                             compare: false,
-                            records: [record],
-                            similar: record.similarRecords,
-                            sources: Source.getSourcesByType(typeName),
+                            records: [clonedRecord],
+                            similar: similarRecords,
+                            sources: Source.getSourcesByType(typeName)
+                                .map((source) => cloneModel(source, i18n)),
                         });
                     }
 
@@ -82,15 +97,23 @@ module.exports = function(app) {
                         (similar, callback) => {
                             similar.recordModel.loadImages(false, callback);
                         }, () => {
+                            const similarRecords = record.similarRecords
+                                .map((similar) => {
+                                    const clonedRecord =
+                                        cloneModel(similar.recordModel, i18n);
+                                    clonedRecord.imageModels = record.images
+                                        .map((image) => cloneModel(image));
+                                    return clonedRecord;
+                                });
                             res.render("Record", {
                                 title,
                                 compare: true,
                                 noIndex: true,
                                 similar: [],
-                                records: [record]
-                                    .concat(record.similarRecords
-                                        .map((similar) => similar.recordModel)),
-                                sources: Source.getSourcesByType(typeName),
+                                records: [clonedRecord]
+                                    .concat(similarRecords),
+                                sources: Source.getSourcesByType(typeName)
+                                    .map((source) => cloneModel(source, i18n)),
                             });
                         });
                 });
@@ -114,7 +137,7 @@ module.exports = function(app) {
                         record.getDynamicValues(i18n, (err, dynamicValues) => {
                             res.render("EditRecord", {
                                 mode: "edit",
-                                record,
+                                record: cloneModel(record, i18n),
                                 globalFacets,
                                 dynamicValues,
                                 type,
@@ -335,7 +358,7 @@ module.exports = function(app) {
                         record.getDynamicValues(i18n, (err, dynamicValues) => {
                             res.render("EditRecord", {
                                 mode: "clone",
-                                record,
+                                record: cloneModel(record, i18n),
                                 globalFacets,
                                 dynamicValues,
                                 type,
@@ -489,7 +512,7 @@ module.exports = function(app) {
 
             Record.findById(id, (err, record) => {
                 if (record) {
-                    return res.send(record.toJSON());
+                    return res.send(cloneModel(record));
                 }
 
                 res.status(404).send({

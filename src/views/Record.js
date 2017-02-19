@@ -15,21 +15,20 @@ const {childContextTypes} = require("./Wrapper.js");
 
 type ImageType = {
     _id: string,
-    getOriginalURL: () => string,
-    getScaledURL: () => string,
-    getThumbURL: () => string,
+    getOriginalURL: string,
+    getScaledURL: string,
+    getThumbURL: string,
 };
 
 type UnpopulatedRecordType = {
     _id: string,
     type: string,
     url: string,
-    images: Array<string>,
-    getOriginalURL: () => string,
-    getThumbURL: () => string,
-    getTitle: () => string,
-    getSource: () => Source,
-    getURL: (lang: string) => string,
+    source: string,
+    getOriginalURL: string,
+    getThumbURL: string,
+    getTitle: string,
+    getURL: string,
 };
 
 type RecordType = {
@@ -37,20 +36,20 @@ type RecordType = {
     type: string,
     url: string,
     title?: string,
-    images: Array<ImageType>,
-    getOriginalURL: () => string,
-    getThumbURL: () => string,
-    getTitle: () => string,
-    getSource: () => Source,
-    getURL: (lang: string) => string,
+    source: string,
+    imageModels: Array<ImageType>,
+    getOriginalURL: string,
+    getThumbURL: string,
+    getTitle: string,
+    getURL: string,
 };
 
 type Source = {
     _id: string,
     name: string,
-    getURL: (lang: string) => string,
-    getFullName: (lang: string) => string,
-    getShortName: (lang: string) => string,
+    getURL: string,
+    getFullName: string,
+    getShortName: string,
 };
 
 type Match = {
@@ -93,17 +92,15 @@ const Image = ({
     record: RecordType,
     image: ImageType,
     active: boolean,
-}, {lang}: Context) => <div className={`item ${active ? "active" : ""}`}>
-    <a href={image.getOriginalURL()}>
-        <img src={image.getScaledURL()}
-            alt={record.getTitle(lang)}
-            title={record.getTitle(lang)}
+}) => <div className={`item ${active ? "active" : ""}`}>
+    <a href={image.getOriginalURL}>
+        <img src={image.getScaledURL}
+            alt={record.getTitle}
+            title={record.getTitle}
             className="img-responsive center-block"
         />
     </a>
 </div>;
-
-Image.contextTypes = childContextTypes;
 
 const Carousel = ({record}: Props & {record: RecordType}, {
     gettext,
@@ -111,7 +108,7 @@ const Carousel = ({record}: Props & {record: RecordType}, {
     const carouselId = record._id.replace("/", "-");
     return <div>
         <ol className="carousel-indicators">
-            {record.images.map((image, i) =>
+            {record.imageModels.map((image, i) =>
                 <li
                     data-target={`#${carouselId}`}
                     data-slide-to={i}
@@ -154,7 +151,7 @@ const Images = (props: Props & {record: RecordType}) => {
     return <td>
         <div id={carouselId} className="carousel" data-interval="0">
             <div className="carousel-inner" role="listbox">
-                {record.images.map((image, i) => <Image
+                {record.imageModels.map((image, i) => <Image
                     {...props}
                     record={record}
                     image={image}
@@ -163,7 +160,7 @@ const Images = (props: Props & {record: RecordType}) => {
                 />)}
             </div>
 
-            {record.images.length > 1 &&
+            {record.imageModels.length > 1 &&
                 <Carousel {...props} record={record} />}
         </div>
     </td>;
@@ -313,34 +310,39 @@ const Details = ({records}: Props, {gettext}: Context) => <tr>
 
 Details.contextTypes = childContextTypes;
 
-const Sources = ({records}: Props, {gettext, lang}: Context) => <tr>
+const getSource = (sourceId: string, sources: Array<Source>): ?Source => {
+    for (const source of sources) {
+        if (source._id === sourceId) {
+            return source;
+        }
+    }
+};
+
+const Sources = ({records, sources}: Props, {gettext}: Context) => <tr>
     <th className="text-right">
         {gettext("Source")}
     </th>
     {records.map((record) => {
-        const source = record.getSource();
+        const source = getSource(record.source, sources);
 
         return <td key={record._id}>
-            <a href={source.getURL(lang)}>
-                {source.getFullName(lang)}
-            </a>
+            {source && <a href={source.getURL}>
+                {source.getFullName}
+            </a>}
         </td>;
     })}
 </tr>;
 
 Sources.contextTypes = childContextTypes;
 
-const MainRecord = (props: Props, {
-    lang,
-    gettext,
-}: Context) => {
+const MainRecord = (props: Props, {gettext}: Context) => {
     const {similar, compare, records} = props;
     const recordWidth = similar.length > 0 ?
         "col-md-9" : "col-md-12";
 
     return <div className={`${recordWidth} imageholder`}>
         {(compare || records.length > 1) &&
-            <a href={records[0].getURL(lang)}
+            <a href={records[0].getURL}
                 className="btn btn-success"
             >
                 &laquo; {gettext("End Comparison")}
@@ -370,15 +372,15 @@ const MainRecord = (props: Props, {
 MainRecord.contextTypes = childContextTypes;
 
 const SimilarMatch = ({
+    source,
     match: {recordModel, score},
-}: Props & {match: Match}, {
+}: Props & {source: ?Source, match: Match}, {
     gettext,
-    lang,
 }: Context) => <div className="img col-md-12 col-xs-6 col-sm-4">
-    <a href={recordModel.getURL(lang)}>
-        <img src={recordModel.getThumbURL()}
-            alt={recordModel.getTitle(lang)}
-            title={recordModel.getTitle(lang)}
+    <a href={recordModel.getURL}>
+        <img src={recordModel.getThumbURL}
+            alt={recordModel.getTitle}
+            title={recordModel.getTitle}
             className="img-responsive center-block"
         />
     </a>
@@ -387,12 +389,12 @@ const SimilarMatch = ({
             <span>{format(gettext(
                 "Score: %(score)s"), {score: score})}</span>
 
-            <a className="pull-right"
-                href={recordModel.getSource().getURL(lang)}
-                title={recordModel.getSource().getFullName(lang)}
+            {source && <a className="pull-right"
+                href={source.getURL}
+                title={source.getFullName}
             >
-                {recordModel.getSource().getShortName(lang)}
-            </a>
+                {source.getShortName}
+            </a>}
         </div>
     </div>
 </div>;
@@ -400,7 +402,7 @@ const SimilarMatch = ({
 SimilarMatch.contextTypes = childContextTypes;
 
 const Similar = (props: Props, {gettext}: Context) => {
-    const {similar} = props;
+    const {similar, sources} = props;
 
     return <div className="col-md-3">
         <a href="?compare" className="btn btn-success btn-block"
@@ -414,8 +416,19 @@ const Similar = (props: Props, {gettext}: Context) => {
                 {gettext("Similar Images")}
             </div>
             <div className="panel-body row">
-                {similar.map((match) => match.recordModel &&
-                    <SimilarMatch {...props} match={match} key={match._id} />)}
+                {similar.map((match) => {
+                    if (match.recordModel) {
+                        return <SimilarMatch
+                            {...props}
+                            source={getSource(match.recordModel.source,
+                                sources)}
+                            match={match}
+                            key={match._id}
+                        />;
+                    }
+
+                    return null;
+                })}
             </div>
         </div>
     </div>;
@@ -431,14 +444,14 @@ const Script = () => <script
     `}}
 />;
 
-const Record = (props: Props, {lang}: Context) => {
+const Record = (props: Props) => {
     const {records, similar} = props;
     const record = records[0];
     const title = record.title || "";
     const social = {
-        imgURL: record.getOriginalURL(),
+        imgURL: record.getOriginalURL,
         title,
-        url: record.getURL(lang),
+        url: record.getURL,
     };
 
     return <Page
@@ -452,7 +465,5 @@ const Record = (props: Props, {lang}: Context) => {
         </div>
     </Page>;
 };
-
-Record.contextTypes = childContextTypes;
 
 module.exports = Record;

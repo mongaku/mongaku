@@ -4,7 +4,7 @@
  * Some vars to pass in to the templates.
  */
 
-const clone = require("../lib/clone");
+const { cloneObject } = require("../lib/clone");
 const options = require("../lib/options");
 
 module.exports = app => {
@@ -16,7 +16,7 @@ module.exports = app => {
         let langOptions = optionsCache[lang];
 
         if (!langOptions) {
-            langOptions = clone(options, i18n, blacklist);
+            langOptions = cloneObject(options, i18n, blacklist);
             optionsCache[lang] = langOptions;
         }
 

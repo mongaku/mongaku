@@ -31,17 +31,17 @@ type Record = {
     type: string,
     title?: string,
     images: Array<ImageType>,
-    getTitle: () => string,
-    getEditURL: (lang: string) => string,
-    getCloneURL: (lang: string) => string,
-    getCreateURL: (lang: string) => string,
-    getRemoveImageURL: (lang: string) => string,
+    getTitle: string,
+    getEditURL: string,
+    getCloneURL: string,
+    getCreateURL: string,
+    getRemoveImageURL: string,
 };
 
 type ImageType = {
     _id: string,
-    getOriginalURL: () => string,
-    getScaledURL: () => string,
+    getOriginalURL: string,
+    getScaledURL: string,
 };
 
 const Image = ({
@@ -52,11 +52,10 @@ const Image = ({
     image: ImageType,
     title: string,
 }, {
-    lang,
     gettext,
 }: Context) => <div className="img col-md-4 col-xs-12 col-sm-6" key={image._id}>
-    <a href={image.getOriginalURL()}>
-        <img src={image.getScaledURL()}
+    <a href={image.getOriginalURL}>
+        <img src={image.getScaledURL}
             alt={title}
             title={title}
             className="img-responsive center-block"
@@ -65,15 +64,10 @@ const Image = ({
 
     <div className="details reduced">
         <form
-            action={record && record.getRemoveImageURL(lang)}
+            action={record && record.getRemoveImageURL}
             method="POST"
             encType="multipart/form-data"
         >
-            <input
-                type="hidden"
-                name="lang"
-                value={lang}
-            />
             <input
                 type="hidden"
                 name="image"
@@ -350,10 +344,12 @@ const SubmitButton = ({mode}: Props, {gettext}: Context) => {
 
 SubmitButton.contextTypes = childContextTypes;
 
-const CloneButton = ({record, mode}: Props, {gettext, lang}: Context) =>
-<div className="row">
+const CloneButton = ({
+    record,
+    mode,
+}: Props, {gettext}: Context) => <div className="row">
     <a
-        href={record && record.getCloneURL(lang)}
+        href={record && record.getCloneURL}
         className="btn btn-primary pull-right"
     >
         {gettext("Clone Record")}
@@ -362,13 +358,12 @@ const CloneButton = ({record, mode}: Props, {gettext, lang}: Context) =>
 
 CloneButton.contextTypes = childContextTypes;
 
-const EditRecord = (props: Props,
-        {lang, gettext, options}: Context) => {
+const EditRecord = (props: Props, {gettext, options}: Context) => {
     const {record, type, mode} = props;
     const postURL = record ?
         (record._id ?
-            record.getEditURL(lang) :
-            record.getCreateURL(lang)) :
+            record.getEditURL :
+            record.getCreateURL) :
         "";
 
     let title = "";
@@ -378,8 +373,7 @@ const EditRecord = (props: Props,
             recordName: options.types[type].name,
         });
     } else {
-        // NOTE(jeresig): Fix recordTitle i18n
-        const recordTitle = record.getTitle(props) || "";
+        const recordTitle = record.getTitle || "";
 
         if (mode === "clone") {
             title = format(gettext("Cloning '%(recordTitle)s'"), {recordTitle});
@@ -407,7 +401,6 @@ const EditRecord = (props: Props,
                     encType="multipart/form-data"
                     data-validate={true}
                 >
-                    <input type="hidden" name="lang" value={lang} />
                     <div className="responsive-table">
                         <table className="table table-hover">
                             <Contents {...props} />
