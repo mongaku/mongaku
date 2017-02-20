@@ -12,27 +12,25 @@ var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babel
 const { childContextTypes } = require("./Wrapper.js");
 
 const ImageImport = ({
-    batch,
-    batchError,
-    batchState
+    batch
 }, {
     gettext,
     lang
 }) => {
-    const results = batch.getFilteredResults();
+    const results = batch.getFilteredResults;
     let columns;
 
     if (batch.state === "error") {
         columns = React.createElement(
             "td",
             { colSpan: "4" },
-            format(gettext("Error: %(error)s"), { error: batchError(batch) })
+            format(gettext("Error: %(error)s"), { error: batch.getError })
         );
     } else {
         columns = [React.createElement(
             "td",
             { key: "state" },
-            batchState(batch)
+            batch.getStateName
         ), React.createElement(
             "td",
             { key: "models" },
@@ -56,7 +54,7 @@ const ImageImport = ({
             null,
             React.createElement(
                 "a",
-                { href: batch.getURL(lang) },
+                { href: batch.getURL },
                 batch.fileName
             )
         ),
@@ -130,15 +128,13 @@ const ImageImports = (props, { gettext }) => {
 ImageImports.propTypes = {
     dataImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
     imageImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
-    batchError: require("react").PropTypes.func.isRequired,
-    batchState: require("react").PropTypes.func.isRequired,
     source: require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
-        getExpectedFiles: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired,
-        getFullName: require("react").PropTypes.func.isRequired,
-        getShortName: require("react").PropTypes.func.isRequired
+        getExpectedFiles: require("react").PropTypes.arrayOf(require("react").PropTypes.string).isRequired,
+        getURL: require("react").PropTypes.string.isRequired,
+        getFullName: require("react").PropTypes.string.isRequired,
+        getShortName: require("react").PropTypes.string.isRequired
     }).isRequired
 };
 ImageImports.contextTypes = childContextTypes;
@@ -196,35 +192,31 @@ const UploadImagesForm = ({ source }, { gettext, lang }) => React.createElement(
 UploadImagesForm.propTypes = {
     dataImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
     imageImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
-    batchError: require("react").PropTypes.func.isRequired,
-    batchState: require("react").PropTypes.func.isRequired,
     source: require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
-        getExpectedFiles: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired,
-        getFullName: require("react").PropTypes.func.isRequired,
-        getShortName: require("react").PropTypes.func.isRequired
+        getExpectedFiles: require("react").PropTypes.arrayOf(require("react").PropTypes.string).isRequired,
+        getURL: require("react").PropTypes.string.isRequired,
+        getFullName: require("react").PropTypes.string.isRequired,
+        getShortName: require("react").PropTypes.string.isRequired
     }).isRequired
 };
 UploadImagesForm.contextTypes = childContextTypes;
 
 const DataImport = ({
-    batch,
-    batchError,
-    batchState
+    batch
 }, {
     gettext,
     lang
 }) => {
-    const results = batch.getFilteredResults();
+    const results = batch.getFilteredResults;
     let columns;
 
     if (batch.state === "error") {
         columns = React.createElement(
             "td",
             { colSpan: "7" },
-            format(gettext("Error: %(error)s"), { error: batchError(batch) })
+            format(gettext("Error: %(error)s"), { error: batch.getError })
         );
     } else {
         columns = [batch.state === "process.completed" && React.createElement(
@@ -232,13 +224,13 @@ const DataImport = ({
             { key: "finalize" },
             React.createElement(
                 "a",
-                { href: batch.getURL(lang), className: "btn btn-success btn-xs" },
+                { href: batch.getURL, className: "btn btn-success btn-xs" },
                 gettext("Finalize Import")
             )
         ), batch.state !== "process.completed" && React.createElement(
             "td",
             { key: "state" },
-            batchState(batch)
+            batch.getStateName
         ), React.createElement(
             "td",
             { key: "unprocessed" },
@@ -274,7 +266,7 @@ const DataImport = ({
             null,
             React.createElement(
                 "a",
-                { href: batch.getURL(lang) },
+                { href: batch.getURL },
                 batch.fileName
             )
         ),
@@ -363,15 +355,13 @@ const DataImports = (props, { gettext }) => {
 DataImports.propTypes = {
     dataImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
     imageImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
-    batchError: require("react").PropTypes.func.isRequired,
-    batchState: require("react").PropTypes.func.isRequired,
     source: require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
-        getExpectedFiles: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired,
-        getFullName: require("react").PropTypes.func.isRequired,
-        getShortName: require("react").PropTypes.func.isRequired
+        getExpectedFiles: require("react").PropTypes.arrayOf(require("react").PropTypes.string).isRequired,
+        getURL: require("react").PropTypes.string.isRequired,
+        getFullName: require("react").PropTypes.string.isRequired,
+        getShortName: require("react").PropTypes.string.isRequired
     }).isRequired
 };
 DataImports.contextTypes = childContextTypes;
@@ -400,7 +390,7 @@ const UploadDataForm = ({ source }, {
                 method: "POST", encType: "multipart/form-data"
             },
             React.createElement("input", { type: "hidden", name: "lang", value: lang }),
-            source.getExpectedFiles().map((file, i) => React.createElement(
+            source.getExpectedFiles.map((file, i) => React.createElement(
                 "div",
                 { key: `file${i}` },
                 React.createElement(
@@ -419,7 +409,7 @@ const UploadDataForm = ({ source }, {
                         })
                     ),
                     " ",
-                    source.getExpectedFiles().length - 1 === i && React.createElement("input", { type: "submit",
+                    source.getExpectedFiles.length - 1 === i && React.createElement("input", { type: "submit",
                         value: gettext("Upload"),
                         className: "btn btn-primary"
                     })
@@ -432,23 +422,20 @@ const UploadDataForm = ({ source }, {
 UploadDataForm.propTypes = {
     dataImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
     imageImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
-    batchError: require("react").PropTypes.func.isRequired,
-    batchState: require("react").PropTypes.func.isRequired,
     source: require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
-        getExpectedFiles: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired,
-        getFullName: require("react").PropTypes.func.isRequired,
-        getShortName: require("react").PropTypes.func.isRequired
+        getExpectedFiles: require("react").PropTypes.arrayOf(require("react").PropTypes.string).isRequired,
+        getURL: require("react").PropTypes.string.isRequired,
+        getFullName: require("react").PropTypes.string.isRequired,
+        getShortName: require("react").PropTypes.string.isRequired
     }).isRequired
 };
 UploadDataForm.contextTypes = childContextTypes;
 
 const Admin = (props, {
     gettext,
-    options,
-    lang
+    options
 }) => {
     const {
         imageImport,
@@ -457,7 +444,7 @@ const Admin = (props, {
     } = props;
     const hasImages = options.types[source.type].hasImages;
     const title = format(gettext("%(name)s Admin Area"), {
-        name: source.getFullName(lang)
+        name: source.getFullName
     });
 
     return React.createElement(
@@ -478,15 +465,13 @@ const Admin = (props, {
 Admin.propTypes = {
     dataImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
     imageImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
-    batchError: require("react").PropTypes.func.isRequired,
-    batchState: require("react").PropTypes.func.isRequired,
     source: require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
-        getExpectedFiles: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired,
-        getFullName: require("react").PropTypes.func.isRequired,
-        getShortName: require("react").PropTypes.func.isRequired
+        getExpectedFiles: require("react").PropTypes.arrayOf(require("react").PropTypes.string).isRequired,
+        getURL: require("react").PropTypes.string.isRequired,
+        getFullName: require("react").PropTypes.string.isRequired,
+        getShortName: require("react").PropTypes.string.isRequired
     }).isRequired
 };
 Admin.contextTypes = childContextTypes;

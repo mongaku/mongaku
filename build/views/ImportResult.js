@@ -17,9 +17,9 @@ const ImportResult = (props, { gettext, lang }) => {
         renderResult,
         title
     } = props;
-    const allResults = batch.getFilteredResults()[id];
+    const allResults = batch.getFilteredResults[id];
     const showAll = format(gettext("Show all %(count)s results..."), { count: stringNum(lang, allResults.length) });
-    const expandURL = URL(lang, batch.getURL(lang), { expanded: id });
+    const expandURL = URL(lang, batch.getURL, { expanded: id });
     const isExpanded = expanded === id || allResults.length <= numShow;
     const results = isExpanded ? allResults : allResults.slice(0, numShow);
 
@@ -76,8 +76,8 @@ ImportResult.propTypes = {
     batch: require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         error: require("react").PropTypes.string,
-        getFilteredResults: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired,
+        getFilteredResults: require("react").PropTypes.any.isRequired,
+        getURL: require("react").PropTypes.string.isRequired,
         modified: require("react").PropTypes.any.isRequired,
         state: require("react").PropTypes.string.isRequired
     }).isRequired,

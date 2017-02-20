@@ -10,8 +10,8 @@ const {childContextTypes} = require("./Wrapper.js");
 type Import = {
     _id: string,
     error?: string,
-    getFilteredResults: () => ImportResults,
-    getURL: (lang: string) => string,
+    getFilteredResults: ImportResults,
+    getURL: string,
     modified: Date,
     state: string,
 };
@@ -47,11 +47,11 @@ const ImportResult = (props: Props, {gettext, lang}: Context) => {
         renderResult,
         title,
     } = props;
-    const allResults = batch.getFilteredResults()[id];
+    const allResults = batch.getFilteredResults[id];
     const showAll = format(gettext(
         "Show all %(count)s results..."),
         {count: stringNum(lang, allResults.length)});
-    const expandURL = URL(lang, batch.getURL(lang), {expanded: id});
+    const expandURL = URL(lang, batch.getURL, {expanded: id});
     const isExpanded = (expanded === id || allResults.length <= numShow);
     const results = isExpanded ? allResults : allResults.slice(0, numShow);
 

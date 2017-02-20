@@ -141,5 +141,7 @@ export type User = {
     email: string,
     sourceAdmin: Array<string>,
     siteAdmin: boolean,
-    getEditableSourcesByType: (type: string) => Array<string>,
+    getEditableSourcesByType: {
+        [type: string]: Array<string>,
+    },
 };

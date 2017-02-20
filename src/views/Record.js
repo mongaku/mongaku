@@ -8,7 +8,7 @@ const FixedStringView = require("./types/view/FixedString.js");
 const LocationView = require("./types/view/Location.js");
 const NameView = require("./types/view/Name.js");
 const YearRangeView = require("./types/view/YearRange.js");
-const {format} = require("./utils.js");
+const {format, getSource} = require("./utils.js");
 
 import type {Context, ModelType} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
@@ -76,8 +76,7 @@ const hasValue = (records, type) => {
 const Title = (props: Props & {record: RecordType}) => {
     const {record, records} = props;
     const size = Math.max(Math.round(12 / records.length), 3);
-    // TODO(jeresig): Fix recordTitle to be i18n
-    const title = record.title || "";
+    const title = record.getTitle || "";
 
     return <th className={`col-xs-${size} text-center`}>
         <h1 className="panel-title">{title}</h1>
@@ -309,14 +308,6 @@ const Details = ({records}: Props, {gettext}: Context) => <tr>
 </tr>;
 
 Details.contextTypes = childContextTypes;
-
-const getSource = (sourceId: string, sources: Array<Source>): ?Source => {
-    for (const source of sources) {
-        if (source._id === sourceId) {
-            return source;
-        }
-    }
-};
 
 const Sources = ({records, sources}: Props, {gettext}: Context) => <tr>
     <th className="text-right">

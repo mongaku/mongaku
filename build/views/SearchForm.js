@@ -129,9 +129,9 @@ Filters.propTypes = {
     sources: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         name: require("react").PropTypes.string.isRequired,
-        getURL: require("react").PropTypes.func.isRequired,
-        getFullName: require("react").PropTypes.func.isRequired,
-        getShortName: require("react").PropTypes.func.isRequired
+        getURL: require("react").PropTypes.string.isRequired,
+        getFullName: require("react").PropTypes.string.isRequired,
+        getShortName: require("react").PropTypes.string.isRequired
     })),
     sorts: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         id: require("react").PropTypes.string.isRequired,
@@ -141,11 +141,11 @@ Filters.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         url: require("react").PropTypes.string,
-        getOriginalURL: require("react").PropTypes.func.isRequired,
-        getThumbURL: require("react").PropTypes.func.isRequired,
-        getTitle: require("react").PropTypes.func.isRequired,
-        getSource: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired
+        source: require("react").PropTypes.string.isRequired,
+        getOriginalURL: require("react").PropTypes.string.isRequired,
+        getThumbURL: require("react").PropTypes.string.isRequired,
+        getTitle: require("react").PropTypes.string.isRequired,
+        getURL: require("react").PropTypes.string.isRequired
     })).isRequired,
     globalFacets: require("react").PropTypes.shape({}).isRequired,
     values: require("react").PropTypes.shape({}).isRequired,
@@ -187,9 +187,9 @@ SourceFilter.propTypes = {
     sources: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         name: require("react").PropTypes.string.isRequired,
-        getURL: require("react").PropTypes.func.isRequired,
-        getFullName: require("react").PropTypes.func.isRequired,
-        getShortName: require("react").PropTypes.func.isRequired
+        getURL: require("react").PropTypes.string.isRequired,
+        getFullName: require("react").PropTypes.string.isRequired,
+        getShortName: require("react").PropTypes.string.isRequired
     })),
     sorts: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         id: require("react").PropTypes.string.isRequired,
@@ -199,11 +199,11 @@ SourceFilter.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         url: require("react").PropTypes.string,
-        getOriginalURL: require("react").PropTypes.func.isRequired,
-        getThumbURL: require("react").PropTypes.func.isRequired,
-        getTitle: require("react").PropTypes.func.isRequired,
-        getSource: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired
+        source: require("react").PropTypes.string.isRequired,
+        getOriginalURL: require("react").PropTypes.string.isRequired,
+        getThumbURL: require("react").PropTypes.string.isRequired,
+        getTitle: require("react").PropTypes.string.isRequired,
+        getURL: require("react").PropTypes.string.isRequired
     })).isRequired,
     globalFacets: require("react").PropTypes.shape({}).isRequired,
     values: require("react").PropTypes.shape({}).isRequired,
@@ -248,9 +248,9 @@ SimilarityFilter.propTypes = {
     sources: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         name: require("react").PropTypes.string.isRequired,
-        getURL: require("react").PropTypes.func.isRequired,
-        getFullName: require("react").PropTypes.func.isRequired,
-        getShortName: require("react").PropTypes.func.isRequired
+        getURL: require("react").PropTypes.string.isRequired,
+        getFullName: require("react").PropTypes.string.isRequired,
+        getShortName: require("react").PropTypes.string.isRequired
     })),
     sorts: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         id: require("react").PropTypes.string.isRequired,
@@ -260,11 +260,11 @@ SimilarityFilter.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         url: require("react").PropTypes.string,
-        getOriginalURL: require("react").PropTypes.func.isRequired,
-        getThumbURL: require("react").PropTypes.func.isRequired,
-        getTitle: require("react").PropTypes.func.isRequired,
-        getSource: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired
+        source: require("react").PropTypes.string.isRequired,
+        getOriginalURL: require("react").PropTypes.string.isRequired,
+        getThumbURL: require("react").PropTypes.string.isRequired,
+        getTitle: require("react").PropTypes.string.isRequired,
+        getURL: require("react").PropTypes.string.isRequired
     })).isRequired,
     globalFacets: require("react").PropTypes.shape({}).isRequired,
     values: require("react").PropTypes.shape({}).isRequired,
@@ -315,9 +315,9 @@ ImageFilter.propTypes = {
     sources: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         name: require("react").PropTypes.string.isRequired,
-        getURL: require("react").PropTypes.func.isRequired,
-        getFullName: require("react").PropTypes.func.isRequired,
-        getShortName: require("react").PropTypes.func.isRequired
+        getURL: require("react").PropTypes.string.isRequired,
+        getFullName: require("react").PropTypes.string.isRequired,
+        getShortName: require("react").PropTypes.string.isRequired
     })),
     sorts: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         id: require("react").PropTypes.string.isRequired,
@@ -327,11 +327,11 @@ ImageFilter.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         url: require("react").PropTypes.string,
-        getOriginalURL: require("react").PropTypes.func.isRequired,
-        getThumbURL: require("react").PropTypes.func.isRequired,
-        getTitle: require("react").PropTypes.func.isRequired,
-        getSource: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired
+        source: require("react").PropTypes.string.isRequired,
+        getOriginalURL: require("react").PropTypes.string.isRequired,
+        getThumbURL: require("react").PropTypes.string.isRequired,
+        getTitle: require("react").PropTypes.string.isRequired,
+        getURL: require("react").PropTypes.string.isRequired
     })).isRequired,
     globalFacets: require("react").PropTypes.shape({}).isRequired,
     values: require("react").PropTypes.shape({}).isRequired,
@@ -372,9 +372,9 @@ Sorts.propTypes = {
     sources: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         name: require("react").PropTypes.string.isRequired,
-        getURL: require("react").PropTypes.func.isRequired,
-        getFullName: require("react").PropTypes.func.isRequired,
-        getShortName: require("react").PropTypes.func.isRequired
+        getURL: require("react").PropTypes.string.isRequired,
+        getFullName: require("react").PropTypes.string.isRequired,
+        getShortName: require("react").PropTypes.string.isRequired
     })),
     sorts: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         id: require("react").PropTypes.string.isRequired,
@@ -384,11 +384,11 @@ Sorts.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         url: require("react").PropTypes.string,
-        getOriginalURL: require("react").PropTypes.func.isRequired,
-        getThumbURL: require("react").PropTypes.func.isRequired,
-        getTitle: require("react").PropTypes.func.isRequired,
-        getSource: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired
+        source: require("react").PropTypes.string.isRequired,
+        getOriginalURL: require("react").PropTypes.string.isRequired,
+        getThumbURL: require("react").PropTypes.string.isRequired,
+        getTitle: require("react").PropTypes.string.isRequired,
+        getURL: require("react").PropTypes.string.isRequired
     })).isRequired,
     globalFacets: require("react").PropTypes.shape({}).isRequired,
     values: require("react").PropTypes.shape({}).isRequired,
@@ -406,7 +406,6 @@ const SearchForm = (props, { lang, gettext, options }) => {
     return React.createElement(
         "form",
         { action: searchURL, method: "GET" },
-        React.createElement("input", { type: "hidden", name: "lang", value: lang }),
         React.createElement(
             "div",
             { className: "form-group" },
@@ -444,9 +443,9 @@ SearchForm.propTypes = {
     sources: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         name: require("react").PropTypes.string.isRequired,
-        getURL: require("react").PropTypes.func.isRequired,
-        getFullName: require("react").PropTypes.func.isRequired,
-        getShortName: require("react").PropTypes.func.isRequired
+        getURL: require("react").PropTypes.string.isRequired,
+        getFullName: require("react").PropTypes.string.isRequired,
+        getShortName: require("react").PropTypes.string.isRequired
     })),
     sorts: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         id: require("react").PropTypes.string.isRequired,
@@ -456,11 +455,11 @@ SearchForm.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         url: require("react").PropTypes.string,
-        getOriginalURL: require("react").PropTypes.func.isRequired,
-        getThumbURL: require("react").PropTypes.func.isRequired,
-        getTitle: require("react").PropTypes.func.isRequired,
-        getSource: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired
+        source: require("react").PropTypes.string.isRequired,
+        getOriginalURL: require("react").PropTypes.string.isRequired,
+        getThumbURL: require("react").PropTypes.string.isRequired,
+        getTitle: require("react").PropTypes.string.isRequired,
+        getURL: require("react").PropTypes.string.isRequired
     })).isRequired,
     globalFacets: require("react").PropTypes.shape({}).isRequired,
     values: require("react").PropTypes.shape({}).isRequired,

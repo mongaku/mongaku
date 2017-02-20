@@ -45,6 +45,6 @@ if (typeof exports !== "undefined") Object.defineProperty(exports, "babelPluginF
         email: require("react").PropTypes.string.isRequired,
         sourceAdmin: require("react").PropTypes.arrayOf(require("react").PropTypes.string).isRequired,
         siteAdmin: require("react").PropTypes.bool.isRequired,
-        getEditableSourcesByType: require("react").PropTypes.func.isRequired
+        getEditableSourcesByType: require("react").PropTypes.shape({}).isRequired
     })
 });

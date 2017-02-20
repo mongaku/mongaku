@@ -4,8 +4,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 const React = require("react");
 
-const record = require("../lib/record");
-
 const Page = require("./Page.js");
 const ImportResult = require("./ImportResult.js");
 const { format, relativeDate, fixedDate, URL } = require("./utils.js");
@@ -13,8 +11,6 @@ const { format, relativeDate, fixedDate, URL } = require("./utils.js");
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
 const { childContextTypes } = require("./Wrapper.js");
-
-const getURLFromID = (id, { type }, lang) => record(type).getURLFromID(lang, id);
 
 const UnprocessedResult = ({ result: data }) => React.createElement(
     "pre",
@@ -27,7 +23,8 @@ UnprocessedResult.propTypes = {
         error: require("react").PropTypes.string,
         model: require("react").PropTypes.string,
         warnings: require("react").PropTypes.arrayOf(require("react").PropTypes.string),
-        diff: require("react").PropTypes.object,
+        diff: require("react").PropTypes.string,
+        url: require("react").PropTypes.string,
         data: require("react").PropTypes.shape({
             id: require("react").PropTypes.string
         }).isRequired
@@ -57,16 +54,14 @@ ErrorResult.propTypes = {
         error: require("react").PropTypes.string,
         model: require("react").PropTypes.string,
         warnings: require("react").PropTypes.arrayOf(require("react").PropTypes.string),
-        diff: require("react").PropTypes.object,
+        diff: require("react").PropTypes.string,
+        url: require("react").PropTypes.string,
         data: require("react").PropTypes.shape({
             id: require("react").PropTypes.string
         }).isRequired
     }).isRequired
 };
-const WarningResult = ({
-    result,
-    batchError
-}) => {
+const WarningResult = ({ result }) => {
     if (!result.warnings) {
         return null;
     }
@@ -85,7 +80,7 @@ const WarningResult = ({
             result.warnings.map(warning => React.createElement(
                 "li",
                 { key: warning },
-                batchError(warning)
+                warning
             ))
         ),
         React.createElement(UnprocessedResult, { result: result })
@@ -93,10 +88,8 @@ const WarningResult = ({
 };
 
 const ChangedResult = ({
-    result: { model, diff: diffText },
-    diff,
-    batch
-}, { lang }) => {
+    result: { model, diff: diffText, url }
+}) => {
     if (!diffText || !model) {
         return null;
     }
@@ -109,27 +102,25 @@ const ChangedResult = ({
             null,
             React.createElement(
                 "a",
-                { href: getURLFromID(model, batch, lang) },
+                { href: url },
                 model
             )
         ),
         React.createElement("div", { className: "diff",
             dangerouslySetInnerHTML: {
-                __html: diff(diffText)
+                __html: diffText
             }
         })
     );
 };
 
-ChangedResult.contextTypes = childContextTypes;
-
 const CreatedResult = ({
     result,
     batch
-}, { lang }) => {
+}) => {
     const title = result.model && batch.state === "completed" ? React.createElement(
         "a",
-        { href: getURLFromID(result.model, batch, lang) },
+        { href: result.url },
         result.model
     ) : result.data.id;
 
@@ -145,19 +136,17 @@ const CreatedResult = ({
     );
 };
 
-CreatedResult.contextTypes = childContextTypes;
-
 const DeletedResult = ({
     result,
     batch
-}, { lang }) => {
+}) => {
     if (!result.model) {
         return null;
     }
 
     const title = batch.state === "completed" ? React.createElement(
         "a",
-        { href: getURLFromID(result.model, batch, lang) },
+        { href: result.url },
         result.model
     ) : result.model;
 
@@ -168,15 +157,13 @@ const DeletedResult = ({
     );
 };
 
-DeletedResult.contextTypes = childContextTypes;
-
 const ConfirmButtons = ({ batch }, { gettext, lang }) => React.createElement(
     "p",
     null,
     React.createElement(
         "a",
         {
-            href: URL(lang, batch.getURL(lang), { finalize: true }),
+            href: URL(lang, batch.getURL, { finalize: true }),
             className: "btn btn-success"
         },
         gettext("Finalize Import")
@@ -185,7 +172,7 @@ const ConfirmButtons = ({ batch }, { gettext, lang }) => React.createElement(
     React.createElement(
         "a",
         {
-            href: URL(lang, batch.getURL(lang), { abandon: true }),
+            href: URL(lang, batch.getURL, { abandon: true }),
             className: "btn btn-danger"
         },
         gettext("Abandon Import")
@@ -199,29 +186,26 @@ ConfirmButtons.propTypes = {
         fileName: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         error: require("react").PropTypes.string,
-        getFilteredResults: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired,
+        getFilteredResults: require("react").PropTypes.any.isRequired,
+        getURL: require("react").PropTypes.string.isRequired,
         created: require("react").PropTypes.any.isRequired,
         modified: require("react").PropTypes.any.isRequired,
-        state: require("react").PropTypes.string.isRequired
+        state: require("react").PropTypes.string.isRequired,
+        getError: require("react").PropTypes.string.isRequired,
+        getStateName: require("react").PropTypes.string.isRequired
     }).isRequired,
-    batchError: require("react").PropTypes.func.isRequired,
-    batchState: require("react").PropTypes.func.isRequired,
-    expanded: require("react").PropTypes.oneOf(["models", "unprocessed", "created", "changed", "deleted", "errors", "warnings"]),
-    diff: require("react").PropTypes.func.isRequired
+    expanded: require("react").PropTypes.oneOf(["models", "unprocessed", "created", "changed", "deleted", "errors", "warnings"])
 };
 ConfirmButtons.contextTypes = childContextTypes;
 
 const ImportData = (props, { lang, gettext }) => {
     const {
         batch,
-        batchError,
-        batchState,
         adminURL
     } = props;
     const { state } = batch;
     const title = format(gettext("Data Import: %(fileName)s"), { fileName: batch.fileName });
-    const stateText = state === "error" ? format(gettext("Error: %(error)s"), { error: batchError(batch.error || "") }) : batchState(batch);
+    const stateText = state === "error" ? format(gettext("Error: %(error)s"), { error: batch.getError }) : batch.getStateName;
     const uploadDate = format(gettext("Uploaded: %(date)s"), { date: fixedDate(lang, batch.created) });
     const lastUpdated = format(gettext("Last Updated: %(date)s"), { date: relativeDate(lang, batch.modified) });
 
@@ -307,16 +291,15 @@ ImportData.propTypes = {
         fileName: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         error: require("react").PropTypes.string,
-        getFilteredResults: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired,
+        getFilteredResults: require("react").PropTypes.any.isRequired,
+        getURL: require("react").PropTypes.string.isRequired,
         created: require("react").PropTypes.any.isRequired,
         modified: require("react").PropTypes.any.isRequired,
-        state: require("react").PropTypes.string.isRequired
+        state: require("react").PropTypes.string.isRequired,
+        getError: require("react").PropTypes.string.isRequired,
+        getStateName: require("react").PropTypes.string.isRequired
     }).isRequired,
-    batchError: require("react").PropTypes.func.isRequired,
-    batchState: require("react").PropTypes.func.isRequired,
-    expanded: require("react").PropTypes.oneOf(["models", "unprocessed", "created", "changed", "deleted", "errors", "warnings"]),
-    diff: require("react").PropTypes.func.isRequired
+    expanded: require("react").PropTypes.oneOf(["models", "unprocessed", "created", "changed", "deleted", "errors", "warnings"])
 };
 ImportData.contextTypes = childContextTypes;
 

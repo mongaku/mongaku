@@ -10,7 +10,7 @@ const FixedStringView = require("./types/view/FixedString.js");
 const LocationView = require("./types/view/Location.js");
 const NameView = require("./types/view/Name.js");
 const YearRangeView = require("./types/view/YearRange.js");
-const { format } = require("./utils.js");
+const { format, getSource } = require("./utils.js");
 
 var babelPluginFlowReactPropTypes_proptype_ModelType = require("./types.js").babelPluginFlowReactPropTypes_proptype_ModelType || require("react").PropTypes.any;
 
@@ -29,8 +29,7 @@ const hasValue = (records, type) => {
 const Title = props => {
     const { record, records } = props;
     const size = Math.max(Math.round(12 / records.length), 3);
-    // TODO(jeresig): Fix recordTitle to be i18n
-    const title = record.title || "";
+    const title = record.getTitle || "";
 
     return React.createElement(
         "th",
@@ -374,14 +373,6 @@ Details.propTypes = {
     })).isRequired
 };
 Details.contextTypes = childContextTypes;
-
-const getSource = (sourceId, sources) => {
-    for (const source of sources) {
-        if (source._id === sourceId) {
-            return source;
-        }
-    }
-};
 
 const Sources = ({ records, sources }, { gettext }) => React.createElement(
     "tr",

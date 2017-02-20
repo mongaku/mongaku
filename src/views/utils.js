@@ -7,6 +7,14 @@ const moment = require("moment");
 const urls = require("../lib/urls");
 const searchURL = require("../logic/shared/search-url");
 
+type Source = {
+    _id: string,
+    name: string,
+    getURL: string,
+    getFullName: string,
+    getShortName: string,
+};
+
 module.exports = {
     getOtherURL(originalUrl: string, locale: string): string {
         return urls.gen(locale, originalUrl);
@@ -47,5 +55,13 @@ module.exports = {
     format(fmt: string = "", props: {[key: string]: any}): string {
         return fmt.replace(/%\(\s*([^)]+)\s*\)s/g,
             (m, v) => String(props[v.trim()]));
+    },
+
+    getSource(sourceId: string, sources: Array<Source>): ?Source {
+        for (const source of sources) {
+            if (source._id === sourceId) {
+                return source;
+            }
+        }
     },
 };

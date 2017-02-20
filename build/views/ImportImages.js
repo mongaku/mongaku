@@ -12,7 +12,7 @@ var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babel
 
 const { childContextTypes } = require("./Wrapper.js");
 
-const ErrorResult = ({ result, batchError }) => {
+const ErrorResult = ({ result }) => {
     if (!result.error) {
         return null;
     }
@@ -22,11 +22,11 @@ const ErrorResult = ({ result, batchError }) => {
         null,
         result.fileName,
         ": ",
-        batchError(result.error || "")
+        result.error
     );
 };
 
-const WarningResult = ({ result, batchError }) => {
+const WarningResult = ({ result }) => {
     if (!result.warnings) {
         return null;
     }
@@ -42,7 +42,7 @@ const WarningResult = ({ result, batchError }) => {
             result.warnings.map(warning => React.createElement(
                 "li",
                 { key: warning },
-                batchError(warning)
+                warning
             ))
         )
     );
@@ -61,8 +61,8 @@ const ModelResult = ({ result: { model, fileName } }) => {
             { className: "img-wrap" },
             React.createElement(
                 "a",
-                { href: model.getOriginalURL() },
-                React.createElement("img", { src: model.getThumbURL(),
+                { href: model.getOriginalURL },
+                React.createElement("img", { src: model.getThumbURL,
                     className: "img-responsive center-block"
                 })
             )
@@ -85,9 +85,9 @@ ModelResult.propTypes = {
         error: require("react").PropTypes.string,
         model: require("react").PropTypes.shape({
             _id: require("react").PropTypes.string.isRequired,
-            getOriginalURL: require("react").PropTypes.func.isRequired,
-            getScaledURL: require("react").PropTypes.func.isRequired,
-            getThumbURL: require("react").PropTypes.func.isRequired
+            getOriginalURL: require("react").PropTypes.string.isRequired,
+            getScaledURL: require("react").PropTypes.string.isRequired,
+            getThumbURL: require("react").PropTypes.string.isRequired
         }),
         warnings: require("react").PropTypes.arrayOf(require("react").PropTypes.string)
     }).isRequired
@@ -95,12 +95,10 @@ ModelResult.propTypes = {
 const ImportImages = (props, { lang, gettext }) => {
     const {
         adminURL,
-        batchError,
-        batch,
-        batchState
+        batch
     } = props;
     const title = format(gettext("Image Import: %(fileName)s"), { fileName: batch.fileName });
-    const state = batch.state === "error" ? format(gettext("Error: %(error)s"), { error: batchError(batch.error || "") }) : batchState(batch);
+    const state = batch.state === "error" ? format(gettext("Error: %(error)s"), { error: batch.getError }) : batch.getStateName;
     const uploadDate = format(gettext("Uploaded: %(date)s"), { date: fixedDate(lang, batch.created) });
     const lastUpdated = format(gettext("Last Updated: %(date)s"), { date: relativeDate(lang, batch.modified) });
 
@@ -166,14 +164,14 @@ ImportImages.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         error: require("react").PropTypes.string,
         fileName: require("react").PropTypes.string.isRequired,
-        getFilteredResults: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired,
+        getFilteredResults: require("react").PropTypes.any.isRequired,
+        getURL: require("react").PropTypes.string.isRequired,
         created: require("react").PropTypes.any.isRequired,
         modified: require("react").PropTypes.any.isRequired,
-        state: require("react").PropTypes.string.isRequired
+        state: require("react").PropTypes.string.isRequired,
+        getError: require("react").PropTypes.string.isRequired,
+        getStateName: require("react").PropTypes.string.isRequired
     }).isRequired,
-    batchError: require("react").PropTypes.func.isRequired,
-    batchState: require("react").PropTypes.func.isRequired,
     expanded: require("react").PropTypes.oneOf(["models", "unprocessed", "created", "changed", "deleted", "errors", "warnings"])
 };
 ImportImages.contextTypes = childContextTypes;

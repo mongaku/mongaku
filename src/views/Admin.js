@@ -11,15 +11,13 @@ const {childContextTypes} = require("./Wrapper.js");
 type Props = {
     dataImport: Array<Import>,
     imageImport: Array<Import>,
-    batchError: (batch: Import) => string,
-    batchState: (batch: Import) => string,
     source: {
         _id: string,
         type: string,
-        getExpectedFiles: () => Array<string>,
-        getURL: (lang: string) => string,
-        getFullName: (lang: string) => string,
-        getShortName: (lang: string) => string,
+        getExpectedFiles: Array<string>,
+        getURL: string,
+        getFullName: string,
+        getShortName: string,
     },
 };
 
@@ -27,8 +25,10 @@ type Import = {
     _id: string,
     error?: string,
     fileName: string,
-    getFilteredResults: () => ImportResults,
-    getURL: (lang: string) => string,
+    getFilteredResults: ImportResults,
+    getURL: string,
+    getError: string,
+    getStateName: string,
     modified: Date,
     state: string,
 };
@@ -45,23 +45,21 @@ type ImportResults = {
 
 const ImageImport = ({
     batch,
-    batchError,
-    batchState,
 }: Props & {batch: Import}, {
     gettext,
     lang,
 }: Context) => {
-    const results = batch.getFilteredResults();
+    const results = batch.getFilteredResults;
     let columns;
 
     if (batch.state === "error") {
         columns = <td colSpan="4">
             {format(gettext("Error: %(error)s"),
-                {error: batchError(batch)})}
+                {error: batch.getError})}
         </td>;
     } else {
         columns = [
-            <td key="state">{batchState(batch)}</td>,
+            <td key="state">{batch.getStateName}</td>,
             <td key="models">{results.models.length}</td>,
             <td key="errors">{results.errors.length}</td>,
             <td key="warnings">{results.warnings.length}</td>,
@@ -69,7 +67,7 @@ const ImageImport = ({
     }
 
     return <tr>
-        <td><a href={batch.getURL(lang)}>{batch.fileName}</a></td>
+        <td><a href={batch.getURL}>{batch.fileName}</a></td>
         <td>{relativeDate(lang, batch.modified)}</td>
         {columns}
     </tr>;
@@ -149,29 +147,27 @@ UploadImagesForm.contextTypes = childContextTypes;
 
 const DataImport = ({
     batch,
-    batchError,
-    batchState,
 }: Props & {batch: Import}, {
     gettext,
     lang,
 }: Context) => {
-    const results = batch.getFilteredResults();
+    const results = batch.getFilteredResults;
     let columns;
 
     if (batch.state === "error") {
         columns = <td colSpan="7">
             {format(gettext("Error: %(error)s"),
-                {error: batchError(batch)})}
+                {error: batch.getError})}
         </td>;
     } else {
         columns = [
             batch.state === "process.completed" && <td key="finalize">
-                <a href={batch.getURL(lang)} className="btn btn-success btn-xs">
+                <a href={batch.getURL} className="btn btn-success btn-xs">
                     {gettext("Finalize Import")}
                 </a>
             </td>,
             batch.state !== "process.completed" &&
-                <td key="state">{batchState(batch)}</td>,
+                <td key="state">{batch.getStateName}</td>,
             <td key="unprocessed">{results.unprocessed.length}</td>,
             <td key="created">{results.created.length}</td>,
             <td key="changed">{results.changed.length}</td>,
@@ -182,7 +178,7 @@ const DataImport = ({
     }
 
     return <tr>
-        <td><a href={batch.getURL(lang)}>{batch.fileName}</a></td>
+        <td><a href={batch.getURL}>{batch.fileName}</a></td>
         <td>{relativeDate(lang, batch.modified)}</td>
         {columns}
     </tr>;
@@ -233,7 +229,7 @@ const UploadDataForm = ({source}: Props, {
             method="POST" encType="multipart/form-data"
         >
             <input type="hidden" name="lang" value={lang}/>
-            {source.getExpectedFiles().map((file, i) => <div key={`file${i}`}>
+            {source.getExpectedFiles.map((file, i) => <div key={`file${i}`}>
                 <p>{file}</p>
 
                 <div className="form-inline">
@@ -243,7 +239,7 @@ const UploadDataForm = ({source}: Props, {
                         />
                     </div>
                     {" "}
-                    {source.getExpectedFiles().length - 1 === i &&
+                    {source.getExpectedFiles.length - 1 === i &&
                         <input type="submit"
                             value={gettext("Upload")}
                             className="btn btn-primary"
@@ -259,7 +255,6 @@ UploadDataForm.contextTypes = childContextTypes;
 const Admin = (props: Props, {
     gettext,
     options,
-    lang,
 }: Context) => {
     const {
         imageImport,
@@ -268,7 +263,7 @@ const Admin = (props: Props, {
     } = props;
     const hasImages = options.types[source.type].hasImages;
     const title = format(gettext("%(name)s Admin Area"), {
-        name: source.getFullName(lang),
+        name: source.getFullName,
     });
 
     return <Page title={title}>

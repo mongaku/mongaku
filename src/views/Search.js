@@ -4,7 +4,7 @@ const React = require("react");
 
 const Page = require("./Page.js");
 const SearchForm = require("./SearchForm.js");
-const {format, stringNum} = require("./utils.js");
+const {format, stringNum, getSource} = require("./utils.js");
 
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
@@ -29,20 +29,20 @@ type BreadcrumbType = {
 type Source = {
     _id: string,
     name: string,
-    getURL: (lang: string) => string,
-    getFullName: (lang: string) => string,
-    getShortName: (lang: string) => string,
+    getURL: string,
+    getFullName: string,
+    getShortName: string,
 };
 
 type RecordType = {
     _id: string,
     type: string,
     url?: string,
-    getOriginalURL: () => string,
-    getThumbURL: () => string,
-    getTitle: () => string,
-    getSource: () => Source,
-    getURL: (lang: string) => string,
+    source: string,
+    getOriginalURL: string,
+    getThumbURL: string,
+    getTitle: string,
+    getURL: string,
 };
 
 type Props = {
@@ -226,41 +226,42 @@ const Pagination = ({prev, next}: Props, {gettext}: Context) => <nav>
 
 Pagination.contextTypes = childContextTypes;
 
-const ImageResultFooter = ({record, sources}: Props & {record: RecordType},
-        {lang}: Context) => {
+const ImageResultFooter = ({
+    record,
+    sources,
+}: Props & {record: RecordType}) => {
     // Don't show the source selection if there isn't more than one source
     if (!sources || sources.length <= 1) {
         return null;
     }
 
+    const source = getSource(record.source, sources);
+
     return <div className="details">
         <div className="wrap">
-            <span>
+            {source && <span>
                 <a className="pull-right"
-                    href={record.getSource().getURL(lang)}
-                    title={record.getSource().getFullName(lang)}
+                    href={source.getURL}
+                    title={source.getFullName}
                 >
-                    {record.getSource().getShortName(lang)}
+                    {source.getShortName}
                 </a>
-            </span>
+            </span>}
         </div>
     </div>;
 };
 
-ImageResultFooter.contextTypes = childContextTypes;
-
-const ImageResult = (props: Props & {record: RecordType},
-        {lang}: Context) => {
+const ImageResult = (props: Props & {record: RecordType}) => {
     const {record} = props;
 
     return <div className="img col-xs-6 col-sm-4 col-md-3">
         <div className="img-wrap">
-            <a href={record.getURL(lang)}
-                title={record.getTitle(lang)}
+            <a href={record.getURL}
+                title={record.getTitle}
             >
-                <img src={record.getThumbURL()}
-                    alt={record.getTitle(lang)}
-                    title={record.getTitle(lang)}
+                <img src={record.getThumbURL}
+                    alt={record.getTitle}
+                    title={record.getTitle}
                     className="img-responsive center-block"
                 />
             </a>
@@ -269,19 +270,15 @@ const ImageResult = (props: Props & {record: RecordType},
     </div>;
 };
 
-ImageResult.contextTypes = childContextTypes;
-
-const TextResult = ({record}: {record: RecordType}, {lang}: Context) => (
+const TextResult = ({record}: {record: RecordType}) => (
     <div className="col-xs-12">
-        <a href={record.getURL(lang)}
-            title={record.getTitle(lang)}
+        <a href={record.getURL}
+            title={record.getTitle}
         >
-            {record.getTitle(lang)}
+            {record.getTitle}
         </a>
     </div>
 );
-
-TextResult.contextTypes = childContextTypes;
 
 const Results = (props: Props, {options}: Context) => {
     const {breadcrumbs, records, type} = props;

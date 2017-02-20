@@ -15,9 +15,9 @@ const {childContextTypes} = require("./Wrapper.js");
 type Source = {
     _id: string,
     name: string,
-    getURL: (lang: string) => string,
-    getFullName: (lang: string) => string,
-    getShortName: (lang: string) => string,
+    getURL: string,
+    getFullName: string,
+    getShortName: string,
 };
 
 type Sort = {
@@ -29,11 +29,11 @@ type RecordType = {
     _id: string,
     type: string,
     url?: string,
-    getOriginalURL: () => string,
-    getThumbURL: () => string,
-    getTitle: () => string,
-    getSource: () => Source,
-    getURL: (lang: string) => string,
+    source: string,
+    getOriginalURL: string,
+    getThumbURL: string,
+    getTitle: string,
+    getURL: string,
 };
 
 type Props = {
@@ -282,7 +282,6 @@ const SearchForm = (props: Props, {lang, gettext, options}: Context) => {
         !typeOptions.requiresImages;
 
     return <form action={searchURL} method="GET">
-        <input type="hidden" name="lang" value={lang}/>
         <div className="form-group">
             <label htmlFor="filter" className="control-label">
                 {gettext("Query")}

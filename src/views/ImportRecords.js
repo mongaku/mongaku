@@ -2,8 +2,6 @@
 
 const React = require("react");
 
-const record = require("../lib/record");
-
 const Page = require("./Page.js");
 const ImportResult = require("./ImportResult.js");
 const {format, relativeDate, fixedDate, URL} = require("./utils.js");
@@ -16,11 +14,13 @@ type Import = {
     fileName: string,
     type: string,
     error?: string,
-    getFilteredResults: () => ImportResults,
-    getURL: (lang: string) => string,
+    getFilteredResults: ImportResults,
+    getURL: string,
     created: Date,
     modified: Date,
     state: string,
+    getError: string,
+    getStateName: string,
 };
 
 type ImportResults = {
@@ -37,7 +37,8 @@ type Result = {
     error?: string,
     model?: string,
     warnings?: Array<string>,
-    diff?: Object,
+    diff?: string,
+    url?: string,
     data: {
         id?: string,
     },
@@ -46,15 +47,9 @@ type Result = {
 type Props = {
     adminURL: string,
     batch: Import,
-    batchError: (error: string) => string,
-    batchState: (batch: Import) => string,
     expanded?: "models" | "unprocessed" | "created" | "changed" | "deleted" |
         "errors" | "warnings",
-    diff: (delta: Object) => string,
 };
-
-const getURLFromID = (id: string, {type}: Import, lang: string) =>
-    record(type).getURLFromID(lang, id);
 
 const UnprocessedResult = ({result: data}: {result: Result}) =>
     <pre className="json">
@@ -76,10 +71,7 @@ const ErrorResult = ({result}: {result: Result}) => {
     </div>;
 };
 
-const WarningResult = ({
-    result,
-    batchError,
-}: Props & {result: Result}) => {
+const WarningResult = ({result}: Props & {result: Result}) => {
     if (!result.warnings) {
         return null;
     }
@@ -88,41 +80,37 @@ const WarningResult = ({
         <h4>{result.data.id}</h4>
         <ul>
             {result.warnings.map((warning) =>
-                <li key={warning}>{batchError(warning)}</li>)}
+                <li key={warning}>{warning}</li>)}
         </ul>
         <UnprocessedResult result={result} />
     </div>;
 };
 
 const ChangedResult = ({
-    result: {model, diff: diffText},
-    diff,
-    batch,
-}: Props & {result: Result}, {lang}: Context) => {
+    result: {model, diff: diffText, url},
+}: Props & {result: Result}) => {
     if (!diffText || !model) {
         return null;
     }
 
     return <div>
-        <h4><a href={getURLFromID(model, batch, lang)}>
+        <h4><a href={url}>
             {model}
         </a></h4>
         <div className="diff"
             dangerouslySetInnerHTML={{
-                __html: diff(diffText),
+                __html: diffText,
             }}
         />
     </div>;
 };
 
-ChangedResult.contextTypes = childContextTypes;
-
 const CreatedResult = ({
     result,
     batch,
-}: Props & {result: Result}, {lang}: Context) => {
+}: Props & {result: Result}) => {
     const title = result.model && batch.state === "completed" ?
-        <a href={getURLFromID(result.model, batch, lang)}>{result.model}</a> :
+        <a href={result.url}>{result.model}</a> :
         result.data.id;
 
     return <div>
@@ -131,35 +119,31 @@ const CreatedResult = ({
     </div>;
 };
 
-CreatedResult.contextTypes = childContextTypes;
-
 const DeletedResult = ({
     result,
     batch,
-}: Props & {result: Result}, {lang}: Context) => {
+}: Props & {result: Result}) => {
     if (!result.model) {
         return null;
     }
 
     const title = batch.state === "completed" ?
-        <a href={getURLFromID(result.model, batch, lang)}>{result.model}</a> :
+        <a href={result.url}>{result.model}</a> :
         result.model;
 
     return <div>{title}</div>;
 };
 
-DeletedResult.contextTypes = childContextTypes;
-
 const ConfirmButtons = ({batch}: Props, {gettext, lang}: Context) => <p>
     <a
-        href={URL(lang, batch.getURL(lang), {finalize: true})}
+        href={URL(lang, batch.getURL, {finalize: true})}
         className="btn btn-success"
     >
         {gettext("Finalize Import")}
     </a>
     {" "}
     <a
-        href={URL(lang, batch.getURL(lang), {abandon: true})}
+        href={URL(lang, batch.getURL, {abandon: true})}
         className="btn btn-danger"
     >
         {gettext("Abandon Import")}
@@ -171,8 +155,6 @@ ConfirmButtons.contextTypes = childContextTypes;
 const ImportData = (props: Props, {lang, gettext}: Context) => {
     const {
         batch,
-        batchError,
-        batchState,
         adminURL,
     } = props;
     const {state} = batch;
@@ -180,8 +162,8 @@ const ImportData = (props: Props, {lang, gettext}: Context) => {
         {fileName: batch.fileName});
     const stateText = state === "error" ?
         format(gettext("Error: %(error)s"),
-            {error: batchError(batch.error || "")}) :
-        batchState(batch);
+            {error: batch.getError}) :
+        batch.getStateName;
     const uploadDate = format(gettext("Uploaded: %(date)s"),
         {date: fixedDate(lang, batch.created)});
     const lastUpdated = format(gettext("Last Updated: %(date)s"),

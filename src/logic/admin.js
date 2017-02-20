@@ -4,7 +4,9 @@ const async = require("async");
 const formidable = require("formidable");
 const jdp = require("jsondiffpatch");
 
+const {cloneModel} = require("../lib/clone");
 const models = require("../lib/models");
+const record = require("../lib/record");
 
 module.exports = function(app) {
     const ImageImport = models("ImageImport");
@@ -13,8 +15,8 @@ module.exports = function(app) {
     const auth = require("./shared/auth");
 
     const importRecords = ({i18n, lang, query, source}, res) => {
-        const batchState = (batch) => batch.getStateName(i18n);
         const batchError = (err) => RecordImport.getError(i18n, err);
+        const diff = (delta) => jdp.formatters.html.format(delta);
 
         RecordImport.findById(query.records, (err, batch) => {
             if (err || !batch) {
@@ -34,16 +36,28 @@ module.exports = function(app) {
                 });
             }
 
+            const Record = record(batch.type);
             const adminURL = source.getAdminURL(lang);
+            const cloned = cloneModel(batch, i18n);
+
+            for (const result of cloned.results) {
+                result.error = batchError(result.error || "");
+                if (result.warnings) {
+                    result.warnings = result.warnings
+                        .map((warning) => batchError(warning || ""));
+                }
+                if (result.diff) {
+                    result.diff = diff(result.diff);
+                }
+                if (result.model) {
+                    result.url = Record.getURLFromID(lang, result.model);
+                }
+            }
 
             res.render("ImportRecords", {
-                batch,
-                results: batch.getFilteredResults(),
+                batch: cloned,
                 expanded: query.expanded,
                 adminURL,
-                batchState,
-                batchError,
-                diff: (delta) => jdp.formatters.html.format(delta),
             });
         });
     };
@@ -51,7 +65,6 @@ module.exports = function(app) {
     const importImages = ({i18n, lang, query, source}, res) => {
         const Image = models("Image");
 
-        const batchState = (batch) => batch.getCurState().name(i18n);
         const batchError = (err) => ImageImport.getError(i18n, err);
 
         ImageImport.findById(query.images, (err, batch) => {
@@ -61,17 +74,26 @@ module.exports = function(app) {
                 });
             }
 
-            const expanded = query.expanded;
+            for (const result of batch.results) {
+                result.error = batchError(result.error || "");
+
+                if (result.warnings) {
+                    result.warnings = result.warnings
+                        .map((warning) => batchError(warning));
+                }
+            }
+
+            const {expanded} = query;
             const results = batch.results
                 .filter((result) => !!result.model);
-            const toPopulate = query.expanded === "models" ?
+            const toPopulate = expanded === "models" ?
                 results :
                 results.slice(0, 8);
 
             async.eachLimit(toPopulate, 4, (result, callback) => {
                 Image.findById(result.model, (err, image) => {
                     if (image) {
-                        result.model = image;
+                        result.model = cloneModel(image, i18n);
                     }
 
                     callback();
@@ -80,20 +102,15 @@ module.exports = function(app) {
                 const adminURL = source.getAdminURL(lang);
 
                 res.render("ImportImages", {
-                    batch,
+                    batch: cloneModel(batch, i18n),
                     expanded,
                     adminURL,
-                    batchState,
-                    batchError,
                 });
             });
         });
     };
 
     const adminPage = ({source, i18n}, res, next) => {
-        const batchState = (batch) => batch.getCurState().name(i18n);
-        const batchError = (batch) => batch.getError(i18n);
-
         async.parallel([
             (callback) => ImageImport.find({source: source._id}, null,
                 {sort: {created: "desc"}}, callback),
@@ -120,11 +137,11 @@ module.exports = function(app) {
                 .sort((a, b) => b.created - a.created);
 
             res.render("Admin", {
-                source,
-                imageImport,
-                dataImport,
-                batchState,
-                batchError,
+                source: cloneModel(source, i18n),
+                imageImport: imageImport
+                    .map((batch) => cloneModel(batch, i18n)),
+                dataImport: dataImport
+                    .map((batch) => cloneModel(batch, i18n)),
             });
         });
     };

@@ -118,11 +118,6 @@ const NavLink = ({ type, title }, { lang, gettext, user }) => React.createElemen
                 React.createElement(
                     "div",
                     { className: "form-group" },
-                    React.createElement("input", {
-                        type: "hidden",
-                        name: "lang",
-                        value: lang
-                    }),
                     React.createElement("input", { type: "search", id: "filter", name: "filter",
                         placeholder: gettext("Search"),
                         className: "form-control search-query"
@@ -145,7 +140,7 @@ const NavLink = ({ type, title }, { lang, gettext, user }) => React.createElemen
                 gettext("Browse All")
             )
         ),
-        user && user.getEditableSourcesByType(type).length > 0 && React.createElement(
+        user && user.getEditableSourcesByType[type].length > 0 && React.createElement(
             "li",
             null,
             React.createElement(

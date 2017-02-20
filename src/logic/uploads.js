@@ -6,6 +6,7 @@ const async = require("async");
 const request = require("request");
 const formidable = require("formidable");
 
+const {cloneModel} = require("../lib/clone");
 const models = require("../lib/models");
 const options = require("../lib/options");
 
@@ -18,6 +19,7 @@ const DOWNLOAD_TIMEOUT = 10000;
 module.exports = (app) => {
     const Upload = models("Upload");
     const UploadImage = models("UploadImage");
+    const Source = models("Source");
 
     const genTmpFile = () => path.join(os.tmpdir(),
         (new Date).getTime().toString());
@@ -151,10 +153,20 @@ module.exports = (app) => {
                         (similar, callback) => {
                             similar.recordModel.loadImages(false, callback);
                         }, () => {
+                            const similarRecords = upload.similarRecords
+                                .map((match) => ({
+                                    _id: match._id,
+                                    score: match.score,
+                                    recordModel:
+                                        cloneModel(match.recordModel, i18n),
+                                }));
+
                             res.render("Upload", {
                                 title: upload.getTitle(i18n),
-                                similar: upload.similarRecords,
-                                image: upload.images[0],
+                                similar: similarRecords,
+                                image: cloneModel(upload.images[0], i18n),
+                                sources: Source.getSources()
+                                    .map((source) => cloneModel(source, i18n)),
                                 noIndex: true,
                             });
                         });

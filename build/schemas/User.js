@@ -42,9 +42,11 @@ const User = new db.schema({
     }
 });
 
+const makeSalt = () => bcrypt.genSaltSync(10);
+
 User.virtual("password").set(function (password) {
     this._password = password;
-    this.salt = this.makeSalt();
+    this.salt = makeSalt();
     this.hashedPassword = this.encryptPassword(password);
 }).get(function () {
     return this._password;
@@ -70,10 +72,6 @@ User.methods = {
         return this.encryptPassword(plainText) === this.hashedPassword;
     },
 
-    makeSalt() {
-        return bcrypt.genSaltSync(10);
-    },
-
     encryptPassword(password) {
         if (!password) {
             return "";
@@ -91,10 +89,20 @@ User.methods = {
         return this.siteAdmin || this.sourceAdmin.indexOf(source) >= 0;
     },
 
-    getEditableSourcesByType(type) {
+    getEditableSourcesByType() {
         const Source = models("Source");
-        const sources = Source.getSourcesByType(type).map(source => source._id).filter(source => this.canEditSource(source));
-        return sources;
+        const types = {};
+        const sources = Source.getSources();
+
+        for (const source of sources) {
+            if (!types[source.type]) {
+                types[source.type] = [];
+            }
+
+            types[source.type].push(source._id);
+        }
+
+        return types;
     }
 };
 

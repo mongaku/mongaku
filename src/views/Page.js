@@ -109,11 +109,6 @@ const NavLink = ({type, title}: Props & {type: string},
                 className="form-search form-inline dropdown-search"
             >
                 <div className="form-group">
-                    <input
-                        type="hidden"
-                        name="lang"
-                        value={lang}
-                    />
                     <input type="search" id="filter" name="filter"
                         placeholder={gettext("Search")}
                         className="form-control search-query"
@@ -132,7 +127,7 @@ const NavLink = ({type, title}: Props & {type: string},
                 {gettext("Browse All")}
             </a>
         </li>
-        {user && user.getEditableSourcesByType(type).length > 0 && <li>
+        {user && user.getEditableSourcesByType[type].length > 0 && <li>
             <a href={URL(lang, `/${type}/create`)}>
                 {gettext("Create New")}
             </a>

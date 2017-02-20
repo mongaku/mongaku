@@ -4,7 +4,7 @@
  * Some vars to pass in to the templates.
  */
 
-const { cloneObject } = require("../lib/clone");
+const { cloneObject, cloneModel } = require("../lib/clone");
 const options = require("../lib/options");
 
 module.exports = app => {
@@ -23,7 +23,7 @@ module.exports = app => {
         Object.assign(res.locals, {
             i18n,
             options: langOptions,
-            user,
+            user: user && cloneModel(user, i18n),
             originalUrl
         });
 

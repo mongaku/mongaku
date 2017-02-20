@@ -12,8 +12,8 @@ type SourceType = {
     _id: string,
     type: string,
     numRecords: number,
-    getFullName: (lang: string) => string,
-    getURL: (lang: string) => string,
+    getFullName: string,
+    getURL: string,
 };
 
 type Props = {
@@ -27,7 +27,7 @@ const SearchForm = ({type}: {type: string}, {
     options,
 }: Context) => {
     const title = options.types[type].name;
-    const sources = user && user.getEditableSourcesByType(type);
+    const sources = user && user.getEditableSourcesByType[type];
 
     return <div>
         <h3>{title}</h3>
@@ -35,7 +35,6 @@ const SearchForm = ({type}: {type: string}, {
             className="form-search form-inline"
         >
             <div className="form-group">
-                <input type="hidden" name="lang" value={lang} />
                 <input type="search" id="filter" name="filter"
                     placeholder={gettext("Search")}
                     className="form-control search-query"
@@ -80,9 +79,6 @@ const ImageUploadForms = ({type}: {type: string},
             <form action={URL(lang, `/${type}/file-upload`)} method="POST"
                 encType="multipart/form-data"
             >
-                <input type="hidden" name="lang"
-                    value={lang}
-                />
                 <div className="form-inline">
                     <div className="form-group">
                         <input type="file" id="file" name="file"
@@ -106,9 +102,6 @@ const ImageUploadForms = ({type}: {type: string},
         </div>
         <div className="panel-body">
             <form action={URL(lang, `/${type}/url-upload`)} method="GET">
-                <input type="hidden" name="lang"
-                    value={lang}
-                />
                 <div className="form-inline">
                     <div className="form-group">
                         <input type="text" id="url" name="url"
@@ -137,8 +130,8 @@ const Source = ({type, source}: {type: string, source: SourceType},
     const desc = `${recordCount} ${typeName}`;
 
     return <div>
-        <h4><a href={source.getURL(lang)}>
-            {source.getFullName(lang)}
+        <h4><a href={source.getURL}>
+            {source.getFullName}
         </a></h4>
         <p>{desc}</p>
     </div>;

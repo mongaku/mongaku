@@ -128,7 +128,9 @@ Image.methods = {
     },
 
     getSource() {
-        return models("Source").getSource(this.source);
+        if (this.source !== "uploads") {
+            return models("Source").getSource(this.source);
+        }
     },
 
     relatedRecords(callback) {

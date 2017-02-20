@@ -1,14 +1,16 @@
 const cache = require("../server/middlewares/cache");
 
+const {cloneModel} = require("../lib/clone");
 const models = require("../lib/models");
 
 module.exports = (app) => {
     const Source = models("Source");
 
     return {
-        index(req, res) {
+        index({i18n}, res) {
             const sources = Source.getSources()
-                .filter((source) => source.numRecords > 0);
+                .filter((source) => source.numRecords > 0)
+                .map((source) => cloneModel(source, i18n));
             let recordTotal = 0;
             let imageTotal = 0;
 

@@ -16,7 +16,7 @@ const SearchForm = ({ type }, {
     options
 }) => {
     const title = options.types[type].name;
-    const sources = user && user.getEditableSourcesByType(type);
+    const sources = user && user.getEditableSourcesByType[type];
 
     return React.createElement(
         "div",
@@ -34,7 +34,6 @@ const SearchForm = ({ type }, {
             React.createElement(
                 "div",
                 { className: "form-group" },
-                React.createElement("input", { type: "hidden", name: "lang", value: lang }),
                 React.createElement("input", { type: "search", id: "filter", name: "filter",
                     placeholder: gettext("Search"),
                     className: "form-control search-query"
@@ -101,9 +100,6 @@ const ImageUploadForms = ({ type }, { lang, gettext }) => React.createElement(
                 { action: URL(lang, `/${type}/file-upload`), method: "POST",
                     encType: "multipart/form-data"
                 },
-                React.createElement("input", { type: "hidden", name: "lang",
-                    value: lang
-                }),
                 React.createElement(
                     "div",
                     { className: "form-inline" },
@@ -140,9 +136,6 @@ const ImageUploadForms = ({ type }, { lang, gettext }) => React.createElement(
             React.createElement(
                 "form",
                 { action: URL(lang, `/${type}/url-upload`), method: "GET" },
-                React.createElement("input", { type: "hidden", name: "lang",
-                    value: lang
-                }),
                 React.createElement(
                     "div",
                     { className: "form-inline" },
@@ -184,8 +177,8 @@ const Source = ({ type, source }, { lang, options }) => {
             null,
             React.createElement(
                 "a",
-                { href: source.getURL(lang) },
-                source.getFullName(lang)
+                { href: source.getURL },
+                source.getFullName
             )
         ),
         React.createElement(
@@ -202,8 +195,8 @@ Source.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         numRecords: require("react").PropTypes.number.isRequired,
-        getFullName: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired
+        getFullName: require("react").PropTypes.string.isRequired,
+        getURL: require("react").PropTypes.string.isRequired
     }).isRequired
 };
 Source.contextTypes = childContextTypes;
@@ -254,8 +247,8 @@ Home.propTypes = {
         _id: require("react").PropTypes.string.isRequired,
         type: require("react").PropTypes.string.isRequired,
         numRecords: require("react").PropTypes.number.isRequired,
-        getFullName: require("react").PropTypes.func.isRequired,
-        getURL: require("react").PropTypes.func.isRequired
+        getFullName: require("react").PropTypes.string.isRequired,
+        getURL: require("react").PropTypes.string.isRequired
     })).isRequired
 };
 Home.contextTypes = childContextTypes;

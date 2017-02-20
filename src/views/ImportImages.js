@@ -13,11 +13,13 @@ type Import = {
     _id: string,
     error?: string,
     fileName: string,
-    getFilteredResults: () => ImportResults,
-    getURL: (lang: string) => string,
+    getFilteredResults: ImportResults,
+    getURL: string,
     created: Date,
     modified: Date,
     state: string,
+    getError: string,
+    getStateName: string,
 };
 
 type ImportResults = {
@@ -32,9 +34,9 @@ type ImportResults = {
 
 type ImageType = {
     _id: string,
-    getOriginalURL: () => string,
-    getScaledURL: () => string,
-    getThumbURL: () => string,
+    getOriginalURL: string,
+    getScaledURL: string,
+    getThumbURL: string,
 };
 
 type Result = {
@@ -47,23 +49,21 @@ type Result = {
 type Props = {
     adminURL: string,
     batch: Import,
-    batchError: (error: string) => string,
-    batchState: (batch: Import) => string,
     expanded?: "models" | "unprocessed" | "created" | "changed" | "deleted" |
         "errors" | "warnings",
 };
 
-const ErrorResult = ({result, batchError}: Props & {result: Result}) => {
+const ErrorResult = ({result}: Props & {result: Result}) => {
     if (!result.error) {
         return null;
     }
 
     return <li>
-        {result.fileName}: {batchError(result.error || "")}
+        {result.fileName}: {result.error}
     </li>;
 };
 
-const WarningResult = ({result, batchError}: Props & {result: Result}) => {
+const WarningResult = ({result}: Props & {result: Result}) => {
     if (!result.warnings) {
         return null;
     }
@@ -72,7 +72,7 @@ const WarningResult = ({result, batchError}: Props & {result: Result}) => {
         {result.fileName}:
         <ul>
             {result.warnings.map((warning) =>
-                <li key={warning}>{batchError(warning)}</li>)}
+                <li key={warning}>{warning}</li>)}
         </ul>
     </li>;
 };
@@ -84,8 +84,8 @@ const ModelResult = ({result: {model, fileName}}: {result: Result}) => {
 
     return <div className="img col-xs-6 col-sm-4 col-md-3">
         <div className="img-wrap">
-            <a href={model.getOriginalURL()}>
-                <img src={model.getThumbURL()}
+            <a href={model.getOriginalURL}>
+                <img src={model.getThumbURL}
                     className="img-responsive center-block"
                 />
             </a>
@@ -99,16 +99,14 @@ const ModelResult = ({result: {model, fileName}}: {result: Result}) => {
 const ImportImages = (props: Props, {lang, gettext}: Context) => {
     const {
         adminURL,
-        batchError,
         batch,
-        batchState,
     } = props;
     const title = format(gettext("Image Import: %(fileName)s"),
         {fileName: batch.fileName});
     const state = batch.state === "error" ?
         format(gettext("Error: %(error)s"),
-            {error: batchError(batch.error || "")}) :
-        batchState(batch);
+            {error: batch.getError}) :
+        batch.getStateName;
     const uploadDate = format(gettext("Uploaded: %(date)s"),
         {date: fixedDate(lang, batch.created)});
     const lastUpdated = format(gettext("Last Updated: %(date)s"),

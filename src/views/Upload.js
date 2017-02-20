@@ -3,48 +3,50 @@
 const React = require("react");
 
 const Page = require("./Page.js");
-const {format} = require("./utils.js");
+const {format, getSource} = require("./utils.js");
 
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
 
 type ImageType = {
     _id: string,
-    getOriginalURL: () => string,
-    getScaledURL: () => string,
-    getThumbURL: () => string,
+    getOriginalURL: string,
+    getScaledURL: string,
+    getThumbURL: string,
 };
 
 type RecordType = {
     _id: string,
     type: string,
     url: string,
+    source: string,
     images: Array<ImageType>,
-    getOriginalURL: () => string,
-    getThumbURL: () => string,
-    getTitle: () => string,
-    getSource: () => Source,
-    getURL: (lang: string) => string,
+    getOriginalURL: string,
+    getThumbURL: string,
+    getTitle: string,
+    getURL: string,
 };
 
 type Source = {
     _id: string,
     name: string,
-    getURL: (lang: string) => string,
-    getFullName: (lang: string) => string,
-    getShortName: (lang: string) => string,
+    getURL: string,
+    getFullName: string,
+    getShortName: string,
 };
 
 type MatchType = {
     _id: string,
     recordModel: RecordType,
     score: number,
+    sources: Array<Source>,
 };
 
 type Props = {
     image: ImageType,
     similar: Array<MatchType>,
     title: string,
+    sources: Array<Source>,
 };
 
 const UploadedImage = ({image}: Props, {gettext}: Context) => {
@@ -55,8 +57,8 @@ const UploadedImage = ({image}: Props, {gettext}: Context) => {
             <strong>{gettext("Uploaded Image")}</strong>
         </div>
         <div className="panel-body">
-            <a href={image.getOriginalURL()}>
-                <img src={image.getScaledURL()}
+            <a href={image.getOriginalURL}>
+                <img src={image.getScaledURL}
                     alt={title}
                     title={title}
                     className="img-responsive center-block"
@@ -69,19 +71,19 @@ const UploadedImage = ({image}: Props, {gettext}: Context) => {
 UploadedImage.contextTypes = childContextTypes;
 
 const Match = ({
+    sources,
     match: {recordModel, score},
 }: Props & {match: MatchType}, {
     gettext,
-    lang,
 }: Context) => {
-    const source = recordModel.getSource();
+    const source = getSource(recordModel.source, sources);
 
     return <div className="img col-md-6 col-sm-4 col-xs-6">
         <div className="img-wrap">
-            <a href={recordModel.getURL(lang)}>
-                <img src={recordModel.getThumbURL()}
-                    alt={recordModel.getTitle(lang)}
-                    title={recordModel.getTitle(lang)}
+            <a href={recordModel.getURL}>
+                <img src={recordModel.getThumbURL}
+                    alt={recordModel.getTitle}
+                    title={recordModel.getTitle}
                     className="img-responsive center-block"
                 />
             </a>
@@ -91,12 +93,12 @@ const Match = ({
                 <span>{format(gettext("Score: %(score)s"),
                     {score: score})}</span>
 
-                <a className="pull-right"
-                    href={source.getURL(lang)}
-                    title={source.getFullName(lang)}
+                {source && <a className="pull-right"
+                    href={source.getURL}
+                    title={source.getFullName}
                 >
-                    {source.getShortName(lang)}
-                </a>
+                    {source.getShortName}
+                </a>}
             </div>
         </div>
     </div>;

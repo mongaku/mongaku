@@ -44,5 +44,13 @@ module.exports = {
 
     format(fmt = "", props) {
         return fmt.replace(/%\(\s*([^)]+)\s*\)s/g, (m, v) => String(props[v.trim()]));
+    },
+
+    getSource(sourceId, sources) {
+        for (const source of sources) {
+            if (source._id === sourceId) {
+                return source;
+            }
+        }
     }
 };

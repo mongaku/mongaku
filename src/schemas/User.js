@@ -1,3 +1,5 @@
+// @flow
+
 const bcrypt = require("bcrypt");
 
 const models = require("../lib/models");
@@ -40,11 +42,13 @@ const User = new db.schema({
     },
 });
 
+const makeSalt = (): string => bcrypt.genSaltSync(10);
+
 User
     .virtual("password")
-    .set(function(password) {
+    .set(function(password: string) {
         this._password = password;
-        this.salt = this.makeSalt();
+        this.salt = makeSalt();
         this.hashedPassword = this.encryptPassword(password);
     })
     .get(function() {
@@ -68,15 +72,11 @@ User.path("email").validate(function(email, callback) {
 }, "Email already exists");
 
 User.methods = {
-    authenticate(plainText) {
+    authenticate(plainText: string): boolean {
         return this.encryptPassword(plainText) === this.hashedPassword;
     },
 
-    makeSalt() {
-        return bcrypt.genSaltSync(10);
-    },
-
-    encryptPassword(password) {
+    encryptPassword(password: string) {
         if (!password) {
             return "";
         }
@@ -94,12 +94,20 @@ User.methods = {
             this.sourceAdmin.indexOf(source) >= 0;
     },
 
-    getEditableSourcesByType(type: string) {
+    getEditableSourcesByType(): {[type: string]: Array<string>} {
         const Source = models("Source");
-        const sources = Source.getSourcesByType(type)
-            .map((source) => source._id)
-            .filter((source) => this.canEditSource(source));
-        return sources;
+        const types = {};
+        const sources = Source.getSources();
+
+        for (const source of sources) {
+            if (!types[source.type]) {
+                types[source.type] = [];
+            }
+
+            types[source.type].push(source._id);
+        }
+
+        return types;
     },
 };
 
