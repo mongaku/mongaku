@@ -2,8 +2,6 @@
 
 const React = require("react");
 
-const Page = require("./Page.js");
-
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
 
@@ -167,10 +165,10 @@ const Type = ({type, sources}: Props & {type: string}, {options}: Context) => {
 
 Type.contextTypes = childContextTypes;
 
-const Home = ({sources}: Props, {options}: Context) => <Page>
+const Home = ({sources}: Props, {options}: Context) => <div>
     {Object.keys(options.types).map((type) =>
         <Type key={type} sources={sources} type={type} />)}
-</Page>;
+</div>;
 
 Home.contextTypes = childContextTypes;
 

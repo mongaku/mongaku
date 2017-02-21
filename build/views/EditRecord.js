@@ -4,7 +4,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 const React = require("react");
 
-const Page = require("./Page.js");
 const FixedStringEdit = require("./types/edit/FixedString.js");
 const LinkedRecordEdit = require("./types/edit/LinkedRecord.js");
 const NameEdit = require("./types/edit/Name.js");
@@ -171,6 +170,7 @@ const IDForm = ({
 };
 
 IDForm.propTypes = {
+    title: require("react").PropTypes.string.isRequired,
     dynamicValues: require("react").PropTypes.shape({}).isRequired,
     globalFacets: require("react").PropTypes.shape({}),
     mode: require("react").PropTypes.oneOf(["create", "edit", "clone"]).isRequired,
@@ -340,6 +340,7 @@ const Contents = (props, { gettext, options }) => {
 };
 
 Contents.propTypes = {
+    title: require("react").PropTypes.string.isRequired,
     dynamicValues: require("react").PropTypes.shape({}).isRequired,
     globalFacets: require("react").PropTypes.shape({}),
     mode: require("react").PropTypes.oneOf(["create", "edit", "clone"]).isRequired,
@@ -374,6 +375,7 @@ const SubmitButton = ({ mode }, { gettext }) => {
 };
 
 SubmitButton.propTypes = {
+    title: require("react").PropTypes.string.isRequired,
     dynamicValues: require("react").PropTypes.shape({}).isRequired,
     globalFacets: require("react").PropTypes.shape({}),
     mode: require("react").PropTypes.oneOf(["create", "edit", "clone"]).isRequired,
@@ -399,6 +401,7 @@ const CloneButton = ({
 );
 
 CloneButton.propTypes = {
+    title: require("react").PropTypes.string.isRequired,
     dynamicValues: require("react").PropTypes.shape({}).isRequired,
     globalFacets: require("react").PropTypes.shape({}),
     mode: require("react").PropTypes.oneOf(["create", "edit", "clone"]).isRequired,
@@ -407,33 +410,13 @@ CloneButton.propTypes = {
 };
 CloneButton.contextTypes = childContextTypes;
 
-const EditRecord = (props, {
-    gettext,
-    options,
-    format
-}) => {
-    const { record, type, mode } = props;
+const EditRecord = props => {
+    const { record, mode, title } = props;
     const postURL = record ? record._id ? record.getEditURL : record.getCreateURL : "";
 
-    let title = "";
-
-    if (!record || mode === "create") {
-        title = format(gettext("%(recordName)s: Create New"), {
-            recordName: options.types[type].name
-        });
-    } else {
-        const recordTitle = record.getTitle || "";
-
-        if (mode === "clone") {
-            title = format(gettext("Cloning '%(recordTitle)s'"), { recordTitle });
-        } else {
-            title = format(gettext("Updating '%(recordTitle)s'"), { recordTitle });
-        }
-    }
-
     return React.createElement(
-        Page,
-        { title: title },
+        "div",
+        null,
         mode === "edit" && React.createElement(CloneButton, props),
         React.createElement(
             "div",
@@ -479,12 +462,11 @@ const EditRecord = (props, {
 };
 
 EditRecord.propTypes = {
+    title: require("react").PropTypes.string.isRequired,
     dynamicValues: require("react").PropTypes.shape({}).isRequired,
     globalFacets: require("react").PropTypes.shape({}),
     mode: require("react").PropTypes.oneOf(["create", "edit", "clone"]).isRequired,
     record: require("react").PropTypes.any,
     type: require("react").PropTypes.string.isRequired
 };
-EditRecord.contextTypes = childContextTypes;
-
 module.exports = EditRecord;

@@ -1,6 +1,8 @@
 const React = require("react");
-const {renderToString} = require("react-dom/server");
+const {renderToString, renderToStaticMarkup} = require("react-dom/server");
 
+const Head = require("../views/Head.js");
+const Page = require("../views/Page.js");
 const Wrapper = require("../views/Wrapper.js");
 
 const blacklist = (key, value) =>
@@ -16,14 +18,24 @@ const engine = (filePath: string, options: Object, callback: Function) => {
     const state = JSON.stringify(options, blacklist)
         .replace(/</g, "\\u003c");
 
-    const wrapped = <Wrapper {...options}>
-        <View {...options} />
-    </Wrapper>;
+    const head = renderToStaticMarkup(<Wrapper {...options}>
+        <Head {...options} />
+    </Wrapper>);
 
-    const output = renderToString(wrapped);
-    const json = `<script>window.__STATE__=${state}</script>`;
+    const output = renderToString(<Wrapper {...options}>
+        <Page {...options}>
+            <View {...options} />
+        </Page>
+    </Wrapper>);
 
-    callback(null, `<!DOCTYPE html>${output}${json}`);
+    callback(null, `<!DOCTYPE html>
+<html lang="${options.lang}">
+${head}
+<body>
+    ${output}
+    <script>window.__STATE__=${state}</script>
+</body>
+</html>`);
 };
 
 module.exports = engine;

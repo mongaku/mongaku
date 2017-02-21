@@ -2,12 +2,11 @@
 
 const React = require("react");
 
-const Page = require("./Page.js");
-
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
 
 type Props = {
+    title: string,
     dataImport: Array<Import>,
     imageImport: Array<Import>,
     source: {
@@ -253,28 +252,22 @@ const UploadDataForm = ({source}: Props, {
 
 UploadDataForm.contextTypes = childContextTypes;
 
-const Admin = (props: Props, {
-    gettext,
-    options,
-    format,
-}: Context) => {
+const Admin = (props: Props, {options}: Context) => {
     const {
+        title,
         imageImport,
         dataImport,
         source,
     } = props;
     const hasImages = options.types[source.type].hasImages;
-    const title = format(gettext("%(name)s Admin Area"), {
-        name: source.getFullName,
-    });
 
-    return <Page title={title}>
+    return <div>
         <h1>{title}</h1>
         {hasImages && <UploadImagesForm {...props} />}
         {imageImport.length > 0 && <ImageImports {...props} />}
         <UploadDataForm {...props} />
         {dataImport.length > 0 && <DataImports {...props} />}
-    </Page>;
+    </div>;
 };
 
 Admin.contextTypes = childContextTypes;

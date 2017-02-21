@@ -2,7 +2,6 @@
 
 const React = require("react");
 
-const Page = require("./Page.js");
 const SearchForm = require("./SearchForm.js");
 
 import type {Context} from "./types.js";
@@ -312,7 +311,7 @@ Results.contextTypes = childContextTypes;
 const Search = (props: Props) => {
     const {title, url} = props;
 
-    return <Page title={title}>
+    return <div>
         <div className="row">
             <div className="col-xs-12">
                 <h1>{title}</h1>
@@ -323,7 +322,7 @@ const Search = (props: Props) => {
             <Sidebar {...props} />
             <Results {...props} />
         </div>
-    </Page>;
+    </div>;
 };
 
 module.exports = Search;

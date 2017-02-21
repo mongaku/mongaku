@@ -2,7 +2,6 @@
 
 const React = require("react");
 
-const Page = require("./Page.js");
 const FixedStringEdit = require("./types/edit/FixedString.js");
 const LinkedRecordEdit = require("./types/edit/LinkedRecord.js");
 const NameEdit = require("./types/edit/Name.js");
@@ -13,6 +12,7 @@ import type {Context, ModelType} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
 
 type Props = {
+    title: string,
     dynamicValues: {},
     globalFacets?: {
         [name: string]: Array<{
@@ -357,36 +357,15 @@ const CloneButton = ({
 
 CloneButton.contextTypes = childContextTypes;
 
-const EditRecord = (props: Props, {
-    gettext,
-    options,
-    format,
-}: Context) => {
-    const {record, type, mode} = props;
+const EditRecord = (props: Props) => {
+    const {record, mode, title} = props;
     const postURL = record ?
         (record._id ?
             record.getEditURL :
             record.getCreateURL) :
         "";
 
-    let title = "";
-
-    if (!record || mode === "create") {
-        title = format(gettext("%(recordName)s: Create New"), {
-            recordName: options.types[type].name,
-        });
-    } else {
-        const recordTitle = record.getTitle || "";
-
-        if (mode === "clone") {
-            title = format(gettext("Cloning '%(recordTitle)s'"), {recordTitle});
-        } else {
-            title = format(gettext("Updating '%(recordTitle)s'"),
-                {recordTitle});
-        }
-    }
-
-    return <Page title={title}>
+    return <div>
         {mode === "edit" && <CloneButton {...props} />}
         <div className="row">
             <div className="col-md-12 imageholder">
@@ -412,9 +391,7 @@ const EditRecord = (props: Props, {
                 </form>
             </div>
         </div>
-    </Page>;
+    </div>;
 };
-
-EditRecord.contextTypes = childContextTypes;
 
 module.exports = EditRecord;

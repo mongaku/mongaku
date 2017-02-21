@@ -4,7 +4,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 const React = require("react");
 
-const Page = require("./Page.js");
 const DimensionView = require("./types/view/Dimension.js");
 const FixedStringView = require("./types/view/FixedString.js");
 const LocationView = require("./types/view/Location.js");
@@ -660,28 +659,14 @@ const Script = () => React.createElement("script", {
 });
 
 const Record = props => {
-    const { records, similar } = props;
-    const record = records[0];
-    const title = record.title || "";
-    const social = {
-        imgURL: record.getOriginalURL,
-        title,
-        url: record.getURL
-    };
+    const { similar } = props;
 
     return React.createElement(
-        Page,
-        {
-            title: title,
-            scripts: React.createElement(Script, null),
-            social: social
-        },
-        React.createElement(
-            "div",
-            { className: "row" },
-            React.createElement(MainRecord, props),
-            similar.length > 0 && React.createElement(Similar, props)
-        )
+        "div",
+        { className: "row" },
+        React.createElement(MainRecord, props),
+        similar.length > 0 && React.createElement(Similar, props),
+        React.createElement(Script, null)
     );
 };
 

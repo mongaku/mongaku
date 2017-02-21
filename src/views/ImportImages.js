@@ -2,7 +2,6 @@
 
 const React = require("react");
 
-const Page = require("./Page.js");
 const ImportResult = require("./ImportResult.js");
 
 import type {Context} from "./types.js";
@@ -46,6 +45,7 @@ type Result = {
 };
 
 type Props = {
+    title: string,
     adminURL: string,
     batch: Import,
     expanded?: "models" | "unprocessed" | "created" | "changed" | "deleted" |
@@ -102,11 +102,10 @@ const ImportImages = (props: Props, {
     relativeDate,
 }: Context) => {
     const {
+        title,
         adminURL,
         batch,
     } = props;
-    const title = format(gettext("Image Import: %(fileName)s"),
-        {fileName: batch.fileName});
     const state = batch.state === "error" ?
         format(gettext("Error: %(error)s"),
             {error: batch.getError}) :
@@ -116,7 +115,7 @@ const ImportImages = (props: Props, {
     const lastUpdated = format(gettext("Last Updated: %(date)s"),
         {date: relativeDate(batch.modified)});
 
-    return <Page title={title}>
+    return <div>
         <p><a href={adminURL} className="btn btn-primary">
             &laquo; {gettext("Return to Admin Page")}
         </a></p>
@@ -151,7 +150,7 @@ const ImportImages = (props: Props, {
                 <ModelResult {...props} result={result} key={i} />}
             numShow={8}
         />
-    </Page>;
+    </div>;
 };
 
 ImportImages.contextTypes = childContextTypes;

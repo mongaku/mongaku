@@ -2,7 +2,6 @@
 
 const React = require("react");
 
-const Page = require("./Page.js");
 const ImportResult = require("./ImportResult.js");
 
 import type {Context} from "./types.js";
@@ -44,6 +43,7 @@ type Result = {
 };
 
 type Props = {
+    title: string,
     adminURL: string,
     batch: Import,
     expanded?: "models" | "unprocessed" | "created" | "changed" | "deleted" |
@@ -162,12 +162,11 @@ const ImportData = (props: Props, {
     URL,
 }: Context) => {
     const {
+        title,
         batch,
         adminURL,
     } = props;
     const {state} = batch;
-    const title = format(gettext("Data Import: %(fileName)s"),
-        {fileName: batch.fileName});
     const stateText = state === "error" ?
         format(gettext("Error: %(error)s"),
             {error: batch.getError}) :
@@ -181,7 +180,9 @@ const ImportData = (props: Props, {
         href={URL("/css/format-diff.css")}
     />;
 
-    return <Page title={title} style={style}>
+    return <div>
+        {style}
+
         <p><a href={adminURL} className="btn btn-primary">
             &laquo; {gettext("Return to Admin Page")}
         </a></p>
@@ -244,7 +245,7 @@ const ImportData = (props: Props, {
             renderResult={(result, i) =>
                 <DeletedResult {...props} result={result} key={i} />}
         />
-    </Page>;
+    </div>;
 };
 
 ImportData.contextTypes = childContextTypes;

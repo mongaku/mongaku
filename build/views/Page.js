@@ -6,73 +6,6 @@ var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babel
 
 const { childContextTypes } = require("./Wrapper.js");
 
-const Head = ({
-    title,
-    social,
-    style,
-    noIndex
-}, { lang, options, URL }) => {
-    const siteTitle = options.getTitle;
-    let pageTitle = siteTitle;
-
-    if (title) {
-        pageTitle = `${title}: ${pageTitle}`;
-    }
-
-    // An option to disable indexing of this page
-    const disableIndex = options.noIndex || noIndex;
-
-    const socialMeta = social && [React.createElement("meta", { key: "1", name: "twitter:card", content: "photo" }), React.createElement("meta", { key: "2", name: "twitter:url", content: social.url }), React.createElement("meta", { key: "3", name: "twitter:title", content: social.title }), React.createElement("meta", { key: "4", name: "twitter:image", content: social.imgURL }), React.createElement("meta", { key: "5", property: "og:title", content: social.title }), React.createElement("meta", { key: "6", property: "og:type", content: "article" }), React.createElement("meta", { key: "7", property: "og:url", content: social.url }), React.createElement("meta", { key: "8", property: "og:image", content: social.imgURL }), React.createElement("meta", { key: "9", property: "og:site_name", content: siteTitle })];
-
-    return React.createElement(
-        "head",
-        null,
-        React.createElement("meta", { httpEquiv: "content-type", content: "text/html; charset=utf-8" }),
-        React.createElement("meta", { httpEquiv: "content-language", content: lang }),
-        React.createElement("meta", { httpEquiv: "X-UA-Compatible", content: "IE=edge" }),
-        React.createElement("meta", { name: "viewport",
-            content: "width=device-width, initial-scale=1.0"
-        }),
-        disableIndex && React.createElement("meta", { name: "robots", content: "noindex" }),
-        options.faviconUrl && React.createElement("link", { rel: "icon", type: "image/x-icon",
-            href: URL(options.faviconUrl)
-        }),
-        React.createElement(
-            "title",
-            null,
-            pageTitle || title
-        ),
-        socialMeta,
-        React.createElement("link", { rel: "stylesheet", href: URL("/css/bootstrap.min.css") }),
-        React.createElement("link", {
-            rel: "stylesheet",
-            href: URL("/css/bootstrap-theme.min.css")
-        }),
-        React.createElement("link", { rel: "stylesheet", href: URL("/css/select2.min.css") }),
-        React.createElement("link", {
-            rel: "stylesheet",
-            href: URL("/css/select2-bootstrap.min.css")
-        }),
-        React.createElement("link", { rel: "stylesheet", href: URL("/css/style.css") }),
-        style
-    );
-};
-
-Head.propTypes = {
-    children: require("react").PropTypes.any,
-    noIndex: require("react").PropTypes.bool,
-    scripts: require("react").PropTypes.any,
-    splash: require("react").PropTypes.any,
-    style: require("react").PropTypes.any,
-    title: require("react").PropTypes.string,
-    social: require("react").PropTypes.shape({
-        url: require("react").PropTypes.string.isRequired,
-        title: require("react").PropTypes.string.isRequired,
-        imgURL: require("react").PropTypes.string.isRequired
-    })
-};
-Head.contextTypes = childContextTypes;
-
 const Logo = (props, { options, URL }) => React.createElement(
     "span",
     null,
@@ -154,6 +87,10 @@ const NavLink = ({ type, title }, {
     )
 );
 
+NavLink.propTypes = {
+    type: require("react").PropTypes.string.isRequired,
+    title: require("react").PropTypes.string.isRequired
+};
 NavLink.contextTypes = childContextTypes;
 
 const SearchForm = (props, {
@@ -303,70 +240,18 @@ const Header = (props, {
 
 Header.contextTypes = childContextTypes;
 
-const Scripts = ({ scripts }, { URL }) => React.createElement(
+const Page = ({ children }) => React.createElement(
     "div",
     null,
-    React.createElement("script", { src: URL("/js/jquery.min.js") }),
-    React.createElement("script", { src: URL("/js/bootstrap.min.js") }),
-    React.createElement("script", { src: URL("/js/select2.min.js") }),
-    React.createElement("script", { src: URL("/js/app.js") }),
-    scripts
-);
-
-Scripts.propTypes = {
-    children: require("react").PropTypes.any,
-    noIndex: require("react").PropTypes.bool,
-    scripts: require("react").PropTypes.any,
-    splash: require("react").PropTypes.any,
-    style: require("react").PropTypes.any,
-    title: require("react").PropTypes.string,
-    social: require("react").PropTypes.shape({
-        url: require("react").PropTypes.string.isRequired,
-        title: require("react").PropTypes.string.isRequired,
-        imgURL: require("react").PropTypes.string.isRequired
-    })
-};
-Scripts.contextTypes = childContextTypes;
-
-const Page = ({
-    splash,
-    children,
-    scripts,
-    title,
-    social,
-    style,
-    noIndex
-}, { lang }) => React.createElement(
-    "html",
-    { lang: lang },
-    React.createElement(Head, { title: title, social: social, style: style, noIndex: noIndex }),
+    React.createElement(Header, null),
     React.createElement(
-        "body",
-        null,
-        React.createElement(Header, null),
-        splash,
-        React.createElement(
-            "div",
-            { className: "container" },
-            children
-        ),
-        React.createElement(Scripts, { scripts: scripts })
+        "div",
+        { className: "container" },
+        children
     )
 );
 
 Page.propTypes = {
-    children: require("react").PropTypes.any,
-    noIndex: require("react").PropTypes.bool,
-    scripts: require("react").PropTypes.any,
-    splash: require("react").PropTypes.any,
-    style: require("react").PropTypes.any,
-    title: require("react").PropTypes.string,
-    social: require("react").PropTypes.shape({
-        url: require("react").PropTypes.string.isRequired,
-        title: require("react").PropTypes.string.isRequired,
-        imgURL: require("react").PropTypes.string.isRequired
-    })
+    children: require("react").PropTypes.any
 };
-Page.contextTypes = childContextTypes;
-
 module.exports = Page;

@@ -54,7 +54,10 @@ module.exports = function (app) {
                 }
             }
 
+            const title = i18n.format(i18n.gettext("Data Import: %(fileName)s"), { fileName: batch.fileName });
+
             res.render("ImportRecords", {
+                title,
                 batch: cloned,
                 expanded: query.expanded,
                 adminURL
@@ -96,8 +99,10 @@ module.exports = function (app) {
                 });
             }, () => {
                 const adminURL = source.getAdminURL(lang);
+                const title = i18n.format(i18n.gettext("Image Import: %(fileName)s"), { fileName: batch.fileName });
 
                 res.render("ImportImages", {
+                    title,
                     batch: cloneModel(batch, i18n),
                     expanded,
                     adminURL
@@ -125,8 +130,12 @@ module.exports = function (app) {
 
             const imageImport = results[0];
             const dataImport = results[1].sort((a, b) => b.created - a.created);
+            const title = i18n.format(i18n.gettext("%(name)s Admin Area"), {
+                name: source.getFullName
+            });
 
             res.render("Admin", {
+                title,
                 source: cloneModel(source, i18n),
                 imageImport: imageImport.map(batch => cloneModel(batch, i18n)),
                 dataImport: dataImport.map(batch => cloneModel(batch, i18n))

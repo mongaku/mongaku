@@ -2,8 +2,6 @@
 
 const React = require("react");
 
-const Page = require("./Page.js");
-
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
 
@@ -133,19 +131,13 @@ const Results = (props: Props, {gettext}: Context) => {
 
 Results.contextTypes = childContextTypes;
 
-const Upload = (props: Props) => {
-    const {title} = props;
-
-    return <Page title={title}>
-        <div className="row">
-            <div className="col-md-6">
-                <UploadedImage {...props} />
-            </div>
-            <div className="col-md-6">
-                <Results {...props} />
-            </div>
-        </div>
-    </Page>;
-};
+const Upload = (props: Props) => <div className="row">
+    <div className="col-md-6">
+        <UploadedImage {...props} />
+    </div>
+    <div className="col-md-6">
+        <Results {...props} />
+    </div>
+</div>;
 
 module.exports = Upload;

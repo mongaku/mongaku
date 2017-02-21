@@ -4,7 +4,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 const React = require("react");
 
-const Page = require("./Page.js");
 const ImportResult = require("./ImportResult.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
@@ -98,17 +97,17 @@ const ImportImages = (props, {
     relativeDate
 }) => {
     const {
+        title,
         adminURL,
         batch
     } = props;
-    const title = format(gettext("Image Import: %(fileName)s"), { fileName: batch.fileName });
     const state = batch.state === "error" ? format(gettext("Error: %(error)s"), { error: batch.getError }) : batch.getStateName;
     const uploadDate = format(gettext("Uploaded: %(date)s"), { date: fixedDate(batch.created) });
     const lastUpdated = format(gettext("Last Updated: %(date)s"), { date: relativeDate(batch.modified) });
 
     return React.createElement(
-        Page,
-        { title: title },
+        "div",
+        null,
         React.createElement(
             "p",
             null,
@@ -163,6 +162,7 @@ const ImportImages = (props, {
 };
 
 ImportImages.propTypes = {
+    title: require("react").PropTypes.string.isRequired,
     adminURL: require("react").PropTypes.string.isRequired,
     batch: require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,

@@ -4,8 +4,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 const React = require("react");
 
-const Page = require("./Page.js");
-
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
 const { childContextTypes } = require("./Wrapper.js");
@@ -222,28 +220,20 @@ Results.propTypes = {
 };
 Results.contextTypes = childContextTypes;
 
-const Upload = props => {
-    const { title } = props;
-
-    return React.createElement(
-        Page,
-        { title: title },
-        React.createElement(
-            "div",
-            { className: "row" },
-            React.createElement(
-                "div",
-                { className: "col-md-6" },
-                React.createElement(UploadedImage, props)
-            ),
-            React.createElement(
-                "div",
-                { className: "col-md-6" },
-                React.createElement(Results, props)
-            )
-        )
-    );
-};
+const Upload = props => React.createElement(
+    "div",
+    { className: "row" },
+    React.createElement(
+        "div",
+        { className: "col-md-6" },
+        React.createElement(UploadedImage, props)
+    ),
+    React.createElement(
+        "div",
+        { className: "col-md-6" },
+        React.createElement(Results, props)
+    )
+);
 
 Upload.propTypes = {
     image: require("react").PropTypes.shape({

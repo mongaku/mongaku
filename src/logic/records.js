@@ -64,6 +64,11 @@ module.exports = function(app) {
                 record.loadImages(true, () => {
                     // TODO: Handle error loading images?
                     const title = record.getTitle(i18n);
+                    const social = {
+                        imgURL: record.getOriginalURL(),
+                        title,
+                        url: record.getURL(),
+                    };
 
                     const clonedRecord = cloneModel(record, i18n);
 
@@ -85,6 +90,7 @@ module.exports = function(app) {
 
                         return res.render("Record", {
                             title,
+                            social,
                             compare: false,
                             records: [clonedRecord],
                             similar: similarRecords,
@@ -107,6 +113,7 @@ module.exports = function(app) {
                                 });
                             res.render("Record", {
                                 title,
+                                social,
                                 compare: true,
                                 noIndex: true,
                                 similar: [],
@@ -132,10 +139,16 @@ module.exports = function(app) {
                     });
                 }
 
+                const recordTitle = record.getTitle(i18n);
+                const title = i18n.format(
+                    i18n.gettext("Updating '%(recordTitle)s'"),
+                        {recordTitle});
+
                 record.loadImages(true, () => {
                     Record.getFacets(i18n, (err, globalFacets) => {
                         record.getDynamicValues(i18n, (err, dynamicValues) => {
                             res.render("EditRecord", {
+                                title,
                                 mode: "edit",
                                 record: cloneModel(record, i18n),
                                 globalFacets,
@@ -341,6 +354,11 @@ module.exports = function(app) {
                     });
                 }
 
+                const recordTitle = record.getTitle(i18n);
+                const title = i18n.format(
+                    i18n.gettext("Cloning '%(recordTitle)s'"),
+                        {recordTitle});
+
                 const data = {
                     type,
                     source: oldRecord.source,
@@ -357,6 +375,7 @@ module.exports = function(app) {
                     Record.getFacets(i18n, (err, globalFacets) => {
                         record.getDynamicValues(i18n, (err, dynamicValues) => {
                             res.render("EditRecord", {
+                                title,
                                 mode: "clone",
                                 record: cloneModel(record, i18n),
                                 globalFacets,
@@ -386,8 +405,14 @@ module.exports = function(app) {
         createView({params: {type}, i18n}, res) {
             const Record = record(type);
 
+            const title = i18n.format(
+                i18n.gettext("%(recordName)s: Create New"), {
+                    recordName: options.types[type].name,
+                });
+
             Record.getFacets(i18n, (err, globalFacets) => {
                 res.render("EditRecord", {
+                    title,
                     mode: "create",
                     type,
                     globalFacets,

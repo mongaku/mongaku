@@ -4,8 +4,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 const React = require("react");
 
-const Page = require("./Page.js");
-
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
 const { childContextTypes } = require("./Wrapper.js");
@@ -126,6 +124,7 @@ const ImageImports = (props, { gettext }) => {
 };
 
 ImageImports.propTypes = {
+    title: require("react").PropTypes.string.isRequired,
     dataImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
     imageImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
     source: require("react").PropTypes.shape({
@@ -192,6 +191,7 @@ const UploadImagesForm = ({ source }, {
 );
 
 UploadImagesForm.propTypes = {
+    title: require("react").PropTypes.string.isRequired,
     dataImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
     imageImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
     source: require("react").PropTypes.shape({
@@ -356,6 +356,7 @@ const DataImports = (props, { gettext }) => {
 };
 
 DataImports.propTypes = {
+    title: require("react").PropTypes.string.isRequired,
     dataImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
     imageImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
     source: require("react").PropTypes.shape({
@@ -422,6 +423,7 @@ const UploadDataForm = ({ source }, {
 );
 
 UploadDataForm.propTypes = {
+    title: require("react").PropTypes.string.isRequired,
     dataImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
     imageImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
     source: require("react").PropTypes.shape({
@@ -435,24 +437,18 @@ UploadDataForm.propTypes = {
 };
 UploadDataForm.contextTypes = childContextTypes;
 
-const Admin = (props, {
-    gettext,
-    options,
-    format
-}) => {
+const Admin = (props, { options }) => {
     const {
+        title,
         imageImport,
         dataImport,
         source
     } = props;
     const hasImages = options.types[source.type].hasImages;
-    const title = format(gettext("%(name)s Admin Area"), {
-        name: source.getFullName
-    });
 
     return React.createElement(
-        Page,
-        { title: title },
+        "div",
+        null,
         React.createElement(
             "h1",
             null,
@@ -466,6 +462,7 @@ const Admin = (props, {
 };
 
 Admin.propTypes = {
+    title: require("react").PropTypes.string.isRequired,
     dataImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
     imageImport: require("react").PropTypes.arrayOf(require("react").PropTypes.any).isRequired,
     source: require("react").PropTypes.shape({

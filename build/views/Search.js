@@ -4,7 +4,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 const React = require("react");
 
-const Page = require("./Page.js");
 const SearchForm = require("./SearchForm.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
@@ -595,8 +594,8 @@ const Search = props => {
     const { title, url } = props;
 
     return React.createElement(
-        Page,
-        { title: title },
+        "div",
+        null,
         React.createElement(
             "div",
             { className: "row" },

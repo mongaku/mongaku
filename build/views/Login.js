@@ -2,18 +2,14 @@
 
 const React = require("react");
 
-const Page = require("./Page.js");
-
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
 const { childContextTypes } = require("./Wrapper.js");
 
-const Login = (props, { gettext, URL }) => {
-    const title = gettext("Login");
-
+const Login = ({ title }, { gettext, URL }) => {
     return React.createElement(
-        Page,
-        { title: title },
+        "div",
+        null,
         React.createElement(
             "h1",
             null,
@@ -53,7 +49,9 @@ const Login = (props, { gettext, URL }) => {
     );
 };
 
-Login.propTypes = {};
+Login.propTypes = {
+    title: require("react").PropTypes.string.isRequired
+};
 Login.contextTypes = childContextTypes;
 
 module.exports = Login;

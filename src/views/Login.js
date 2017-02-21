@@ -2,15 +2,11 @@
 
 const React = require("react");
 
-const Page = require("./Page.js");
-
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
 
-const Login = (props: {}, {gettext, URL}: Context) => {
-    const title = gettext("Login");
-
-    return <Page title={title}>
+const Login = ({title}: {title: string}, {gettext, URL}: Context) => {
+    return <div>
         <h1>{title}</h1>
 
         <form action={URL("/login")} method="post">
@@ -28,7 +24,7 @@ const Login = (props: {}, {gettext, URL}: Context) => {
                 <input type="submit" value={title}/>
             </div>
         </form>
-    </Page>;
+    </div>;
 };
 
 Login.contextTypes = childContextTypes;

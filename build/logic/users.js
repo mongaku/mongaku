@@ -7,8 +7,10 @@ const urls = require("../lib/urls")(options);
 
 module.exports = app => {
     return {
-        login(req, res) {
-            res.render("Login", {});
+        login({ i18n }, res) {
+            res.render("Login", {
+                title: i18n.gettext("Login")
+            });
         },
 
         loginRedirect(req, res, next) {

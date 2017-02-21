@@ -2,8 +2,6 @@
 
 const React = require("react");
 
-const Page = require("./Page.js");
-
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
 const { childContextTypes } = require("./Wrapper.js");
@@ -236,7 +234,7 @@ const Type = ({ type, sources }, { options }) => {
 Type.contextTypes = childContextTypes;
 
 const Home = ({ sources }, { options }) => React.createElement(
-    Page,
+    "div",
     null,
     Object.keys(options.types).map(type => React.createElement(Type, { key: type, sources: sources, type: type }))
 );

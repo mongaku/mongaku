@@ -7,75 +7,7 @@ const {childContextTypes} = require("./Wrapper.js");
 
 type Props = {
     children?: React.Element<*>,
-    noIndex?: boolean,
-    scripts?: React.Element<*>,
-    splash?: React.Element<*>,
-    style?: React.Element<*>,
-    title?: string,
-    social?: {
-        url: string,
-        title: string,
-        imgURL: string,
-    },
 };
-
-const Head = ({
-    title,
-    social,
-    style,
-    noIndex,
-}: Props, {lang, options, URL}: Context) => {
-    const siteTitle = options.getTitle;
-    let pageTitle = siteTitle;
-
-    if (title) {
-        pageTitle = `${title}: ${pageTitle}`;
-    }
-
-    // An option to disable indexing of this page
-    const disableIndex = options.noIndex || noIndex;
-
-    const socialMeta = social && [
-        <meta key="1" name="twitter:card" content="photo"/>,
-        <meta key="2" name="twitter:url" content={social.url}/>,
-        <meta key="3" name="twitter:title" content={social.title}/>,
-        <meta key="4" name="twitter:image" content={social.imgURL}/>,
-        <meta key="5" property="og:title" content={social.title}/>,
-        <meta key="6" property="og:type" content="article"/>,
-        <meta key="7" property="og:url" content={social.url}/>,
-        <meta key="8" property="og:image" content={social.imgURL}/>,
-        <meta key="9" property="og:site_name" content={siteTitle}/>,
-    ];
-
-    return <head>
-        <meta httpEquiv="content-type" content="text/html; charset=utf-8"/>
-        <meta httpEquiv="content-language" content={lang}/>
-        <meta httpEquiv="X-UA-Compatible" content="IE=edge"/>
-        <meta name="viewport"
-            content="width=device-width, initial-scale=1.0"
-        />
-        {disableIndex && <meta name="robots" content="noindex"/>}
-        {options.faviconUrl && <link rel="icon" type="image/x-icon"
-            href={URL(options.faviconUrl)}
-        />}
-        <title>{pageTitle || title}</title>
-        {socialMeta}
-        <link rel="stylesheet" href={URL("/css/bootstrap.min.css")}/>
-        <link
-            rel="stylesheet"
-            href={URL("/css/bootstrap-theme.min.css")}
-        />
-        <link rel="stylesheet" href={URL("/css/select2.min.css")}/>
-        <link
-            rel="stylesheet"
-            href={URL("/css/select2-bootstrap.min.css")}
-        />
-        <link rel="stylesheet" href={URL("/css/style.css")}/>
-        {style}
-    </head>;
-};
-
-Head.contextTypes = childContextTypes;
 
 const Logo = (props, {options, URL}: Context) => <span>
     <img alt={options.getTitle}
@@ -85,7 +17,7 @@ const Logo = (props, {options, URL}: Context) => <span>
     {" "}
 </span>;
 
-const NavLink = ({type, title}: Props & {type: string}, {
+const NavLink = ({type, title}: {type: string, title: string}, {
     gettext,
     user,
     URL,
@@ -251,36 +183,11 @@ const Header = (props, {
 
 Header.contextTypes = childContextTypes;
 
-const Scripts = ({scripts}: Props, {URL}: Context) => <div>
-    <script src={URL("/js/jquery.min.js")} />
-    <script src={URL("/js/bootstrap.min.js")} />
-    <script src={URL("/js/select2.min.js")} />
-    <script src={URL("/js/app.js")} />
-    {scripts}
+const Page = ({children}: Props) => <div>
+    <Header/>
+    <div className="container">
+        {children}
+    </div>
 </div>;
-
-Scripts.contextTypes = childContextTypes;
-
-const Page = ({
-    splash,
-    children,
-    scripts,
-    title,
-    social,
-    style,
-    noIndex,
-}: Props, {lang}: Context) => <html lang={lang}>
-    <Head title={title} social={social} style={style} noIndex={noIndex} />
-    <body>
-        <Header/>
-        {splash}
-        <div className="container">
-            {children}
-        </div>
-        <Scripts scripts={scripts} />
-    </body>
-</html>;
-
-Page.contextTypes = childContextTypes;
 
 module.exports = Page;

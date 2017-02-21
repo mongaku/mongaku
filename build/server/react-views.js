@@ -1,8 +1,10 @@
 "use strict";
 
 const React = require("react");
-const { renderToString } = require("react-dom/server");
+const { renderToString, renderToStaticMarkup } = require("react-dom/server");
 
+const Head = require("../views/Head.js");
+const Page = require("../views/Page.js");
 const Wrapper = require("../views/Wrapper.js");
 
 const blacklist = (key, value) => key === "_locals" || key === "settings" ? undefined : value;
@@ -14,16 +16,30 @@ const engine = (filePath, options, callback) => {
     // http://redux.js.org/docs/recipes/ServerRendering.html#security-considerations
     const state = JSON.stringify(options, blacklist).replace(/</g, "\\u003c");
 
-    const wrapped = React.createElement(
+    const head = renderToStaticMarkup(React.createElement(
         Wrapper,
         options,
-        React.createElement(View, options)
-    );
+        React.createElement(Head, options)
+    ));
 
-    const output = renderToString(wrapped);
-    const json = `<script>window.__STATE__=${state}</script>`;
+    const output = renderToString(React.createElement(
+        Wrapper,
+        options,
+        React.createElement(
+            Page,
+            options,
+            React.createElement(View, options)
+        )
+    ));
 
-    callback(null, `<!DOCTYPE html>${output}${json}`);
+    callback(null, `<!DOCTYPE html>
+<html lang="${options.lang}">
+${head}
+<body>
+    ${output}
+    <script>window.__STATE__=${state}</script>
+</body>
+</html>`);
 };
 
 module.exports = engine;

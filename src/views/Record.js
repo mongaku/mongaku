@@ -2,7 +2,6 @@
 
 const React = require("react");
 
-const Page = require("./Page.js");
 const DimensionView = require("./types/view/Dimension.js");
 const FixedStringView = require("./types/view/FixedString.js");
 const LocationView = require("./types/view/Location.js");
@@ -431,25 +430,13 @@ const Script = () => <script
 />;
 
 const Record = (props: Props) => {
-    const {records, similar} = props;
-    const record = records[0];
-    const title = record.title || "";
-    const social = {
-        imgURL: record.getOriginalURL,
-        title,
-        url: record.getURL,
-    };
+    const {similar} = props;
 
-    return <Page
-        title={title}
-        scripts={<Script/>}
-        social={social}
-    >
-        <div className="row">
-            <MainRecord {...props} />
-            {similar.length > 0 && <Similar {...props} />}
-        </div>
-    </Page>;
+    return <div className="row">
+        <MainRecord {...props} />
+        {similar.length > 0 && <Similar {...props} />}
+        <Script/>
+    </div>;
 };
 
 module.exports = Record;
