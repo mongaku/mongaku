@@ -74,7 +74,8 @@ const Match = ({
     match: {recordModel, score},
 }: Props & {match: MatchType}, {
     gettext,
-    utils: {format, getSource},
+    format,
+    getSource,
 }: Context) => {
     const source = getSource(recordModel.source, sources);
 

@@ -302,7 +302,7 @@ Details.contextTypes = childContextTypes;
 
 const Sources = ({records, sources}: Props, {
     gettext,
-    utils: {getSource},
+    getSource,
 }: Context) => <tr>
     <th className="text-right">
         {gettext("Source")}
@@ -361,7 +361,7 @@ const SimilarMatch = ({
     match: {recordModel, score},
 }: Props & {source: ?Source, match: Match}, {
     gettext,
-    utils: {format},
+    format,
 }: Context) => <div className="img col-md-12 col-xs-6 col-sm-4">
     <a href={recordModel.getURL}>
         <img src={recordModel.getThumbURL}
@@ -387,7 +387,7 @@ const SimilarMatch = ({
 
 SimilarMatch.contextTypes = childContextTypes;
 
-const Similar = (props: Props, {gettext, utils: {getSource}}: Context) => {
+const Similar = (props: Props, {gettext, getSource}: Context) => {
     const {similar, sources} = props;
 
     return <div className="col-md-3">

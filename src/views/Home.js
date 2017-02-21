@@ -23,7 +23,7 @@ const SearchForm = ({type}: {type: string}, {
     gettext,
     user,
     options,
-    utils: {URL},
+    URL,
 }: Context) => {
     const title = options.types[type].name;
     const sources = user && user.getEditableSourcesByType[type];
@@ -63,7 +63,7 @@ const SearchForm = ({type}: {type: string}, {
 SearchForm.contextTypes = childContextTypes;
 
 const ImageUploadForms = ({type}: {type: string},
-        {gettext, utils: {URL}}: Context) => <div>
+        {gettext, URL}: Context) => <div>
     <h3>{gettext("Search by Image:")}</h3>
     <p>{gettext("Upload an image to find other " +
         "similar images.")}</p>
@@ -122,7 +122,7 @@ const ImageUploadForms = ({type}: {type: string},
 ImageUploadForms.contextTypes = childContextTypes;
 
 const Source = ({type, source}: {type: string, source: SourceType},
-    {options, utils: {stringNum}}: Context) => {
+    {options, stringNum}: Context) => {
 
     const typeName = options.types[type].name;
     const recordCount = stringNum(source.numRecords);

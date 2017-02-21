@@ -11,7 +11,7 @@ const Head = ({
     social,
     style,
     noIndex
-}, { lang, options, utils: { URL } }) => {
+}, { lang, options, URL }) => {
     const siteTitle = options.getTitle;
     let pageTitle = siteTitle;
 
@@ -73,7 +73,7 @@ Head.propTypes = {
 };
 Head.contextTypes = childContextTypes;
 
-const Logo = (props, { options, utils: { URL } }) => React.createElement(
+const Logo = (props, { options, URL }) => React.createElement(
     "span",
     null,
     React.createElement("img", { alt: options.getTitle,
@@ -86,7 +86,7 @@ const Logo = (props, { options, utils: { URL } }) => React.createElement(
 const NavLink = ({ type, title }, {
     gettext,
     user,
-    utils: { URL }
+    URL
 }) => React.createElement(
     "li",
     { className: "dropdown" },
@@ -159,7 +159,7 @@ NavLink.contextTypes = childContextTypes;
 const SearchForm = (props, {
     gettext,
     options,
-    utils: { URL }
+    URL
 }) => React.createElement(
     "form",
     {
@@ -187,7 +187,8 @@ const LocaleMenu = (props, {
     lang,
     originalUrl,
     options,
-    utils: { URL, getOtherURL }
+    URL,
+    getOtherURL
 }) => React.createElement(
     "li",
     { className: "dropdown" },
@@ -231,7 +232,7 @@ const Header = (props, {
     gettext,
     user,
     options,
-    utils: { URL }
+    URL
 }) => React.createElement(
     "div",
     {
@@ -302,7 +303,7 @@ const Header = (props, {
 
 Header.contextTypes = childContextTypes;
 
-const Scripts = ({ scripts }, { utils: { URL } }) => React.createElement(
+const Scripts = ({ scripts }, { URL }) => React.createElement(
     "div",
     null,
     React.createElement("script", { src: URL("/js/jquery.min.js") }),

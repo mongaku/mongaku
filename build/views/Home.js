@@ -12,7 +12,7 @@ const SearchForm = ({ type }, {
     gettext,
     user,
     options,
-    utils: { URL }
+    URL
 }) => {
     const title = options.types[type].name;
     const sources = user && user.getEditableSourcesByType[type];
@@ -66,7 +66,7 @@ SearchForm.propTypes = {
 };
 SearchForm.contextTypes = childContextTypes;
 
-const ImageUploadForms = ({ type }, { gettext, utils: { URL } }) => React.createElement(
+const ImageUploadForms = ({ type }, { gettext, URL }) => React.createElement(
     "div",
     null,
     React.createElement(
@@ -162,7 +162,7 @@ ImageUploadForms.propTypes = {
 };
 ImageUploadForms.contextTypes = childContextTypes;
 
-const Source = ({ type, source }, { options, utils: { stringNum } }) => {
+const Source = ({ type, source }, { options, stringNum }) => {
 
     const typeName = options.types[type].name;
     const recordCount = stringNum(source.numRecords);

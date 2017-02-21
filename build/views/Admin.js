@@ -14,7 +14,8 @@ const ImageImport = ({
     batch
 }, {
     gettext,
-    utils: { format, relativeDate }
+    format,
+    relativeDate
 }) => {
     const results = batch.getFilteredResults;
     let columns;
@@ -140,7 +141,7 @@ ImageImports.contextTypes = childContextTypes;
 
 const UploadImagesForm = ({ source }, {
     gettext,
-    utils: { URL }
+    URL
 }) => React.createElement(
     "div",
     { className: "panel panel-default" },
@@ -208,7 +209,8 @@ const DataImport = ({
     batch
 }, {
     gettext,
-    utils: { format, relativeDate }
+    format,
+    relativeDate
 }) => {
     const results = batch.getFilteredResults;
     let columns;
@@ -369,7 +371,7 @@ DataImports.contextTypes = childContextTypes;
 
 const UploadDataForm = ({ source }, {
     gettext,
-    utils: { URL }
+    URL
 }) => React.createElement(
     "div",
     { className: "panel panel-default" },
@@ -436,7 +438,7 @@ UploadDataForm.contextTypes = childContextTypes;
 const Admin = (props, {
     gettext,
     options,
-    utils: { format }
+    format
 }) => {
     const {
         imageImport,

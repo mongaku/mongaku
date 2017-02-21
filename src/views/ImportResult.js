@@ -38,7 +38,9 @@ type Props = {
 
 const ImportResult = (props: Props, {
     gettext,
-    utils: {stringNum, URL, format},
+    stringNum,
+    URL,
+    format,
 }: Context) => {
     const {
         batch,

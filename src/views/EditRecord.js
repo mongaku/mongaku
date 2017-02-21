@@ -360,7 +360,7 @@ CloneButton.contextTypes = childContextTypes;
 const EditRecord = (props: Props, {
     gettext,
     options,
-    utils: {format},
+    format,
 }: Context) => {
     const {record, type, mode} = props;
     const postURL = record ?

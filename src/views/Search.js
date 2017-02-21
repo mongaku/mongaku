@@ -75,7 +75,7 @@ const Facet = ({
 }: {type: string, facet: FacetType}, {
     gettext,
     options,
-    utils: {format},
+    format,
 }: Context) => {
     const minFacetCount = options.types[type].minFacetCount || 1;
     let extra = null;
@@ -137,7 +137,8 @@ const Facets = (props: Props) => {
 
 const Sidebar = (props: Props, {
     gettext,
-    utils: {format, stringNum},
+    format,
+    stringNum,
 }: Context) => {
     const {total, start, end} = props;
 
@@ -167,7 +168,7 @@ const Sidebar = (props: Props, {
 Sidebar.contextTypes = childContextTypes;
 
 const Breadcrumb = ({crumb}: {crumb: BreadcrumbType},
-    {gettext, utils: {format}}: Context) =>
+    {gettext, format}: Context) =>
 <a href={crumb.url}
     className="btn btn-default btn-xs"
     title={format(gettext("Remove %(query)s"),
@@ -235,7 +236,7 @@ Pagination.contextTypes = childContextTypes;
 const ImageResultFooter = ({
     record,
     sources,
-}: Props & {record: RecordType}, {utils: {getSource}}: Context) => {
+}: Props & {record: RecordType}, {getSource}: Context) => {
     // Don't show the source selection if there isn't more than one source
     if (!sources || sources.length <= 1) {
         return null;

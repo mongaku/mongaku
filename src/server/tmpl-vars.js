@@ -19,7 +19,8 @@ module.exports = (app) => {
         }
 
         Object.assign(res.locals, {
-            i18n,
+            lang: i18n.lang,
+            translations: i18n.translations,
             options: langOptions,
             user: user && cloneModel(user, i18n),
             originalUrl,

@@ -24,7 +24,7 @@ const Head = ({
     social,
     style,
     noIndex,
-}: Props, {lang, options, utils: {URL}}: Context) => {
+}: Props, {lang, options, URL}: Context) => {
     const siteTitle = options.getTitle;
     let pageTitle = siteTitle;
 
@@ -77,7 +77,7 @@ const Head = ({
 
 Head.contextTypes = childContextTypes;
 
-const Logo = (props, {options, utils: {URL}}: Context) => <span>
+const Logo = (props, {options, URL}: Context) => <span>
     <img alt={options.getTitle}
         src={URL(options.logoUrl || "")}
         height="40" width="40"
@@ -88,7 +88,7 @@ const Logo = (props, {options, utils: {URL}}: Context) => <span>
 const NavLink = ({type, title}: Props & {type: string}, {
     gettext,
     user,
-    utils: {URL},
+    URL,
 }: Context) => <li className="dropdown">
     <a
         href={URL(`/${type}/search`)}
@@ -141,7 +141,7 @@ NavLink.contextTypes = childContextTypes;
 const SearchForm = (props, {
     gettext,
     options,
-    utils: {URL},
+    URL,
 }: Context) => <form
     action={URL(`/${Object.keys(options.types)[0]}/search`)}
     method="GET"
@@ -165,7 +165,8 @@ const LocaleMenu = (props, {
     lang,
     originalUrl,
     options,
-    utils: {URL, getOtherURL},
+    URL,
+    getOtherURL,
 }: Context) => <li className="dropdown">
     <a href="" className="dropdown-toggle"
         data-toggle="dropdown" role="button"
@@ -202,7 +203,7 @@ const Header = (props, {
     gettext,
     user,
     options,
-    utils: {URL},
+    URL,
 }: Context) => <div
     className="navbar navbar-default navbar-static-top"
 >
@@ -250,7 +251,7 @@ const Header = (props, {
 
 Header.contextTypes = childContextTypes;
 
-const Scripts = ({scripts}: Props, {utils: {URL}}: Context) => <div>
+const Scripts = ({scripts}: Props, {URL}: Context) => <div>
     <script src={URL("/js/jquery.min.js")} />
     <script src={URL("/js/bootstrap.min.js")} />
     <script src={URL("/js/select2.min.js")} />

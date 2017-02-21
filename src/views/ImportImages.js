@@ -97,7 +97,9 @@ const ModelResult = ({result: {model, fileName}}: {result: Result}) => {
 
 const ImportImages = (props: Props, {
     gettext,
-    utils: {format, fixedDate, relativeDate},
+    format,
+    fixedDate,
+    relativeDate,
 }: Context) => {
     const {
         adminURL,

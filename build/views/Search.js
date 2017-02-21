@@ -38,7 +38,7 @@ const Facet = ({
 }, {
     gettext,
     options,
-    utils: { format }
+    format
 }) => {
     const minFacetCount = options.types[type].minFacetCount || 1;
     let extra = null;
@@ -166,7 +166,8 @@ Facets.propTypes = {
 };
 const Sidebar = (props, {
     gettext,
-    utils: { format, stringNum }
+    format,
+    stringNum
 }) => {
     const { total, start, end } = props;
 
@@ -249,7 +250,7 @@ Sidebar.propTypes = {
 };
 Sidebar.contextTypes = childContextTypes;
 
-const Breadcrumb = ({ crumb }, { gettext, utils: { format } }) => React.createElement(
+const Breadcrumb = ({ crumb }, { gettext, format }) => React.createElement(
     "a",
     { href: crumb.url,
         className: "btn btn-default btn-xs",
@@ -445,7 +446,7 @@ Pagination.contextTypes = childContextTypes;
 const ImageResultFooter = ({
     record,
     sources
-}, { utils: { getSource } }) => {
+}, { getSource }) => {
     // Don't show the source selection if there isn't more than one source
     if (!sources || sources.length <= 1) {
         return null;

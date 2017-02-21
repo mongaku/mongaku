@@ -275,7 +275,7 @@ Sorts.contextTypes = childContextTypes;
 const SearchForm = (props: Props, {
     gettext,
     options,
-    utils: {URL},
+    URL,
 }: Context) => {
     const {type, values, sorts, sources} = props;
     const typeOptions = options.types[type];

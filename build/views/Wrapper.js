@@ -10,17 +10,16 @@ var babelPluginFlowReactPropTypes_proptype_User = require("./types.js").babelPlu
 
 class Wrapper extends React.Component {
     getChildContext() {
-        const { originalUrl, user, options, i18n } = this.props;
-        const { lang } = i18n;
-
-        return {
+        const { originalUrl, user, options, lang, translations } = this.props;
+        // Object is needed, unfortunately, see:
+        // https://github.com/facebook/flow/issues/1606
+        const context = {
             lang,
-            gettext: msg => i18n.gettext(msg),
             user,
             options,
-            originalUrl,
-            utils: utils(lang, options)
+            originalUrl
         };
+        return Object.assign(context, utils(lang, options, translations));
     }
 
     render() {
@@ -29,22 +28,28 @@ class Wrapper extends React.Component {
 }
 
 Wrapper.propTypes = {
+    lang: require("react").PropTypes.string.isRequired,
     originalUrl: require("react").PropTypes.string.isRequired,
     user: babelPluginFlowReactPropTypes_proptype_User,
     options: babelPluginFlowReactPropTypes_proptype_Options,
-    i18n: require("react").PropTypes.shape({
-        lang: require("react").PropTypes.string.isRequired,
-        gettext: require("react").PropTypes.func.isRequired
-    }).isRequired,
+    translations: require("react").PropTypes.shape({}).isRequired,
     children: require("react").PropTypes.any
 };
 Wrapper.childContextTypes = {
     lang: React.PropTypes.string,
-    gettext: React.PropTypes.func,
     user: React.PropTypes.any,
     options: React.PropTypes.any,
     originalUrl: React.PropTypes.string,
-    utils: React.PropTypes.any
+
+    // Coming from utils.js
+    getOtherURL: React.PropTypes.func,
+    URL: React.PropTypes.func,
+    stringNum: React.PropTypes.func,
+    relativeDate: React.PropTypes.func,
+    fixedDate: React.PropTypes.func,
+    format: React.PropTypes.func,
+    gettext: React.PropTypes.func,
+    getSource: React.PropTypes.func
 };
 
 module.exports = Wrapper;

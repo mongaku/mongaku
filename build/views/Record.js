@@ -366,7 +366,7 @@ Details.contextTypes = childContextTypes;
 
 const Sources = ({ records, sources }, {
     gettext,
-    utils: { getSource }
+    getSource
 }) => React.createElement(
     "tr",
     null,
@@ -528,7 +528,7 @@ const SimilarMatch = ({
     match: { recordModel, score }
 }, {
     gettext,
-    utils: { format }
+    format
 }) => React.createElement(
     "div",
     { className: "img col-md-12 col-xs-6 col-sm-4" },
@@ -566,7 +566,7 @@ const SimilarMatch = ({
 
 SimilarMatch.contextTypes = childContextTypes;
 
-const Similar = (props, { gettext, utils: { getSource } }) => {
+const Similar = (props, { gettext, getSource }) => {
     const { similar, sources } = props;
 
     return React.createElement(

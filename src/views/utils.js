@@ -6,7 +6,9 @@ const moment = require("moment");
 
 import type {Source, Options} from "./types.js";
 
-module.exports = (lang: string, options: Options) => {
+module.exports = (lang: string, options: Options, translations: {
+    [message: string]: ?Array<string>,
+}) => {
     const urls = require("../lib/urls")(options);
 
     return {
@@ -45,6 +47,14 @@ module.exports = (lang: string, options: Options) => {
         format(fmt: string = "", props: {[key: string]: any}): string {
             return fmt.replace(/%\(\s*([^)]+)\s*\)s/g,
                 (m, v) => String(props[v.trim()]));
+        },
+
+        gettext(message: string): string {
+            const translation = translations[message];
+
+            return translation && translation[1] ?
+                translation[1] :
+                message;
         },
 
         getSource(sourceId: string, sources: Array<Source>): ?Source {

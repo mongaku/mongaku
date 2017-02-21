@@ -9,6 +9,9 @@ if (typeof exports !== "undefined") Object.defineProperty(exports, "babelPluginF
         getShortName: require("react").PropTypes.string.isRequired
     })
 });
+
+
+// Methods and properties defined in view-methods.js and i18n.js
 if (typeof exports !== "undefined") Object.defineProperty(exports, "babelPluginFlowReactPropTypes_proptype_Options", {
     value: require("react").PropTypes.shape({
         baseURL: require("react").PropTypes.string.isRequired,
@@ -28,27 +31,12 @@ if (typeof exports !== "undefined") Object.defineProperty(exports, "babelPluginF
 });
 
 
-// Methods and properties defined in view-methods.js and i18n.js
-if (typeof exports !== "undefined") Object.defineProperty(exports, "babelPluginFlowReactPropTypes_proptype_Utils", {
-    value: require("react").PropTypes.shape({
-        getOtherURL: require("react").PropTypes.func.isRequired,
-        URL: require("react").PropTypes.func.isRequired,
-        stringNum: require("react").PropTypes.func.isRequired,
-        relativeDate: require("react").PropTypes.func.isRequired,
-        fixedDate: require("react").PropTypes.func.isRequired,
-        format: require("react").PropTypes.func.isRequired,
-        getSource: require("react").PropTypes.func.isRequired
-    })
-});
-
-
 // From User.js
 if (typeof exports !== "undefined") Object.defineProperty(exports, "babelPluginFlowReactPropTypes_proptype_Context", {
     value: require("react").PropTypes.shape({
         lang: require("react").PropTypes.string.isRequired,
         user: require("react").PropTypes.any,
         originalUrl: require("react").PropTypes.string.isRequired,
-        gettext: require("react").PropTypes.func.isRequired,
         options: require("react").PropTypes.shape({
             baseURL: require("react").PropTypes.string.isRequired,
             baseDataURL: require("react").PropTypes.string.isRequired,
@@ -64,15 +52,14 @@ if (typeof exports !== "undefined") Object.defineProperty(exports, "babelPluginF
             locales: require("react").PropTypes.shape({}).isRequired,
             types: require("react").PropTypes.shape({}).isRequired
         }).isRequired,
-        utils: require("react").PropTypes.shape({
-            getOtherURL: require("react").PropTypes.func.isRequired,
-            URL: require("react").PropTypes.func.isRequired,
-            stringNum: require("react").PropTypes.func.isRequired,
-            relativeDate: require("react").PropTypes.func.isRequired,
-            fixedDate: require("react").PropTypes.func.isRequired,
-            format: require("react").PropTypes.func.isRequired,
-            getSource: require("react").PropTypes.func.isRequired
-        }).isRequired
+        getOtherURL: require("react").PropTypes.func.isRequired,
+        URL: require("react").PropTypes.func.isRequired,
+        stringNum: require("react").PropTypes.func.isRequired,
+        relativeDate: require("react").PropTypes.func.isRequired,
+        fixedDate: require("react").PropTypes.func.isRequired,
+        gettext: require("react").PropTypes.func.isRequired,
+        format: require("react").PropTypes.func.isRequired,
+        getSource: require("react").PropTypes.func.isRequired
     })
 });
 if (typeof exports !== "undefined") Object.defineProperty(exports, "babelPluginFlowReactPropTypes_proptype_User", {

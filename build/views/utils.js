@@ -8,7 +8,7 @@ var babelPluginFlowReactPropTypes_proptype_Options = require("./types.js").babel
 
 var babelPluginFlowReactPropTypes_proptype_Source = require("./types.js").babelPluginFlowReactPropTypes_proptype_Source || require("react").PropTypes.any;
 
-module.exports = (lang, options) => {
+module.exports = (lang, options, translations) => {
     const urls = require("../lib/urls")(options);
 
     return {
@@ -44,6 +44,12 @@ module.exports = (lang, options) => {
 
         format(fmt = "", props) {
             return fmt.replace(/%\(\s*([^)]+)\s*\)s/g, (m, v) => String(props[v.trim()]));
+        },
+
+        gettext(message) {
+            const translation = translations[message];
+
+            return translation && translation[1] ? translation[1] : message;
         },
 
         getSource(sourceId, sources) {

@@ -91,7 +91,8 @@ const Match = ({
     match: { recordModel, score }
 }, {
     gettext,
-    utils: { format, getSource }
+    format,
+    getSource
 }) => {
     const source = getSource(recordModel.source, sources);
 

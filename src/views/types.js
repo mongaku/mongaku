@@ -137,24 +137,22 @@ export type Options = {
     },
 };
 
-export type Utils = {
-    getOtherURL: (originalUrl: string, locale: string) => string,
-    URL: (path: string, query?: Object) => string,
-    stringNum: (num: number) => string,
-    relativeDate: (date: Date) => string,
-    fixedDate: (date: Date) => string,
-    format: (fmt: string, props: {[key: string]: any}) => string,
-    getSource: (sourceId: string, sources: Array<Source>) => ?Source,
-};
-
 // Methods and properties defined in view-methods.js and i18n.js
 export type Context = {
     lang: string,
     user?: User,
     originalUrl: string,
-    gettext: (text: string) => string,
     options: Options,
-    utils: Utils,
+
+    // Coming from utils.js
+    getOtherURL: (originalUrl: string, locale: string) => string,
+    URL: (path: string, query?: Object) => string,
+    stringNum: (num: number) => string,
+    relativeDate: (date: Date) => string,
+    fixedDate: (date: Date) => string,
+    gettext: (text: string) => string,
+    format: (fmt: string, props: {[key: string]: any}) => string,
+    getSource: (sourceId: string, sources: Array<Source>) => ?Source,
 };
 
 // From User.js

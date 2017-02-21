@@ -5,9 +5,9 @@ const path = require("path");
 
 const options = require("./options");
 
-const translations = {};
+const translationsMap = {};
 const translationsDir = path.resolve(process.cwd(),
-    options.transltionsDir || "translations");
+    options.translationsDir || "translations");
 const defaultLocale = Object.keys(options.locales)[0] || "en";
 
 for (const locale in options.locales) {
@@ -18,29 +18,24 @@ for (const locale in options.locales) {
     const file = path.resolve(translationsDir, locale, "messages.json");
     try {
         const {messages} = JSON.parse(fs.readFileSync(file, "utf8"));
-        translations[locale] = messages;
+        translationsMap[locale] = messages;
     } catch (e) {
         console.error(`Error loading translation locale: ${locale}.`);
     }
 }
 
 module.exports = (lang: string) => {
+    const translations = translationsMap[lang] || {};
+
     return {
         lang,
         defaultLocale,
+        translations,
 
         gettext(message: string) {
-            if (!translations[lang]) {
-                if (lang !== defaultLocale) {
-                    console.error(`Unknown locale: ${lang}.`);
-                }
+            const translation = translations[message];
 
-                return message;
-            }
-
-            const translation = translations[lang][message];
-
-            return translation && translation[1].length ?
+            return translation && translation[1] ?
                 translation[1] :
                 message;
         },

@@ -158,7 +158,7 @@ const DeletedResult = ({
 
 const ConfirmButtons = ({ batch }, {
     gettext,
-    utils: { URL }
+    URL
 }) => React.createElement(
     "p",
     null,
@@ -202,7 +202,10 @@ ConfirmButtons.contextTypes = childContextTypes;
 
 const ImportData = (props, {
     gettext,
-    utils: { format, fixedDate, relativeDate, URL }
+    format,
+    fixedDate,
+    relativeDate,
+    URL
 }) => {
     const {
         batch,

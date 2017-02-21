@@ -7,7 +7,7 @@ const Page = require("./Page.js");
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
 
-const Login = (props: {}, {gettext, utils: {URL}}: Context) => {
+const Login = (props: {}, {gettext, URL}: Context) => {
     const title = gettext("Login");
 
     return <Page title={title}>

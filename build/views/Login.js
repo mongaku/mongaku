@@ -8,7 +8,7 @@ var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babel
 
 const { childContextTypes } = require("./Wrapper.js");
 
-const Login = (props, { gettext, utils: { URL } }) => {
+const Login = (props, { gettext, URL }) => {
     const title = gettext("Login");
 
     return React.createElement(

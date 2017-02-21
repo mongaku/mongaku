@@ -8,7 +8,9 @@ const { childContextTypes } = require("./Wrapper.js");
 
 const ImportResult = (props, {
     gettext,
-    utils: { stringNum, URL, format }
+    stringNum,
+    URL,
+    format
 }) => {
     const {
         batch,

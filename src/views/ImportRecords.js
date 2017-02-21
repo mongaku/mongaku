@@ -135,7 +135,7 @@ const DeletedResult = ({
 
 const ConfirmButtons = ({batch}: Props, {
     gettext,
-    utils: {URL},
+    URL,
 }: Context) => <p>
     <a
         href={URL(batch.getURL, {finalize: true})}
@@ -156,7 +156,10 @@ ConfirmButtons.contextTypes = childContextTypes;
 
 const ImportData = (props: Props, {
     gettext,
-    utils: {format, fixedDate, relativeDate, URL},
+    format,
+    fixedDate,
+    relativeDate,
+    URL,
 }: Context) => {
     const {
         batch,

@@ -93,7 +93,9 @@ ModelResult.propTypes = {
 };
 const ImportImages = (props, {
     gettext,
-    utils: { format, fixedDate, relativeDate }
+    format,
+    fixedDate,
+    relativeDate
 }) => {
     const {
         adminURL,
