@@ -8,10 +8,11 @@ const jdp = require("jsondiffpatch").create({
 
 const recordModel = require("../lib/record");
 const models = require("../lib/models");
-const urls = require("../lib/urls");
 const config = require("../lib/config");
 const options = require("../lib/options");
 const metadata = require("../lib/metadata");
+const urls = require("../lib/urls")(options);
+const searchURL = require("../logic/shared/search-url");
 
 const Record = {};
 
@@ -207,6 +208,28 @@ Record.methods = {
                 callback(null, value);
             }
         }, callback);
+    },
+
+    getValueURLs(lang) {
+        const ret = {};
+        const model = metadata.model(this.type);
+
+        for (const propName in model) {
+            const value = this[propName];
+
+            const urlFromValue = value => searchURL(lang, {
+                type: this.type,
+                [propName]: value
+            });
+
+            if (Array.isArray(value)) {
+                ret[propName] = value.map(urlFromValue);
+            } else {
+                ret[propName] = urlFromValue(value);
+            }
+        }
+
+        return ret;
     },
 
     updateSimilarity(callback) {

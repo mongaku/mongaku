@@ -5,7 +5,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 const React = require("react");
 
 const Page = require("./Page.js");
-const { format, getSource } = require("./utils.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
@@ -91,7 +90,8 @@ const Match = ({
     sources,
     match: { recordModel, score }
 }, {
-    gettext
+    gettext,
+    utils: { format, getSource }
 }) => {
     const source = getSource(recordModel.source, sources);
 

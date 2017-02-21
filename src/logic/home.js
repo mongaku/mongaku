@@ -10,7 +10,12 @@ module.exports = (app) => {
         index({i18n}, res) {
             const sources = Source.getSources()
                 .filter((source) => source.numRecords > 0)
-                .map((source) => cloneModel(source, i18n));
+                .map((source) => {
+                    const cloned = cloneModel(source, i18n);
+                    cloned.numRecords = source.numRecords;
+                    cloned.numImages = source.numImages;
+                    return cloned;
+                });
             let recordTotal = 0;
             let imageTotal = 0;
 

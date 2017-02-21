@@ -2,13 +2,14 @@
 
 const React = require("react");
 
-const { format, URL, stringNum } = require("./utils.js");
-
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
 const { childContextTypes } = require("./Wrapper.js");
 
-const ImportResult = (props, { gettext, lang }) => {
+const ImportResult = (props, {
+    gettext,
+    utils: { stringNum, URL, format }
+}) => {
     const {
         batch,
         expanded,
@@ -18,8 +19,8 @@ const ImportResult = (props, { gettext, lang }) => {
         title
     } = props;
     const allResults = batch.getFilteredResults[id];
-    const showAll = format(gettext("Show all %(count)s results..."), { count: stringNum(lang, allResults.length) });
-    const expandURL = URL(lang, batch.getURL, { expanded: id });
+    const showAll = format(gettext("Show all %(count)s results..."), { count: stringNum(allResults.length) });
+    const expandURL = URL(batch.getURL, { expanded: id });
     const isExpanded = expanded === id || allResults.length <= numShow;
     const results = isExpanded ? allResults : allResults.slice(0, numShow);
 
@@ -39,7 +40,7 @@ const ImportResult = (props, { gettext, lang }) => {
                 title,
                 " ",
                 "(",
-                stringNum(lang, allResults.length),
+                stringNum(allResults.length),
                 ")"
             )
         ),

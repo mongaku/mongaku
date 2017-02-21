@@ -1,6 +1,7 @@
 const passport = require("passport");
 
-const urls = require("../lib/urls");
+const options = require("../lib/options");
+const urls = require("../lib/urls")(options);
 
 module.exports = (app) => {
     return {

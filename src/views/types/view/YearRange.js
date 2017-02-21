@@ -2,11 +2,6 @@
 
 const React = require("react");
 
-const {searchURL} = require("../../utils.js");
-
-import type {Context} from "../../types.js";
-const {childContextTypes} = require("../../Wrapper.js");
-
 type YearRangeType = {
     _id: string,
     original?: string,
@@ -16,9 +11,8 @@ type YearRangeType = {
 };
 
 type Props = {
-    name: string,
-    type: string,
     value: Array<YearRangeType>,
+    url: Array<string>,
 };
 
 const getDate = (date: YearRange): string => {
@@ -36,19 +30,7 @@ const getDate = (date: YearRange): string => {
     return "";
 };
 
-const YearRange = ({
-    name,
-    type,
-    date,
-}: Props & {date: YearRangeType}, {lang}: Context) => {
-    const url = searchURL(lang, {
-        [name]: {
-            start: date.start,
-            end: date.end,
-        },
-        type,
-    });
-
+const YearRange = ({date, url}: {date: YearRangeType, url: string}) => {
     return <span key={date._id}>
         <a href={url}>
             {getDate(date)}
@@ -56,15 +38,12 @@ const YearRange = ({
     </span>;
 };
 
-YearRange.contextTypes = childContextTypes;
-
-const YearRangeView = (props: Props) => {
-    const {value} = props;
+const YearRangeView = ({value, url}: Props) => {
     return <span>
-        {value.map((date) => <YearRange
-            {...props}
-            date={date}
+        {value.map((date, i) => <YearRange
             key={date._id}
+            date={date}
+            url={url[i]}
         />)}
     </span>;
 };

@@ -9,7 +9,8 @@ const unzip = require("unzip2");
 
 const models = require("../lib/models");
 const db = require("../lib/db");
-const urls = require("../lib/urls");
+const options = require("../lib/options");
+const urls = require("../lib/urls")(options);
 const config = require("../lib/config");
 
 const Import = require("./Import");

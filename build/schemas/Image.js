@@ -11,11 +11,11 @@ const versioner = require("mongoose-version");
 
 const record = require("../lib/record");
 const models = require("../lib/models");
-const urls = require("../lib/urls");
 const db = require("../lib/db");
 const similar = require("../lib/similar");
 const config = require("../lib/config");
 const options = require("../lib/options");
+const urls = require("../lib/urls")(options);
 
 // Add the ability to provide an explicit bath to the GM binary
 /* istanbul ignore if */

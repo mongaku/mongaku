@@ -1,57 +1,53 @@
-const path = require("path");
+// @flow
 
-const config = require("./config");
-const options = require("./options");
+import type {Options} from "../views/types.js";
 
-const defaultLocale = Object.keys(options.locales)[0] || "en";
+module.exports = (options: Options) => {
+    const defaultLocale = Object.keys(options.locales)[0] || "en";
 
-const genURL = (locale, urlBase, origPath) => {
-    let suffix = "";
-    let base = urlBase;
-    let path = origPath;
+    const genURL = (lang: ?string, urlBase: string, origPath: string) => {
+        let suffix = "";
+        let base = urlBase;
+        let path = origPath;
 
-    // See if we're on a non-default locale
-    if (locale && locale !== defaultLocale) {
-        // Use a sub-domain, if one is requested
-        /* istanbul ignore if */
-        if (options.usei18nSubdomain) {
-            if (base.indexOf(`://${locale}.`) < 0) {
-                base = urlBase.replace("://", `://${locale}.`);
-            }
+        // See if we're on a non-default lang
+        if (lang && lang !== defaultLocale) {
+            // Use a sub-domain, if one is requested
+            /* istanbul ignore if */
+            if (options.usei18nSubdomain) {
+                if (base.indexOf(`://${lang}.`) < 0) {
+                    base = urlBase.replace("://", `://${lang}.`);
+                }
 
-        // Otherwise fall back to using a query string
-        } else {
-            if (path.indexOf(`lang=`) >= 0) {
-                path = path.replace(/lang=\w+/, `lang=${locale}`);
-
+            // Otherwise fall back to using a query string
             } else {
-                const prefix = /\?/.test(path) ? "&" : "?";
-                suffix = `${prefix}lang=${locale}`;
+                if (path.indexOf(`lang=`) >= 0) {
+                    path = path.replace(/lang=\w+/, `lang=${lang}`);
+
+                } else {
+                    const prefix = /\?/.test(path) ? "&" : "?";
+                    suffix = `${prefix}lang=${lang}`;
+                }
             }
+
+        // Strip the lang= query param if you're generating a default lang URL
+        } else if (lang === defaultLocale && !options.usei18nSubdomain) {
+            path = path.replace(/lang=\w+&?/, "").replace(/\?$/, "");
         }
 
-    // Strip the lang= query param if you're generating a default locale URL
-    } else if (locale === defaultLocale && !options.usei18nSubdomain) {
-        path = path.replace(/lang=\w+&?/, "").replace(/\?$/, "");
-    }
+        // Make sure we don't have an accidental // in the URL
+        return base.replace(/\/$/, "") + path + suffix;
+    };
 
-    // Make sure we don't have an accidental // in the URL
-    return base.replace(/\/$/, "") + path + suffix;
-};
+    return {
+        // Generate a URL given a path and a lang
+        gen(lang: string, path: string) {
+            return genURL(lang, options.baseURL, path);
+        },
 
-module.exports = {
-    // Generate a URL given a path and a locale
-    gen(locale, path) {
-        return genURL(locale, config.BASE_URL, path);
-    },
-
-    // Generate a URL to a data file, given a path
-    genData(filePath) {
-        return genURL(null, config.BASE_DATA_URL, filePath);
-    },
-
-    // Generate a path to a data file, given a path
-    genLocalFile(filePath) {
-        return path.resolve(config.BASE_DATA_DIR, filePath);
-    },
+        // Generate a URL to a data file, given a path
+        genData(filePath: string) {
+            return genURL(null, options.baseDataURL, filePath);
+        },
+    };
 };

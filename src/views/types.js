@@ -109,7 +109,17 @@ type TypeOptions = {
     hasImageSearch: boolean,
 };
 
+export type Source = {
+    _id: string,
+    name: string,
+    getURL: string,
+    getFullName: string,
+    getShortName: string,
+};
+
 export type Options = {
+    baseURL: string,
+    baseDataURL: string,
     getShortTitle: string,
     getTitle: string,
     noIndex: boolean,
@@ -127,6 +137,16 @@ export type Options = {
     },
 };
 
+export type Utils = {
+    getOtherURL: (originalUrl: string, locale: string) => string,
+    URL: (path: string, query?: Object) => string,
+    stringNum: (num: number) => string,
+    relativeDate: (date: Date) => string,
+    fixedDate: (date: Date) => string,
+    format: (fmt: string, props: {[key: string]: any}) => string,
+    getSource: (sourceId: string, sources: Array<Source>) => ?Source,
+};
+
 // Methods and properties defined in view-methods.js and i18n.js
 export type Context = {
     lang: string,
@@ -134,6 +154,7 @@ export type Context = {
     originalUrl: string,
     gettext: (text: string) => string,
     options: Options,
+    utils: Utils,
 };
 
 // From User.js

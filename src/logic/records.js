@@ -2,12 +2,12 @@ const async = require("async");
 const formidable = require("formidable");
 
 const db = require("../lib/db");
-const urls = require("../lib/urls");
 const {cloneModel} = require("../lib/clone");
 const record = require("../lib/record");
 const models = require("../lib/models");
 const options = require("../lib/options");
 const metadata = require("../lib/metadata");
+const urls = require("../lib/urls")(options);
 
 module.exports = function(app) {
     const Source = models("Source");

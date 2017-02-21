@@ -2,7 +2,8 @@ const async = require("async");
 
 const db = require("../lib/db");
 const models = require("../lib/models");
-const urls = require("../lib/urls");
+const options = require("../lib/options");
+const urls = require("../lib/urls")(options);
 
 const Record = require("./Record");
 

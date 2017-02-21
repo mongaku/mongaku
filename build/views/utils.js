@@ -4,53 +4,54 @@ const qs = require("querystring");
 
 const moment = require("moment");
 
-const urls = require("../lib/urls");
-const searchURL = require("../logic/shared/search-url");
+var babelPluginFlowReactPropTypes_proptype_Options = require("./types.js").babelPluginFlowReactPropTypes_proptype_Options || require("react").PropTypes.any;
 
-module.exports = {
-    getOtherURL(originalUrl, locale) {
-        return urls.gen(locale, originalUrl);
-    },
+var babelPluginFlowReactPropTypes_proptype_Source = require("./types.js").babelPluginFlowReactPropTypes_proptype_Source || require("react").PropTypes.any;
 
-    URL(lang, path, query) {
-        let url = urls.gen(lang, path);
+module.exports = (lang, options) => {
+    const urls = require("../lib/urls")(options);
 
-        if (query) {
-            url = url + (url.indexOf("?") >= 0 ? "&" : "?") + qs.stringify(query);
-        }
+    return {
+        getOtherURL(originalUrl, locale) {
+            return urls.gen(locale, originalUrl);
+        },
 
-        return url;
-    },
+        URL(path, query) {
+            let url = urls.gen(lang, path);
 
-    // Format a number using commas
-    stringNum(lang, num) {
-        // TODO(jeresig): Have a better way to handle this.
-        const separator = lang === "en" ? "," : ".";
-        const result = typeof num === "number" ? num : "";
-        return result.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
-    },
+            if (query) {
+                url = url + (url.indexOf("?") >= 0 ? "&" : "?") + qs.stringify(query);
+            }
 
-    relativeDate(lang, date) {
-        return moment(date).locale(lang).fromNow();
-    },
+            return url;
+        },
 
-    fixedDate(lang, date) {
-        return moment(date).locale(lang).format("LLL");
-    },
+        // Format a number using commas
+        stringNum(num) {
+            // TODO(jeresig): Have a better way to handle this.
+            const separator = lang === "en" ? "," : ".";
+            const result = typeof num === "number" ? num : "";
+            return result.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
+        },
 
-    searchURL(lang, params) {
-        return searchURL(lang, params);
-    },
+        relativeDate(date) {
+            return moment(date).locale(lang).fromNow();
+        },
 
-    format(fmt = "", props) {
-        return fmt.replace(/%\(\s*([^)]+)\s*\)s/g, (m, v) => String(props[v.trim()]));
-    },
+        fixedDate(date) {
+            return moment(date).locale(lang).format("LLL");
+        },
 
-    getSource(sourceId, sources) {
-        for (const source of sources) {
-            if (source._id === sourceId) {
-                return source;
+        format(fmt = "", props) {
+            return fmt.replace(/%\(\s*([^)]+)\s*\)s/g, (m, v) => String(props[v.trim()]));
+        },
+
+        getSource(sourceId, sources) {
+            for (const source of sources) {
+                if (source._id === sourceId) {
+                    return source;
+                }
             }
         }
-    }
+    };
 };

@@ -2,21 +2,15 @@
 
 const React = require("react");
 
-const {searchURL} = require("../../utils.js");
-
-import type {Context} from "../../types.js";
-const {childContextTypes} = require("../../Wrapper.js");
-
 type FixedStringValue = {
     id: string,
     name: string,
 };
 
 type Props = {
-    name: string,
-    type: string,
     value: string | Array<string>,
     values?: Array<FixedStringValue>,
+    url: string | Array<string>,
 };
 
 const getTitle = (value: string, values?: Array<FixedStringValue>): string => {
@@ -35,43 +29,43 @@ const getTitle = (value: string, values?: Array<FixedStringValue>): string => {
 
 const Value = ({
     stringValue,
-    name,
-    type,
     values,
-}: Props & {stringValue: string}, {lang}: Context) => {
+    urlValue,
+}: Props & {stringValue: string, urlValue: string}) => {
     if (!stringValue) {
         return null;
     }
 
     const title = getTitle(stringValue, values);
-    const url = searchURL(lang, {
-        [name]: stringValue,
-        type,
-    });
 
-    return <a href={url}>
+    return <a href={urlValue}>
         {title}
     </a>;
 };
 
-Value.contextType = childContextTypes;
-
 const Values = (props: Props & {stringValues: Array<string>}) => {
-    const {stringValues} = props;
+    const {stringValues, url} = props;
 
     return <span>
         {stringValues.map((value, i) => <span key={i}>
-            <Value {...props} stringValue={value} />
+            <Value {...props} stringValue={value} urlValue={url[i]} />
             {stringValues.length - 1 === i ? "" : ", "}
         </span>)}
     </span>;
 };
 
 const FixedStringView = (props: Props) => {
-    const {value} = props;
-    return Array.isArray(value) ?
-        <Values {...props} stringValues={value} /> :
-        <Value {...props} stringValue={value} />;
+    const {value, url} = props;
+
+    if (Array.isArray(value) && Array.isArray(url)) {
+        return <Values {...props} stringValues={value} />;
+    }
+
+    if (!Array.isArray(value) && !Array.isArray(url)) {
+        return <Value {...props} stringValue={value} urlValue={url} />;
+    }
+
+    return null;
 };
 
 module.exports = FixedStringView;

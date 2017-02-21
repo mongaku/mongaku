@@ -1,10 +1,13 @@
+const path = require("path");
+
 const async = require("async");
 
 const record = require("../lib/record");
 const models = require("../lib/models");
 const db = require("../lib/db");
-const urls = require("../lib/urls");
+const config = require("../lib/config");
 const options = require("../lib/options");
+const urls = require("../lib/urls")(options);
 const defaultConverter = require("../lib/default-converter");
 
 let sourceCache = [];
@@ -51,7 +54,7 @@ Source.methods = {
     },
 
     getDirBase() {
-        return urls.genLocalFile(this._id);
+        return path.resolve(config.BASE_DATA_DIR, this._id);
     },
 
     getFullName() {

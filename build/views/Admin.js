@@ -5,7 +5,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 const React = require("react");
 
 const Page = require("./Page.js");
-const { format, relativeDate, URL } = require("./utils.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
@@ -15,7 +14,7 @@ const ImageImport = ({
     batch
 }, {
     gettext,
-    lang
+    utils: { format, relativeDate }
 }) => {
     const results = batch.getFilteredResults;
     let columns;
@@ -61,7 +60,7 @@ const ImageImport = ({
         React.createElement(
             "td",
             null,
-            relativeDate(lang, batch.modified)
+            relativeDate(batch.modified)
         ),
         columns
     );
@@ -139,7 +138,10 @@ ImageImports.propTypes = {
 };
 ImageImports.contextTypes = childContextTypes;
 
-const UploadImagesForm = ({ source }, { gettext, lang }) => React.createElement(
+const UploadImagesForm = ({ source }, {
+    gettext,
+    utils: { URL }
+}) => React.createElement(
     "div",
     { className: "panel panel-default" },
     React.createElement(
@@ -156,10 +158,9 @@ const UploadImagesForm = ({ source }, { gettext, lang }) => React.createElement(
         { className: "panel-body" },
         React.createElement(
             "form",
-            { action: URL(lang, `/${source.type}/source/${source._id}/upload-images`),
+            { action: URL(`/${source.type}/source/${source._id}/upload-images`),
                 method: "POST", encType: "multipart/form-data"
             },
-            React.createElement("input", { type: "hidden", name: "lang", value: lang }),
             React.createElement(
                 "p",
                 null,
@@ -207,7 +208,7 @@ const DataImport = ({
     batch
 }, {
     gettext,
-    lang
+    utils: { format, relativeDate }
 }) => {
     const results = batch.getFilteredResults;
     let columns;
@@ -273,7 +274,7 @@ const DataImport = ({
         React.createElement(
             "td",
             null,
-            relativeDate(lang, batch.modified)
+            relativeDate(batch.modified)
         ),
         columns
     );
@@ -368,7 +369,7 @@ DataImports.contextTypes = childContextTypes;
 
 const UploadDataForm = ({ source }, {
     gettext,
-    lang
+    utils: { URL }
 }) => React.createElement(
     "div",
     { className: "panel panel-default" },
@@ -386,10 +387,9 @@ const UploadDataForm = ({ source }, {
         { className: "panel-body" },
         React.createElement(
             "form",
-            { action: URL(lang, `/${source.type}/source/${source._id}/upload-data`),
+            { action: URL(`/${source.type}/source/${source._id}/upload-data`),
                 method: "POST", encType: "multipart/form-data"
             },
-            React.createElement("input", { type: "hidden", name: "lang", value: lang }),
             source.getExpectedFiles.map((file, i) => React.createElement(
                 "div",
                 { key: `file${i}` },
@@ -435,7 +435,8 @@ UploadDataForm.contextTypes = childContextTypes;
 
 const Admin = (props, {
     gettext,
-    options
+    options,
+    utils: { format }
 }) => {
     const {
         imageImport,

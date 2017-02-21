@@ -4,7 +4,6 @@ const React = require("react");
 
 const Page = require("./Page.js");
 const ImportResult = require("./ImportResult.js");
-const {format, relativeDate, fixedDate, URL} = require("./utils.js");
 
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
@@ -134,16 +133,19 @@ const DeletedResult = ({
     return <div>{title}</div>;
 };
 
-const ConfirmButtons = ({batch}: Props, {gettext, lang}: Context) => <p>
+const ConfirmButtons = ({batch}: Props, {
+    gettext,
+    utils: {URL},
+}: Context) => <p>
     <a
-        href={URL(lang, batch.getURL, {finalize: true})}
+        href={URL(batch.getURL, {finalize: true})}
         className="btn btn-success"
     >
         {gettext("Finalize Import")}
     </a>
     {" "}
     <a
-        href={URL(lang, batch.getURL, {abandon: true})}
+        href={URL(batch.getURL, {abandon: true})}
         className="btn btn-danger"
     >
         {gettext("Abandon Import")}
@@ -152,7 +154,10 @@ const ConfirmButtons = ({batch}: Props, {gettext, lang}: Context) => <p>
 
 ConfirmButtons.contextTypes = childContextTypes;
 
-const ImportData = (props: Props, {lang, gettext}: Context) => {
+const ImportData = (props: Props, {
+    gettext,
+    utils: {format, fixedDate, relativeDate, URL},
+}: Context) => {
     const {
         batch,
         adminURL,
@@ -165,12 +170,12 @@ const ImportData = (props: Props, {lang, gettext}: Context) => {
             {error: batch.getError}) :
         batch.getStateName;
     const uploadDate = format(gettext("Uploaded: %(date)s"),
-        {date: fixedDate(lang, batch.created)});
+        {date: fixedDate(batch.created)});
     const lastUpdated = format(gettext("Last Updated: %(date)s"),
-        {date: relativeDate(lang, batch.modified)});
+        {date: relativeDate(batch.modified)});
 
     const style = <link rel="stylesheet"
-        href={URL(lang, "/css/format-diff.css")}
+        href={URL("/css/format-diff.css")}
     />;
 
     return <Page title={title} style={style}>

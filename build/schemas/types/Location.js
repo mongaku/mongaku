@@ -25,7 +25,9 @@ Location.prototype = {
     },
 
     fields(value) {
-        return { [this.searchName()]: value };
+        return {
+            [this.searchName()]: value.name || value.city || value.country
+        };
     },
 
     searchTitle(value, i18n) {

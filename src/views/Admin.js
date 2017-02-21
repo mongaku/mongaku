@@ -3,7 +3,6 @@
 const React = require("react");
 
 const Page = require("./Page.js");
-const {format, relativeDate, URL} = require("./utils.js");
 
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
@@ -47,7 +46,7 @@ const ImageImport = ({
     batch,
 }: Props & {batch: Import}, {
     gettext,
-    lang,
+    utils: {format, relativeDate},
 }: Context) => {
     const results = batch.getFilteredResults;
     let columns;
@@ -68,7 +67,7 @@ const ImageImport = ({
 
     return <tr>
         <td><a href={batch.getURL}>{batch.fileName}</a></td>
-        <td>{relativeDate(lang, batch.modified)}</td>
+        <td>{relativeDate(batch.modified)}</td>
         {columns}
     </tr>;
 };
@@ -100,19 +99,20 @@ const ImageImports = (props: Props, {gettext}: Context) => {
 
 ImageImports.contextTypes = childContextTypes;
 
-const UploadImagesForm = ({source}: Props,
-        {gettext, lang}: Context) => <div className="panel panel-default">
+const UploadImagesForm = ({source}: Props, {
+    gettext,
+    utils: {URL},
+}: Context) => <div className="panel panel-default">
     <div className="panel-heading">
         <h3 className="panel-title">
             {gettext("Upload Images")}
         </h3>
     </div>
     <div className="panel-body">
-        <form action={URL(lang,
+        <form action={URL(
                 `/${source.type}/source/${source._id}/upload-images`)}
             method="POST" encType="multipart/form-data"
         >
-            <input type="hidden" name="lang" value={lang}/>
             <p>
                 {gettext("Upload a Zip file (.zip) of " +
                     "JPG images (.jpg or .jpeg).")}
@@ -149,7 +149,7 @@ const DataImport = ({
     batch,
 }: Props & {batch: Import}, {
     gettext,
-    lang,
+    utils: {format, relativeDate},
 }: Context) => {
     const results = batch.getFilteredResults;
     let columns;
@@ -179,7 +179,7 @@ const DataImport = ({
 
     return <tr>
         <td><a href={batch.getURL}>{batch.fileName}</a></td>
-        <td>{relativeDate(lang, batch.modified)}</td>
+        <td>{relativeDate(batch.modified)}</td>
         {columns}
     </tr>;
 };
@@ -216,7 +216,7 @@ DataImports.contextTypes = childContextTypes;
 
 const UploadDataForm = ({source}: Props, {
     gettext,
-    lang,
+    utils: {URL},
 }: Context) => <div className="panel panel-default">
     <div className="panel-heading">
         <h3 className="panel-title">
@@ -224,11 +224,10 @@ const UploadDataForm = ({source}: Props, {
         </h3>
     </div>
     <div className="panel-body">
-        <form action={URL(lang,
+        <form action={URL(
                 `/${source.type}/source/${source._id}/upload-data`)}
             method="POST" encType="multipart/form-data"
         >
-            <input type="hidden" name="lang" value={lang}/>
             {source.getExpectedFiles.map((file, i) => <div key={`file${i}`}>
                 <p>{file}</p>
 
@@ -255,6 +254,7 @@ UploadDataForm.contextTypes = childContextTypes;
 const Admin = (props: Props, {
     gettext,
     options,
+    utils: {format},
 }: Context) => {
     const {
         imageImport,

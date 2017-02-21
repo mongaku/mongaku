@@ -3,13 +3,12 @@
 const React = require("react");
 
 const Page = require("./Page.js");
-const { URL } = require("./utils.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
 const { childContextTypes } = require("./Wrapper.js");
 
-const Login = (props, { lang, gettext }) => {
+const Login = (props, { gettext, utils: { URL } }) => {
     const title = gettext("Login");
 
     return React.createElement(
@@ -22,7 +21,7 @@ const Login = (props, { lang, gettext }) => {
         ),
         React.createElement(
             "form",
-            { action: URL(lang, "/login"), method: "post" },
+            { action: URL("/login"), method: "post" },
             React.createElement(
                 "div",
                 null,

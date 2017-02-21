@@ -3,6 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 
+const config = require("./config");
 const options = require("./default-options");
 const recordOptions = require("./default-record-options");
 
@@ -30,5 +31,9 @@ if (loadFile) {
 for (const typeName in options.types) {
     options.types[typeName] = Object.assign({}, recordOptions, options.types[typeName]);
 }
+
+// Bring in two options that could be configured via the config
+options.baseURL = options.baseURL || config.BASE_URL;
+options.baseDataURL = options.baseDataURL || config.BASE_DATA_URL;
 
 module.exports = options;

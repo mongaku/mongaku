@@ -1,14 +1,6 @@
 "use strict";
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 const React = require("react");
-
-const { searchURL } = require("../../utils.js");
-
-var babelPluginFlowReactPropTypes_proptype_Context = require("../../types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
-
-const { childContextTypes } = require("../../Wrapper.js");
 
 const getDate = date => {
     if (date.original) {
@@ -23,19 +15,7 @@ const getDate = date => {
     return "";
 };
 
-const YearRange = ({
-    name,
-    type,
-    date
-}, { lang }) => {
-    const url = searchURL(lang, {
-        [name]: {
-            start: date.start,
-            end: date.end
-        },
-        type
-    });
-
+const YearRange = ({ date, url }) => {
     return React.createElement(
         "span",
         { key: date._id },
@@ -48,29 +28,36 @@ const YearRange = ({
     );
 };
 
-YearRange.contextTypes = childContextTypes;
-
-const YearRangeView = props => {
-    const { value } = props;
+YearRange.propTypes = {
+    date: require("react").PropTypes.shape({
+        _id: require("react").PropTypes.string.isRequired,
+        original: require("react").PropTypes.string,
+        circa: require("react").PropTypes.bool,
+        start: require("react").PropTypes.number.isRequired,
+        end: require("react").PropTypes.number.isRequired
+    }).isRequired,
+    url: require("react").PropTypes.string.isRequired
+};
+const YearRangeView = ({ value, url }) => {
     return React.createElement(
         "span",
         null,
-        value.map(date => React.createElement(YearRange, _extends({}, props, {
+        value.map((date, i) => React.createElement(YearRange, {
+            key: date._id,
             date: date,
-            key: date._id
-        })))
+            url: url[i]
+        }))
     );
 };
 
 YearRangeView.propTypes = {
-    name: require("react").PropTypes.string.isRequired,
-    type: require("react").PropTypes.string.isRequired,
     value: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
         original: require("react").PropTypes.string,
         circa: require("react").PropTypes.bool,
         start: require("react").PropTypes.number.isRequired,
         end: require("react").PropTypes.number.isRequired
-    })).isRequired
+    })).isRequired,
+    url: require("react").PropTypes.arrayOf(require("react").PropTypes.string).isRequired
 };
 module.exports = YearRangeView;

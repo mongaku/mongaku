@@ -2,8 +2,6 @@
 
 const React = require("react");
 
-const {format, URL, stringNum} = require("./utils.js");
-
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
 
@@ -38,7 +36,10 @@ type Props = {
     title: string,
 };
 
-const ImportResult = (props: Props, {gettext, lang}: Context) => {
+const ImportResult = (props: Props, {
+    gettext,
+    utils: {stringNum, URL, format},
+}: Context) => {
     const {
         batch,
         expanded,
@@ -50,8 +51,8 @@ const ImportResult = (props: Props, {gettext, lang}: Context) => {
     const allResults = batch.getFilteredResults[id];
     const showAll = format(gettext(
         "Show all %(count)s results..."),
-        {count: stringNum(lang, allResults.length)});
-    const expandURL = URL(lang, batch.getURL, {expanded: id});
+        {count: stringNum(allResults.length)});
+    const expandURL = URL(batch.getURL, {expanded: id});
     const isExpanded = (expanded === id || allResults.length <= numShow);
     const results = isExpanded ? allResults : allResults.slice(0, numShow);
 
@@ -64,7 +65,7 @@ const ImportResult = (props: Props, {gettext, lang}: Context) => {
             <h3 id={id} className="panel-title">
                 {title}
                 {" "}
-                ({stringNum(lang, allResults.length)})
+                ({stringNum(allResults.length)})
             </h3>
         </div>
         <div className="panel-body">

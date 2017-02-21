@@ -2,6 +2,8 @@
 
 const React = require("react");
 
+const utils = require("./utils");
+
 var babelPluginFlowReactPropTypes_proptype_Options = require("./types.js").babelPluginFlowReactPropTypes_proptype_Options || require("react").PropTypes.any;
 
 var babelPluginFlowReactPropTypes_proptype_User = require("./types.js").babelPluginFlowReactPropTypes_proptype_User || require("react").PropTypes.any;
@@ -9,13 +11,15 @@ var babelPluginFlowReactPropTypes_proptype_User = require("./types.js").babelPlu
 class Wrapper extends React.Component {
     getChildContext() {
         const { originalUrl, user, options, i18n } = this.props;
+        const { lang } = i18n;
 
         return {
-            lang: i18n.lang,
+            lang,
             gettext: msg => i18n.gettext(msg),
             user,
             options,
-            originalUrl
+            originalUrl,
+            utils: utils(lang, options)
         };
     }
 
@@ -39,7 +43,8 @@ Wrapper.childContextTypes = {
     gettext: React.PropTypes.func,
     user: React.PropTypes.any,
     options: React.PropTypes.any,
-    originalUrl: React.PropTypes.string
+    originalUrl: React.PropTypes.string,
+    utils: React.PropTypes.any
 };
 
 module.exports = Wrapper;

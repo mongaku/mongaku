@@ -6,8 +6,8 @@ const async = require("async");
 
 const db = require("../lib/db");
 const models = require("../lib/models");
-const urls = require("../lib/urls");
 const similar = require("../lib/similar");
+const config = require("../lib/config");
 
 const Image = require("./Image");
 
@@ -79,7 +79,7 @@ const UploadImage = new db.schema({
 });
 
 const getDirBase = function () {
-    return urls.genLocalFile(uploadName);
+    return path.resolve(config.BASE_DATA_DIR, uploadName);
 };
 
 UploadImage.methods = Object.assign({}, Image.methods, {

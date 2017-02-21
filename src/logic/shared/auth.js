@@ -1,6 +1,7 @@
 const passport = require("passport");
 
-const urls = require("../../lib/urls");
+const options = require("../../lib/options");
+const urls = require("../../lib/urls")(options);
 
 // Only allow certain users to access these pages
 module.exports = (req, res, next) => {

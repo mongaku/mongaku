@@ -73,12 +73,22 @@ Dimension.prototype = {
         const ret = {};
         const defaultUnit = this.defaultSearchUnit || this.defaultUnit;
 
+        if (value.height) {
+            ret[`${this.searchName()}.heightMin`] = value.height;
+            ret[`${this.searchName()}.heightMax`] = value.height;
+        }
+
         if (value.heightMin) {
             ret[`${this.searchName()}.heightMin`] = value.heightMin;
         }
 
         if (value.heightMax) {
             ret[`${this.searchName()}.heightMax`] = value.heightMax;
+        }
+
+        if (value.width) {
+            ret[`${this.searchName()}.widthMin`] = value.width;
+            ret[`${this.searchName()}.widthMax`] = value.width;
         }
 
         if (value.widthMin) {

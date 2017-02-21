@@ -2,8 +2,6 @@
 
 const React = require("react");
 
-const {URL, getOtherURL} = require("./utils.js");
-
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
 
@@ -26,7 +24,7 @@ const Head = ({
     social,
     style,
     noIndex,
-}: Props, {lang, options}: Context) => {
+}: Props, {lang, options, utils: {URL}}: Context) => {
     const siteTitle = options.getTitle;
     let pageTitle = siteTitle;
 
@@ -58,39 +56,42 @@ const Head = ({
         />
         {disableIndex && <meta name="robots" content="noindex"/>}
         {options.faviconUrl && <link rel="icon" type="image/x-icon"
-            href={URL(lang, options.faviconUrl)}
+            href={URL(options.faviconUrl)}
         />}
         <title>{pageTitle || title}</title>
         {socialMeta}
-        <link rel="stylesheet" href={URL(lang, "/css/bootstrap.min.css")}/>
+        <link rel="stylesheet" href={URL("/css/bootstrap.min.css")}/>
         <link
             rel="stylesheet"
-            href={URL(lang, "/css/bootstrap-theme.min.css")}
+            href={URL("/css/bootstrap-theme.min.css")}
         />
-        <link rel="stylesheet" href={URL(lang, "/css/select2.min.css")}/>
+        <link rel="stylesheet" href={URL("/css/select2.min.css")}/>
         <link
             rel="stylesheet"
-            href={URL(lang, "/css/select2-bootstrap.min.css")}
+            href={URL("/css/select2-bootstrap.min.css")}
         />
-        <link rel="stylesheet" href={URL(lang, "/css/style.css")}/>
+        <link rel="stylesheet" href={URL("/css/style.css")}/>
         {style}
     </head>;
 };
 
 Head.contextTypes = childContextTypes;
 
-const Logo = (props, {lang, options}: Context) => <span>
+const Logo = (props, {options, utils: {URL}}: Context) => <span>
     <img alt={options.getTitle}
-        src={URL(lang, options.logoUrl || "")}
+        src={URL(options.logoUrl || "")}
         height="40" width="40"
     />
     {" "}
 </span>;
 
-const NavLink = ({type, title}: Props & {type: string},
-        {lang, gettext, user}: Context) => <li className="dropdown">
+const NavLink = ({type, title}: Props & {type: string}, {
+    gettext,
+    user,
+    utils: {URL},
+}: Context) => <li className="dropdown">
     <a
-        href={URL(lang, `/${type}/search`)}
+        href={URL(`/${type}/search`)}
         className="dropdown-toggle"
         data-toggle="dropdown"
         role="button"
@@ -104,7 +105,7 @@ const NavLink = ({type, title}: Props & {type: string},
     <ul className="dropdown-menu">
         <li>
             <form
-                action={URL(lang, `/${type}/search`)}
+                action={URL(`/${type}/search`)}
                 method="GET"
                 className="form-search form-inline dropdown-search"
             >
@@ -123,12 +124,12 @@ const NavLink = ({type, title}: Props & {type: string},
             </form>
         </li>
         <li>
-            <a href={URL(lang, `/${type}/search`)}>
+            <a href={URL(`/${type}/search`)}>
                 {gettext("Browse All")}
             </a>
         </li>
         {user && user.getEditableSourcesByType[type].length > 0 && <li>
-            <a href={URL(lang, `/${type}/create`)}>
+            <a href={URL(`/${type}/create`)}>
                 {gettext("Create New")}
             </a>
         </li>}
@@ -137,8 +138,12 @@ const NavLink = ({type, title}: Props & {type: string},
 
 NavLink.contextTypes = childContextTypes;
 
-const SearchForm = (props, {gettext, lang, options}: Context) => <form
-    action={URL(lang, `/${Object.keys(options.types)[0]}/search`)}
+const SearchForm = (props, {
+    gettext,
+    options,
+    utils: {URL},
+}: Context) => <form
+    action={URL(`/${Object.keys(options.types)[0]}/search`)}
     method="GET"
     className={"navbar-form navbar-right search form-inline hidden-xs"}
 >
@@ -160,13 +165,14 @@ const LocaleMenu = (props, {
     lang,
     originalUrl,
     options,
+    utils: {URL, getOtherURL},
 }: Context) => <li className="dropdown">
     <a href="" className="dropdown-toggle"
         data-toggle="dropdown" role="button"
         aria-expanded="false"
     >
         <img alt={options.locales[lang]}
-            src={URL(lang, `/images/${lang}.png`)}
+            src={URL(`/images/${lang}.png`)}
             width="16" height="11"
         />
         {" "}
@@ -178,7 +184,7 @@ const LocaleMenu = (props, {
             .filter((locale) => locale !== lang)
             .map((locale) => <li key={locale}>
                 <a href={getOtherURL(originalUrl, locale)}>
-                    <img src={URL(lang, `/images/${locale}.png`)}
+                    <img src={URL(`/images/${locale}.png`)}
                         alt={options.locales[locale]}
                         width="16" height="11"
                     />
@@ -194,9 +200,9 @@ LocaleMenu.contextTypes = childContextTypes;
 
 const Header = (props, {
     gettext,
-    lang,
     user,
     options,
+    utils: {URL},
 }: Context) => <div
     className="navbar navbar-default navbar-static-top"
 >
@@ -211,7 +217,7 @@ const Header = (props, {
                 <span className="icon-bar"/>
                 <span className="icon-bar"/>
             </button>
-            <a className="navbar-brand" href={URL(lang, "/")}>
+            <a className="navbar-brand" href={URL("/")}>
                 {options.logoUrl && <Logo />}
                 {options.getShortTitle}
             </a>
@@ -224,12 +230,12 @@ const Header = (props, {
                     return <NavLink type={type} title={title} key={type} />;
                 })}
                 {!user && <li>
-                    <a href={URL(lang, "/login")}>
+                    <a href={URL("/login")}>
                         {gettext("Login")}
                     </a>
                 </li>}
                 {user && <li>
-                    <a href={URL(lang, "/logout")}>
+                    <a href={URL("/logout")}>
                         {gettext("Logout")}
                     </a>
                 </li>}
@@ -244,11 +250,11 @@ const Header = (props, {
 
 Header.contextTypes = childContextTypes;
 
-const Scripts = ({scripts}: Props, {lang}: Context) => <div>
-    <script src={URL(lang, "/js/jquery.min.js")} />
-    <script src={URL(lang, "/js/bootstrap.min.js")} />
-    <script src={URL(lang, "/js/select2.min.js")} />
-    <script src={URL(lang, "/js/app.js")} />
+const Scripts = ({scripts}: Props, {utils: {URL}}: Context) => <div>
+    <script src={URL("/js/jquery.min.js")} />
+    <script src={URL("/js/bootstrap.min.js")} />
+    <script src={URL("/js/select2.min.js")} />
+    <script src={URL("/js/app.js")} />
     {scripts}
 </div>;
 

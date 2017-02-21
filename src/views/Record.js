@@ -8,7 +8,6 @@ const FixedStringView = require("./types/view/FixedString.js");
 const LocationView = require("./types/view/Location.js");
 const NameView = require("./types/view/Name.js");
 const YearRangeView = require("./types/view/YearRange.js");
-const {format, getSource} = require("./utils.js");
 
 import type {Context, ModelType} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
@@ -42,6 +41,9 @@ type RecordType = {
     getThumbURL: string,
     getTitle: string,
     getURL: string,
+    getValueURLs: {
+        [name: string]: string,
+    },
 };
 
 type Source = {
@@ -166,23 +168,20 @@ const Images = (props: Props & {record: RecordType}) => {
 };
 
 const TypeView = ({
-    name,
-    type,
     value,
+    url,
     typeSchema,
 }: {
-    name: string,
-    type: string,
     value: any,
+    url: string | Array<string>,
     typeSchema: ModelType,
 }) => {
     const {multiple} = typeSchema;
 
     if (typeSchema.type === "Dimension") {
         return <DimensionView
-            name={name}
-            type={type}
             value={value}
+            url={url}
             defaultUnit={typeSchema.defaultUnit}
         />;
 
@@ -194,58 +193,51 @@ const TypeView = ({
         }));
 
         return <FixedStringView
-            name={name}
-            type={type}
             value={value}
             values={values}
+            url={url}
             multiple={multiple}
         />;
 
     } else if (typeSchema.type === "LinkedRecord") {
         return null;
 
-    } else if (typeSchema.type === "Location") {
+    } else if (typeSchema.type === "Location" && Array.isArray(url)) {
         return <LocationView
-            name={name}
-            type={type}
             value={value}
+            url={url}
         />;
 
-    } else if (typeSchema.type === "Name") {
+    } else if (typeSchema.type === "Name" && Array.isArray(url)) {
         return <NameView
-            name={name}
-            type={type}
             value={value}
+            url={url}
             multiple={multiple}
         />;
 
     } else if (typeSchema.type === "SimpleDate") {
         return <FixedStringView
-            name={name}
-            type={type}
             value={value}
+            url={url}
         />;
 
     } else if (typeSchema.type === "SimpleNumber") {
         return <FixedStringView
-            name={name}
-            type={type}
             value={value}
+            url={url}
         />;
 
     } else if (typeSchema.type === "SimpleString") {
         return <FixedStringView
-            name={name}
-            type={type}
             value={value}
+            url={url}
             multiline={typeSchema.multiline}
         />;
 
-    } else if (typeSchema.type === "YearRange") {
+    } else if (typeSchema.type === "YearRange" && Array.isArray(url)) {
         return <YearRangeView
-            name={name}
-            type={type}
             value={value}
+            url={url}
         />;
     }
 
@@ -279,9 +271,8 @@ const Metadata = (props: Props, {options}: Context) => {
                 </th>
                 {records.map((record) => <td key={record._id}>
                     <TypeView
-                        name={type}
-                        type={recordType}
                         value={record[type]}
+                        url={record.getValueURLs[type]}
                         typeSchema={typeSchema}
                     />
                 </td>)}
@@ -309,7 +300,10 @@ const Details = ({records}: Props, {gettext}: Context) => <tr>
 
 Details.contextTypes = childContextTypes;
 
-const Sources = ({records, sources}: Props, {gettext}: Context) => <tr>
+const Sources = ({records, sources}: Props, {
+    gettext,
+    utils: {getSource},
+}: Context) => <tr>
     <th className="text-right">
         {gettext("Source")}
     </th>
@@ -367,6 +361,7 @@ const SimilarMatch = ({
     match: {recordModel, score},
 }: Props & {source: ?Source, match: Match}, {
     gettext,
+    utils: {format},
 }: Context) => <div className="img col-md-12 col-xs-6 col-sm-4">
     <a href={recordModel.getURL}>
         <img src={recordModel.getThumbURL}
@@ -392,7 +387,7 @@ const SimilarMatch = ({
 
 SimilarMatch.contextTypes = childContextTypes;
 
-const Similar = (props: Props, {gettext}: Context) => {
+const Similar = (props: Props, {gettext, utils: {getSource}}: Context) => {
     const {similar, sources} = props;
 
     return <div className="col-md-3">

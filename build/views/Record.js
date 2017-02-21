@@ -10,7 +10,6 @@ const FixedStringView = require("./types/view/FixedString.js");
 const LocationView = require("./types/view/Location.js");
 const NameView = require("./types/view/Name.js");
 const YearRangeView = require("./types/view/YearRange.js");
-const { format, getSource } = require("./utils.js");
 
 var babelPluginFlowReactPropTypes_proptype_ModelType = require("./types.js").babelPluginFlowReactPropTypes_proptype_ModelType || require("react").PropTypes.any;
 
@@ -138,18 +137,16 @@ const Images = props => {
 };
 
 const TypeView = ({
-    name,
-    type,
     value,
+    url,
     typeSchema
 }) => {
     const { multiple } = typeSchema;
 
     if (typeSchema.type === "Dimension") {
         return React.createElement(DimensionView, {
-            name: name,
-            type: type,
             value: value,
+            url: url,
             defaultUnit: typeSchema.defaultUnit
         });
     } else if (typeSchema.type === "FixedString") {
@@ -160,51 +157,44 @@ const TypeView = ({
         }));
 
         return React.createElement(FixedStringView, {
-            name: name,
-            type: type,
             value: value,
             values: values,
+            url: url,
             multiple: multiple
         });
     } else if (typeSchema.type === "LinkedRecord") {
         return null;
-    } else if (typeSchema.type === "Location") {
+    } else if (typeSchema.type === "Location" && Array.isArray(url)) {
         return React.createElement(LocationView, {
-            name: name,
-            type: type,
-            value: value
-        });
-    } else if (typeSchema.type === "Name") {
-        return React.createElement(NameView, {
-            name: name,
-            type: type,
             value: value,
+            url: url
+        });
+    } else if (typeSchema.type === "Name" && Array.isArray(url)) {
+        return React.createElement(NameView, {
+            value: value,
+            url: url,
             multiple: multiple
         });
     } else if (typeSchema.type === "SimpleDate") {
         return React.createElement(FixedStringView, {
-            name: name,
-            type: type,
-            value: value
+            value: value,
+            url: url
         });
     } else if (typeSchema.type === "SimpleNumber") {
         return React.createElement(FixedStringView, {
-            name: name,
-            type: type,
-            value: value
+            value: value,
+            url: url
         });
     } else if (typeSchema.type === "SimpleString") {
         return React.createElement(FixedStringView, {
-            name: name,
-            type: type,
             value: value,
+            url: url,
             multiline: typeSchema.multiline
         });
-    } else if (typeSchema.type === "YearRange") {
+    } else if (typeSchema.type === "YearRange" && Array.isArray(url)) {
         return React.createElement(YearRangeView, {
-            name: name,
-            type: type,
-            value: value
+            value: value,
+            url: url
         });
     }
 
@@ -212,9 +202,8 @@ const TypeView = ({
 };
 
 TypeView.propTypes = {
-    name: require("react").PropTypes.string.isRequired,
-    type: require("react").PropTypes.string.isRequired,
     value: require("react").PropTypes.any.isRequired,
+    url: require("react").PropTypes.oneOfType([require("react").PropTypes.string, require("react").PropTypes.arrayOf(require("react").PropTypes.string)]).isRequired,
     typeSchema: babelPluginFlowReactPropTypes_proptype_ModelType
 };
 const Metadata = (props, { options }) => {
@@ -252,9 +241,8 @@ const Metadata = (props, { options }) => {
                     "td",
                     { key: record._id },
                     React.createElement(TypeView, {
-                        name: type,
-                        type: recordType,
                         value: record[type],
+                        url: record.getValueURLs[type],
                         typeSchema: typeSchema
                     })
                 ))
@@ -282,7 +270,8 @@ Metadata.propTypes = {
         getOriginalURL: require("react").PropTypes.string.isRequired,
         getThumbURL: require("react").PropTypes.string.isRequired,
         getTitle: require("react").PropTypes.string.isRequired,
-        getURL: require("react").PropTypes.string.isRequired
+        getURL: require("react").PropTypes.string.isRequired,
+        getValueURLs: require("react").PropTypes.shape({}).isRequired
     })).isRequired,
     similar: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
@@ -348,7 +337,8 @@ Details.propTypes = {
         getOriginalURL: require("react").PropTypes.string.isRequired,
         getThumbURL: require("react").PropTypes.string.isRequired,
         getTitle: require("react").PropTypes.string.isRequired,
-        getURL: require("react").PropTypes.string.isRequired
+        getURL: require("react").PropTypes.string.isRequired,
+        getValueURLs: require("react").PropTypes.shape({}).isRequired
     })).isRequired,
     similar: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
@@ -374,7 +364,10 @@ Details.propTypes = {
 };
 Details.contextTypes = childContextTypes;
 
-const Sources = ({ records, sources }, { gettext }) => React.createElement(
+const Sources = ({ records, sources }, {
+    gettext,
+    utils: { getSource }
+}) => React.createElement(
     "tr",
     null,
     React.createElement(
@@ -414,7 +407,8 @@ Sources.propTypes = {
         getOriginalURL: require("react").PropTypes.string.isRequired,
         getThumbURL: require("react").PropTypes.string.isRequired,
         getTitle: require("react").PropTypes.string.isRequired,
-        getURL: require("react").PropTypes.string.isRequired
+        getURL: require("react").PropTypes.string.isRequired,
+        getValueURLs: require("react").PropTypes.shape({}).isRequired
     })).isRequired,
     similar: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
@@ -502,7 +496,8 @@ MainRecord.propTypes = {
         getOriginalURL: require("react").PropTypes.string.isRequired,
         getThumbURL: require("react").PropTypes.string.isRequired,
         getTitle: require("react").PropTypes.string.isRequired,
-        getURL: require("react").PropTypes.string.isRequired
+        getURL: require("react").PropTypes.string.isRequired,
+        getValueURLs: require("react").PropTypes.shape({}).isRequired
     })).isRequired,
     similar: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
@@ -532,7 +527,8 @@ const SimilarMatch = ({
     source,
     match: { recordModel, score }
 }, {
-    gettext
+    gettext,
+    utils: { format }
 }) => React.createElement(
     "div",
     { className: "img col-md-12 col-xs-6 col-sm-4" },
@@ -570,7 +566,7 @@ const SimilarMatch = ({
 
 SimilarMatch.contextTypes = childContextTypes;
 
-const Similar = (props, { gettext }) => {
+const Similar = (props, { gettext, utils: { getSource } }) => {
     const { similar, sources } = props;
 
     return React.createElement(
@@ -628,7 +624,8 @@ Similar.propTypes = {
         getOriginalURL: require("react").PropTypes.string.isRequired,
         getThumbURL: require("react").PropTypes.string.isRequired,
         getTitle: require("react").PropTypes.string.isRequired,
-        getURL: require("react").PropTypes.string.isRequired
+        getURL: require("react").PropTypes.string.isRequired,
+        getValueURLs: require("react").PropTypes.shape({}).isRequired
     })).isRequired,
     similar: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,
@@ -705,7 +702,8 @@ Record.propTypes = {
         getOriginalURL: require("react").PropTypes.string.isRequired,
         getThumbURL: require("react").PropTypes.string.isRequired,
         getTitle: require("react").PropTypes.string.isRequired,
-        getURL: require("react").PropTypes.string.isRequired
+        getURL: require("react").PropTypes.string.isRequired,
+        getValueURLs: require("react").PropTypes.shape({}).isRequired
     })).isRequired,
     similar: require("react").PropTypes.arrayOf(require("react").PropTypes.shape({
         _id: require("react").PropTypes.string.isRequired,

@@ -4,7 +4,6 @@ const React = require("react");
 
 const Page = require("./Page.js");
 const SearchForm = require("./SearchForm.js");
-const {format, stringNum, getSource} = require("./utils.js");
 
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
@@ -73,7 +72,11 @@ const FacetBucket = ({bucket}: {bucket: Bucket}) => <li>
 const Facet = ({
     facet,
     type,
-}: {type: string, facet: FacetType}, {gettext, options}: Context) => {
+}: {type: string, facet: FacetType}, {
+    gettext,
+    options,
+    utils: {format},
+}: Context) => {
     const minFacetCount = options.types[type].minFacetCount || 1;
     let extra = null;
     let buckets = facet.buckets
@@ -132,21 +135,24 @@ const Facets = (props: Props) => {
     </div>;
 };
 
-const Sidebar = (props: Props, {lang, gettext}: Context) => {
+const Sidebar = (props: Props, {
+    gettext,
+    utils: {format, stringNum},
+}: Context) => {
     const {total, start, end} = props;
 
     return <div className="results-side col-sm-3 col-sm-push-9">
         <div className="panel panel-default facet">
             <div className="panel-heading">
                 <strong>{format(gettext("%(numRecords)s matches."),
-                    {numRecords: stringNum(lang, total)})}
+                    {numRecords: stringNum(total)})}
                 </strong>
                 <br/>
                 {!!end && <span>{format(
                     gettext("Viewing %(start)s to %(end)s."),
                     {
-                        start: stringNum(lang, start || 1),
-                        end: stringNum(lang, end),
+                        start: stringNum(start || 1),
+                        end: stringNum(end),
                     }
                 )}</span>}
             </div>
@@ -161,7 +167,7 @@ const Sidebar = (props: Props, {lang, gettext}: Context) => {
 Sidebar.contextTypes = childContextTypes;
 
 const Breadcrumb = ({crumb}: {crumb: BreadcrumbType},
-    {gettext}: Context) =>
+    {gettext, utils: {format}}: Context) =>
 <a href={crumb.url}
     className="btn btn-default btn-xs"
     title={format(gettext("Remove %(query)s"),
@@ -229,7 +235,7 @@ Pagination.contextTypes = childContextTypes;
 const ImageResultFooter = ({
     record,
     sources,
-}: Props & {record: RecordType}) => {
+}: Props & {record: RecordType}, {utils: {getSource}}: Context) => {
     // Don't show the source selection if there isn't more than one source
     if (!sources || sources.length <= 1) {
         return null;
@@ -250,6 +256,8 @@ const ImageResultFooter = ({
         </div>
     </div>;
 };
+
+ImageResultFooter.contextTypes = childContextTypes;
 
 const ImageResult = (props: Props & {record: RecordType}) => {
     const {record} = props;

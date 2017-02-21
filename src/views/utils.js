@@ -4,64 +4,55 @@ const qs = require("querystring");
 
 const moment = require("moment");
 
-const urls = require("../lib/urls");
-const searchURL = require("../logic/shared/search-url");
+import type {Source, Options} from "./types.js";
 
-type Source = {
-    _id: string,
-    name: string,
-    getURL: string,
-    getFullName: string,
-    getShortName: string,
-};
+module.exports = (lang: string, options: Options) => {
+    const urls = require("../lib/urls")(options);
 
-module.exports = {
-    getOtherURL(originalUrl: string, locale: string): string {
-        return urls.gen(locale, originalUrl);
-    },
+    return {
+        getOtherURL(originalUrl: string, locale: string): string {
+            return urls.gen(locale, originalUrl);
+        },
 
-    URL(lang: string, path: string, query?: Object): string {
-        let url = urls.gen(lang, path);
+        URL(path: string, query?: Object): string {
+            let url = urls.gen(lang, path);
 
-        if (query) {
-            url = url + (url.indexOf("?") >= 0 ? "&" : "?") +
-                qs.stringify(query);
-        }
-
-        return url;
-    },
-
-    // Format a number using commas
-    stringNum(lang: string, num: number): string {
-        // TODO(jeresig): Have a better way to handle this.
-        const separator = lang === "en" ? "," : ".";
-        const result = (typeof num === "number" ? num : "");
-        return result.toString().replace(/\B(?=(\d{3})+(?!\d))/g,
-            separator);
-    },
-
-    relativeDate(lang: string, date: Date): string {
-        return moment(date).locale(lang).fromNow();
-    },
-
-    fixedDate(lang: string, date: Date): string {
-        return moment(date).locale(lang).format("LLL");
-    },
-
-    searchURL(lang: string, params: Object): string {
-        return searchURL(lang, params);
-    },
-
-    format(fmt: string = "", props: {[key: string]: any}): string {
-        return fmt.replace(/%\(\s*([^)]+)\s*\)s/g,
-            (m, v) => String(props[v.trim()]));
-    },
-
-    getSource(sourceId: string, sources: Array<Source>): ?Source {
-        for (const source of sources) {
-            if (source._id === sourceId) {
-                return source;
+            if (query) {
+                url = url + (url.indexOf("?") >= 0 ? "&" : "?") +
+                    qs.stringify(query);
             }
-        }
-    },
+
+            return url;
+        },
+
+        // Format a number using commas
+        stringNum(num: number): string {
+            // TODO(jeresig): Have a better way to handle this.
+            const separator = lang === "en" ? "," : ".";
+            const result = (typeof num === "number" ? num : "");
+            return result.toString().replace(/\B(?=(\d{3})+(?!\d))/g,
+                separator);
+        },
+
+        relativeDate(date: Date): string {
+            return moment(date).locale(lang).fromNow();
+        },
+
+        fixedDate(date: Date): string {
+            return moment(date).locale(lang).format("LLL");
+        },
+
+        format(fmt: string = "", props: {[key: string]: any}): string {
+            return fmt.replace(/%\(\s*([^)]+)\s*\)s/g,
+                (m, v) => String(props[v.trim()]));
+        },
+
+        getSource(sourceId: string, sources: Array<Source>): ?Source {
+            for (const source of sources) {
+                if (source._id === sourceId) {
+                    return source;
+                }
+            }
+        },
+    };
 };

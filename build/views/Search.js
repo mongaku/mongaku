@@ -6,7 +6,6 @@ const React = require("react");
 
 const Page = require("./Page.js");
 const SearchForm = require("./SearchForm.js");
-const { format, stringNum, getSource } = require("./utils.js");
 
 var babelPluginFlowReactPropTypes_proptype_Context = require("./types.js").babelPluginFlowReactPropTypes_proptype_Context || require("react").PropTypes.any;
 
@@ -36,7 +35,11 @@ FacetBucket.propTypes = {
 const Facet = ({
     facet,
     type
-}, { gettext, options }) => {
+}, {
+    gettext,
+    options,
+    utils: { format }
+}) => {
     const minFacetCount = options.types[type].minFacetCount || 1;
     let extra = null;
     let buckets = facet.buckets.filter(bucket => bucket.count >= minFacetCount);
@@ -161,7 +164,10 @@ Facets.propTypes = {
     queries: require("react").PropTypes.any.isRequired,
     values: require("react").PropTypes.any.isRequired
 };
-const Sidebar = (props, { lang, gettext }) => {
+const Sidebar = (props, {
+    gettext,
+    utils: { format, stringNum }
+}) => {
     const { total, start, end } = props;
 
     return React.createElement(
@@ -176,15 +182,15 @@ const Sidebar = (props, { lang, gettext }) => {
                 React.createElement(
                     "strong",
                     null,
-                    format(gettext("%(numRecords)s matches."), { numRecords: stringNum(lang, total) })
+                    format(gettext("%(numRecords)s matches."), { numRecords: stringNum(total) })
                 ),
                 React.createElement("br", null),
                 !!end && React.createElement(
                     "span",
                     null,
                     format(gettext("Viewing %(start)s to %(end)s."), {
-                        start: stringNum(lang, start || 1),
-                        end: stringNum(lang, end)
+                        start: stringNum(start || 1),
+                        end: stringNum(end)
                     })
                 )
             ),
@@ -243,7 +249,7 @@ Sidebar.propTypes = {
 };
 Sidebar.contextTypes = childContextTypes;
 
-const Breadcrumb = ({ crumb }, { gettext }) => React.createElement(
+const Breadcrumb = ({ crumb }, { gettext, utils: { format } }) => React.createElement(
     "a",
     { href: crumb.url,
         className: "btn btn-default btn-xs",
@@ -439,7 +445,7 @@ Pagination.contextTypes = childContextTypes;
 const ImageResultFooter = ({
     record,
     sources
-}) => {
+}, { utils: { getSource } }) => {
     // Don't show the source selection if there isn't more than one source
     if (!sources || sources.length <= 1) {
         return null;
@@ -468,6 +474,8 @@ const ImageResultFooter = ({
         )
     );
 };
+
+ImageResultFooter.contextTypes = childContextTypes;
 
 const ImageResult = props => {
     const { record } = props;

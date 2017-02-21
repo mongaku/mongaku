@@ -4,7 +4,7 @@ const async = require("async");
 
 const options = require("../lib/options");
 const record = require("../lib/record");
-const urls = require("../lib/urls");
+const urls = require("../lib/urls")(options);
 
 const NUM_PER_SITEMAP = 1000;
 

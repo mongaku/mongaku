@@ -2,11 +2,6 @@
 
 const React = require("react");
 
-const {searchURL} = require("../../utils.js");
-
-import type {Context} from "../../types.js";
-const {childContextTypes} = require("../../Wrapper.js");
-
 type LocationType = {
     _id: string,
     city?: string,
@@ -14,41 +9,25 @@ type LocationType = {
 };
 
 type Props = {
-    name: string,
-    type: string,
     value: Array<LocationType>,
+    url: Array<string>,
 };
 
-const Location = ({
-    name,
-    type,
-    location,
-}: Props & {location: LocationType}, {lang}: Context) => {
-    const url = searchURL(lang, {
-        [name]: location.name,
-        type,
-    });
-
+const Location = ({value, url}: {value: LocationType, url: string}) => {
     return <span>
-        {location.name && <span>
-            <a href={url}>{location.name}</a><br/>
+        {value.name && <span>
+            <a href={url}>{value.name}</a><br/>
         </span>}
-        {location.city && <span>{location.city}<br/></span>}
+        {value.city && <span>{value.city}<br/></span>}
     </span>;
 };
 
-Location.contextTypes = childContextTypes;
-
-const LocationView = (props: Props) => {
-    const {value} = props;
-
-    return <div>
-        {value.map((location) => <Location
-            {...props}
-            key={location._id}
-            location={location}
-        />)}
-    </div>;
-};
+const LocationView = ({value, url}: Props) => <div>
+    {value.map((location, i) => <Location
+        key={location._id}
+        value={location}
+        url={url[i]}
+    />)}
+</div>;
 
 module.exports = LocationView;

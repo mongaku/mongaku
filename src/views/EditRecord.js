@@ -8,7 +8,6 @@ const LinkedRecordEdit = require("./types/edit/LinkedRecord.js");
 const NameEdit = require("./types/edit/Name.js");
 const SimpleDateEdit = require("./types/edit/SimpleDate.js");
 const YearRangeEdit = require("./types/edit/YearRange.js");
-const {format} = require("./utils.js");
 
 import type {Context, ModelType} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
@@ -358,7 +357,11 @@ const CloneButton = ({
 
 CloneButton.contextTypes = childContextTypes;
 
-const EditRecord = (props: Props, {gettext, options}: Context) => {
+const EditRecord = (props: Props, {
+    gettext,
+    options,
+    utils: {format},
+}: Context) => {
     const {record, type, mode} = props;
     const postURL = record ?
         (record._id ?

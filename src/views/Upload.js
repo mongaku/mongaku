@@ -3,7 +3,6 @@
 const React = require("react");
 
 const Page = require("./Page.js");
-const {format, getSource} = require("./utils.js");
 
 import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
@@ -75,6 +74,7 @@ const Match = ({
     match: {recordModel, score},
 }: Props & {match: MatchType}, {
     gettext,
+    utils: {format, getSource},
 }: Context) => {
     const source = getSource(recordModel.source, sources);
 
