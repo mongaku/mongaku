@@ -8,6 +8,8 @@
   },
   "scripts": {
     "build": "babel src --out-dir build",
+    "client:dev": "webpack",
+    "client:prod": "NODE_ENV=production webpack -p",
     "lint": "eslint src && npm run flow",
     "test": "npm run lint && NODE_ENV=test tap --cov build/tests/*/*.js",
     "dev": "supervisor -e js,jsx -w build -i node_modules,locales -- build/mongaku.js",
@@ -53,7 +55,7 @@
     "jsonlint": "1.6.2",
     "kerberos": "0.0.22",
     "libxmljs": "0.18.4",
-    "lodash.clonedeepwith": "^4.5.0",
+    "lodash.clonedeepwith": "4.5.0",
     "method-override": "2.3.7",
     "minimist": "1.2.0",
     "moment": "2.17.1",
@@ -82,6 +84,7 @@
     "babel-cli": "6.22.2",
     "babel-eslint": "7.1.1",
     "babel-jsxgettext": "jeresig/babel-jsxgettext",
+    "babel-loader": "6.3.2",
     "babel-plugin-flow-react-proptypes": "0.20.0",
     "babel-preset-env": "1.1.8",
     "babel-preset-react": "6.16.0",
@@ -94,7 +97,8 @@
     "pre-commit": "1.2.2",
     "sinon": "1.17.7",
     "supervisor": "0.12.0",
-    "tap": "9.0.3"
+    "tap": "9.0.3",
+    "webpack": "2.2.1"
   },
   "pre-commit": [
     "build",

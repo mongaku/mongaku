@@ -32,7 +32,7 @@ const engine = (filePath: string, options: Object, callback: Function) => {
 <html lang="${options.lang}">
 ${head}
 <body>
-    ${output}
+    <div id="root">${output}</div>
     <script>window.__STATE__=${state}</script>
 </body>
 </html>`);

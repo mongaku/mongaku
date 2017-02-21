@@ -1,8 +1,13 @@
 {
     "presets": [["env", {
         "targets": {
+            "browsers": "> 2% in US",
             "node": "current"
         }
     }], "react"],
-    "plugins": ["flow-react-proptypes"],
+    "env": {
+        "development": {
+            "plugins": ["flow-react-proptypes"],
+        }
+    }
 }
