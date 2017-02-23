@@ -1,3 +1,5 @@
+const path = require("path");
+
 const React = require("react");
 const {renderToString, renderToStaticMarkup} = require("react-dom/server");
 
@@ -11,6 +13,7 @@ const blacklist = (key, value) =>
         value;
 
 const engine = (filePath: string, options: Object, callback: Function) => {
+    const viewName = path.basename(filePath, ".js");
     const View = require(filePath);
 
     // WARNING: Fixes security issues around embedding JSON in HTML:
@@ -34,6 +37,8 @@ ${head}
 <body>
     <div id="root">${output}</div>
     <script>window.__STATE__=${state}</script>
+    <script src="/client/shared.js"></script>
+    <script src="/client/${viewName}.js"</script>
 </body>
 </html>`);
 };

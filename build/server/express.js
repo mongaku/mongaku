@@ -1,25 +1,25 @@
 "use strict";
 
-const path = require("path");
+var path = require("path");
 
-const bodyParser = require("body-parser");
-const methodOverride = require("method-override");
-const cookieParser = require("cookie-parser");
-const serveFavicon = require("serve-favicon");
-const serveStatic = require("serve-static");
-const morgan = require("morgan");
-const session = require("express-session");
-const mongoStore = require("connect-mongo")(session);
+var bodyParser = require("body-parser");
+var methodOverride = require("method-override");
+var cookieParser = require("cookie-parser");
+var serveFavicon = require("serve-favicon");
+var serveStatic = require("serve-static");
+var morgan = require("morgan");
+var session = require("express-session");
+var mongoStore = require("connect-mongo")(session);
 
-const pkg = require("../../package.json");
+var pkg = require("../../package.json");
 
-const db = require("../lib/db");
-const config = require("../lib/config");
-const reactViews = require("./react-views.js");
+var db = require("../lib/db");
+var config = require("../lib/config");
+var reactViews = require("./react-views.js");
 
-const rootPath = path.resolve(__dirname, "..");
+var rootPath = path.resolve(__dirname, "..");
 
-module.exports = app => {
+module.exports = function (app) {
     /* istanbul ignore if */
     if (config.NODE_ENV !== "test") {
         // A basic logger for tracking who is accessing the service
@@ -27,13 +27,14 @@ module.exports = app => {
     }
 
     // Configure all the paths for serving the static content on the site
-    app.use(serveFavicon(`${rootPath}/public/images/favicon.png`));
-    app.use(serveStatic(`${rootPath}/public`));
+    app.use(serveFavicon(rootPath + "/public/images/favicon.png"));
+    app.use(serveStatic(rootPath + "/public"));
+    app.use("/client", serveStatic(config.CLIENT_JS_DIR));
     app.use("/data", serveStatic(config.BASE_DATA_DIR));
 
     // Configure how the views are handled (with React)
     app.engine("js", reactViews);
-    app.set("views", `${rootPath}/views`);
+    app.set("views", rootPath + "/views");
     app.set("view engine", "js");
 
     // Enable caching of the view files by Express, but only in production
@@ -53,7 +54,7 @@ module.exports = app => {
     app.use(cookieParser());
 
     // Track user sessions and store them in a Mongodb data store
-    let store;
+    var store = void 0;
 
     /* istanbul ignore if */
     if (config.NODE_ENV !== "test") {
@@ -67,6 +68,6 @@ module.exports = app => {
         resave: false,
         saveUninitialized: false,
         secret: pkg.name,
-        store
+        store: store
     }));
 };

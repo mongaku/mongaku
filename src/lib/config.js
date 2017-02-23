@@ -20,6 +20,7 @@ const config = {
     BASE_URL: "",
     BASE_DATA_URL: "/data",
     BASE_DATA_DIR: "data",
+    CLIENT_JS_DIR: "client",
 
     GM_PATH: "",
 };
@@ -42,6 +43,7 @@ for (const envName in config) {
 // Resolve the base data directory relative to the current working directory
 // This allows for the configuration to use a relative path
 config.BASE_DATA_DIR = path.resolve(process.cwd(), config.BASE_DATA_DIR);
+config.CLIENT_JS_DIR = path.resolve(process.cwd(), config.CLIENT_JS_DIR);
 
 if (config.NODE_ENV !== "test") {
     try {

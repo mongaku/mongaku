@@ -1,28 +1,36 @@
 "use strict";
 
-const React = require("react");
-const { renderToString, renderToStaticMarkup } = require("react-dom/server");
+var path = require("path");
 
-const Head = require("../views/Head.js");
-const Page = require("../views/Page.js");
-const Wrapper = require("../views/Wrapper.js");
+var React = require("react");
 
-const blacklist = (key, value) => key === "_locals" || key === "settings" ? undefined : value;
+var _require = require("react-dom/server"),
+    renderToString = _require.renderToString,
+    renderToStaticMarkup = _require.renderToStaticMarkup;
 
-const engine = (filePath, options, callback) => {
-    const View = require(filePath);
+var Head = require("../views/Head.js");
+var Page = require("../views/Page.js");
+var Wrapper = require("../views/Wrapper.js");
+
+var blacklist = function blacklist(key, value) {
+    return key === "_locals" || key === "settings" ? undefined : value;
+};
+
+var engine = function engine(filePath, options, callback) {
+    var viewName = path.basename(filePath, ".js");
+    var View = require(filePath);
 
     // WARNING: Fixes security issues around embedding JSON in HTML:
     // http://redux.js.org/docs/recipes/ServerRendering.html#security-considerations
-    const state = JSON.stringify(options, blacklist).replace(/</g, "\\u003c");
+    var state = JSON.stringify(options, blacklist).replace(/</g, "\\u003c");
 
-    const head = renderToStaticMarkup(React.createElement(
+    var head = renderToStaticMarkup(React.createElement(
         Wrapper,
         options,
         React.createElement(Head, options)
     ));
 
-    const output = renderToString(React.createElement(
+    var output = renderToString(React.createElement(
         Wrapper,
         options,
         React.createElement(
@@ -32,14 +40,7 @@ const engine = (filePath, options, callback) => {
         )
     ));
 
-    callback(null, `<!DOCTYPE html>
-<html lang="${options.lang}">
-${head}
-<body>
-    <div id="root">${output}</div>
-    <script>window.__STATE__=${state}</script>
-</body>
-</html>`);
+    callback(null, "<!DOCTYPE html>\n<html lang=\"" + options.lang + "\">\n" + head + "\n<body>\n    <div id=\"root\">" + output + "</div>\n    <script>window.__STATE__=" + state + "</script>\n    <script src=\"/client/shared.js\"></script>\n    <script src=\"/client/" + viewName + ".js\"</script>\n</body>\n</html>");
 };
 
 module.exports = engine;

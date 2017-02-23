@@ -5,11 +5,12 @@ const path = require("path");
 const webpack = require("webpack");
 
 const entry = {};
+// TODO: Generate this dynamically
 const entries = ["Admin", "EditRecord", "Home", "ImportImages",
     "ImportRecords", "Login", "Record", "Search", "Upload"];
 
 for (const file of entries) {
-    entry[file] = `./src/views/${file}.js`;
+    entry[file] = `./src/entries/${file}.js`;
 }
 
 module.exports = {

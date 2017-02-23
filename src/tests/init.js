@@ -17,6 +17,7 @@ require("moment");
 
 // Load in global ENV
 process.env.BASE_DATA_DIR = path.resolve(process.cwd(), "data");
+process.env.CLIENT_JS_DIR = path.resolve(process.cwd(), "client");
 
 const record = require("../lib/record");
 const models = require("../lib/models");
@@ -71,6 +72,16 @@ const dataDir = path.resolve(__dirname, "data");
 for (const file of fs.readdirSync(dataDir)) {
     if (/\.\w+$/.test(file)) {
         testFiles[file] = fs.readFileSync(path.resolve(dataDir, file));
+    }
+}
+
+// Built client-side JS files
+const clientFiles = {};
+const clientDir = process.env.CLIENT_JS_DIR;
+
+for (const file of fs.readdirSync(clientDir)) {
+    if (/\.\w+$/.test(file)) {
+        clientFiles[file] = fs.readFileSync(path.resolve(clientDir, file));
     }
 }
 
@@ -950,6 +961,7 @@ const init = (done) => {
                 },
             },
             "testData": testFiles,
+            "client": clientFiles,
             "data": {
                 "test": {
                     "images": {},

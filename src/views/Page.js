@@ -17,56 +17,74 @@ const Logo = (props, {options, URL}: Context) => <span>
     {" "}
 </span>;
 
-const NavLink = ({type, title}: {type: string, title: string}, {
-    gettext,
-    user,
-    URL,
-}: Context) => <li className="dropdown">
-    <a
-        href={URL(`/${type}/search`)}
-        className="dropdown-toggle"
-        data-toggle="dropdown"
-        role="button"
-        aria-haspopup="true"
-        aria-expanded="false"
-    >
-        {title}
-        {" "}
-        <span className="caret"/>
-    </a>
-    <ul className="dropdown-menu">
-        <li>
-            <form
-                action={URL(`/${type}/search`)}
-                method="GET"
-                className="form-search form-inline dropdown-search"
+class NavLink extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {open: false};
+    }
+
+    state: {open: boolean}
+    props: {type: string, title: string}
+    context: Context
+
+    handleToggle(e: SyntheticMouseEvent) {
+        e.preventDefault();
+        this.setState({
+            open: !this.state.open,
+        });
+    }
+
+    render() {
+        const {type, title} = this.props;
+        const {gettext, user, URL} = this.context;
+        return <li className={`dropdown ${this.state.open ? "open" : ""}`}>
+            <a
+                href={URL(`/${type}/search`)}
+                className="dropdown-toggle"
+                role="button"
+                aria-haspopup="true"
+                aria-expanded="false"
+                onClick={(e) => this.handleToggle(e)}
             >
-                <div className="form-group">
-                    <input type="search" id="filter" name="filter"
-                        placeholder={gettext("Search")}
-                        className="form-control search-query"
-                    />
-                </div>
+                {title}
                 {" "}
-                <input
-                    type="submit"
-                    value={gettext("Search")}
-                    className="btn btn-primary"
-                />
-            </form>
-        </li>
-        <li>
-            <a href={URL(`/${type}/search`)}>
-                {gettext("Browse All")}
+                <span className="caret"/>
             </a>
-        </li>
-        {user && user.getEditableSourcesByType[type].length > 0 && <li>
-            <a href={URL(`/${type}/create`)}>
-                {gettext("Create New")}
-            </a>
-        </li>}
-    </ul>
-</li>;
+            <ul className="dropdown-menu">
+                <li>
+                    <form
+                        action={URL(`/${type}/search`)}
+                        method="GET"
+                        className="form-search form-inline dropdown-search"
+                    >
+                        <div className="form-group">
+                            <input type="search" id="filter" name="filter"
+                                placeholder={gettext("Search")}
+                                className="form-control search-query"
+                            />
+                        </div>
+                        {" "}
+                        <input
+                            type="submit"
+                            value={gettext("Search")}
+                            className="btn btn-primary"
+                        />
+                    </form>
+                </li>
+                <li>
+                    <a href={URL(`/${type}/search`)}>
+                        {gettext("Browse All")}
+                    </a>
+                </li>
+                {user && user.getEditableSourcesByType[type].length > 0 && <li>
+                    <a href={URL(`/${type}/create`)}>
+                        {gettext("Create New")}
+                    </a>
+                </li>}
+            </ul>
+        </li>;
+    }
+}
 
 NavLink.contextTypes = childContextTypes;
 
