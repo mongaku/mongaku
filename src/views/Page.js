@@ -32,8 +32,22 @@ class NavLink extends React.Component {
     }
 
     state: {open: boolean}
+
+    componentDidMount() {
+        this.boundHandleBlur = (e) => this.handleBlur(e);
+        document.addEventListener("focusin", this.boundHandleBlur);
+        document.addEventListener("click", this.boundHandleBlur);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener("focusin", this.boundHandleBlur);
+        document.removeEventListener("click", this.boundHandleBlur);
+    }
+
     props: {type: string, title: string}
     context: Context
+    dropdown: Element
+    boundHandleBlur: (e: Event) => void
 
     handleToggle(e: SyntheticMouseEvent) {
         e.preventDefault();
@@ -42,16 +56,24 @@ class NavLink extends React.Component {
         });
     }
 
-    handleBlur() {
-        this.setState({
-            open: false,
-        });
+    handleBlur(e: Event) {
+        const {target} = e;
+
+        if (!target || (target instanceof Node &&
+                !this.dropdown.contains(target))) {
+            this.setState({
+                open: false,
+            });
+        }
     }
 
     render() {
         const {type, title} = this.props;
         const {gettext, user, URL} = this.context;
-        return <li className={`dropdown ${this.state.open ? "open" : ""}`}>
+        return <li
+            ref={(r) => {this.dropdown = r;}}
+            className={`dropdown ${this.state.open ? "open" : ""}`}
+        >
             <a
                 href={URL(`/${type}/search`)}
                 className="dropdown-toggle"
@@ -59,7 +81,6 @@ class NavLink extends React.Component {
                 aria-haspopup="true"
                 aria-expanded="false"
                 onClick={(e) => this.handleToggle(e)}
-                onBlur={() => this.handleBlur()}
             >
                 {title}
                 {" "}

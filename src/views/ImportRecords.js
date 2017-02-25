@@ -159,7 +159,7 @@ const ImportData = (props: Props, {
     format,
     fixedDate,
     relativeDate,
-    URL,
+    STATIC,
 }: Context) => {
     const {
         title,
@@ -177,7 +177,7 @@ const ImportData = (props: Props, {
         {date: relativeDate(batch.modified)});
 
     const style = <link rel="stylesheet"
-        href={URL("/css/format-diff.css")}
+        href={STATIC("/css/format-diff.css")}
     />;
 
     return <div>
