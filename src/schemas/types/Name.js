@@ -65,7 +65,11 @@ Name.prototype = {
                 formatBuckets: (buckets) => buckets.map((bucket) => ({
                     text: bucket.key,
                     count: bucket.doc_count,
-                    url: {[this.options.name]: bucket.key},
+                    url: {
+                        [this.options.name]: {
+                            name: bucket.key,
+                        },
+                    },
                 })),
             },
         };

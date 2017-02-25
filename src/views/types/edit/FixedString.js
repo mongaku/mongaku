@@ -81,15 +81,15 @@ const FixedStringEdit = (props: Props) => {
             value.map((value) => ({
                 id: value,
                 name: getValue(value, values),
-            })) : [{
+            })) : value ? [{
                 id: value,
                 name: getValue(value, values),
-            }];
+            }] : [];
 
         return <select
             name={name}
             className="form-control select2-select"
-            defaultValue={values}
+            defaultValue={value}
             multiple={multiple}
         >
             {formValues.map((value) =>
