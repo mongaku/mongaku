@@ -12,6 +12,7 @@
     "client:prod": "NODE_ENV=production webpack -p",
     "lint": "eslint src && npm run flow",
     "postinstall": "npm run build",
+    "pretest": "cp -R src/tests/data/ build/tests/data/",
     "test": "npm run lint && NODE_ENV=test tap --cov build/tests/*/*.js",
     "dev": "supervisor -e js,jsx -w build -i node_modules,locales -- build/mongaku.js",
     "dev-test": "NODE_ENV=test supervisor -e js,jsx -w build -i node_modules,locales build/tests/server.js",
