@@ -7,7 +7,8 @@
     "mongaku": "build/bin/mongaku.js"
   },
   "scripts": {
-    "build": "babel src --out-dir build && npm run client:dev",
+    "build": "npm run build:node && npm run client:dev",
+    "build:node": "babel src --out-dir build",
     "client:dev": "webpack",
     "client:prod": "NODE_ENV=production webpack -p",
     "lint": "eslint src && npm run flow",

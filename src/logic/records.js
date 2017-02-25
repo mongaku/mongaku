@@ -389,16 +389,16 @@ module.exports = function(app) {
         },
 
         createRedirect({user, params: {type}, lang, i18n}, res) {
-            const sources = user.getEditableSourcesByType(type);
+            const sources = user.getEditableSourcesByType()[type];
 
             if (sources.length === 1) {
                 return res.redirect(urls.gen(lang,
-                    `/${type}/${sources[0]._id}/create`));
+                    `/${type}/${sources[0]}/create`));
             }
 
             // TODO(jeresig): Figure out a better way to handle multiple sources
             res.status(404).render("Error", {
-                error: i18n.gettext("Page not found."),
+                title: i18n.gettext("Page not found."),
             });
         },
 
@@ -407,7 +407,7 @@ module.exports = function(app) {
 
             const title = i18n.format(
                 i18n.gettext("%(recordName)s: Create New"), {
-                    recordName: options.types[type].name,
+                    recordName: options.types[type].name(i18n),
                 });
 
             Record.getFacets(i18n, (err, globalFacets) => {
