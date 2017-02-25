@@ -19,7 +19,7 @@ const Head = ({
     title,
     social,
     noIndex,
-}: Props, {lang, options, URL}: Context) => {
+}: Props, {lang, options, STATIC}: Context) => {
     const siteTitle = options.getTitle;
     let pageTitle = siteTitle;
 
@@ -42,13 +42,6 @@ const Head = ({
         <meta key="9" property="og:site_name" content={siteTitle}/>,
     ];
 
-    /*
-    <script src={URL("/js/jquery.min.js")} />
-    <script src={URL("/js/bootstrap.min.js")} />
-    <script src={URL("/js/select2.min.js")} />
-    <script src={URL("/js/app.js")} />
-    */
-
     return <head>
         <meta httpEquiv="content-type" content="text/html; charset=utf-8"/>
         <meta httpEquiv="content-language" content={lang}/>
@@ -57,22 +50,22 @@ const Head = ({
             content="width=device-width, initial-scale=1.0"
         />
         {disableIndex && <meta name="robots" content="noindex"/>}
-        {options.faviconUrl && <link rel="icon" type="image/x-icon"
-            href={URL(options.faviconUrl)}
+        {options.favicon && <link rel="icon" type="image/x-icon"
+            href={STATIC(options.favicon)}
         />}
         <title>{pageTitle || title}</title>
         {socialMeta}
-        <link rel="stylesheet" href={URL("/css/bootstrap.min.css")}/>
+        <link rel="stylesheet" href={STATIC("/css/bootstrap.min.css")}/>
         <link
             rel="stylesheet"
-            href={URL("/css/bootstrap-theme.min.css")}
+            href={STATIC("/css/bootstrap-theme.min.css")}
         />
-        <link rel="stylesheet" href={URL("/css/select2.min.css")}/>
+        <link rel="stylesheet" href={STATIC("/css/select2.min.css")}/>
         <link
             rel="stylesheet"
-            href={URL("/css/select2-bootstrap.min.css")}
+            href={STATIC("/css/select2-bootstrap.min.css")}
         />
-        <link rel="stylesheet" href={URL("/css/style.css")}/>
+        <link rel="stylesheet" href={STATIC("/css/style.css")}/>
     </head>;
 };
 

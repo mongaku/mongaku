@@ -3,6 +3,8 @@ const path = require("path");
 const React = require("react");
 const {renderToString, renderToStaticMarkup} = require("react-dom/server");
 
+const urlsLib = require("../lib/urls");
+
 const Head = require("../views/Head.js");
 const Page = require("../views/Page.js");
 const Wrapper = require("../views/Wrapper.js");
@@ -13,6 +15,7 @@ const blacklist = (key, value) =>
         value;
 
 const engine = (filePath: string, options: Object, callback: Function) => {
+    const urls = urlsLib(options.options);
     const viewName = path.basename(filePath, ".js");
     const View = require(filePath);
 
@@ -37,9 +40,9 @@ ${head}
 <body>
     <div id="root">${output}</div>
     <script>window.__STATE__=${state}</script>
-    <script src="/static/vendor.js"></script>
-    <script src="/static/shared.js"></script>
-    <script src="/static/${viewName}.js"></script>
+    <script src="${urls.genStatic("/js/vendor.js")}"></script>
+    <script src="${urls.genStatic("/js/shared.js")}"></script>
+    <script src="${urls.genStatic(`/js/${viewName}.js`)}"></script>
 </body>
 </html>`);
 };

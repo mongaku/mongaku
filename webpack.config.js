@@ -19,7 +19,7 @@ module.exports = {
 
     output: {
         filename: "[name].js",
-        path: path.resolve(process.cwd(), "static"),
+        path: path.resolve(process.cwd(), "static", "js"),
     },
 
     resolve: {

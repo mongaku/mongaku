@@ -49,5 +49,9 @@ module.exports = (options: Options) => {
         genData(filePath: string) {
             return genURL(null, options.baseDataURL, filePath);
         },
+
+        genStatic(filePath: string) {
+            return genURL(null, options.baseStaticURL, filePath);
+        },
     };
 };

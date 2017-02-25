@@ -20,6 +20,7 @@ const config = {
     BASE_URL: "",
     BASE_DATA_URL: "/data",
     BASE_DATA_DIR: "data",
+    BASE_STATIC_URL: "/",
     STATIC_DIR: "static",
 
     GM_PATH: "",

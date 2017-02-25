@@ -120,12 +120,13 @@ export type Source = {
 export type Options = {
     baseURL: string,
     baseDataURL: string,
+    baseStaticURL: string,
     getShortTitle: string,
     getTitle: string,
     noIndex: boolean,
     usei18nSubdomain: boolean,
-    faviconUrl?: string,
-    logoUrl?: string,
+    favicon?: string,
+    logo?: string,
     maxUploadSize: number,
     imageThumbSize: string,
     imageScaledSize: string,
@@ -147,6 +148,7 @@ export type Context = {
     // Coming from utils.js
     getOtherURL: (originalUrl: string, locale: string) => string,
     URL: (path: string, query?: Object) => string,
+    STATIC: (path: string) => string,
     stringNum: (num: number) => string,
     relativeDate: (date: Date) => string,
     fixedDate: (date: Date) => string,

@@ -1,3 +1,4 @@
+const fs = require("fs");
 const path = require("path");
 
 const bodyParser = require("body-parser");
@@ -13,6 +14,7 @@ const pkg = require("../../package.json");
 
 const db = require("../lib/db");
 const config = require("../lib/config");
+const options = require("../lib/options");
 const reactViews = require("./react-views.js");
 
 const rootPath = path.resolve(__dirname, "..");
@@ -25,14 +27,26 @@ module.exports = (app) => {
     }
 
     // Configure all the paths for serving the static content on the site
-    app.use(serveFavicon(`${rootPath}/public/images/favicon.png`));
-    app.use(serveStatic(`${rootPath}/public`));
-    app.use("/static", serveStatic(config.STATIC_DIR));
-    app.use("/data", serveStatic(config.BASE_DATA_DIR));
+    if (options.baseStaticURL.indexOf("/") === 0) {
+        app.use(options.baseStaticURL, serveStatic(config.STATIC_DIR));
+    } else if (!options.baseStaticURL) {
+        app.use(serveStatic(config.STATIC_DIR));
+    }
+
+    if (options.baseDataURL.indexOf("/") === 0) {
+        app.use(options.baseDataURL, serveStatic(config.BASE_DATA_DIR));
+    }
+
+    if (options.favicon) {
+        const favicon = path.resolve(config.STATIC_DIR, options.favicon);
+        if (fs.existsSync(favicon)) {
+            app.use(serveFavicon(favicon));
+        }
+    }
 
     // Configure how the views are handled (with React)
     app.engine("js", reactViews);
-    app.set("views", `${rootPath}/views`);
+    app.set("views", path.resolve(rootPath, "views"));
     app.set("view engine", "js");
 
     // Enable caching of the view files by Express, but only in production

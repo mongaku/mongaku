@@ -9,13 +9,21 @@ type Props = {
     children?: React.Element<*>,
 };
 
-const Logo = (props, {options, URL}: Context) => <span>
-    <img alt={options.getTitle}
-        src={URL(options.logoUrl || "")}
-        height="40" width="40"
-    />
-    {" "}
-</span>;
+const Logo = (props, {options, STATIC}: Context) => {
+    if (!options.logo) {
+        return null;
+    }
+
+    return <span>
+        <img alt={options.getTitle}
+            src={STATIC(options.logo)}
+            height="40" width="40"
+        />
+        {" "}
+    </span>;
+};
+
+Logo.contextTypes = childContextTypes;
 
 class NavLink extends React.Component {
     constructor(props) {
@@ -176,7 +184,7 @@ const Header = (props, {
                 <span className="icon-bar"/>
             </button>
             <a className="navbar-brand" href={URL("/")}>
-                {options.logoUrl && <Logo />}
+                <Logo />
                 {options.getShortTitle}
             </a>
         </div>

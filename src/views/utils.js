@@ -27,6 +27,10 @@ module.exports = (lang: string, options: Options, translations: {
             return url;
         },
 
+        STATIC(path: string): string {
+            return urls.genStatic(path);
+        },
+
         // Format a number using commas
         stringNum(num: number): string {
             // TODO(jeresig): Have a better way to handle this.
