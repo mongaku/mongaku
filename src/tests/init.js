@@ -75,16 +75,6 @@ for (const file of fs.readdirSync(dataDir)) {
     }
 }
 
-// Built client-side JS files
-const clientFiles = {};
-const clientDir = process.env.STATIC_DIR;
-
-for (const file of fs.readdirSync(clientDir)) {
-    if (/\.\w+$/.test(file)) {
-        clientFiles[file] = fs.readFileSync(path.resolve(clientDir, file));
-    }
-}
-
 // Views
 const viewFiles = {};
 const viewDir = path.resolve(__dirname, "..", "views");
@@ -124,13 +114,13 @@ for (const file of fs.readdirSync(typeEditDir)) {
     }
 }
 
-// Public files used to render the site
-const publicFiles = {};
-const publicDir = path.resolve(__dirname, "..", "public");
+// Static files used to render the site
+const staticFiles = {};
+const staticDir = process.env.STATIC_DIR;
 
-for (const dir of fs.readdirSync(publicDir)) {
-    const dirPath = path.resolve(publicDir, dir);
-    const files = publicFiles[dir] = {};
+for (const dir of fs.readdirSync(staticDir)) {
+    const dirPath = path.resolve(staticDir, dir);
+    const files = staticFiles[dir] = {};
 
     for (const file of fs.readdirSync(dirPath)) {
         const filePath = path.resolve(dirPath, file);
@@ -961,7 +951,6 @@ const init = (done) => {
                 },
             },
             "testData": testFiles,
-            "client": clientFiles,
             "data": {
                 "test": {
                     "images": {},
@@ -978,7 +967,6 @@ const init = (done) => {
                 },
             },
             "build": {
-                "public": publicFiles,
                 "views": Object.assign({
                     "types": {
                         "filter": typeFilterFiles,
@@ -987,6 +975,7 @@ const init = (done) => {
                     },
                 }, viewFiles),
             },
+            "static": staticFiles,
         });
 
         done();
