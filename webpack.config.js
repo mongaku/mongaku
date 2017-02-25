@@ -5,12 +5,13 @@ const path = require("path");
 const webpack = require("webpack");
 
 const entry = {};
+
 // TODO: Generate this dynamically
-const entries = ["Admin", "EditRecord", "Home", "ImportImages",
+const entries = ["Admin", "EditRecord", "Error", "Home", "ImportImages",
     "ImportRecords", "Login", "Record", "Search", "Upload"];
 
 for (const file of entries) {
-    entry[file] = `./src/entries/${file}.js`;
+    entry[file] = path.resolve(__dirname, `src/entries/${file}.js`);
 }
 
 module.exports = {
@@ -18,26 +19,25 @@ module.exports = {
 
     output: {
         filename: "[name].js",
-        path: path.resolve(__dirname, "client"),
+        path: path.resolve(process.cwd(), "static"),
+    },
+
+    resolve: {
+        modules: [path.resolve(__dirname, "node_modules"), "node_modules"],
     },
 
     plugins: [
         new webpack.optimize.CommonsChunkPlugin({
             name: "shared",
         }),
-        // From: https://github.com/moment/moment/issues/1435#issuecomment-249773545
-        new webpack.ContextReplacementPlugin(/^\.\/locale$/, (context) => {
-            if (!/\/moment\//.test(context.context)) {
-                return;
-            }
-            // context needs to be modified in place
-            Object.assign(context, {
-                // include only CJK
-                regExp: /^\.\/(it|de)/,
-                // point to the locale data folder relative to moment's
-                // src/lib/locale
-                request: "../../locale",
-            });
+
+        new webpack.optimize.CommonsChunkPlugin({
+            name: ["vendor", "manifest"],
+            chunks: ["shared"],
+            minChunks(module) {
+                return module.userRequest &&
+                    module.userRequest.indexOf("node_modules") >= 0;
+            },
         }),
     ],
 
@@ -45,7 +45,8 @@ module.exports = {
         loaders: [
             {
                 test: /\.js$/,
-                loader: "babel-loader",
+                loader: path.resolve(__dirname, "node_modules",
+                    "babel-loader"),
             },
         ],
     },

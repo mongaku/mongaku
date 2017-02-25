@@ -34,6 +34,12 @@ class NavLink extends React.Component {
         });
     }
 
+    handleBlur() {
+        this.setState({
+            open: false,
+        });
+    }
+
     render() {
         const {type, title} = this.props;
         const {gettext, user, URL} = this.context;
@@ -45,6 +51,7 @@ class NavLink extends React.Component {
                 aria-haspopup="true"
                 aria-expanded="false"
                 onClick={(e) => this.handleToggle(e)}
+                onBlur={() => this.handleBlur()}
             >
                 {title}
                 {" "}

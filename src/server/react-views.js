@@ -37,8 +37,9 @@ ${head}
 <body>
     <div id="root">${output}</div>
     <script>window.__STATE__=${state}</script>
-    <script src="/client/shared.js"></script>
-    <script src="/client/${viewName}.js"</script>
+    <script src="/static/vendor.js"></script>
+    <script src="/static/shared.js"></script>
+    <script src="/static/${viewName}.js"></script>
 </body>
 </html>`);
 };

@@ -42,6 +42,13 @@ const Head = ({
         <meta key="9" property="og:site_name" content={siteTitle}/>,
     ];
 
+    /*
+    <script src={URL("/js/jquery.min.js")} />
+    <script src={URL("/js/bootstrap.min.js")} />
+    <script src={URL("/js/select2.min.js")} />
+    <script src={URL("/js/app.js")} />
+    */
+
     return <head>
         <meta httpEquiv="content-type" content="text/html; charset=utf-8"/>
         <meta httpEquiv="content-language" content={lang}/>
@@ -66,10 +73,6 @@ const Head = ({
             href={URL("/css/select2-bootstrap.min.css")}
         />
         <link rel="stylesheet" href={URL("/css/style.css")}/>
-        <script src={URL("/js/jquery.min.js")} />
-        <script src={URL("/js/bootstrap.min.js")} />
-        <script src={URL("/js/select2.min.js")} />
-        <script src={URL("/js/app.js")} />
     </head>;
 };
 

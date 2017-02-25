@@ -20,7 +20,7 @@ const config = {
     BASE_URL: "",
     BASE_DATA_URL: "/data",
     BASE_DATA_DIR: "data",
-    CLIENT_JS_DIR: "client",
+    STATIC_DIR: "static",
 
     GM_PATH: "",
 };
@@ -43,7 +43,7 @@ for (const envName in config) {
 // Resolve the base data directory relative to the current working directory
 // This allows for the configuration to use a relative path
 config.BASE_DATA_DIR = path.resolve(process.cwd(), config.BASE_DATA_DIR);
-config.CLIENT_JS_DIR = path.resolve(process.cwd(), config.CLIENT_JS_DIR);
+config.STATIC_DIR = path.resolve(process.cwd(), config.STATIC_DIR);
 
 if (config.NODE_ENV !== "test") {
     try {
@@ -51,6 +51,14 @@ if (config.NODE_ENV !== "test") {
 
     } catch (e) {
         console.error(`${config.BASE_DATA_DIR} does not exist.`);
+        process.exit(1);
+    }
+
+    try {
+        fs.statSync(config.STATIC_DIR).isDirectory();
+
+    } catch (e) {
+        console.error(`${config.STATIC_DIR} does not exist.`);
         process.exit(1);
     }
 }
