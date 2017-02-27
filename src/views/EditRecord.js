@@ -236,7 +236,7 @@ const TypeEdit = ({
         return <FixedStringEdit
             name={name}
             type={type}
-            value={value}
+            value={value && String(value)}
         />;
 
     } else if (typeSchema.type === "SimpleString") {

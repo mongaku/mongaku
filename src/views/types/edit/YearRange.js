@@ -7,7 +7,7 @@ const YearRangeEdit = ({
     value,
 }: {
     name: string,
-    value?: Array<{original: string}>,
+    value?: Array<{original?: string}>,
 }) => {
     const defaultValue = value &&
         value[0] &&

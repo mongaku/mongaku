@@ -7,13 +7,15 @@ const SimpleDateEdit = ({
     value,
 }: {
     name: string,
-    value?: Date,
+    value?: Date | string,
 }) => {
-    let dateString = "";
+    let dateString = value || "";
 
-    if (value) {
-        dateString = value.toISOString().replace(/T.*$/, "");
+    if (value instanceof Date) {
+        dateString = value.toISOString();
     }
+
+    dateString = dateString.toString().replace(/T.*$/, "");
 
     return <input
         name={name}

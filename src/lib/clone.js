@@ -64,6 +64,10 @@ const cloneObject = (
 };
 
 const cloneModel = (model: {toJSON: () => Object}, i18n: i18nObject) => {
+    if (!model) {
+        return null;
+    }
+
     const serialize = serializeValue(i18n);
     const result = model.toJSON();
 
