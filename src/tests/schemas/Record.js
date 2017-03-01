@@ -40,6 +40,7 @@ tap.test("date", {autoend: true}, (t) => {
     t.same(record.dates[0].toJSON(),
         {
             _id: "ca. 1456-1457",
+            original: "ca. 1456-1457",
             start: 1456,
             end: 1457,
             circa: true,

@@ -130,9 +130,19 @@ tap.test("processRecords", (t) => {
                     "_0": [{"city": "New York City"}, 0, 0],
                 },
                 "dates": {
-                    "0": [{"circa": true, "start": 1455, "end": 1457}],
+                    "0": [{
+                        "circa": true,
+                        "start": 1455,
+                        "end": 1457,
+                        "original": "ca. 1455-1457",
+                    }],
                     "_t": "a",
-                    "_0": [{"start": 1456, "end": 1457, "circa": true}, 0, 0],
+                    "_0": [{
+                        "start": 1456,
+                        "end": 1457,
+                        "circa": true,
+                        "original": "ca. 1456-1457",
+                    }, 0, 0],
                 },
                 "dimensions": {
                     "0": [{"width": 123, "height": 140, "unit": "mm"}],
@@ -142,10 +152,20 @@ tap.test("processRecords", (t) => {
                 "artists": {
                     "0": {
                         "dates": {
-                            "0": [{"circa": true, "start": 1456, "end": 1458}],
+                            "0": [{
+                                "circa": true,
+                                "start": 1456,
+                                "end": 1458,
+                                "original": "ca. 1456-1458",
+                            }],
                             "_t": "a",
                             "_0": [
-                                {"start": 1456, "end": 1457, "circa": true},
+                                {
+                                    "start": 1456,
+                                    "end": 1457,
+                                    "circa": true,
+                                    "original": "ca. 1456-1457",
+                                },
                                 0,
                                 0,
                             ],

@@ -250,7 +250,6 @@ YearRange.prototype = {
         YearRangeSchema.methods = {
             toJSON() {
                 const obj = this.toObject();
-                delete obj.original;
                 delete obj.years;
                 return obj;
             },
