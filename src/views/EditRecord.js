@@ -314,13 +314,28 @@ const Contents = (props: Props, {gettext, options}: Context) => {
             <ImageForm {...props} />}
         <IDForm {...props} />
         {fields}
-        <SubmitButton {...props} />
+        <SubmitButtons {...props} />
     </tbody>;
 };
 
 Contents.contextTypes = childContextTypes;
 
-const SubmitButton = ({mode}: Props, {gettext}: Context) => {
+const SubmitButtons = (props: Props) => {
+    const {mode} = props;
+
+    return <tr>
+        <th/>
+        <td>
+            <SubmitButton {...props} />
+            <span className="pull-right">
+                {mode === "edit" && <DeleteButton {...props} />}
+            </span>
+        </td>
+    </tr>;
+};
+
+const SubmitButton = (props: Props, {gettext}: Context) => {
+    const {mode} = props;
     let buttonText = gettext("Update");
 
     if (mode === "create") {
@@ -329,19 +344,31 @@ const SubmitButton = ({mode}: Props, {gettext}: Context) => {
         buttonText = gettext("Clone");
     }
 
-    return <tr>
-        <th/>
-        <td>
-            <input
-                type="submit"
-                value={buttonText}
-                className="btn btn-primary"
-            />
-        </td>
-    </tr>;
+    return <input
+        type="submit"
+        value={buttonText}
+        className="btn btn-primary"
+    />;
 };
 
 SubmitButton.contextTypes = childContextTypes;
+
+const DeleteButton = (props: Props, {gettext}: Context) => {
+    const deleteText = gettext("Are you sure you wish to delete this?");
+    return <input
+        type="submit"
+        name="removeRecord"
+        value={gettext("Delete")}
+        className="btn btn-danger pull-right"
+        onClick={(e) => {
+            if (!confirm(deleteText)) { // eslint-disable-line no-alert
+                e.preventDefault();
+            }
+        }}
+    />;
+};
+
+DeleteButton.contextTypes = childContextTypes;
 
 const CloneButton = ({
     record,

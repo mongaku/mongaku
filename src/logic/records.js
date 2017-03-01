@@ -17,6 +17,28 @@ module.exports = function(app) {
     const search = require("./shared/search-page");
     const auth = require("./shared/auth");
 
+    const removeRecord = (req, res, next) => {
+        const {params, i18n, lang} = req;
+        const {type} = params;
+        const Record = record(type);
+        const id = `${params.source}/${params.recordName}`;
+
+        Record.findById(id, (err, record) => {
+            if (err || !record) {
+                return next(new Error(i18n.gettext("Not found.")));
+            }
+
+            record.remove((err) => {
+                if (err) {
+                    return next(new Error(
+                        i18n.gettext("Error removing record.")));
+                }
+
+                res.redirect(urls.gen(lang, "/"));
+            });
+        });
+    };
+
     return {
         search(req, res, next) {
             return search(req, res, next);
@@ -180,6 +202,10 @@ module.exports = function(app) {
                 if (err) {
                     return next(new Error(
                         i18n.gettext("Error processing upload.")));
+                }
+
+                if (fields.removeRecord) {
+                    return removeRecord(req, res, next);
                 }
 
                 for (const prop in model) {
