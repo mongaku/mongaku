@@ -102,69 +102,94 @@ const Image = ({
     </a>
 </div>;
 
-const Carousel = ({record}: Props & {record: RecordType}, {
-    gettext,
-}: Context) => {
-    const carouselId = record._id.replace("/", "-");
-    return <div>
-        <ol className="carousel-indicators">
-            {record.imageModels.map((image, i) =>
-                <li
-                    data-target={`#${carouselId}`}
-                    data-slide-to={i}
-                    className={i === 0 ? "active" : ""}
-                    key={`img${i}`}
+class Images extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            curPos: 0,
+        };
+    }
+
+    state: {
+        curPos: number,
+    }
+
+    props: Props & {record: RecordType}
+    context: Context
+
+    toggleImage(newPos) {
+        const max = this.props.record.imageModels.length;
+        let curPos = newPos;
+        if (curPos < 0) {
+            curPos = max - 1;
+        } else if (curPos === max) {
+            curPos = 0;
+        }
+        this.setState({curPos});
+    }
+
+    renderCarousel() {
+        const {record} = this.props;
+        const {gettext} = this.context;
+        const {curPos} = this.state;
+        return <div>
+            <ol className="carousel-indicators">
+                {record.imageModels.map((image, i) =>
+                    <li
+                        className={i === curPos ? "active" : ""}
+                        key={`img${i}`}
+                        onClick={() => this.toggleImage(i)}
+                    />
+                )}
+            </ol>
+            <a className="left carousel-control"
+                href="javascript: void 0"
+                role="button"
+                onClick={() => this.toggleImage(curPos - 1)}
+            >
+                <span className="glyphicon glyphicon-chevron-left"
+                    aria-hidden="true"
                 />
-            )}
-        </ol>
-        <a className="left carousel-control"
-            href={`#${carouselId}`} role="button"
-            data-slide="prev"
-        >
-            <span className="glyphicon glyphicon-chevron-left"
-                aria-hidden="true"
-            />
-            <span className="sr-only">
-                {gettext("Previous")}
-            </span>
-        </a>
-        <a className="right carousel-control"
-            href={`#${carouselId}`} role="button"
-            data-slide="next"
-        >
-            <span className="glyphicon glyphicon-chevron-right"
-                aria-hidden="true"
-            />
-            <span className="sr-only">
-                {gettext("Next")}
-            </span>
-        </a>
-    </div>;
-};
+                <span className="sr-only">
+                    {gettext("Previous")}
+                </span>
+            </a>
+            <a className="right carousel-control"
+                href="javascript: void 0"
+                role="button"
+                onClick={() => this.toggleImage(curPos + 1)}
+            >
+                <span className="glyphicon glyphicon-chevron-right"
+                    aria-hidden="true"
+                />
+                <span className="sr-only">
+                    {gettext("Next")}
+                </span>
+            </a>
+        </div>;
+    }
 
-Carousel.contextTypes = childContextTypes;
+    render() {
+        const {record} = this.props;
+        return <td>
+            <div className="carousel">
+                <div className="carousel-inner" role="listbox">
+                    {record.imageModels.map((image, i) => <Image
+                        {...this.props}
+                        record={record}
+                        image={image}
+                        active={i === this.state.curPos}
+                        key={i}
+                    />)}
+                </div>
 
-const Images = (props: Props & {record: RecordType}) => {
-    const {record} = props;
-    const carouselId = record._id.replace("/", "-");
-
-    return <td>
-        <div id={carouselId} className="carousel" data-interval="0">
-            <div className="carousel-inner" role="listbox">
-                {record.imageModels.map((image, i) => <Image
-                    {...props}
-                    record={record}
-                    image={image}
-                    active={i === 0}
-                    key={i}
-                />)}
+                {record.imageModels.length > 1 && this.renderCarousel()}
             </div>
+        </td>;
+    }
+}
 
-            {record.imageModels.length > 1 &&
-                <Carousel {...props} record={record} />}
-        </div>
-    </td>;
-};
+Images.contextTypes = childContextTypes;
 
 const TypeView = ({
     value,
@@ -421,21 +446,12 @@ const Similar = (props: Props, {gettext, getSource}: Context) => {
 
 Similar.contextTypes = childContextTypes;
 
-const Script = () => <script
-    dangerouslySetInnerHTML={{__html: `
-        $(function() {
-            $(".carousel").carousel();
-        });
-    `}}
-/>;
-
 const Record = (props: Props) => {
     const {similar} = props;
 
     return <div className="row">
         <MainRecord {...props} />
         {similar.length > 0 && <Similar {...props} />}
-        <Script/>
     </div>;
 };
 
