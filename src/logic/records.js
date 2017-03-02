@@ -380,7 +380,7 @@ module.exports = function(app) {
                     });
                 }
 
-                const recordTitle = record.getTitle(i18n);
+                const recordTitle = oldRecord.getTitle(i18n);
                 const title = i18n.format(
                     i18n.gettext("Cloning '%(recordTitle)s'"),
                         {recordTitle});
