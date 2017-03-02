@@ -258,65 +258,99 @@ const TypeEdit = ({
     return null;
 };
 
-const Contents = (props: Props, {gettext, options}: Context) => {
-    const {
-        type,
-        globalFacets,
-        dynamicValues,
-    } = props;
-    const {model} = options.types[type];
-    const types = Object.keys(model);
-    let hasPrivate = false;
-
-    const fields = types.map((modelType) => {
-        const typeSchema = model[modelType];
-        const dynamicValue = dynamicValues[modelType];
-        const values = (globalFacets && globalFacets[modelType] || [])
-            .map((bucket) => bucket.text).sort();
-        const isPrivate = typeSchema.private;
-
-        hasPrivate = hasPrivate || isPrivate;
-
-        return <tr key={modelType}>
-            <th className="text-right">
-                {typeSchema.title}
-            </th>
-            <td data-private={isPrivate}>
-                <TypeEdit
-                    name={modelType}
-                    type={type}
-                    value={dynamicValue}
-                    allValues={values}
-                    typeSchema={typeSchema}
-                />
-            </td>
-        </tr>;
-    });
-
-    if (hasPrivate) {
-        fields.push(<tr key="private">
-            <th/>
-            <td>
-                <label>
-                    <input
-                        type="checkbox"
-                        className="toggle-private"
-                    />
-                    {" "}
-                    {gettext("Show private fields.")}
-                </label>
-            </td>
-        </tr>);
+class Contents extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showPrivate: false,
+        };
     }
 
-    return <tbody>
-        {!options.types[type].noImages &&
-            <ImageForm {...props} />}
-        <IDForm {...props} />
-        {fields}
-        <SubmitButtons {...props} />
-    </tbody>;
-};
+    state: {
+        showPrivate: boolean,
+    }
+
+    componentDidMount() {
+        const {showPrivate} = window.localStorage;
+        this.setState({showPrivate});
+    }
+
+    props: Props
+    context: Context
+
+    togglePrivate(e: SyntheticInputEvent) {
+        const showPrivate = e.target.checked;
+        if (showPrivate) {
+            window.localStorage.showPrivate = showPrivate;
+        } else {
+            delete window.localStorage.showPrivate;
+        }
+        this.setState({showPrivate});
+    }
+
+    render() {
+        const {
+            mode,
+            type,
+            globalFacets,
+            dynamicValues,
+        } = this.props;
+        const {gettext, options} = this.context;
+        const {model} = options.types[type];
+        const types = Object.keys(model);
+        const canBePrivate = (mode === "edit");
+
+        const fields = types.map((modelType) => {
+            const typeSchema = model[modelType];
+            const dynamicValue = dynamicValues[modelType];
+            const values = (globalFacets && globalFacets[modelType] || [])
+                .map((bucket) => bucket.text).sort();
+            const isPrivate = (canBePrivate && !this.state.showPrivate &&
+                typeSchema.private);
+
+            return <tr key={modelType}>
+                <th className="text-right">
+                    {typeSchema.title}
+                </th>
+                <td {...isPrivate ? {"data-private": "true"} : {}}>
+                    <TypeEdit
+                        name={modelType}
+                        type={type}
+                        value={dynamicValue}
+                        allValues={values}
+                        typeSchema={typeSchema}
+                    />
+                </td>
+            </tr>;
+        });
+
+        if (canBePrivate) {
+            fields.push(<tr key="private">
+                <th/>
+                <td>
+                    <label>
+                        <input
+                            type="checkbox"
+                            className="toggle-private"
+                            checked={this.state.showPrivate}
+                            onClick={(e) => this.togglePrivate(e)}
+                        />
+                        {" "}
+                        {gettext("Show private fields.")}
+                    </label>
+                </td>
+            </tr>);
+        }
+
+        return <tbody>
+            {!options.types[type].noImages &&
+                <ImageForm {...this.props} />}
+            <IDForm {...this.props} />
+            {fields}
+            <SubmitButtons {...this.props} />
+        </tbody>;
+    }
+}
 
 Contents.contextTypes = childContextTypes;
 
