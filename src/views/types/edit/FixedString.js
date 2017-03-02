@@ -57,52 +57,38 @@ const Value = ({
     />;
 };
 
-const Values = (props: Props & {stringValues: Array<string>}) => {
-    const {stringValues} = props;
-
-    return <span>
-        {stringValues.map((value, i) => <span key={i}>
-            <Value {...props} stringValue={value} />
-            {stringValues.length - 1 === i ? "" : ", "}
-        </span>)}
-    </span>;
-};
+const Select = ({
+    name,
+    value,
+    values,
+    multiple,
+}: Props) => <select
+    name={name}
+    className="form-control select2-select"
+    defaultValue={value}
+    multiple={multiple}
+>
+    {values && values.map((value) =>
+        <option value={value.id} key={value.id}>
+            {value.name}
+        </option>
+    )}
+</select>;
 
 const FixedStringEdit = (props: Props) => {
-    const {
-        name,
-        value,
-        values,
-        multiple,
-    } = props;
+    const {value, values, multiple} = props;
 
-    if (values && Array.isArray(values) && values.length > 0) {
-        const formValues = Array.isArray(value) ?
-            value.map((value) => ({
-                id: value,
-                name: getValue(value, values),
-            })) : value ? [{
-                id: value,
-                name: getValue(value, values),
-            }] : [];
+    // If we have values to choose from then we render a select
+    if (Array.isArray(values) && values.length > 0) {
+        return <Select {...props} />;
 
-        return <select
-            name={name}
-            className="form-control select2-select"
-            defaultValue={value}
-            multiple={multiple}
-        >
-            {formValues.map((value) =>
-                <option value={value.id} key={value.id}>
-                    {value.name}
-                </option>
-            )}
-        </select>;
+    // If we're expecting multiple input values
+    } else if (multiple || Array.isArray(value)) {
+        // TODO(jeresig): Support inputting multiple values without a select
+        return null;
     }
 
-    return Array.isArray(value) ?
-        <Values {...props} stringValues={value} /> :
-        <Value {...props} stringValue={value} />;
+    return <Value {...props} stringValue={value} />;
 };
 
 module.exports = FixedStringEdit;
