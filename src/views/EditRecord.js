@@ -272,7 +272,7 @@ class Contents extends React.Component {
 
     componentDidMount() {
         const {showPrivate} = window.localStorage;
-        this.setState({showPrivate});
+        this.setState({showPrivate}); // eslint-disable-line react/no-did-mount-set-state
     }
 
     props: Props
