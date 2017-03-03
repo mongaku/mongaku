@@ -563,7 +563,7 @@ module.exports = function(app) {
 
             Record.findById(id, (err, record) => {
                 if (record) {
-                    return res.send(cloneModel(record));
+                    return res.send(cloneModel(record, i18n));
                 }
 
                 res.status(404).send({

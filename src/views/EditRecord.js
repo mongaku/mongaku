@@ -135,31 +135,71 @@ const ImageForm = (props, {gettext}: Context) => <tr>
 
 ImageForm.contextTypes = childContextTypes;
 
-const IDForm = ({
-    record,
-    type,
-}: Props, {gettext, options}: Context) => {
-    if (options.types[type].autoID || record && record._id) {
-        return null;
+class IDForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            unused: false,
+        };
     }
 
-    return <tr className="has-error">
-        <th className="text-right">
-            <label className="control-label">
-                {gettext("ID")}
-            </label>
-        </th>
-        <td>
-            <input
-                type="text"
-                name="id"
-                className="form-control"
-                data-id="true"
-                defaultValue={record && record.id}
-            />
-        </td>
-    </tr>;
-};
+    state: {
+        unused: boolean,
+    }
+    props: Props & {
+        onValid: () => void,
+    }
+    context: Context
+
+    setUnused(unused) {
+        this.props.onValid(unused);
+        this.setState({unused});
+    }
+
+    handleInput(e: SyntheticInputEvent) {
+        const id = e.target.value;
+
+        if (!id) {
+            return this.setUnused(false);
+        }
+
+        const jsonURL = window.location.pathname
+            .replace(/^(\/.*?\/.*?)\/.*$/, `$1/${id}/json`);
+
+        fetch(jsonURL, {
+            credentials: "same-origin",
+        }).then((res) => {
+            this.setUnused(res.status !== 200);
+        });
+    }
+
+    render() {
+        const {record, type} = this.props;
+        const {gettext, options} = this.context;
+        const {unused} = this.state;
+
+        if (options.types[type].autoID || record && record._id) {
+            return null;
+        }
+
+        return <tr className={unused ? "has-success" : "has-error"}>
+            <th className="text-right">
+                <label className="control-label">
+                    {gettext("ID")}
+                </label>
+            </th>
+            <td>
+                <input
+                    type="text"
+                    name="id"
+                    className="form-control"
+                    defaultValue={record && record.id}
+                    onInput={(e) => this.handleInput(e)}
+                />
+            </td>
+        </tr>;
+    }
+}
 
 IDForm.contextTypes = childContextTypes;
 
@@ -263,11 +303,13 @@ class Contents extends React.Component {
         super(props);
         this.state = {
             showPrivate: false,
+            valid: (props.mode === "edit"),
         };
     }
 
     state: {
         showPrivate: boolean,
+        valid: boolean,
     }
 
     componentDidMount() {
@@ -345,22 +387,25 @@ class Contents extends React.Component {
         return <tbody>
             {!options.types[type].noImages &&
                 <ImageForm {...this.props} />}
-            <IDForm {...this.props} />
+            <IDForm
+                {...this.props}
+                onValid={(valid) => this.setState({valid})}
+            />
             {fields}
-            <SubmitButtons {...this.props} />
+            <SubmitButtons {...this.props} valid={this.state.valid} />
         </tbody>;
     }
 }
 
 Contents.contextTypes = childContextTypes;
 
-const SubmitButtons = (props: Props) => {
-    const {mode} = props;
+const SubmitButtons = (props: Props & {valid: boolean}) => {
+    const {mode, valid} = props;
 
     return <tr>
         <th/>
         <td>
-            <SubmitButton {...props} />
+            <SubmitButton {...props} valid={valid} />
             <span className="pull-right">
                 {mode === "edit" && <DeleteButton {...props} />}
             </span>
@@ -368,8 +413,8 @@ const SubmitButtons = (props: Props) => {
     </tr>;
 };
 
-const SubmitButton = (props: Props, {gettext}: Context) => {
-    const {mode} = props;
+const SubmitButton = (props: Props & {valid: boolean}, {gettext}: Context) => {
+    const {mode, valid} = props;
     let buttonText = gettext("Update");
 
     if (mode === "create") {
@@ -382,6 +427,7 @@ const SubmitButton = (props: Props, {gettext}: Context) => {
         type="submit"
         value={buttonText}
         className="btn btn-primary"
+        disabled={!valid}
     />;
 };
 
@@ -442,7 +488,6 @@ const EditRecord = (props: Props) => {
                     action={postURL}
                     method="POST"
                     encType="multipart/form-data"
-                    data-validate={true}
                 >
                     <div className="responsive-table">
                         <table className="table table-hover">
