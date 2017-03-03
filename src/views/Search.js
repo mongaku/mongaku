@@ -68,57 +68,81 @@ const FacetBucket = ({bucket}: {bucket: Bucket}) => <li>
     {" "}({bucket.count})
 </li>;
 
-const Facet = ({
-    facet,
-    type,
-}: {type: string, facet: FacetType}, {
-    gettext,
-    options,
-    format,
-}: Context) => {
-    const minFacetCount = options.types[type].minFacetCount || 1;
-    let extra = null;
-    let buckets = facet.buckets
-        .filter((bucket) => bucket.count >= minFacetCount);
-
-    if (buckets.length <= 1) {
-        return null;
+class Facet extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showMore: false,
+        };
     }
 
-    // Make sure that there aren't too many buckets displaying at
-    // any one time, otherwise it gets too long. We mitigate this
-    // by splitting the extra buckets into a separate container
-    // and then allow the user to toggle its visibility.
-    if (buckets.length > 10) {
-        extra = buckets.slice(5);
-        buckets = buckets.slice(0, 5);
+    state: {
+        showMore: boolean,
     }
+    props: Props & {
+        type: string,
+        facet: FacetType,
+    }
+    context: Context
 
-    return <div className="panel panel-default facet">
-        <div className="panel-heading">{facet.name}</div>
-        <div className="panel-body">
-            <ul>
-                {buckets.map((bucket) =>
-                    <FacetBucket bucket={bucket} key={bucket.url} />)}
-            </ul>
+    render() {
+        const {facet, type} = this.props;
+        const {gettext, options, format} = this.context;
+        const minFacetCount = options.types[type].minFacetCount || 1;
+        let extra = null;
+        let buckets = facet.buckets
+            .filter((bucket) => bucket.count >= minFacetCount);
 
-            {extra && <div>
-                <button className="btn btn-default btn-xs toggle-facets">
+        if (buckets.length <= 1) {
+            return null;
+        }
+
+        // Make sure that there aren't too many buckets displaying at
+        // any one time, otherwise it gets too long. We mitigate this
+        // by splitting the extra buckets into a separate container
+        // and then allow the user to toggle its visibility.
+        if (buckets.length > 10) {
+            extra = buckets.slice(5);
+            buckets = buckets.slice(0, 5);
+        }
+
+        let extraFacets = null;
+
+        if (extra) {
+            if (this.state.showMore) {
+                extraFacets = <div className="extra-facets">
+                    <ul>
+                        {extra.map((bucket) => <FacetBucket
+                            bucket={bucket}
+                            key={bucket.url}
+                        />)}
+                    </ul>
+                </div>;
+            } else {
+                extraFacets = <button
+                    className="btn btn-default btn-xs toggle-facets"
+                    onClick={() => this.setState({showMore: true})}
+                >
                     {format(
                         gettext("Show %(count)s more..."),
                             {count: extra.length})}
-                </button>
+                </button>;
+            }
+        }
 
-                <div className="extra-facets">
-                    <ul>
-                        {extra.map((bucket) =>
-                            <FacetBucket bucket={bucket} key={bucket.url} />)}
-                    </ul>
-                </div>
-            </div>}
-        </div>
-    </div>;
-};
+        return <div className="panel panel-default facet">
+            <div className="panel-heading">{facet.name}</div>
+            <div className="panel-body">
+                <ul>
+                    {buckets.map((bucket) =>
+                        <FacetBucket bucket={bucket} key={bucket.url} />)}
+                </ul>
+
+                {extraFacets}
+            </div>
+        </div>;
+    }
+}
 
 Facet.contextTypes = childContextTypes;
 
