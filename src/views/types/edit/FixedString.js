@@ -1,6 +1,7 @@
 // @flow
 
 const React = require("react");
+const ReactSelect = require("react-select");
 
 type ValueType = {
     id: string,
@@ -57,23 +58,39 @@ const Value = ({
     />;
 };
 
-const Select = ({
-    name,
-    value,
-    values,
-    multiple,
-}: Props) => <select
-    name={name}
-    className="form-control select2-select"
-    defaultValue={value}
-    multiple={multiple}
->
-    {values && values.map((value) =>
-        <option value={value.id} key={value.id}>
-            {value.name}
-        </option>
-    )}
-</select>;
+class Select extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            value: props.value,
+        };
+    }
+
+    state: {
+        value: string | Array<string>,
+    }
+    props: Props
+
+    render() {
+        const {name, values, multiple} = this.props;
+        const {value} = this.state;
+        const Selector = multiple ?
+            ReactSelect.Creatable :
+            ReactSelect;
+
+        return <Selector
+            name={name}
+            value={value}
+            multi={multiple}
+            options={values && values.map((value) => ({
+                value: value.id,
+                label: value.name,
+            }))}
+            clearable={false}
+            onChange={(value) => this.setState({value})}
+        />;
+    }
+}
 
 const FixedStringEdit = (props: Props) => {
     const {value, values, multiple} = props;

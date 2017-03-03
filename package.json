@@ -74,6 +74,7 @@
     "pastec": "0.0.5",
     "react": "15.4.2",
     "react-dom": "15.4.2",
+    "react-select": "1.0.0-rc.3",
     "readline-sync": "1.4.5",
     "request": "2.79.0",
     "serve-favicon": "2.3.2",
