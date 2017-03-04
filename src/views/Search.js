@@ -86,12 +86,10 @@ class Facet extends React.Component {
     context: Context
 
     render() {
-        const {facet, type} = this.props;
-        const {gettext, options, format} = this.context;
-        const minFacetCount = options.types[type].minFacetCount || 1;
+        const {facet} = this.props;
+        const {gettext, format} = this.context;
+        let {buckets} = facet;
         let extra = null;
-        let buckets = facet.buckets
-            .filter((bucket) => bucket.count >= minFacetCount);
 
         if (buckets.length <= 1) {
             return null;

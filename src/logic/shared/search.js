@@ -104,14 +104,34 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
         const facetData = [];
 
         if (results.aggregations) {
+            const minFacetCount = options.types[type].minFacetCount || 1;
+
             for (const name in aggregations) {
                 const aggregation = results.aggregations[name];
                 const facet = typeFacets[name];
                 const buckets = facet.formatBuckets(aggregation.buckets, i18n)
                     .filter((bucket) => {
-                        bucket.url = searchURL(i18n.lang,
-                            Object.assign({}, values, bucket.url));
-                        return bucket.count > 0;
+                        const url = Object.assign({}, values);
+                        for (const param in bucket.url) {
+                            const curValue = url[param];
+                            const value = bucket.url[param];
+                            if (Array.isArray(curValue)) {
+                                if (curValue.includes(value)) {
+                                    return false;
+                                }
+                                url[param] = curValue.slice(0);
+                                url[param].push(value);
+                            } else if (curValue) {
+                                if (curValue === value) {
+                                    return false;
+                                }
+                                url[param] = [curValue, value];
+                            } else {
+                                url[param] = value;
+                            }
+                        }
+                        bucket.url = searchURL(i18n.lang, url);
+                        return bucket.count >= minFacetCount;
                     });
 
                 // Skip facets that won't filter anything
