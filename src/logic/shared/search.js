@@ -104,7 +104,8 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
         const facetData = [];
 
         if (results.aggregations) {
-            const minFacetCount = options.types[type].minFacetCount || 1;
+            const typeOptions = options.types[type];
+            const minFacetCount = typeOptions.minFacetCount || 1;
 
             for (const name in aggregations) {
                 const aggregation = results.aggregations[name];
@@ -115,6 +116,12 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
                         for (const param in bucket.url) {
                             const curValue = url[param];
                             const value = bucket.url[param];
+
+                            if (curValue &&
+                                    !typeOptions.model[param].filterMultiple) {
+                                return false;
+                            }
+
                             if (Array.isArray(curValue)) {
                                 if (curValue.includes(value)) {
                                     return false;

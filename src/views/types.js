@@ -8,6 +8,7 @@ type BaseModelType = {
     required?: boolean,
     searchName?: string,
     multiple?: boolean,
+    filterMultiple?: boolean,
     hidden?: boolean,
 };
 

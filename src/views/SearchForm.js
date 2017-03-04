@@ -74,7 +74,7 @@ const TypeFilter = ({
     allValues: Array<any>,
     typeSchema: ModelType,
 }) => {
-    const {searchName, multiple} = typeSchema;
+    const {searchName, filterMultiple} = typeSchema;
     const searchField = searchName || name;
 
     if (typeSchema.type === "Dimension") {
@@ -106,7 +106,7 @@ const TypeFilter = ({
             searchName={searchField}
             placeholder={typeSchema.placeholder}
             title={typeSchema.title}
-            multiple={multiple}
+            multiple={filterMultiple}
         />;
 
     } else if (typeSchema.type === "LinkedRecord") {
@@ -127,7 +127,7 @@ const TypeFilter = ({
             searchName={searchField}
             placeholder={typeSchema.placeholder}
             title={typeSchema.title}
-            multiple={multiple}
+            multiple={filterMultiple}
         />;
 
     } else if (typeSchema.type === "SimpleDate") {
