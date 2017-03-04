@@ -192,7 +192,6 @@ const SourceFilter = ({
             value: source._id,
             label: source.name,
         }))}
-        style={{width: "100%"}}
     />
 </div>;
 
@@ -216,7 +215,6 @@ const SimilarityFilter = ({
                 value: id,
                 label: similarity[id].getTitle,
             }))}
-            style={{width: "100%"}}
         />
     </div>;
 };
@@ -242,7 +240,6 @@ const ImageFilter = ({
                 value: id,
                 label: images[id].getTitle,
             }))}
-            style={{width: "100%"}}
         />
     </div>;
 };
@@ -264,7 +261,6 @@ const Sorts = ({
             label: sort.name,
         }))}
         clearable={false}
-        style={{width: "100%"}}
     />
 </div>;
 

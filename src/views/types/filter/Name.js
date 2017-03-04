@@ -2,7 +2,10 @@
 
 const React = require("react");
 
+const Select = require("../../shared/Select.js");
+
 type Props = {
+    multiple?: boolean,
     placeholder?: string,
     searchName: string,
     title: string,
@@ -11,6 +14,7 @@ type Props = {
 };
 
 const NameFilter = ({
+    multiple,
     placeholder,
     searchName,
     title,
@@ -20,18 +24,16 @@ const NameFilter = ({
     <label htmlFor={searchName} className="control-label">
         {title}
     </label>
-    <select name={searchName} style={{width: "100%"}}
-        className="form-control select2-select"
-        defaultValue={value}
-        data-placeholder={placeholder}
-    >
-        <option value="">{placeholder}</option>
-        {values.map((name) =>
-            <option value={name} key={name}>
-                {name}
-            </option>
-        )}
-    </select>
+    <Select
+        name={searchName}
+        value={value}
+        options={values.map((name) => ({
+            value: name,
+            label: name,
+        }))}
+        placeholder={placeholder}
+        multi={multiple}
+    />
 </div>;
 
 module.exports = NameFilter;

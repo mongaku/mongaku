@@ -2,6 +2,8 @@
 
 const React = require("react");
 
+const Select = require("../../shared/Select.js");
+
 const NameEdit = ({
     name,
     names,
@@ -17,25 +19,23 @@ const NameEdit = ({
     multiple?: boolean,
 }) => {
     let defaultValue = (value || [])
-        .map((name) => name.name || name.original);
+        .map((name) => name.name || name.original || "");
 
     if (!multiple) {
         defaultValue = defaultValue[0];
     }
 
     if (names && names.length > 0) {
-        return <select
+        return <Select
             name={name}
-            className="form-control select2-select"
-            defaultValue={defaultValue}
-            multiple={multiple}
-        >
-            {names.map((name) =>
-                <option value={name} key={name}>
-                    {name}
-                </option>
-            )}
-        </select>;
+            value={defaultValue}
+            multi={multiple}
+            options={names.map((name) => ({
+                value: name,
+                label: name,
+            }))}
+            clearable={false}
+        />;
     }
 
     return <input

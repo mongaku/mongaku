@@ -2,6 +2,8 @@
 
 const React = require("react");
 
+const Select = require("../../shared/Select.js");
+
 type Props = {
     multiple?: boolean,
     placeholder?: string,
@@ -25,19 +27,16 @@ const FixedStringFilter = ({
     <label htmlFor={searchName} className="control-label">
         {title}
     </label>
-    <select name={searchName} style={{width: "100%"}}
-        className="form-control select2-select"
-        defaultValue={value}
-        data-placeholder={placeholder}
-        multiple={multiple}
-    >
-        <option value="">{placeholder}</option>
-        {values.map((type) =>
-            <option value={type.id} key={type.id}>
-                {type.name}
-            </option>
-        )}
-    </select>
+    <Select
+        name={searchName}
+        value={value}
+        options={values.map((type) => ({
+            value: type.id,
+            label: type.name,
+        }))}
+        placeholder={placeholder}
+        multi={multiple}
+    />
 </div>;
 
 module.exports = FixedStringFilter;

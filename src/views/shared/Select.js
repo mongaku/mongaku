@@ -12,6 +12,7 @@ type Props = {
     value?: string | Array<string>,
     multi?: boolean,
     clearable?: boolean,
+    loadOptions?: (input: string) => Promise<*>,
 };
 
 class Select extends React.Component {
@@ -28,12 +29,20 @@ class Select extends React.Component {
     props: Props
 
     render() {
-        const Selector = this.props.multi ?
-            ReactSelect.Creatable :
-            ReactSelect;
+        const {multi, loadOptions} = this.props;
+        let Selector = ReactSelect;
+
+        if (multi && loadOptions) {
+            Selector = ReactSelect.AsyncCreatable;
+        } else if (multi) {
+            Selector = ReactSelect.Creatable;
+        } else if (loadOptions) {
+            Selector = ReactSelect.Async;
+        }
 
         return <Selector
             {...this.props}
+            value={this.state.value}
             onChange={(value) => this.setState({value})}
             // NOTE(jersig): Setting instanceId due to this issue:
             // https://github.com/JedWatson/react-select/issues/1325
