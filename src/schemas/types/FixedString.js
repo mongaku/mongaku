@@ -32,6 +32,10 @@ FixedString.prototype = {
     },
 
     searchTitle(name, i18n) {
+        if (Array.isArray(name)) {
+            return name.map((name) => this.searchTitle(name, i18n)).join(", ");
+        }
+
         const values = this.options.values || {};
         const nameMap = values[name];
         return values.hasOwnProperty(name) && nameMap && nameMap.name ?
@@ -40,13 +44,17 @@ FixedString.prototype = {
     },
 
     filter(value) {
+        const query = Array.isArray(value) ?
+            value :
+            [value];
+
         return {
-            match: {
-                [`${this.options.name}.raw`]: {
-                    query: value,
-                    operator: "or",
-                    zero_terms_query: "all",
-                },
+            bool: {
+                must: query.map((value) => ({
+                    term: {
+                        [`${this.options.name}.raw`]: value,
+                    },
+                })),
             },
         };
     },

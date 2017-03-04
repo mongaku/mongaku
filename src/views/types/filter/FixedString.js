@@ -9,7 +9,7 @@ type Props = {
     placeholder?: string,
     searchName: string,
     title: string,
-    value?: string,
+    value?: string | Array<string>,
     values: Array<{
         id: string,
         name: string,
