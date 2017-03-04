@@ -26,7 +26,7 @@ Name.prototype = {
     },
 
     fields(value) {
-        return {[this.searchName()]: value.name || value.original};
+        return {[this.searchName()]: value.name || value.original || value};
     },
 
     title(i18n) {
