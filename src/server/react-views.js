@@ -1,3 +1,4 @@
+const Module = require("module");
 const path = require("path");
 
 const React = require("react");
@@ -13,6 +14,18 @@ const blacklist = (key, value) =>
     key === "_locals" || key === "settings" ?
         undefined :
         value;
+
+const originalLoader = Module._load;
+
+// Override the normal "require" call to handle any attempts to dynamically
+// load react or react-dom instead of preact (e.g. in react-select)
+Module._load = function(request, parent) {
+    if (request === "react" || request === "react-dom") {
+        return originalLoader.call(this, "preact-compat", parent);
+    }
+
+    return originalLoader(...arguments);
+};
 
 const engine = (filePath: string, options: Object, callback: Function) => {
     const urls = urlsLib(options.options);
