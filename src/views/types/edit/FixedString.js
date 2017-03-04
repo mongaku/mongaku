@@ -1,7 +1,8 @@
 // @flow
 
 const React = require("react");
-const ReactSelect = require("react-select");
+
+const Select = require("../../shared/Select.js");
 
 type ValueType = {
     id: string,
@@ -58,27 +59,12 @@ const Value = ({
     />;
 };
 
-class Select extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            value: props.value,
-        };
-    }
+const FixedStringEdit = (props: Props) => {
+    const {name, value, values, multiple} = props;
 
-    state: {
-        value: string | Array<string>,
-    }
-    props: Props
-
-    render() {
-        const {name, values, multiple} = this.props;
-        const {value} = this.state;
-        const Selector = multiple ?
-            ReactSelect.Creatable :
-            ReactSelect;
-
-        return <Selector
+    // If we have values to choose from then we render a select
+    if (Array.isArray(values) && values.length > 0) {
+        return <Select
             name={name}
             value={value}
             multi={multiple}
@@ -87,17 +73,7 @@ class Select extends React.Component {
                 label: value.name,
             }))}
             clearable={false}
-            onChange={(value) => this.setState({value})}
         />;
-    }
-}
-
-const FixedStringEdit = (props: Props) => {
-    const {value, values, multiple} = props;
-
-    // If we have values to choose from then we render a select
-    if (Array.isArray(values) && values.length > 0) {
-        return <Select {...props} />;
 
     // If we're expecting multiple input values
     } else if (multiple || Array.isArray(value)) {

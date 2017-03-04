@@ -2,6 +2,7 @@
 
 const React = require("react");
 
+const Select = require("./shared/Select.js");
 const DimensionFilter = require("./types/filter/Dimension.js");
 const FixedStringFilter = require("./types/filter/FixedString.js");
 const LocationFilter = require("./types/filter/Location.js");
@@ -182,17 +183,17 @@ const SourceFilter = ({
     <label htmlFor="source" className="control-label">
         {gettext("Source")}
     </label>
-    <select name="source" style={{width: "100%"}}
-        className="form-control select2-select"
-        defaultValue={values.source}
-        data-placeholder={gettext("Filter by source...")}
-    >
-        {sources && sources.map((source) =>
-            <option value={source._id} key={source._id}>
-                {source.name}
-            </option>
-        )}
-    </select>
+    <Select
+        name="source"
+        value={values.source}
+        placeholder={gettext("Filter by source...")}
+        clearable={true}
+        options={sources && sources.map((source) => ({
+            value: source._id,
+            label: source.name,
+        }))}
+        style={{width: "100%"}}
+    />
 </div>;
 
 SourceFilter.contextTypes = childContextTypes;
@@ -207,16 +208,16 @@ const SimilarityFilter = ({
         <label htmlFor="similar" className="control-label">
             {gettext("Similarity")}
         </label>
-        <select name="similar" style={{width: "100%"}}
-            className="form-control select2-select"
-            defaultValue={values.similar}
-        >
-            {Object.keys(similarity).map((id) =>
-                <option value={id} key={id}>
-                    {similarity[id].getTitle}
-                </option>
-            )}
-        </select>
+        <Select
+            name="similar"
+            value={values.similar}
+            clearable={true}
+            options={Object.keys(similarity).map((id) => ({
+                value: id,
+                label: similarity[id].getTitle,
+            }))}
+            style={{width: "100%"}}
+        />
     </div>;
 };
 
@@ -232,20 +233,17 @@ const ImageFilter = ({
         <label htmlFor="imageFilter" className="control-label">
             {gettext("Images")}
         </label>
-        <select name="imageFilter" style={{width: "100%"}}
-            className="form-control select2-select"
-            defaultValue={values.images}
-            data-placeholder={gettext("Filter by image...")}
-        >
-            <option value="">
-                {gettext("Filter by image...")}
-            </option>
-            {Object.keys(images).map((id) =>
-                <option value={id} key={id}>
-                    {images[id].getTitle}
-                </option>
-            )}
-        </select>
+        <Select
+            name="imageFilter"
+            value={values.images}
+            placeholder={gettext("Filter by image...")}
+            clearable={true}
+            options={Object.keys(images).map((id) => ({
+                value: id,
+                label: images[id].getTitle,
+            }))}
+            style={{width: "100%"}}
+        />
     </div>;
 };
 
@@ -258,16 +256,15 @@ const Sorts = ({
     <label htmlFor="source" className="control-label">
         {gettext("Sort")}
     </label>
-    <select name="sort" style={{width: "100%"}}
-        className="form-control select2-select"
-        defaultValue={values.sort}
-    >
-        {sorts && sorts.map((sort) =>
-            <option value={sort.id} key={sort.id}>
-                {sort.name}
-            </option>
-        )}
-    </select>
+    <Select
+        name="sort"
+        value={values.sort}
+        options={sorts && sorts.map((sort) => ({
+            value: sort.id,
+            label: sort.name,
+        }))}
+        style={{width: "100%"}}
+    />
 </div>;
 
 Sorts.contextTypes = childContextTypes;
