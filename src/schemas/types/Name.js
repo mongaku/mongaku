@@ -35,16 +35,28 @@ Name.prototype = {
 
     searchTitle(value, i18n) {
         const title = this.options.title(i18n);
-        return `${title}: ${value}`;
+        let name = value;
+        if (Array.isArray(value)) {
+            name = value.join(", ");
+        }
+        return `${title}: ${name}`;
     },
 
     filter(value, sanitize) {
+        const query = Array.isArray(value) ?
+            value :
+            [value];
+
         return {
-            multi_match: {
-                fields: [`${this.options.name}.name`],
-                query: sanitize(value),
-                operator: "and",
-                zero_terms_query: "all",
+            bool: {
+                must: query.map((value) => ({
+                    multi_match: {
+                        fields: [`${this.options.name}.name`],
+                        query: sanitize(value),
+                        operator: "and",
+                        zero_terms_query: "all",
+                    },
+                })),
             },
         };
     },
