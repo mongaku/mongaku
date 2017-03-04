@@ -228,11 +228,11 @@ const ImageFilter = ({
     const images = queries.images.filters;
 
     return <div className="form-group">
-        <label htmlFor="imageFilter" className="control-label">
+        <label htmlFor="images" className="control-label">
             {gettext("Images")}
         </label>
         <Select
-            name="imageFilter"
+            name="images"
             value={values.images}
             placeholder={gettext("Filter by image...")}
             clearable={true}
