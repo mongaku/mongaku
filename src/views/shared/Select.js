@@ -35,6 +35,9 @@ class Select extends React.Component {
         return <Selector
             {...this.props}
             onChange={(value) => this.setState({value})}
+            // NOTE(jersig): Setting instanceId due to this issue:
+            // https://github.com/JedWatson/react-select/issues/1325
+            instanceId={this.props.name}
         />;
     }
 }

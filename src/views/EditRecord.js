@@ -341,6 +341,7 @@ class Contents extends React.Component {
         const {model} = options.types[type];
         const types = Object.keys(model);
         const canBePrivate = (mode === "edit");
+        let privateToggle = null;
 
         const fields = types.map((modelType) => {
             const typeSchema = model[modelType];
@@ -367,21 +368,21 @@ class Contents extends React.Component {
         });
 
         if (canBePrivate) {
-            fields.push(<tr key="private">
+            privateToggle = <tr>
                 <th/>
                 <td>
                     <label>
                         <input
                             type="checkbox"
                             className="toggle-private"
-                            checked={this.state.showPrivate}
-                            onClick={(e) => this.togglePrivate(e)}
+                            defaultChecked={this.state.showPrivate}
+                            onChange={(e) => this.togglePrivate(e)}
                         />
                         {" "}
                         {gettext("Show private fields.")}
                     </label>
                 </td>
-            </tr>);
+            </tr>;
         }
 
         return <tbody>
@@ -392,6 +393,7 @@ class Contents extends React.Component {
                 onValid={(valid) => this.setState({valid})}
             />
             {fields}
+            {privateToggle}
             <SubmitButtons {...this.props} valid={this.state.valid} />
         </tbody>;
     }

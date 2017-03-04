@@ -263,6 +263,7 @@ const Sorts = ({
             value: sort.id,
             label: sort.name,
         }))}
+        clearable={false}
         style={{width: "100%"}}
     />
 </div>;
