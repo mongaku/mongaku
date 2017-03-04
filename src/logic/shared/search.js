@@ -139,20 +139,55 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
         // Figure out the title and breadcrumbs of the results
         let title = i18n.gettext("Search Results");
         const primary = paramFilter(values).primary;
-        let breadcrumbs = [];
+        const breadcrumbs = [];
 
-        if (primary.length > 1) {
-            breadcrumbs = primary.map((param) => {
+        for (const param of primary) {
+            // Handle custom-generated breadcrumb lists
+            if (typeQueries[param].breadcrumb) {
+                const crumbs = typeQueries[param]
+                    .breadcrumb(values[param], i18n);
+                for (const crumb of crumbs) {
+                    const rmValues = Object.assign({}, values);
+
+                    for (const param of crumb.params) {
+                        delete rmValues[param];
+                    }
+
+                    breadcrumbs.push({
+                        name: crumb.name,
+                        url: searchURL(i18n.lang, rmValues),
+                    });
+                }
+
+            // Handle when multiple values are specified, we add a crumb
+            // for removing every item in the list.
+            } else if (Array.isArray(values[param])) {
+                for (const value of values[param]) {
+                    const rmValues = Object.assign({}, values);
+                    rmValues[param] = values[param]
+                        .filter((otherValue) => otherValue !== value);
+
+                    breadcrumbs.push({
+                        name: typeQueries[param]
+                            .searchTitle(value, i18n),
+                        url: searchURL(i18n.lang, rmValues),
+                    });
+                }
+
+            // Handle all other cases (just removing the parameter)
+            } else {
                 const rmValues = Object.assign({}, values);
                 delete rmValues[param];
 
-                return {
-                    name: typeQueries[param].searchTitle(values[param], i18n),
+                breadcrumbs.push({
+                    name: typeQueries[param]
+                        .searchTitle(values[param], i18n),
                     url: searchURL(i18n.lang, rmValues),
-                };
-            }).filter((crumb) => crumb.name);
+                });
+            }
+        }
 
-        } else if (primary.length === 1) {
+        if (primary.length === 1) {
             const name = primary[0];
             const query = typeQueries[name];
             title = query.searchTitle(values[name], i18n);
@@ -163,7 +198,7 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
 
         callback(null, {
             title,
-            breadcrumbs,
+            breadcrumbs: breadcrumbs.length === 1 ? [] : breadcrumbs,
             sources: models("Source").getSourcesByType(values.type)
                 .filter((source) => source.numRecords > 0)
                 .map((source) => cloneModel(source, i18n)),

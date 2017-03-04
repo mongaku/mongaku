@@ -118,13 +118,8 @@ Dimension.prototype = {
             });
 
             breadcrumbs.push({
-                title: `${title}: ${range}`,
-                url: {
-                    [this.options.name]: {
-                        heightMin: value.heightMin,
-                        heightMax: value.heightMax,
-                    },
-                },
+                name: `${title}: ${range}`,
+                params: ["heightMin", "heightMax"],
             });
         }
 
@@ -137,13 +132,8 @@ Dimension.prototype = {
             });
 
             breadcrumbs.push({
-                title: `${title}: ${range}`,
-                url: {
-                    [this.options.name]: {
-                        widthMin: value.widthMin,
-                        widthMax: value.widthMax,
-                    },
-                },
+                name: `${title}: ${range}`,
+                params: ["widthMin", "widthMax"],
             });
         }
 
