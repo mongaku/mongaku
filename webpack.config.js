@@ -34,6 +34,7 @@ module.exports = {
 
         new webpack.optimize.CommonsChunkPlugin({
             name: "shared",
+            minChunks: 2,
         }),
 
         new webpack.optimize.CommonsChunkPlugin({
