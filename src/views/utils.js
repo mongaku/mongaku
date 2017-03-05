@@ -8,8 +8,8 @@ module.exports = (lang: string, options: Options, translations: {
     [message: string]: ?Array<string>,
 }) => {
     const urls = require("../lib/urls")(options);
-    const numberFormat = global.Intl.NumberFormat(lang);
-    const dateFormat = global.Intl.DateFormat(lang);
+    const numberFormat = new global.Intl.NumberFormat(lang);
+    const dateFormat = new global.Intl.DateTimeFormat(lang);
 
     return {
         getOtherURL(originalUrl: string, locale: string): string {
