@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const Module = require("module");
 
 const tap = require("tap");
 const sinon = require("sinon");
@@ -10,9 +11,22 @@ const iconv = require("iconv-lite");
 // Force ICONV to pre-load its encodings
 iconv.getCodec("utf8");
 
+const originalLoader = Module._load;
+
+// Override the normal "require" call to handle any attempts to dynamically
+// load react or react-dom instead of preact (e.g. in react-select)
+Module._load = function(request, parent) {
+    if (request === "react" || request === "react-dom") {
+        return originalLoader.call(this, "preact-compat", parent);
+    }
+
+    return originalLoader(...arguments);
+};
+
 // Force dynamically loaded modules to load now
 require("negotiator/lib/mediaType");
 require("nyc/node_modules/istanbul-lib-instrument");
+require("react-select");
 
 // Load in global ENV
 process.env.BASE_DATA_DIR = path.resolve(process.cwd(), "data");
@@ -81,6 +95,16 @@ const viewDir = path.resolve(__dirname, "..", "views");
 for (const file of fs.readdirSync(viewDir)) {
     if (file.indexOf(".js") >= 0) {
         viewFiles[file] = fs.readFileSync(path.resolve(viewDir, file));
+    }
+}
+
+const sharedViewFiles = {};
+const sharedViewDir = path.resolve(__dirname, "..", "views", "shared");
+
+for (const file of fs.readdirSync(sharedViewDir)) {
+    if (file.indexOf(".js") >= 0) {
+        sharedViewFiles[file] =
+            fs.readFileSync(path.resolve(sharedViewDir, file));
     }
 }
 
@@ -967,6 +991,7 @@ const init = (done) => {
             },
             "build": {
                 "views": Object.assign({
+                    "shared": sharedViewFiles,
                     "types": {
                         "filter": typeFilterFiles,
                         "view": typeViewFiles,
