@@ -46,7 +46,7 @@ const ImageImport = ({
 }: Props & {batch: Import}, {
     gettext,
     format,
-    relativeDate,
+    fixedDate,
 }: Context) => {
     const results = batch.getFilteredResults;
     let columns;
@@ -67,7 +67,7 @@ const ImageImport = ({
 
     return <tr>
         <td><a href={batch.getURL}>{batch.fileName}</a></td>
-        <td>{relativeDate(batch.modified)}</td>
+        <td>{fixedDate(batch.modified)}</td>
         {columns}
     </tr>;
 };
@@ -150,7 +150,7 @@ const DataImport = ({
 }: Props & {batch: Import}, {
     gettext,
     format,
-    relativeDate,
+    fixedDate,
 }: Context) => {
     const results = batch.getFilteredResults;
     let columns;
@@ -180,7 +180,7 @@ const DataImport = ({
 
     return <tr>
         <td><a href={batch.getURL}>{batch.fileName}</a></td>
-        <td>{relativeDate(batch.modified)}</td>
+        <td>{fixedDate(batch.modified)}</td>
         {columns}
     </tr>;
 };

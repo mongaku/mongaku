@@ -47,7 +47,6 @@ Wrapper.childContextTypes = {
     URL: React.PropTypes.func,
     STATIC: React.PropTypes.func,
     stringNum: React.PropTypes.func,
-    relativeDate: React.PropTypes.func,
     fixedDate: React.PropTypes.func,
     format: React.PropTypes.func,
     gettext: React.PropTypes.func,

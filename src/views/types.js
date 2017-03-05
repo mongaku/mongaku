@@ -151,7 +151,6 @@ export type Context = {
     URL: (path: string, query?: Object) => string,
     STATIC: (path: string) => string,
     stringNum: (num: number) => string,
-    relativeDate: (date: Date) => string,
     fixedDate: (date: Date) => string,
     gettext: (text: string) => string,
     format: (fmt: string, props: {[key: string]: any}) => string,

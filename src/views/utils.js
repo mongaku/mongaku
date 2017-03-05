@@ -2,14 +2,14 @@
 
 const qs = require("querystring");
 
-const moment = require("moment");
-
 import type {Source, Options} from "./types.js";
 
 module.exports = (lang: string, options: Options, translations: {
     [message: string]: ?Array<string>,
 }) => {
     const urls = require("../lib/urls")(options);
+    const numberFormat = global.Intl.NumberFormat(lang);
+    const dateFormat = global.Intl.DateFormat(lang);
 
     return {
         getOtherURL(originalUrl: string, locale: string): string {
@@ -33,19 +33,11 @@ module.exports = (lang: string, options: Options, translations: {
 
         // Format a number using commas
         stringNum(num: number): string {
-            // TODO(jeresig): Have a better way to handle this.
-            const separator = lang === "en" ? "," : ".";
-            const result = (typeof num === "number" ? num : "");
-            return result.toString().replace(/\B(?=(\d{3})+(?!\d))/g,
-                separator);
-        },
-
-        relativeDate(date: Date): string {
-            return moment(date).locale(lang).fromNow();
+            return numberFormat.format(num);
         },
 
         fixedDate(date: Date): string {
-            return moment(date).locale(lang).format("LLL");
+            return dateFormat.format(date);
         },
 
         format(fmt: string = "", props: {[key: string]: any}): string {

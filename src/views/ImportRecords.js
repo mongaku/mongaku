@@ -158,7 +158,6 @@ const ImportData = (props: Props, {
     gettext,
     format,
     fixedDate,
-    relativeDate,
     STATIC,
 }: Context) => {
     const {
@@ -174,7 +173,7 @@ const ImportData = (props: Props, {
     const uploadDate = format(gettext("Uploaded: %(date)s"),
         {date: fixedDate(batch.created)});
     const lastUpdated = format(gettext("Last Updated: %(date)s"),
-        {date: relativeDate(batch.modified)});
+        {date: fixedDate(batch.modified)});
 
     const style = <link rel="stylesheet"
         href={STATIC("/css/format-diff.css")}

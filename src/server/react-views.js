@@ -1,6 +1,7 @@
 const Module = require("module");
 const path = require("path");
 
+const IntlPolyfill = require("intl");
 const React = require("react");
 const {renderToString, renderToStaticMarkup} = require("react-dom/server");
 
@@ -26,6 +27,11 @@ Module._load = function(request, parent) {
 
     return originalLoader(...arguments);
 };
+
+// Import in the Intl polyfills for better locale support (only needed for
+// Node as the browser already has good support)
+global.Intl.NumberFormat = IntlPolyfill.NumberFormat;
+global.Intl.DateTimeFormat = IntlPolyfill.DateTimeFormat;
 
 const engine = (filePath: string, options: Object, callback: Function) => {
     const urls = urlsLib(options.options);

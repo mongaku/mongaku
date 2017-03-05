@@ -99,7 +99,6 @@ const ImportImages = (props: Props, {
     gettext,
     format,
     fixedDate,
-    relativeDate,
 }: Context) => {
     const {
         title,
@@ -113,7 +112,7 @@ const ImportImages = (props: Props, {
     const uploadDate = format(gettext("Uploaded: %(date)s"),
         {date: fixedDate(batch.created)});
     const lastUpdated = format(gettext("Last Updated: %(date)s"),
-        {date: relativeDate(batch.modified)});
+        {date: fixedDate(batch.modified)});
 
     return <div>
         <p><a href={adminURL} className="btn btn-primary">
