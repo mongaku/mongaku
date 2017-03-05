@@ -355,19 +355,6 @@ module.exports = function(app) {
             });
         },
 
-        facets({i18n, params: {type}}, res, next) {
-            const Record = record(type);
-
-            Record.getFacets(i18n, (err, facets) => {
-                if (err) {
-                    return next(new Error(
-                        i18n.gettext("Error processing request.")));
-                }
-
-                res.json(facets);
-            });
-        },
-
         cloneView({i18n, params}, res) {
             const {type} = params;
             const Record = record(type);
@@ -574,7 +561,6 @@ module.exports = function(app) {
 
         routes() {
             app.get("/:type/search", cache(1), this.search);
-            app.get("/:type/facets", cache(1), this.facets);
             app.get("/:type/create", auth, this.createRedirect);
             app.get("/:type/source/:source", cache(1), this.bySource);
             app.get("/:type/:source/create", auth, this.createView);
