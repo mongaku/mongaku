@@ -10,10 +10,10 @@ type Props = {
     },
     searchName: string,
     value?: {
-        heightMin?: number,
-        heightMax?: number,
-        widthMin?: number,
-        widthMax?: number,
+        heightMin?: number | string,
+        heightMax?: number | string,
+        widthMin?: number | string,
+        widthMax?: number | string,
     },
     widthTitle: string,
 };

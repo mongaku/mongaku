@@ -41,16 +41,15 @@ Dimension.prototype = {
     },
 
     searchTitle(value, i18n) {
-        const defaultUnit = this.defaultUnit;
-        const unit = value.unit || this.defaultSearchUnit ||
-            this.defaultUnit;
+        const expectedUnit = this.defaultSearchUnit || this.defaultUnit;
+        const unit = value.unit || expectedUnit;
         const title = [];
 
         if (value.heightMin || value.heightMax) {
             const name = this.options.heightTitle(i18n);
             const range = numRange({
-                from: pd.convertNumber(value.heightMin, defaultUnit, unit),
-                to: pd.convertNumber(value.heightMax, defaultUnit, unit),
+                from: pd.convertNumber(value.heightMin, unit, expectedUnit),
+                to: pd.convertNumber(value.heightMax, unit, expectedUnit),
                 unit,
             });
             title.push(`${name}: ${range}`);
@@ -59,8 +58,8 @@ Dimension.prototype = {
         if (value.widthMin || value.widthMax) {
             const name = this.options.widthTitle(i18n);
             const range = numRange({
-                from: pd.convertNumber(value.widthMin, defaultUnit, unit),
-                to: pd.convertNumber(value.widthMax, defaultUnit, unit),
+                from: pd.convertNumber(value.widthMin, unit, expectedUnit),
+                to: pd.convertNumber(value.widthMax, unit, expectedUnit),
                 unit,
             });
             title.push(`${name}: ${range}`);
@@ -106,7 +105,7 @@ Dimension.prototype = {
         return ret;
     },
 
-    breadcrumb(value, i18n) {
+    breadcrumbs(value, i18n) {
         const breadcrumbs = [];
 
         if (value.heightMin || value.heightMax) {
@@ -117,9 +116,13 @@ Dimension.prototype = {
                 unit: value.unit,
             });
 
+            const newValue = Object.assign({}, value);
+            delete newValue.heightMin;
+            delete newValue.heightMax;
+
             breadcrumbs.push({
                 name: `${title}: ${range}`,
-                params: ["heightMin", "heightMax"],
+                value: newValue,
             });
         }
 
@@ -131,9 +134,13 @@ Dimension.prototype = {
                 unit: value.unit,
             });
 
+            const newValue = Object.assign({}, value);
+            delete newValue.widthMin;
+            delete newValue.widthMax;
+
             breadcrumbs.push({
                 name: `${title}: ${range}`,
-                params: ["widthMin", "widthMax"],
+                value: newValue,
             });
         }
 

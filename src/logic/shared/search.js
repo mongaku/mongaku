@@ -170,15 +170,12 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
 
         for (const param of primary) {
             // Handle custom-generated breadcrumb lists
-            if (typeQueries[param].breadcrumb) {
+            if (typeQueries[param].breadcrumbs) {
                 const crumbs = typeQueries[param]
-                    .breadcrumb(values[param], i18n);
+                    .breadcrumbs(values[param], i18n);
                 for (const crumb of crumbs) {
                     const rmValues = Object.assign({}, values);
-
-                    for (const param of crumb.params) {
-                        delete rmValues[param];
-                    }
+                    rmValues[param] = crumb.value;
 
                     breadcrumbs.push({
                         name: crumb.name,

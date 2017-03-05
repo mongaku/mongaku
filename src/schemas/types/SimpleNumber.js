@@ -24,6 +24,14 @@ SimpleNumber.prototype = {
         return {[this.searchName()]: value};
     },
 
+    searchTitle(value, i18n) {
+        const displayValue = Array.isArray(value) ?
+            value.join(", ") :
+            value;
+
+        return `${this.options.title(i18n)}: ${displayValue}`;
+    },
+
     schema() {
         const type = {
             type: Number,

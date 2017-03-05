@@ -3,8 +3,8 @@
 const React = require("react");
 
 type DateRange = {
-    end?: number,
-    start?: number,
+    end?: number | string,
+    start?: number | string,
 };
 
 type Props = {

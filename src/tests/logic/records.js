@@ -112,7 +112,7 @@ tap.test("Search: Artist", (t) => {
 });
 
 tap.test("Search: Date", (t) => {
-    const url = "http://localhost:3000/artworks/search?dateStart=1500&dateEnd=1599";
+    const url = "http://localhost:3000/artworks/search?date.start=1500&date.end=1599";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
@@ -121,7 +121,7 @@ tap.test("Search: Date", (t) => {
 });
 
 tap.test("Search: Date (Start Only)", (t) => {
-    const url = "http://localhost:3000/artworks/search?dateStart=1500";
+    const url = "http://localhost:3000/artworks/search?date.start=1500";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
@@ -130,7 +130,16 @@ tap.test("Search: Date (Start Only)", (t) => {
 });
 
 tap.test("Search: Date (End Only)", (t) => {
-    const url = "http://localhost:3000/artworks/search?dateEnd=1599";
+    const url = "http://localhost:3000/artworks/search?date.end=1599";
+    request.get(url, (err, res) => {
+        t.error(err, "Error should be empty.");
+        t.equal(res.statusCode, 200);
+        t.end();
+    });
+});
+
+tap.test("Search: Medium", (t) => {
+    const url = "http://localhost:3000/artworks/search?medium=oil";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
@@ -139,7 +148,8 @@ tap.test("Search: Date (End Only)", (t) => {
 });
 
 tap.test("Search: Width", (t) => {
-    const url = "http://localhost:3000/artworks/search?widthMin=0&widthMax=99";
+    const url = "http://localhost:3000/artworks/search?" +
+        "dimensions.widthMin=0&dimensions.widthMax=99";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
@@ -148,7 +158,8 @@ tap.test("Search: Width", (t) => {
 });
 
 tap.test("Search: Height", (t) => {
-    const url = "http://localhost:3000/artworks/search?heightMin=0&heightMax=99";
+    const url = "http://localhost:3000/artworks/search?" +
+        "dimensions.heightMin=0&dimensions.heightMax=99";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
