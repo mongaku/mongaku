@@ -28,9 +28,7 @@ type Sort = {
 type RecordType = {
     _id: string,
     type: string,
-    url?: string,
     source: string,
-    getOriginalURL: string,
     getThumbURL: string,
     getTitle: string,
     getURL: string,

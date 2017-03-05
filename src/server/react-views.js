@@ -59,9 +59,9 @@ ${head}
 <body>
     <div id="root">${output}</div>
     <script>window.__STATE__=${state}</script>
-    <script src="${urls.genStatic("/js/vendor.js")}"></script>
-    <script src="${urls.genStatic("/js/shared.js")}"></script>
-    <script src="${urls.genStatic(`/js/${viewName}.js`)}"></script>
+    <script src="${urls.genStatic("/js/vendor.js")}" defer></script>
+    <script src="${urls.genStatic("/js/shared.js")}" defer></script>
+    <script src="${urls.genStatic(`/js/${viewName}.js`)}" defer></script>
 </body>
 </html>`);
 };
