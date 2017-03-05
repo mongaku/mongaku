@@ -118,7 +118,7 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
                             const value = bucket.url[param];
 
                             if (curValue &&
-                                    !typeOptions.model[param].filterMultiple) {
+                                    !typeQueries[param].filterMultiple) {
                                 return false;
                             }
 
