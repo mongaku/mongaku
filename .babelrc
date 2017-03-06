@@ -1,9 +1,10 @@
 {
     "presets": [["env", {
         "targets": {
-            "browsers": "> 2% in US",
+            "browsers": "IE 11",
             "node": "current"
-        }
+        },
+        "useBuiltIns": true
     }], "react"],
     "plugins": [
         ["module-resolver", {

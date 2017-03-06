@@ -4,12 +4,14 @@ const qs = require("querystring");
 
 import type {Source, Options} from "./types.js";
 
+declare var Intl;
+
 module.exports = (lang: string, options: Options, translations: {
     [message: string]: ?Array<string>,
 }) => {
     const urls = require("../lib/urls")(options);
-    const numberFormat = new global.Intl.NumberFormat(lang);
-    const dateFormat = new global.Intl.DateTimeFormat(lang);
+    const numberFormat = new Intl.NumberFormat(lang);
+    const dateFormat = new Intl.DateTimeFormat(lang);
 
     return {
         getOtherURL(originalUrl: string, locale: string): string {

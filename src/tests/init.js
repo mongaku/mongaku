@@ -11,6 +11,9 @@ const iconv = require("iconv-lite");
 // Force ICONV to pre-load its encodings
 iconv.getCodec("utf8");
 
+// Bring in any polyfills used for testing (e.g. async)
+require("babel-polyfill");
+
 const originalLoader = Module._load;
 
 // Override the normal "require" call to handle any attempts to dynamically

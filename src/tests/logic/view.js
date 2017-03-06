@@ -1,5 +1,6 @@
 const tap = require("tap");
 const request = require("request");
+const phantom = require("phantom");
 
 require("../init");
 
@@ -37,4 +38,22 @@ tap.test("Record Missing", (t) => {
         t.equal(res.statusCode, 404);
         t.end();
     });
+});
+
+tap.test("Record (in Browser", async (t) => {
+    const url = "http://localhost:3000/artworks/test/1234";
+    const instance = await phantom.create([], {
+        logger: {
+            error: (err) => {
+                t.error(err, "JS Error.");
+            },
+        },
+    });
+    const page = await instance.createPage();
+    const status = await page.open(url);
+    const content = await page.property("content");
+    t.match(content, "<title>Test: Mongaku</title>");
+    t.equal(status, "success");
+    instance.exit();
+    t.end();
 });
