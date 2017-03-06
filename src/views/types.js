@@ -77,8 +77,8 @@ type YearRange = BaseModelType & {
         to?: number,
     }>,
     placeholder?: {
-        start?: number,
-        end?: number,
+        start?: number | string,
+        end?: number | string,
     },
 };
 

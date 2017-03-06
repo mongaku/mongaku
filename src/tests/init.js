@@ -72,6 +72,21 @@ let similarAdded;
 let user;
 let users;
 
+const login = (request, email, callback) => {
+    request.post({
+        url: "http://localhost:3000/login",
+        form: {
+            email,
+            password: "test",
+        },
+    }, callback);
+};
+
+const adminLogin = (request, callback) =>
+    login(request, "test@test.com", callback);
+const normalLogin = (request, callback) =>
+    login(request, "normal@test.com", callback);
+
 // Sandbox the bound methods
 let sandbox;
 
@@ -1029,6 +1044,8 @@ module.exports = {
     getUploads: () => uploads,
     getUploadImage: () => uploadImage,
     getUser: () => user,
+    adminLogin,
+    normalLogin,
     i18n,
     Image,
     Record,

@@ -1,15 +1,12 @@
-const fs = require("fs");
-const path = require("path");
+// @flow
 
 const options = require("../lib/options");
 
-const basePath = path.resolve(__dirname, "../logic/");
+module.exports = function(app: express$Application) {
+    const {auth} = require("../logic/shared/auth");
 
-module.exports = function(app) {
     if (options.authRequired) {
-        const auth = require(path.join(basePath, "shared", "auth.js"));
-
-        app.use((req, res, next) => {
+        app.use((req: express$Request, res, next) => {
             const {path} = req;
 
             if (path === "/login" || path === "/logout") {
@@ -21,16 +18,21 @@ module.exports = function(app) {
     }
 
     // Import all the logic routes
-    fs.readdirSync(basePath).forEach((file) => {
-        if (file.endsWith(".js")) {
-            const logic = require(path.resolve(basePath, file))(app);
-            logic.routes();
-        }
-    });
+    require("../logic/admin")(app).routes();
+    require("../logic/create")(app).routes();
+    require("../logic/edit")(app).routes();
+    require("../logic/home")(app).routes();
+    require("../logic/search")(app).routes();
+    require("../logic/sitemaps")(app).routes();
+    require("../logic/uploads")(app).routes();
+    require("../logic/users")(app).routes();
+
+    // Keep at end as it has a catch-all route
+    require("../logic/view")(app).routes();
 
     // Enable error handling and displaying of a 500 error page
     // when an exception is thrown
-    app.use((err, req, res, next) => {
+    app.use((err: ?Error, req: express$Request, res, next) => {
         /* istanbul ignore else */
         if (err) {
             res.status(500).render("Error", {
@@ -43,9 +45,10 @@ module.exports = function(app) {
     });
 
     // Handle missing pages
-    app.use(({i18n}, res) => {
+    app.use(({i18n}: express$Request, res, next) => {
         res.status(404).render("Error", {
             title: i18n.gettext("Page Not Found"),
         });
+        next();
     });
 };

@@ -12,7 +12,7 @@ module.exports = function(app) {
     const ImageImport = models("ImageImport");
     const RecordImport = models("RecordImport");
 
-    const auth = require("./shared/auth");
+    const {auth, canEdit} = require("./shared/auth");
 
     const importRecords = ({i18n, lang, query, source}, res) => {
         const batchError = (err) => RecordImport.getError(i18n, err);
@@ -145,7 +145,7 @@ module.exports = function(app) {
             const dataImport = results[1]
                 .sort((a, b) => b.created - a.created);
             const title = i18n.format(i18n.gettext("%(name)s Admin Area"), {
-                name: source.getFullName,
+                name: source.getFullName(i18n),
             });
 
             res.render("Admin", {
@@ -266,24 +266,17 @@ module.exports = function(app) {
 
         routes() {
             const source = (req, res, next) => {
-                const {i18n, params} = req;
+                const {params: {source}} = req;
                 const Source = models("Source");
-
-                try {
-                    req.source = Source.getSource(params.source);
-                    next();
-
-                } catch (e) {
-                    return res.status(404).render("Error", {
-                        title: i18n.gettext("Source not found."),
-                    });
-                }
+                req.source = Source.getSource(source);
+                next();
             };
 
-            app.get("/:type/source/:source/admin", auth, source, this.admin);
-            app.post("/:type/source/:source/upload-images", auth, source,
-                this.uploadImages);
-            app.post("/:type/source/:source/upload-data", auth, source,
+            app.get("/:type/source/:source/admin", auth, canEdit, source,
+                this.admin);
+            app.post("/:type/source/:source/upload-images", auth, canEdit,
+                source, this.uploadImages);
+            app.post("/:type/source/:source/upload-data", auth, canEdit, source,
                 this.uploadData);
         },
     };

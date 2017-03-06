@@ -4,23 +4,10 @@ const path = require("path");
 const tap = require("tap");
 const request = require("request").defaults({jar: true});
 
-require("../init");
-
-const login = (email, callback) => {
-    request.post({
-        url: "http://localhost:3000/login",
-        form: {
-            email,
-            password: "test",
-        },
-    }, callback);
-};
-
-const adminLogin = (callback) => login("test@test.com", callback);
-const normalLogin = (callback) => login("normal@test.com", callback);
+const {adminLogin, normalLogin} = require("../init");
 
 tap.test("Admin Page", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/admin";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
@@ -42,18 +29,18 @@ tap.test("Admin Page (Logged Out)", (t) => {
 });
 
 tap.test("Admin Page (Unauthorized User)", (t) => {
-    normalLogin(() => {
+    normalLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/admin";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
-            t.equal(res.statusCode, 500);
+            t.equal(res.statusCode, 403);
             t.end();
         });
     });
 });
 
 tap.test("Record Import Page", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/admin" +
             "?records=test/started";
         request.get(url, (err, res) => {
@@ -65,7 +52,7 @@ tap.test("Record Import Page", (t) => {
 });
 
 tap.test("Record Import Page (Completed)", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/admin" +
             "?records=test/completed";
         request.get(url, (err, res) => {
@@ -77,7 +64,7 @@ tap.test("Record Import Page (Completed)", (t) => {
 });
 
 tap.test("Record Import Page (Error)", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/admin" +
             "?records=test/error";
         request.get(url, (err, res) => {
@@ -89,7 +76,7 @@ tap.test("Record Import Page (Error)", (t) => {
 });
 
 tap.test("Record Import Page (Missing)", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/admin" +
             "?records=test/foo";
         request.get(url, (err, res) => {
@@ -101,7 +88,7 @@ tap.test("Record Import Page (Missing)", (t) => {
 });
 
 tap.test("Record Import Finalize", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/admin" +
             "?records=test/started&finalize=true";
         request.get(url, (err, res) => {
@@ -115,7 +102,7 @@ tap.test("Record Import Finalize", (t) => {
 });
 
 tap.test("Record Import Abandon", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/admin" +
             "?records=test/started&abandon=true";
         request.get(url, (err, res) => {
@@ -129,7 +116,7 @@ tap.test("Record Import Abandon", (t) => {
 });
 
 tap.test("Image Import Page", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/admin" +
             "?images=test/started";
         request.get(url, (err, res) => {
@@ -141,7 +128,7 @@ tap.test("Image Import Page", (t) => {
 });
 
 tap.test("Image Import Page (Completed)", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/admin" +
             "?images=test/completed";
         request.get(url, (err, res) => {
@@ -153,7 +140,7 @@ tap.test("Image Import Page (Completed)", (t) => {
 });
 
 tap.test("Image Import Page (Completed, Expanded)", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/admin" +
             "?images=test/completed&expanded=models";
         request.get(url, (err, res) => {
@@ -165,7 +152,7 @@ tap.test("Image Import Page (Completed, Expanded)", (t) => {
 });
 
 tap.test("Image Import Page (Error)", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/admin" +
             "?images=test/error";
         request.get(url, (err, res) => {
@@ -177,7 +164,7 @@ tap.test("Image Import Page (Error)", (t) => {
 });
 
 tap.test("Image Import Page (Missing)", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/admin" +
             "?images=test/foo";
         request.get(url, (err, res) => {
@@ -189,7 +176,7 @@ tap.test("Image Import Page (Missing)", (t) => {
 });
 
 tap.test("uploadData: Source not found", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/foo/upload-data";
         const formData = {};
         request.post({url, formData}, (err, res) => {
@@ -201,7 +188,7 @@ tap.test("uploadData: Source not found", (t) => {
 });
 
 tap.test("uploadData: No files", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/upload-data";
         const formData = {};
         request.post({url, formData}, (err, res, body) => {
@@ -214,7 +201,7 @@ tap.test("uploadData: No files", (t) => {
 });
 
 tap.test("uploadData: File Error", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/upload-data";
         const file = "default-error.json";
         const formData = {
@@ -238,7 +225,7 @@ tap.test("uploadData: File Error", (t) => {
 });
 
 tap.test("uploadData: Default File", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/upload-data";
         const file = "default.json";
         const formData = {
@@ -262,7 +249,7 @@ tap.test("uploadData: Default File", (t) => {
 });
 
 tap.test("uploadImages: Source not found", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/foo/upload-images";
         const formData = {};
         request.post({url, formData}, (err, res) => {
@@ -274,7 +261,7 @@ tap.test("uploadImages: Source not found", (t) => {
 });
 
 tap.test("uploadImages: No files", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/upload-images";
         const formData = {};
         request.post({url, formData}, (err, res, body) => {
@@ -287,7 +274,7 @@ tap.test("uploadImages: No files", (t) => {
 });
 
 tap.test("uploadImages: Empty Zip", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/upload-images";
         const file = "empty.zip";
         const formData = {
@@ -311,7 +298,7 @@ tap.test("uploadImages: Empty Zip", (t) => {
 });
 
 tap.test("uploadImages: Corrupted Zip", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/upload-images";
         const file = "corrupted.zip";
         const formData = {
@@ -335,7 +322,7 @@ tap.test("uploadImages: Corrupted Zip", (t) => {
 });
 
 tap.test("uploadImages: Normal Zip", (t) => {
-    adminLogin(() => {
+    adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/upload-images";
         const file = "test.zip";
         const formData = {

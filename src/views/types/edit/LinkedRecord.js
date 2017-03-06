@@ -27,7 +27,12 @@ class LinkedRecordEdit extends React.Component {
             credentials: "same-origin",
         })
             .then((res) => res.json())
-            .then(({records}) => {
+            .then(({records}: {
+                records: Array<{
+                    _id: string,
+                    getTitle: string,
+                }>,
+            }) => {
                 return {
                     options: records
                         .filter((record) => record)

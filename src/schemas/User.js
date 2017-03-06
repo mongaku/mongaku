@@ -104,6 +104,10 @@ User.methods = {
                 types[source.type] = [];
             }
 
+            if (!this.canEditSource(source)) {
+                continue;
+            }
+
             types[source.type].push(source._id);
         }
 

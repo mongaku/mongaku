@@ -1,14 +1,16 @@
+// @flow
+
 const options = require("../lib/options");
 const i18n = require("../lib/i18n");
 
 const defaultLocale = Object.keys(options.locales)[0] || "en";
 
-module.exports = (app) => {
-    app.use((req, res, next) => {
+module.exports = (app: express$Application) => {
+    app.use((req: express$Request, res, next) => {
         const {headers, query} = req;
 
         /* istanbul ignore next */
-        const host = headers["x-forwarded-host"] || req.get("host");
+        const host = headers["x-forwarded-host"] || req.get("host") || "";
         let locale = options.usei18nSubdomain ?
             // Set the locale based upon the subdomain
             /^\w*/.exec(host)[0] :

@@ -1,3 +1,5 @@
+// @flow
+
 const express = require("express");
 
 const init = require("../lib/init");
@@ -10,11 +12,11 @@ const routes = require("./routes");
 const tmplVars = require("./tmpl-vars");
 const cron = require("./cron");
 
-module.exports = (callback) => {
+module.exports = (callback: (err: ?Error, server: Server) => void) => {
     const port = config.PORT;
     const app = express();
 
-    init((err) => {
+    init((err?: Error) => {
         /* istanbul ignore if */
         if (err) {
             return callback(err);

@@ -2,5 +2,8 @@
 module.file_ext=.js
 module.file_ext=.jsx
 
+[libs]
+types/
+
 [ignore]
 <PROJECT_ROOT>/node_modules/fbjs
