@@ -29,7 +29,7 @@ type Record = {
     id?: string,
     type: string,
     title?: string,
-    images: Array<ImageType>,
+    imageModels: Array<ImageType>,
     getTitle: string,
     getEditURL: string,
     getCloneURL: string,
@@ -40,7 +40,7 @@ type Record = {
 type ImageType = {
     _id: string,
     getOriginalURL: string,
-    getScaledURL: string,
+    getThumbURL: string,
 };
 
 const Image = ({
@@ -52,14 +52,16 @@ const Image = ({
     title: string,
 }, {
     gettext,
-}: Context) => <div className="img col-md-4 col-xs-12 col-sm-6" key={image._id}>
-    <a href={image.getOriginalURL}>
-        <img src={image.getScaledURL}
-            alt={title}
-            title={title}
-            className="img-responsive center-block"
-        />
-    </a>
+}: Context) => <div className="img col-md-3 col-xs-6 col-sm-4" key={image._id}>
+    <div className="img-wrap">
+        <a href={image.getOriginalURL} target="_blank">
+            <img src={image.getThumbURL}
+                alt={title}
+                title={title}
+                className="img-responsive center-block"
+            />
+        </a>
+    </div>
 
     <div className="details reduced">
         <form
@@ -107,7 +109,7 @@ const Images = (props: Props & {title: string}) => {
         <td>
             <div>
                 <div>
-                    {record && record.images.map((image, i) => <Image
+                    {record && record.imageModels.map((image, i) => <Image
                         {...props}
                         key={i}
                         image={image}

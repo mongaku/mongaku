@@ -93,7 +93,7 @@ const Image = ({
     image: ImageType,
     active: boolean,
 }) => <div className={`item ${active ? "active" : ""}`}>
-    <a href={image.getOriginalURL}>
+    <a href={image.getOriginalURL} target="_blank">
         <img src={image.getScaledURL}
             alt={record.getTitle}
             title={record.getTitle}
