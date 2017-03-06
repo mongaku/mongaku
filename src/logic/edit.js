@@ -69,6 +69,7 @@ module.exports = function(app: express$Application) {
                             title,
                             mode: "edit",
                             record: clonedRecord,
+                            source,
                             globalFacets,
                             dynamicValues,
                             type,

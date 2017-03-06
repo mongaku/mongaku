@@ -28,8 +28,8 @@ module.exports = {
 
     plugins: [
         new webpack.ProvidePlugin({
-            Promise: "es6-promise",
-            fetch: "whatwg-fetch",
+            Promise: "exports-loader?global.Promise!es6-promise",
+            fetch: "exports-loader?self.fetch!whatwg-fetch",
         }),
 
         new webpack.optimize.CommonsChunkPlugin({

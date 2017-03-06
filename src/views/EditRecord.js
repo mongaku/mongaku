@@ -151,35 +151,47 @@ class IDForm extends React.Component {
     state: {
         unused: boolean,
     }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.curSource !== this.props.curSource) {
+            this.checkID();
+        }
+    }
+
     props: Props & {
+        curSource: string,
         onValid: () => void,
     }
     context: Context
+    currentID: string
 
     setUnused(unused) {
         this.props.onValid(unused);
         this.setState({unused});
     }
 
-    handleInput(e: SyntheticInputEvent) {
-        const id = e.target.value;
+    checkID() {
+        const id = this.currentID;
+        const {type, curSource} = this.props;
 
         if (!id) {
             return this.setUnused(false);
         }
 
-        const jsonURL = window.location.pathname
-            .replace(/^(\/.*?\/.*?)\/.*$/, `$1/${id}/json`);
-
-        fetch(jsonURL, {
+        fetch(`/${type}/${curSource}/${id}/json`, {
             credentials: "same-origin",
         }).then((res) => {
             this.setUnused(res.status !== 200);
         });
     }
 
+    handleInput(e: SyntheticInputEvent) {
+        this.currentID = e.target.value;
+        this.checkID();
+    }
+
     render() {
-        const {record, type} = this.props;
+        const {record, type, curSource} = this.props;
         const {gettext, options} = this.context;
         const {unused} = this.state;
 
@@ -200,6 +212,7 @@ class IDForm extends React.Component {
                     className="form-control"
                     defaultValue={record && record.id}
                     onInput={(e) => this.handleInput(e)}
+                    disabled={!curSource}
                 />
             </td>
         </tr>;
@@ -211,7 +224,10 @@ IDForm.contextTypes = childContextTypes;
 const SourceForm = ({
     source,
     sources,
-}: Props, {gettext}: Context) => {
+    onSourceChange,
+}: Props & {
+    onSourceChange: (curSource: string) => void,
+}, {gettext}: Context) => {
     if (source) {
         return <input type="hidden" name="source" value={source} />;
     }
@@ -231,6 +247,7 @@ const SourceForm = ({
                     label: source.getFullName,
                 }))}
                 clearable={false}
+                onChange={onSourceChange}
             />
         </td>
     </tr>;
@@ -339,12 +356,14 @@ class Contents extends React.Component {
         this.state = {
             showPrivate: false,
             valid: (props.mode === "edit"),
+            curSource: props.source || props.sources[0]._id,
         };
     }
 
     state: {
         showPrivate: boolean,
         valid: boolean,
+        curSource: string,
     }
 
     componentDidMount() {
@@ -423,11 +442,15 @@ class Contents extends React.Component {
         return <tbody>
             {!options.types[type].noImages &&
                 <ImageForm {...this.props} />}
+            <SourceForm
+                {...this.props}
+                onSourceChange={(curSource) => this.setState({curSource})}
+            />
             <IDForm
                 {...this.props}
+                curSource={this.state.curSource}
                 onValid={(valid) => this.setState({valid})}
             />
-            <SourceForm {...this.props} />
             {fields}
             {privateToggle}
             <SubmitButtons {...this.props} valid={this.state.valid} />

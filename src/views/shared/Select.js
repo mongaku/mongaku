@@ -13,6 +13,7 @@ type Props = {
     multi?: boolean,
     clearable?: boolean,
     loadOptions?: (input: string) => Promise<*>,
+    onChange?: (value: string) => void,
 };
 
 class Select extends React.Component {
@@ -27,6 +28,13 @@ class Select extends React.Component {
         value?: string | Array<string>,
     }
     props: Props
+
+    handleChange({value}: {value: string}) {
+        this.setState({value});
+        if (this.props.onChange) {
+            this.props.onChange(value);
+        }
+    }
 
     render() {
         const {multi, loadOptions} = this.props;
@@ -43,7 +51,7 @@ class Select extends React.Component {
         return <Selector
             {...this.props}
             value={this.state.value}
-            onChange={(value) => this.setState({value})}
+            onChange={(value) => this.handleChange(value)}
             // NOTE(jersig): Setting instanceId due to this issue:
             // https://github.com/JedWatson/react-select/issues/1325
             instanceId={this.props.name}
