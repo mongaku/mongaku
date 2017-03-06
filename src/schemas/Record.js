@@ -155,7 +155,7 @@ Record.methods = {
     },
 
     getCreateURL(lang) {
-        return urls.gen(lang, `/${this.type}/${this.source}/create`);
+        return urls.gen(lang, `/${this.type}/create`);
     },
 
     getCloneURL(lang) {

@@ -7,8 +7,9 @@ const LinkedRecordEdit = require("./types/edit/LinkedRecord.js");
 const NameEdit = require("./types/edit/Name.js");
 const SimpleDateEdit = require("./types/edit/SimpleDate.js");
 const YearRangeEdit = require("./types/edit/YearRange.js");
+const Select = require("./shared/Select.js");
 
-import type {Context, ModelType} from "./types.js";
+import type {Context, ModelType, Source} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
 
 type Props = {
@@ -22,6 +23,8 @@ type Props = {
     mode: "create" | "edit" | "clone",
     record?: Record,
     type: string,
+    source?: string,
+    sources: Array<Source>,
 };
 
 type Record = {
@@ -204,6 +207,36 @@ class IDForm extends React.Component {
 }
 
 IDForm.contextTypes = childContextTypes;
+
+const SourceForm = ({
+    source,
+    sources,
+}: Props, {gettext}: Context) => {
+    if (source) {
+        return <input type="hidden" name="source" value={source} />;
+    }
+
+    return <tr>
+        <th className="text-right">
+            <label className="control-label">
+                {gettext("Source")}
+            </label>
+        </th>
+        <td>
+            <Select
+                name="source"
+                value={sources[0]._id}
+                options={sources.map((source) => ({
+                    value: source._id,
+                    label: source.getFullName,
+                }))}
+                clearable={false}
+            />
+        </td>
+    </tr>;
+};
+
+SourceForm.contextTypes = childContextTypes;
 
 const TypeEdit = ({
     name,
@@ -394,6 +427,7 @@ class Contents extends React.Component {
                 {...this.props}
                 onValid={(valid) => this.setState({valid})}
             />
+            <SourceForm {...this.props} />
             {fields}
             {privateToggle}
             <SubmitButtons {...this.props} valid={this.state.valid} />

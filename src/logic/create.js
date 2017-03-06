@@ -12,6 +12,7 @@ const metadata = require("../lib/metadata");
 
 module.exports = function(app: express$Application) {
     const Image = models("Image");
+    const Source = models("Source");
 
     const {auth, canEdit} = require("./shared/auth");
 
@@ -95,7 +96,9 @@ module.exports = function(app: express$Application) {
             res.render("EditRecord", {
                 title,
                 source,
-                sources,
+                sources: sources
+                    .map((source) => Source.getSource(source))
+                    .map((source) => cloneModel(source, i18n)),
                 mode: "create",
                 type,
                 globalFacets,
@@ -105,7 +108,7 @@ module.exports = function(app: express$Application) {
     };
 
     const create = (req: express$Request, res, next) => {
-        const {params: {type, source}, i18n, lang} = req;
+        const {params: {type}, i18n, lang} = req;
         const props = {};
         const model = metadata.model(type);
         const hasImageSearch = options.types[type].hasImageSearch();
@@ -134,7 +137,7 @@ module.exports = function(app: express$Application) {
 
             Object.assign(props, {
                 lang,
-                source,
+                source: fields.source,
                 type,
             });
 
