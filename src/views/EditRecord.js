@@ -24,7 +24,7 @@ type Props = {
     record?: Record,
     type: string,
     source?: string,
-    sources: Array<Source>,
+    sources?: Array<Source>,
 };
 
 type Record = {
@@ -230,6 +230,10 @@ const SourceForm = ({
 }, {gettext}: Context) => {
     if (source) {
         return <input type="hidden" name="source" value={source} />;
+    }
+
+    if (!sources) {
+        return null;
     }
 
     return <tr>
