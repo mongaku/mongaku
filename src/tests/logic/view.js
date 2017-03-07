@@ -1,8 +1,7 @@
 const tap = require("tap");
 const request = require("request");
-const phantom = require("phantom");
 
-require("../init");
+const {testPage} = require("../init");
 
 tap.test("Record", (t) => {
     const url = "http://localhost:3000/artworks/test/1234";
@@ -40,20 +39,10 @@ tap.test("Record Missing", (t) => {
     });
 });
 
-tap.test("Record (in Browser", async (t) => {
+tap.test("Record (in Browser)", (t) => {
     const url = "http://localhost:3000/artworks/test/1234";
-    const instance = await phantom.create([], {
-        logger: {
-            error: (err) => {
-                t.error(err, "JS Error.");
-            },
-        },
+    testPage(url).then(({content}) => {
+        t.match(content, "<title>Test: Mongaku</title>");
+        t.end();
     });
-    const page = await instance.createPage();
-    const status = await page.open(url);
-    const content = await page.property("content");
-    t.match(content, "<title>Test: Mongaku</title>");
-    t.equal(status, "success");
-    instance.exit();
-    t.end();
 });

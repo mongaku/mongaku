@@ -7,6 +7,7 @@ const sinon = require("sinon");
 const mockfs = require("mock-fs");
 const async = require("async");
 const iconv = require("iconv-lite");
+const createPool = require("phantom-pool").default;
 
 // Force ICONV to pre-load its encodings
 iconv.getCodec("utf8");
@@ -89,6 +90,26 @@ const adminLogin = (request, callback) =>
     login(request, "test@test.com", callback);
 const normalLogin = (request, callback) =>
     login(request, "normal@test.com", callback);
+
+let pool;
+
+const testPage = (url) => {
+    if (!pool) {
+        pool = createPool({
+            min: 1,
+        });
+    }
+
+    return pool.use(async (instance) => {
+        const page = await instance.createPage();
+        const status = await page.open(url);
+        if (status !== "success") {
+            throw new Error("Error opening page.");
+        }
+        const content = await page.property("content");
+        return {page, content};
+    });
+};
 
 // Sandbox the bound methods
 let sandbox;
@@ -1033,6 +1054,14 @@ tap.afterEach((done) => {
     done();
 });
 
+tap.tearDown(() => {
+    if (pool) {
+        const oldPool = pool;
+        oldPool.drain().then(() => oldPool.clear());
+        pool = null;
+    }
+});
+
 module.exports = {
     getBatch: () => batch,
     getBatches: () => batches,
@@ -1049,6 +1078,7 @@ module.exports = {
     getUser: () => user,
     adminLogin,
     normalLogin,
+    testPage,
     i18n,
     Image,
     Record,
