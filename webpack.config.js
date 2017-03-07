@@ -28,7 +28,6 @@ module.exports = {
 
     plugins: [
         new webpack.ProvidePlugin({
-            Promise: "exports-loader?global.Promise!es6-promise",
             fetch: "exports-loader?self.fetch!whatwg-fetch",
         }),
 
@@ -49,6 +48,11 @@ module.exports = {
 
     module: {
         loaders: [
+            {
+                test: /regenerator-runtime/,
+                loader: path.resolve(__dirname, "node_modules",
+                    "null-loader"),
+            },
             {
                 test: /\.js$/,
                 loader: path.resolve(__dirname, "node_modules",
