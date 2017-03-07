@@ -54,10 +54,12 @@ module.exports = function(app: express$Application) {
             record.loadImages(true, () => {
                 Record.getFacets(i18n, (err, globalFacets) => {
                     record.getDynamicValues(i18n, (err, dynamicValues) => {
+                        const clonedRecord = cloneModel(record, i18n);
+                        clonedRecord.imageModels = [];
                         res.render("EditRecord", {
                             title,
                             mode: "clone",
-                            record: cloneModel(record, i18n),
+                            record: clonedRecord,
                             source,
                             globalFacets,
                             dynamicValues,
