@@ -1,7 +1,7 @@
 const tap = require("tap");
 const request = require("request");
 
-const {testPage} = require("../init");
+require("../init");
 
 tap.test("Record", (t) => {
     const url = "http://localhost:3000/artworks/test/1234";
@@ -35,14 +35,6 @@ tap.test("Record Missing", (t) => {
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 404);
-        t.end();
-    });
-});
-
-tap.test("Record (in Browser)", (t) => {
-    const url = "http://localhost:3000/artworks/test/1234";
-    testPage(url).then(({content}) => {
-        t.match(content, "<title>Test: Mongaku</title>");
         t.end();
     });
 });
