@@ -964,17 +964,16 @@ const i18n = {
 
 let app;
 
+bindStubs();
+
 const init = (done) => {
     genData();
-    bindStubs();
 
     async.parallel([
         (callback) => {
-            Source.cacheSources(() => {
-                async.each(Object.keys(records), (id, callback) => {
-                    records[id].validate(callback);
-                }, callback);
-            });
+            async.each(Object.keys(records), (id, callback) => {
+                records[id].validate(callback);
+            }, callback);
         },
 
         (callback) => {
@@ -990,7 +989,6 @@ tap.beforeEach(init);
 
 tap.afterEach((done) => {
     app.close();
-    sandbox.restore();
     done();
 });
 
