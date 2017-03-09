@@ -3,7 +3,7 @@ const path = require("path");
 const tap = require("tap");
 
 const init = require("../init");
-const UploadImage = init.UploadImage;
+const {mockFS, UploadImage} = init;
 
 tap.test("getFilePath", {autoend: true}, (t) => {
     const image = init.getUploadImage();
@@ -74,69 +74,88 @@ tap.test("updateSimilarity: Existing UploadImage", (t) => {
 });
 
 tap.test("UploadImage.fromFile: New UploadImage", (t) => {
-    const testFile = path.resolve(process.cwd(), "testData", "new1.jpg");
+    mockFS((callback) => {
+        const testFile = path.resolve(process.cwd(), "testData", "new1.jpg");
 
-    UploadImage.fromFile(testFile, (err, image) => {
-        t.error(err, "No error should be thrown.");
-        t.ok(image, "UploadImage exists.");
-        // TODO: Test that files exist.
-        // Test that files are the right dimensions.
-        t.end();
+        UploadImage.fromFile(testFile, (err, image) => {
+            t.error(err, "No error should be thrown.");
+            t.ok(image, "UploadImage exists.");
+            // TODO: Test that files exist.
+            // Test that files are the right dimensions.
+            t.end();
+            callback();
+        });
     });
 });
 
 tap.test("UploadImage.fromFile: New UploadImage (Empty File)", (t) => {
-    const testFile = path.resolve(process.cwd(), "testData", "empty.jpg");
+    mockFS((callback) => {
+        const testFile = path.resolve(process.cwd(), "testData", "empty.jpg");
 
-    UploadImage.fromFile(testFile, (err, image) => {
-        t.ok(err, "Has error object.");
-        t.equal(err.message, "EMPTY_IMAGE", "Has error message.");
-        t.notOk(image, "No image object");
-        t.end();
+        UploadImage.fromFile(testFile, (err, image) => {
+            t.ok(err, "Has error object.");
+            t.equal(err.message, "EMPTY_IMAGE", "Has error message.");
+            t.notOk(image, "No image object");
+            t.end();
+            callback();
+        });
     });
 });
 
 tap.test("UploadImage.fromFile: New UploadImage (Corrupted File)", (t) => {
-    const testFile = path.resolve(process.cwd(), "testData", "corrupted.jpg");
+    mockFS((callback) => {
+        const testFile = path.resolve(process.cwd(), "testData",
+            "corrupted.jpg");
 
-    UploadImage.fromFile(testFile, (err, image) => {
-        t.ok(err, "Has error object.");
-        t.equal(err.message, "MALFORMED_IMAGE", "Has error message.");
-        t.notOk(image, "No image object");
-        t.end();
+        UploadImage.fromFile(testFile, (err, image) => {
+            t.ok(err, "Has error object.");
+            t.equal(err.message, "MALFORMED_IMAGE", "Has error message.");
+            t.notOk(image, "No image object");
+            t.end();
+            callback();
+        });
     });
 });
 
 tap.test("UploadImage.fromFile: New UploadImage (Small File)", (t) => {
-    const testFile = path.resolve(process.cwd(), "testData", "small.jpg");
+    mockFS((callback) => {
+        const testFile = path.resolve(process.cwd(), "testData", "small.jpg");
 
-    UploadImage.fromFile(testFile, (err, image) => {
-        t.ok(err, "Has error object.");
-        t.equal(err.message, "TOO_SMALL", "Has error message.");
-        t.notOk(image, "No image object");
-        t.end();
+        UploadImage.fromFile(testFile, (err, image) => {
+            t.ok(err, "Has error object.");
+            t.equal(err.message, "TOO_SMALL", "Has error message.");
+            t.notOk(image, "No image object");
+            t.end();
+            callback();
+        });
     });
 });
 
 tap.test("UploadImage.fromFile: Updating UploadImage", (t) => {
-    const testFile = path.resolve(process.cwd(), "testData", "foo.jpg");
+    mockFS((callback) => {
+        const testFile = path.resolve(process.cwd(), "testData", "foo.jpg");
 
-    UploadImage.fromFile(testFile, (err, image) => {
-        t.error(err, "No error should be thrown.");
-        t.ok(image, "UploadImage exists.");
-        t.end();
-    });
-});
-
-tap.test("UploadImage.fromFile: Updating (files already exist)", (t) => {
-    const testFile = path.resolve(process.cwd(), "testData", "foo.jpg");
-
-    UploadImage.fromFile(testFile, () => {
-        // Run this twice to have the images be put into place already
         UploadImage.fromFile(testFile, (err, image) => {
             t.error(err, "No error should be thrown.");
             t.ok(image, "UploadImage exists.");
             t.end();
+            callback();
+        });
+    });
+});
+
+tap.test("UploadImage.fromFile: Updating (files already exist)", (t) => {
+    mockFS((callback) => {
+        const testFile = path.resolve(process.cwd(), "testData", "foo.jpg");
+
+        UploadImage.fromFile(testFile, () => {
+            // Run this twice to have the images be put into place already
+            UploadImage.fromFile(testFile, (err, image) => {
+                t.error(err, "No error should be thrown.");
+                t.ok(image, "UploadImage exists.");
+                t.end();
+                callback();
+            });
         });
     });
 });

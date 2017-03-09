@@ -3,6 +3,7 @@ const path = require("path");
 const tap = require("tap");
 
 const init = require("../init");
+const {mockFS} = init;
 const Image = init.Image;
 const ImageImport = init.ImageImport;
 
@@ -114,104 +115,125 @@ tap.test("indexSimilarity: Small Image", (t) => {
 });
 
 tap.test("Image.fromFile: New Image", (t) => {
-    const batch = new ImageImport({
-        _id: "testBatch",
-        source: "test",
-    });
+    mockFS((callback) => {
+        const batch = new ImageImport({
+            _id: "testBatch",
+            source: "test",
+        });
 
-    const testFile = path.resolve(process.cwd(), "testData", "new1.jpg");
+        const testFile = path.resolve(process.cwd(), "testData", "new1.jpg");
 
-    Image.fromFile(batch, testFile, (err, image, warnings) => {
-        t.error(err, "No error should be thrown.");
-        t.ok(image, "Image exists.");
-        t.equal(warnings.length, 0, "No warnings.");
-        // TODO: Test that files exist.
-        // Test that files are the right dimensions.
-        t.end();
-    });
-});
-
-tap.test("Image.fromFile: New Image (Empty File)", (t) => {
-    const batch = new ImageImport({
-        _id: "testBatch",
-        source: "test",
-    });
-
-    const testFile = path.resolve(process.cwd(), "testData", "empty.jpg");
-
-    Image.fromFile(batch, testFile, (err, image, warnings) => {
-        t.ok(err, "Has error object.");
-        t.equal(err.message, "EMPTY_IMAGE", "Has error message.");
-        t.notOk(image, "No image object");
-        t.notOk(warnings, "No warnings object.");
-        t.end();
-    });
-});
-
-tap.test("Image.fromFile: New Image (Corrupted File)", (t) => {
-    const batch = new ImageImport({
-        _id: "testBatch",
-        source: "test",
-    });
-
-    const testFile = path.resolve(process.cwd(), "testData", "corrupted.jpg");
-
-    Image.fromFile(batch, testFile, (err, image, warnings) => {
-        t.ok(err, "Has error object.");
-        t.equal(err.message, "MALFORMED_IMAGE", "Has error message.");
-        t.notOk(image, "No image object");
-        t.notOk(warnings, "No warnings object.");
-        t.end();
-    });
-});
-
-tap.test("Image.fromFile: New Image (Small File)", (t) => {
-    const batch = new ImageImport({
-        _id: "testBatch",
-        source: "test",
-    });
-
-    const testFile = path.resolve(process.cwd(), "testData", "test-small.jpg");
-
-    Image.fromFile(batch, testFile, (err, image, warnings) => {
-        t.error(err, "No error should be thrown.");
-        t.ok(image, "Image exists.");
-        t.same(warnings, ["TOO_SMALL"], "One warning.");
-        t.end();
-    });
-});
-
-tap.test("Image.fromFile: Updating Image", (t) => {
-    const batch = new ImageImport({
-        _id: "testBatch",
-        source: "test",
-    });
-
-    const testFile = path.resolve(process.cwd(), "testData", "nosimilar.jpg");
-
-    Image.fromFile(batch, testFile, (err, image, warnings) => {
-        t.error(err, "No error should be thrown.");
-        t.ok(image, "Image exists.");
-        t.same(warnings, ["NEW_VERSION"], "One warning.");
-        t.end();
-    });
-});
-
-tap.test("Image.fromFile: Updating Image (files already exist)", (t) => {
-    const batch = new ImageImport({
-        _id: "testBatch",
-        source: "test",
-    });
-
-    const testFile = path.resolve(process.cwd(), "testData", "foo.jpg");
-
-    Image.fromFile(batch, testFile, () => {
-        // Run this twice to have the images be put into place already
         Image.fromFile(batch, testFile, (err, image, warnings) => {
             t.error(err, "No error should be thrown.");
             t.ok(image, "Image exists.");
             t.equal(warnings.length, 0, "No warnings.");
+            // TODO: Test that files exist.
+            // Test that files are the right dimensions.
             t.end();
+            callback();
+        });
+    });
+});
+
+tap.test("Image.fromFile: New Image (Empty File)", (t) => {
+    mockFS((callback) => {
+        const batch = new ImageImport({
+            _id: "testBatch",
+            source: "test",
+        });
+
+        const testFile = path.resolve(process.cwd(), "testData", "empty.jpg");
+
+        Image.fromFile(batch, testFile, (err, image, warnings) => {
+            t.ok(err, "Has error object.");
+            t.equal(err.message, "EMPTY_IMAGE", "Has error message.");
+            t.notOk(image, "No image object");
+            t.notOk(warnings, "No warnings object.");
+            t.end();
+            callback();
+        });
+    });
+});
+
+tap.test("Image.fromFile: New Image (Corrupted File)", (t) => {
+    mockFS((callback) => {
+        const batch = new ImageImport({
+            _id: "testBatch",
+            source: "test",
+        });
+
+        const testFile = path.resolve(process.cwd(), "testData",
+            "corrupted.jpg");
+
+        Image.fromFile(batch, testFile, (err, image, warnings) => {
+            t.ok(err, "Has error object.");
+            t.equal(err.message, "MALFORMED_IMAGE", "Has error message.");
+            t.notOk(image, "No image object");
+            t.notOk(warnings, "No warnings object.");
+            t.end();
+            callback();
+        });
+    });
+});
+
+tap.test("Image.fromFile: New Image (Small File)", (t) => {
+    mockFS((callback) => {
+        const batch = new ImageImport({
+            _id: "testBatch",
+            source: "test",
+        });
+
+        const testFile = path.resolve(process.cwd(), "testData",
+            "test-small.jpg");
+
+        Image.fromFile(batch, testFile, (err, image, warnings) => {
+            t.error(err, "No error should be thrown.");
+            t.ok(image, "Image exists.");
+            t.same(warnings, ["TOO_SMALL"], "One warning.");
+            t.end();
+            callback();
+        });
+    });
+});
+
+tap.test("Image.fromFile: Updating Image", (t) => {
+    mockFS((callback) => {
+        const batch = new ImageImport({
+            _id: "testBatch",
+            source: "test",
+        });
+
+        const testFile = path.resolve(process.cwd(), "testData",
+            "nosimilar.jpg");
+
+        Image.fromFile(batch, testFile, (err, image, warnings) => {
+            t.error(err, "No error should be thrown.");
+            t.ok(image, "Image exists.");
+            t.same(warnings, ["NEW_VERSION"], "One warning.");
+            t.end();
+            callback();
+        });
+    });
+});
+
+tap.test("Image.fromFile: Updating Image (files already exist)", (t) => {
+    mockFS((callback) => {
+        const batch = new ImageImport({
+            _id: "testBatch",
+            source: "test",
+        });
+
+        const testFile = path.resolve(process.cwd(), "testData", "foo.jpg");
+
+        Image.fromFile(batch, testFile, () => {
+            // Run this twice to have the images be put into place already
+            Image.fromFile(batch, testFile, (err, image, warnings) => {
+                t.error(err, "No error should be thrown.");
+                t.ok(image, "Image exists.");
+                t.equal(warnings.length, 0, "No warnings.");
+                t.end();
+                callback();
+            });
         });
     });
 });

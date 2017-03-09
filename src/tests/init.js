@@ -983,45 +983,7 @@ const init = (done) => {
                 callback(err);
             });
         },
-    ], () => {
-        mockfs({
-            "package.json": pkgFile,
-            "node_modules": {
-                ".cache": {
-                    "nyc": {},
-                },
-            },
-            "testData": testFiles,
-            "data": {
-                "test": {
-                    "images": {},
-                    "scaled": {},
-                    "thumbs": {},
-                },
-                "uploads": {
-                    "images": {
-                        "4266906334.jpg": testFiles["4266906334.jpg"],
-                        "bar.jpg": testFiles["bar.jpg"],
-                    },
-                    "scaled": {},
-                    "thumbs": {},
-                },
-            },
-            "build": {
-                "views": Object.assign({
-                    "shared": sharedViewFiles,
-                    "types": {
-                        "filter": typeFilterFiles,
-                        "view": typeViewFiles,
-                        "edit": typeEditFiles,
-                    },
-                }, viewFiles),
-            },
-            "static": staticFiles,
-        });
-
-        done();
-    });
+    ], done);
 };
 
 tap.beforeEach(init);
@@ -1029,9 +991,48 @@ tap.beforeEach(init);
 tap.afterEach((done) => {
     app.close();
     sandbox.restore();
-    mockfs.restore();
     done();
 });
+
+const mockFS = (callback) => {
+    mockfs({
+        "package.json": pkgFile,
+        "node_modules": {
+            ".cache": {
+                "nyc": {},
+            },
+        },
+        "testData": testFiles,
+        "data": {
+            "test": {
+                "images": {},
+                "scaled": {},
+                "thumbs": {},
+            },
+            "uploads": {
+                "images": {
+                    "4266906334.jpg": testFiles["4266906334.jpg"],
+                    "bar.jpg": testFiles["bar.jpg"],
+                },
+                "scaled": {},
+                "thumbs": {},
+            },
+        },
+        "build": {
+            "views": Object.assign({
+                "shared": sharedViewFiles,
+                "types": {
+                    "filter": typeFilterFiles,
+                    "view": typeViewFiles,
+                    "edit": typeEditFiles,
+                },
+            }, viewFiles),
+        },
+        "static": staticFiles,
+    });
+
+    return callback(() => mockfs.restore());
+};
 
 module.exports = {
     getBatch: () => batch,
@@ -1059,4 +1060,5 @@ module.exports = {
     Source,
     stub: sinon.stub,
     init,
+    mockFS,
 };

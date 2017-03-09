@@ -4,7 +4,7 @@ const path = require("path");
 const tap = require("tap");
 
 const init = require("../init");
-const {i18n, RecordImport} = init;
+const {i18n, RecordImport, mockFS} = init;
 
 tap.test("getURL", {autoend: true}, (t) => {
     const batch = init.getRecordBatch();
@@ -77,15 +77,18 @@ tap.test("abandon", (t) => {
 tap.test("setResults", (t) => {
     const batch = init.getRecordBatch();
     const dataFile = path.resolve(process.cwd(), "testData", "default.json");
-    batch.setResults([fs.createReadStream(dataFile)], (err) => {
-        t.error(err, "Error should be empty.");
-        t.equal(batch.results.length, 6, "Check number of results");
-        for (const result of batch.results) {
-            t.equal(result.result, "unknown");
-            t.ok(result.data);
-            t.equal(result.data.lang, "en");
-        }
-        t.end();
+    mockFS((callback) => {
+        batch.setResults([fs.createReadStream(dataFile)], (err) => {
+            t.error(err, "Error should be empty.");
+            t.equal(batch.results.length, 6, "Check number of results");
+            for (const result of batch.results) {
+                t.equal(result.result, "unknown");
+                t.ok(result.data);
+                t.equal(result.data.lang, "en");
+            }
+            t.end();
+            callback();
+        });
     });
 });
 
@@ -100,13 +103,17 @@ tap.test("setResults (with error)", (t) => {
     const batch = init.getRecordBatch();
     const dataFile = path.resolve(process.cwd(), "testData",
         "default-error.json");
-    batch.setResults([fs.createReadStream(dataFile)], (err) => {
-        t.error(err, "Error should be empty.");
-        t.equal(batch.error, error);
-        t.equal(batch.getError(i18n), error);
-        t.equal(batch.state, "error");
-        t.equal(batch.results.length, 0, "Check number of results");
-        t.end();
+
+    mockFS((callback) => {
+        batch.setResults([fs.createReadStream(dataFile)], (err) => {
+            t.error(err, "Error should be empty.");
+            t.equal(batch.error, error);
+            t.equal(batch.getError(i18n), error);
+            t.equal(batch.state, "error");
+            t.equal(batch.results.length, 0, "Check number of results");
+            t.end();
+            callback();
+        });
     });
 });
 
@@ -191,19 +198,23 @@ tap.test("processRecords", (t) => {
         {model: "test/1236", result: "deleted"},
         {model: "test/1237", result: "deleted"},
     ];
-    batch.setResults([fs.createReadStream(dataFile)], (err) => {
-        t.error(err);
-        batch.processRecords(() => {
-            t.equal(batch.results.length, expected.length,
-                "Check number of results");
-            expected.forEach((expected, i) => {
-                const result = batch.results[i];
-                t.equal(result.state, "process.completed");
-                for (const prop in expected) {
-                    t.same(result[prop], expected[prop]);
-                }
+
+    mockFS((callback) => {
+        batch.setResults([fs.createReadStream(dataFile)], (err) => {
+            t.error(err);
+            batch.processRecords(() => {
+                t.equal(batch.results.length, expected.length,
+                    "Check number of results");
+                expected.forEach((expected, i) => {
+                    const result = batch.results[i];
+                    t.equal(result.state, "process.completed");
+                    for (const prop in expected) {
+                        t.same(result[prop], expected[prop]);
+                    }
+                });
+                t.end();
+                callback();
             });
-            t.end();
         });
     });
 });
@@ -235,20 +246,24 @@ tap.test("importRecords", (t) => {
         {model: "test/1236", result: "deleted"},
         {model: "test/1237", result: "deleted"},
     ];
-    batch.setResults([fs.createReadStream(dataFile)], (err) => {
-        t.error(err);
-        batch.processRecords(() => {
-            batch.importRecords(() => {
-                t.equal(batch.results.length, expected.length,
-                    "Check number of results");
-                expected.forEach((expected, i) => {
-                    const result = batch.results[i];
-                    t.equal(result.state, "import.completed");
-                    for (const prop in expected) {
-                        t.same(result[prop], expected[prop]);
-                    }
+
+    mockFS((callback) => {
+        batch.setResults([fs.createReadStream(dataFile)], (err) => {
+            t.error(err);
+            batch.processRecords(() => {
+                batch.importRecords(() => {
+                    t.equal(batch.results.length, expected.length,
+                        "Check number of results");
+                    expected.forEach((expected, i) => {
+                        const result = batch.results[i];
+                        t.equal(result.state, "import.completed");
+                        for (const prop in expected) {
+                            t.same(result[prop], expected[prop]);
+                        }
+                    });
+                    t.end();
+                    callback();
                 });
-                t.end();
             });
         });
     });
@@ -278,15 +293,18 @@ tap.test("updateSimilarity", (t) => {
     const records = Object.keys(recordMap)
         .map((id) => recordMap[id]);
 
-    batch.setResults([fs.createReadStream(dataFile)], (err) => {
-        t.error(err);
-        batch.processRecords(() => {
-            batch.updateSimilarity(() => {
-                records.forEach((record) => {
-                    t.equal(record.needsSimilarUpdate, true);
-                });
+    mockFS((callback) => {
+        batch.setResults([fs.createReadStream(dataFile)], (err) => {
+            t.error(err);
+            batch.processRecords(() => {
+                batch.updateSimilarity(() => {
+                    records.forEach((record) => {
+                        t.equal(record.needsSimilarUpdate, true);
+                    });
 
-                t.end();
+                    t.end();
+                    callback();
+                });
             });
         });
     });
@@ -408,62 +426,67 @@ tap.test("RecordImport.advance", (t) => {
         });
     };
 
-    batch.setResults([fs.createReadStream(dataFile)], (err) => {
-        t.error(err, "Error should be empty.");
-        t.equal(batch.results.length, 6, "Check number of results");
-        for (const result of batch.results) {
-            t.equal(result.result, "unknown");
-            t.ok(result.data);
-            t.equal(result.data.lang, "en");
-        }
+    mockFS((callback) => {
+        batch.setResults([fs.createReadStream(dataFile)], (err) => {
+            t.error(err, "Error should be empty.");
+            t.equal(batch.results.length, 6, "Check number of results");
+            for (const result of batch.results) {
+                t.equal(result.result, "unknown");
+                t.ok(result.data);
+                t.equal(result.data.lang, "en");
+            }
 
-        getBatches((err, batches) => {
-            checkStates(batches, ["started"]);
+            getBatches((err, batches) => {
+                checkStates(batches, ["started"]);
 
-            RecordImport.advance((err) => {
-                t.error(err, "Error should be empty.");
+                RecordImport.advance((err) => {
+                    t.error(err, "Error should be empty.");
 
-                getBatches((err, batches) => {
-                    checkStates(batches, ["process.completed"]);
+                    getBatches((err, batches) => {
+                        checkStates(batches, ["process.completed"]);
 
-                    // Need to manually move to the next step
-                    batch.importRecords((err) => {
-                        t.error(err, "Error should be empty.");
+                        // Need to manually move to the next step
+                        batch.importRecords((err) => {
+                            t.error(err, "Error should be empty.");
 
-                        getBatches((err, batches) => {
-                            checkStates(batches, ["import.completed"]);
+                            getBatches((err, batches) => {
+                                checkStates(batches, ["import.completed"]);
 
-                            RecordImport.advance((err) => {
-                                t.error(err, "Error should be empty.");
+                                RecordImport.advance((err) => {
+                                    t.error(err, "Error should be empty.");
 
-                                getBatches((err, batches) => {
-                                    checkStates(batches,
-                                        ["similarity.sync.completed"]);
+                                    getBatches((err, batches) => {
+                                        checkStates(batches,
+                                            ["similarity.sync.completed"]);
 
-                                    RecordImport.advance((err) => {
-                                        t.error(err, "Error should be empty.");
+                                        RecordImport.advance((err) => {
+                                            t.error(err,
+                                                "Error should be empty.");
+
+                                            t.ok(batch.getCurState()
+                                                .name(i18n));
+
+                                            getBatches((err, batches) => {
+                                                checkStates(batches, []);
+                                                t.end();
+                                                callback();
+                                            });
+                                        });
 
                                         t.ok(batch.getCurState().name(i18n));
-
-                                        getBatches((err, batches) => {
-                                            checkStates(batches, []);
-                                            t.end();
-                                        });
                                     });
-
-                                    t.ok(batch.getCurState().name(i18n));
                                 });
+
+                                t.ok(batch.getCurState().name(i18n));
                             });
-
-                            t.ok(batch.getCurState().name(i18n));
                         });
+
+                        t.ok(batch.getCurState().name(i18n));
                     });
-
-                    t.ok(batch.getCurState().name(i18n));
                 });
-            });
 
-            t.ok(batch.getCurState().name(i18n));
+                t.ok(batch.getCurState().name(i18n));
+            });
         });
     });
 });

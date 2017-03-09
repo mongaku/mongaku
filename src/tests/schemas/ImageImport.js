@@ -3,7 +3,7 @@ const path = require("path");
 const tap = require("tap");
 
 const init = require("../init");
-const {stub, i18n, ImageImport} = init;
+const {stub, i18n, ImageImport, mockFS} = init;
 
 tap.test("getURL", {autoend: true}, (t) => {
     const batch = init.getBatch();
@@ -190,17 +190,20 @@ tap.test("validate", (t) => {
 
 tap.test("processImages", (t) => {
     const batch = init.getBatch();
-    batch.processImages((err) => {
-        t.error(err, "Error should be empty.");
+    mockFS((callback) => {
+        batch.processImages((err) => {
+            t.error(err, "Error should be empty.");
 
-        const expected = init.getImageResultsData();
+            const expected = init.getImageResultsData();
 
-        t.equal(batch.results.length, expected.length);
-        expected.forEach((item, i) => {
-            t.same(batch.results[i], item);
+            t.equal(batch.results.length, expected.length);
+            expected.forEach((item, i) => {
+                t.same(batch.results[i], item);
+            });
+
+            t.end();
+            callback();
         });
-
-        t.end();
     });
 });
 
@@ -214,10 +217,13 @@ tap.test("processImages (Corrupted File)", (t) => {
         fileName: "corrupted.zip",
     });
 
-    batch.processImages((err) => {
-        t.ok(err, "Expecting an error");
-        t.equal(err.message, "ERROR_READING_ZIP");
-        t.end();
+    mockFS((callback) => {
+        batch.processImages((err) => {
+            t.ok(err, "Expecting an error");
+            t.equal(err.message, "ERROR_READING_ZIP");
+            t.end();
+            callback();
+        });
     });
 });
 
@@ -231,29 +237,36 @@ tap.test("processImages (Empty File)", (t) => {
         fileName: "empty.zip",
     });
 
-    batch.processImages((err) => {
-        t.ok(err, "Expecting an error");
-        t.equal(err.message, "ZIP_FILE_EMPTY");
-        t.end();
+    mockFS((callback) => {
+        batch.processImages((err) => {
+            t.ok(err, "Expecting an error");
+            t.equal(err.message, "ZIP_FILE_EMPTY");
+            t.end();
+            callback();
+        });
     });
 });
 
 tap.test("processImages (advance, started)", (t) => {
     const batch = init.getBatch();
     t.equal(batch.getCurState().name(i18n), "Awaiting processing...");
-    batch.advance((err) => {
-        t.error(err, "Error should be empty.");
 
-        const expected = init.getImageResultsData();
+    mockFS((callback) => {
+        batch.advance((err) => {
+            t.error(err, "Error should be empty.");
 
-        t.equal(batch.results.length, expected.length);
-        expected.forEach((item, i) => {
-            t.same(batch.results[i], item);
+            const expected = init.getImageResultsData();
+
+            t.equal(batch.results.length, expected.length);
+            expected.forEach((item, i) => {
+                t.same(batch.results[i], item);
+            });
+
+            t.equal(batch.state, "process.completed");
+
+            t.end();
+            callback();
         });
-
-        t.equal(batch.state, "process.completed");
-
-        t.end();
     });
 });
 
@@ -329,12 +342,15 @@ tap.test("processImages (advance, Corrupted File)", (t) => {
 
     stub(batch, "save", process.nextTick);
 
-    batch.advance((err) => {
-        t.error(err, "Error should be empty.");
-        t.equal(batch.error, "ERROR_READING_ZIP");
-        t.equal(batch.results.length, 0);
-        t.equal(batch.state, "error");
-        t.end();
+    mockFS((callback) => {
+        batch.advance((err) => {
+            t.error(err, "Error should be empty.");
+            t.equal(batch.error, "ERROR_READING_ZIP");
+            t.equal(batch.results.length, 0);
+            t.equal(batch.state, "error");
+            t.end();
+            callback();
+        });
     });
 });
 
