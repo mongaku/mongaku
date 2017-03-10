@@ -2,15 +2,16 @@ const db = require("./db");
 const options = require("./options");
 
 const types = {
-    Name: require("../schemas/types/Name.js"),
-    YearRange: require("../schemas/types/YearRange.js"),
-    FixedString: require("../schemas/types/FixedString.js"),
-    SimpleString: require("../schemas/types/SimpleString.js"),
-    SimpleNumber: require("../schemas/types/SimpleNumber.js"),
-    SimpleDate: require("../schemas/types/SimpleDate.js"),
     Dimension: require("../schemas/types/Dimension.js"),
-    Location: require("../schemas/types/Location.js"),
+    FixedString: require("../schemas/types/FixedString.js"),
     LinkedRecord: require("../schemas/types/LinkedRecord.js"),
+    Location: require("../schemas/types/Location.js"),
+    Name: require("../schemas/types/Name.js"),
+    SimpleDate: require("../schemas/types/SimpleDate.js"),
+    SimpleNumber: require("../schemas/types/SimpleNumber.js"),
+    SimpleString: require("../schemas/types/SimpleString.js"),
+    URL: require("../schemas/types/URL.js"),
+    YearRange: require("../schemas/types/YearRange.js"),
 };
 
 module.exports = {

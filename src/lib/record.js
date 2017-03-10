@@ -25,10 +25,6 @@ module.exports = (type) => {
     const modelProps = metadata.schemas(type);
     const schemaProps = Object.assign({}, Record.schema, modelProps);
 
-    if (typeInfo.urlRequired) {
-        schemaProps.url = Object.assign({required: true}, schemaProps.url);
-    }
-
     if (typeInfo.noImages) {
         schemaProps.images = Object.assign({required: false},
             schemaProps.images);

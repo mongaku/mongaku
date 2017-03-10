@@ -70,6 +70,11 @@ type SimpleString = BaseModelType & {
     multiline?: boolean,
 };
 
+type URL = BaseModelType & {
+    type: "URL",
+    placeholder?: string,
+};
+
 type YearRange = BaseModelType & {
     type: "YearRange",
     ranges?: Array<{
@@ -83,7 +88,7 @@ type YearRange = BaseModelType & {
 };
 
 export type ModelType = Dimension | FixedString | LinkedRecord | Location |
-    Name | SimpleDate | SimpleNumber | SimpleString | YearRange;
+    Name | SimpleDate | SimpleNumber | SimpleString | URL | YearRange;
 
 type TypeOptions = {
     getSearchPlaceholder: string,
@@ -91,8 +96,6 @@ type TypeOptions = {
     imagesRequired: boolean,
     noImages: boolean,
     noImageSearch: boolean,
-    urlRequired: boolean,
-    noURLs: boolean,
     minFacetCount?: number,
     name: string,
     defaultImage: string,

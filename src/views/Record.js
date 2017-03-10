@@ -258,6 +258,12 @@ const TypeView = ({
             multiline={typeSchema.multiline}
         />;
 
+    } else if (typeSchema.type === "URL") {
+        return <FixedStringView
+            value={value}
+            url={value}
+        />;
+
     } else if (typeSchema.type === "YearRange" && Array.isArray(url)) {
         return <YearRangeView
             value={value}

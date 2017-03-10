@@ -51,8 +51,6 @@ const types = {
 module.exports = {
     types: {
         artworks: {
-            urlRequired: true,
-
             filters: ["artists", "locations", "objectType", "dates",
                 "dimensions"],
 
@@ -65,6 +63,12 @@ module.exports = {
             },
 
             model: {
+                url: {
+                    type: "URL",
+                    title: (i18n) => i18n.gettext("URL"),
+                    required: true,
+                },
+
                 // The title of the record.
                 title: {
                     type: "SimpleString",

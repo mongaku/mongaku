@@ -137,6 +137,9 @@ const TypeFilter = ({
     } else if (typeSchema.type === "SimpleString") {
         return null;
 
+    } else if (typeSchema.type === "URL") {
+        return null;
+
     } else if (typeSchema.type === "YearRange") {
         return <YearRangeFilter
             value={value}

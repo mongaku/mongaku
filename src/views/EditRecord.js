@@ -343,6 +343,13 @@ const TypeEdit = ({
             multiline={typeSchema.multiline}
         />;
 
+    } else if (typeSchema.type === "URL") {
+        return <FixedStringEdit
+            name={name}
+            type={type}
+            value={value}
+        />;
+
     } else if (typeSchema.type === "YearRange") {
         return <YearRangeEdit
             name={name}

@@ -1,5 +1,4 @@
 const async = require("async");
-const validUrl = require("valid-url");
 const jdp = require("jsondiffpatch").create({
     objectHash: (obj) => obj._id,
 });
@@ -78,14 +77,6 @@ Record.schema = {
     lang: {
         type: String,
         required: true,
-    },
-
-    // A link to the record at its source
-    url: {
-        type: String,
-        validate: (v) => validUrl.isHttpsUri(v) || validUrl.isHttpUri(v),
-        validationMsg: (i18n) => i18n.gettext("`url` must be properly-" +
-            "formatted URL."),
     },
 
     // A hash to use to render an image representing the record
