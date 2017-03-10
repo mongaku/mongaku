@@ -1,5 +1,7 @@
 // @flow
 
+const path = require("path");
+
 const async = require("async");
 const formidable = require("formidable");
 
@@ -114,7 +116,8 @@ module.exports = function(app: express$Application) {
         const {params: {type}, i18n, lang} = req;
         const props = {};
         const model = metadata.model(type);
-        const hasImageSearch = options.types[type].hasImageSearch();
+        const typeOptions = options.types[type];
+        const hasImageSearch = typeOptions.hasImageSearch();
 
         const form = new formidable.IncomingForm();
         form.encoding = "utf-8";
@@ -128,11 +131,17 @@ module.exports = function(app: express$Application) {
                     i18n.gettext("Error processing upload.")));
             }
 
+            const images = Array.isArray(files.images) ?
+                files.images :
+                files.images ?
+                    [files.images] :
+                    [];
+
             for (const prop in model) {
                 props[prop] = fields[prop];
             }
 
-            if (options.types[type].autoID) {
+            if (typeOptions.autoID) {
                 props.id = db.mongoose.Types.ObjectId().toString();
             } else {
                 props.id = fields.id;
@@ -142,6 +151,10 @@ module.exports = function(app: express$Application) {
                 lang,
                 source: fields.source,
                 type,
+                // Hack to help pass validator
+                images: images
+                    .map((file) => file.name)
+                    .filter((file) => file),
             });
 
             const Record = record(type);
@@ -159,12 +172,6 @@ module.exports = function(app: express$Application) {
                 source: newRecord.source,
             };
 
-            const images = Array.isArray(files.images) ?
-                files.images :
-                files.images ?
-                    [files.images] :
-                    [];
-
             async.mapSeries(images, (file, callback) => {
                 if (!file.path || file.size <= 0) {
                     return process.nextTick(callback);
@@ -174,8 +181,9 @@ module.exports = function(app: express$Application) {
                     // TODO: Display better error message
                     if (err) {
                         return callback(
-                            new Error(
-                                i18n.gettext("Error processing image.")));
+                            new Error(i18n.format(i18n.gettext(
+                                "Error processing image: %(image)s"),
+                                    {image: file.name})));
                     }
 
                     image.save((err) => {
@@ -192,12 +200,25 @@ module.exports = function(app: express$Application) {
                     return next(err);
                 }
 
-                newRecord.images = unfilteredImages
-                    .filter((image) => image)
+                const filteredImages = unfilteredImages
+                    .filter((image) => image);
+                newRecord.images = filteredImages
                     .map((image) => image._id);
+
+                if (typeOptions.hasImages()) {
+                    if (filteredImages.length === 0) {
+                        // NOTE(jeresig): We shouldn't get to this point,
+                        // hopefully we'll error out before then.
+                        return next(new Error(
+                            "No valid images found, images are required."));
+                    }
+
+                    newRecord.defaultImageHash = filteredImages[0].hash;
+                }
 
                 newRecord.save((err) => {
                     if (err) {
+                        console.error(`Error saving record: ${err}`);
                         return next(new Error(
                             i18n.gettext("Error saving record.")));
                     }
