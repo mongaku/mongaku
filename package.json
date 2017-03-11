@@ -102,14 +102,14 @@
     "flow-bin": "0.38.0",
     "migrate": "0.2.3",
     "mock-fs": "4.0.0-beta.1",
+    "mongo-in-memory": "0.0.5",
     "null-loader": "0.1.1",
     "phantom-pool": "1.2.0",
     "pre-commit": "1.2.2",
     "sinon": "1.17.7",
     "supervisor": "0.12.0",
     "tap": "10.3.0",
-    "wdio-sauce-service": "^0.3.1",
-    "webdriverio": "^4.6.2",
+    "webdriverio": "4.6.2",
     "webpack": "2.2.1"
   },
   "pre-commit": [

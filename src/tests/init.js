@@ -106,6 +106,20 @@ for (const file of fs.readdirSync(dataDir)) {
     }
 }
 
+// DB files used for testing
+const dbFiles = {};
+const dbFilesDir = path.resolve(process.cwd(), "tests", "db");
+
+for (const dir of fs.readdirSync(dbFilesDir)) {
+    const dirPath = path.resolve(dbFilesDir, dir);
+    const files = dbFiles[dir] = {};
+
+    for (const file of fs.readdirSync(dirPath)) {
+        const filePath = path.resolve(dirPath, file);
+        files[file] = fs.readFileSync(filePath);
+    }
+}
+
 // Views
 const viewFiles = {};
 const viewDir = path.resolve(__dirname, "..", "views");
@@ -1001,6 +1015,9 @@ const mockFS = (callback) => {
             },
         },
         "testData": testFiles,
+        "tests": {
+            "db": dbFiles,
+        },
         "data": {
             "test": {
                 "images": {},

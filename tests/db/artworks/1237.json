@@ -1,0 +1,31 @@
+{
+    "_id": "test/1237",
+    "id": "1237",
+    "images": ["test/nosimilar.jpg"],
+    "defaultImageHash": "4246873662",
+    "similarRecords": [],
+    "type": "artworks",
+    "source": "test",
+    "lang": "en",
+    "url": "http://google.com",
+    "title": "Test",
+    "objectType": "painting",
+    "medium": "oil",
+    "artists": [{
+        "name": "Test",
+        "dates": [{
+            "original": "ca. 1456-1457",
+            "start": 1456,
+            "end": 1457,
+            "circa": true
+        }]
+    }],
+    "dimensions": [{"width": 123, "height": 130, "unit": "mm"}],
+    "dates": [{
+        "original": "ca. 1456-1457",
+        "start": 1456,
+        "end": 1457,
+        "circa": true
+    }],
+    "locations": [{"city": "New York City"}]
+}

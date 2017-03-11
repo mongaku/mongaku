@@ -1,0 +1,46 @@
+{
+    "_id": "test/1235",
+    "id": "1235",
+    "images": ["test/bar.jpg"],
+    "defaultImageHash": "2508884691",
+    "similarRecords": [
+        {
+            "_id": "test/1236",
+            "record": "test/1236",
+            "score": 17,
+            "source": "test",
+            "images": ["test/new1.jpg", "test/new2.jpg"]
+        },
+        {
+            "_id": "test/1234",
+            "record": "test/1234",
+            "score": 10,
+            "source": "test",
+            "images": ["test/foo.jpg"]
+        }
+    ],
+    "type": "artworks",
+    "source": "test",
+    "lang": "en",
+    "url": "http://google.com",
+    "title": "Test",
+    "objectType": "painting",
+    "medium": "oil",
+    "artists": [{
+        "name": "Test",
+        "dates": [{
+            "original": "ca. 1456-1457",
+            "start": 1456,
+            "end": 1457,
+            "circa": true
+        }]
+    }],
+    "dimensions": [{"width": 123, "height": 130, "unit": "mm"}],
+    "dates": [{
+        "original": "ca. 1456-1457",
+        "start": 1456,
+        "end": 1457,
+        "circa": true
+    }],
+    "locations": [{"city": "New York City"}]
+}

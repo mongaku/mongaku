@@ -1,0 +1,6 @@
+{
+    "email": "admin@test.com",
+    "password": "test",
+    "sourceAdmin": ["test"],
+    "siteAdmin": true
+}

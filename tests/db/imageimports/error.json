@@ -1,0 +1,10 @@
+{
+    "_id": "test/error",
+    "created": "2017-03-11T03:26:26.849Z",
+    "modified": "2017-03-11T03:26:26.849Z",
+    "source": "test",
+    "state": "error",
+    "zipFile": "testData/test.zip",
+    "fileName": "test.zip",
+    "error": "ERROR_READING_ZIP"
+}

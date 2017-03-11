@@ -1,0 +1,9 @@
+{
+    "_id": "test/new1.jpg",
+    "source": "test",
+    "fileName": "new1.jpg",
+    "hash": "2533156274",
+    "width": 115,
+    "height": 115,
+    "similarImages": [{"_id": "test/bar.jpg", "score": 8}]
+}
