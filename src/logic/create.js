@@ -1,7 +1,5 @@
 // @flow
 
-const path = require("path");
-
 const async = require("async");
 const formidable = require("formidable");
 
