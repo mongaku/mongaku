@@ -236,6 +236,10 @@ const SourceForm = ({
         return null;
     }
 
+    if (sources.length === 1) {
+        return <input type="hidden" name="source" value={sources[0]._id} />;
+    }
+
     return <tr>
         <th className="text-right">
             <label className="control-label">
