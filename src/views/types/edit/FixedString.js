@@ -63,7 +63,7 @@ const FixedStringEdit = (props: Props) => {
     const {name, value, values, multiple} = props;
 
     // If we have values to choose from then we render a select
-    if (Array.isArray(values) && values.length > 0) {
+    if (Array.isArray(values)) {
         return <Select
             name={name}
             value={value}
@@ -72,7 +72,7 @@ const FixedStringEdit = (props: Props) => {
                 value: value.id,
                 label: value.name,
             }))}
-            clearable={false}
+            clearable={multiple}
         />;
 
     // If we're expecting multiple input values

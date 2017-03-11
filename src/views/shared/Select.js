@@ -29,7 +29,7 @@ class Select extends React.Component {
     }
     props: Props
 
-    handleChange({value}: {value: string}) {
+    handleChange(value: string) {
         this.setState({value});
         if (this.props.onChange) {
             this.props.onChange(value);
