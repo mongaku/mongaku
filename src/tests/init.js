@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const Module = require("module");
 
 const tap = require("tap");
 const sinon = require("sinon");
@@ -13,18 +12,6 @@ iconv.getCodec("utf8");
 
 // Bring in any polyfills used for testing (e.g. async)
 require("babel-polyfill");
-
-const originalLoader = Module._load;
-
-// Override the normal "require" call to handle any attempts to dynamically
-// load react or react-dom instead of preact (e.g. in react-select)
-Module._load = function(request, parent) {
-    if (request === "react" || request === "react-dom") {
-        return originalLoader.call(this, "preact-compat", parent);
-    }
-
-    return originalLoader(...arguments);
-};
 
 // Force dynamically loaded modules to load now
 require("negotiator/lib/mediaType");

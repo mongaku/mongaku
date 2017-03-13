@@ -5,6 +5,7 @@ const IntlPolyfill = require("intl");
 const React = require("react");
 const {renderToString, renderToStaticMarkup} = require("react-dom/server");
 
+const config = require("../lib/config");
 const urlsLib = require("../lib/urls");
 
 const Head = require("../views/Head.js");
@@ -16,17 +17,19 @@ const blacklist = (key, value) =>
         undefined :
         value;
 
-const originalLoader = Module._load;
+if (config.NODE_ENV === "production") {
+    const originalLoader = Module._load;
 
-// Override the normal "require" call to handle any attempts to dynamically
-// load react or react-dom instead of preact (e.g. in react-select)
-Module._load = function(request, parent) {
-    if (request === "react" || request === "react-dom") {
-        return originalLoader.call(this, "preact-compat", parent);
-    }
+    // Override the normal "require" call to handle any attempts to dynamically
+    // load react or react-dom instead of preact (e.g. in react-select)
+    Module._load = function(request, parent) {
+        if (request === "react" || request === "react-dom") {
+            return originalLoader.call(this, "preact-compat", parent);
+        }
 
-    return originalLoader(...arguments);
-};
+        return originalLoader(...arguments);
+    };
+}
 
 // Import in the Intl polyfills for better locale support (only needed for
 // Node as the browser already has good support)
