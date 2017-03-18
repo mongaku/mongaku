@@ -255,7 +255,11 @@ const SourceForm = ({
                     label: source.getFullName,
                 }))}
                 clearable={false}
-                onChange={onSourceChange}
+                onChange={(source) => {
+                    if (typeof source === "string") {
+                        onSourceChange(source);
+                    }
+                }}
             />
         </td>
     </tr>;

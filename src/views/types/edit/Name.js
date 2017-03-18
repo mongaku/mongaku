@@ -35,6 +35,7 @@ const NameEdit = ({
                 label: name,
             }))}
             clearable={false}
+            create={true}
         />;
     }
 

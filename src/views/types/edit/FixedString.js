@@ -73,6 +73,7 @@ const FixedStringEdit = (props: Props) => {
                 label: value.name,
             }))}
             clearable={multiple}
+            create={true}
         />;
 
     // If we're expecting multiple input values

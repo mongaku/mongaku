@@ -33,6 +33,7 @@ const NameFilter = ({
         }))}
         placeholder={placeholder}
         multi={multiple}
+        clearable={true}
     />
 </div>;
 

@@ -36,6 +36,7 @@ const FixedStringFilter = ({
         }))}
         placeholder={placeholder}
         multi={multiple}
+        clearable={true}
     />
 </div>;
 

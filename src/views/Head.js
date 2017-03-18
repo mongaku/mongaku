@@ -60,10 +60,6 @@ const Head = ({
             rel="stylesheet"
             href={STATIC("/css/bootstrap-theme.min.css")}
         />
-        <link
-            rel="stylesheet"
-            href={STATIC("/css/react-select.css")}
-        />
         <link rel="stylesheet" href={STATIC("/css/style.css")}/>
     </head>;
 };

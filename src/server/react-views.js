@@ -21,7 +21,7 @@ if (config.NODE_ENV === "production") {
     const originalLoader = Module._load;
 
     // Override the normal "require" call to handle any attempts to dynamically
-    // load react or react-dom instead of preact (e.g. in react-select)
+    // load react or react-dom instead of preact
     Module._load = function(request, parent) {
         if (request === "react" || request === "react-dom") {
             return originalLoader.call(this, "preact-compat", parent);
