@@ -108,7 +108,7 @@ const Images = (props: Props & {title: string}) => {
     const {record, title} = props;
 
     return <tr className="plain">
-        <td/>
+        <th/>
         <td>
             <div>
                 <div>

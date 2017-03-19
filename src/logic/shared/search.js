@@ -243,7 +243,8 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
             type: values.type,
             sorts: sortData,
             facets: facetData,
-            records: results.hits.hits.map(simplifyRecord),
+            records: results.hits.hits
+                .filter((record) => record).map(simplifyRecord),
             total: results.hits.total,
             start: (results.hits.total > 0 ? values.start + 1 : 0),
             end,

@@ -33,14 +33,12 @@ class LinkedRecordEdit extends React.Component {
                     getTitle: string,
                 }>,
             }) => {
-                return {
-                    options: records
-                        .filter((record) => record)
-                        .map(({_id, getTitle}) => ({
-                            value: _id,
-                            label: getTitle,
-                        })),
-                };
+                return records
+                    .filter((record) => record)
+                    .map(({_id, getTitle}) => ({
+                        value: _id,
+                        label: getTitle,
+                    }));
             });
     }
 
@@ -68,7 +66,7 @@ class LinkedRecordEdit extends React.Component {
             placeholder={placeholder}
             multi={multiple}
             autoload={false}
-            cache={false}
+            cache={true}
             loadOptions={(input) => this.getOptions(input)}
         />;
     }

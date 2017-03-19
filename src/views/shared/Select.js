@@ -16,6 +16,7 @@ type Props = {
     create?: boolean,
     clearable?: boolean,
     placeholder?: string,
+    cache?: boolean,
     loadOptions?: (input: string) => Promise<*>,
     onChange?: (value: string | Array<string>) => void,
 };
@@ -73,12 +74,22 @@ class MultiSelect extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            searchValue: undefined,
+            loading: false,
         };
+        this.labelCache = {};
+        if (props.cache) {
+            this.queryCache = {};
+        }
     }
 
     state: {
         searchValue?: string,
+        loading: boolean,
+        options?: Array<{
+            value: string,
+            label: string,
+        }>,
+        error?: Error,
     }
 
     componentDidMount() {
@@ -97,6 +108,15 @@ class MultiSelect extends React.Component {
     control: HTMLElement
     input: HTMLInputElement
     boundHandleBlur: (e: Event) => void
+    labelCache: {
+        [value: string]: string,
+    }
+    queryCache: {
+        [query: string]: Array<{
+            value: string,
+            label: string,
+        }>,
+    }
 
     handleBlur(e: Event) {
         const {target} = e;
@@ -112,6 +132,11 @@ class MultiSelect extends React.Component {
     }
 
     getNameByValue(value: string): string {
+        if (this.labelCache[value]) {
+            return this.labelCache[value];
+        }
+
+
         const {options} = this.props;
         const result = options.find((option) => option.value === value);
 
@@ -122,14 +147,18 @@ class MultiSelect extends React.Component {
         return value;
     }
 
-    addValue(addedValue: string) {
+    addValue(addedValue: string, addedLabel: string) {
         const {onChange, value} = this.props;
         if ((!value || Array.isArray(value)) && onChange) {
+            this.labelCache[addedValue] = addedLabel;
             onChange(value ?
-                value.concat(addedValue) :
+                (value.includes(addedValue) ?
+                    value :
+                    value.concat(addedValue)) :
                 [addedValue]);
             this.clear();
             this.input.focus();
+            this.handleInput("");
         }
     }
 
@@ -145,14 +174,30 @@ class MultiSelect extends React.Component {
         this.setState({searchValue: ""});
     }
 
+    getFilteredOptions() {
+        const {value} = this.props;
+        const {options} = this.state;
+
+        if (!options) {
+            return [];
+        }
+
+        return options.filter((option) =>
+            (!value || !value.includes(option.value)));
+    }
+
     handleKey(e: SyntheticKeyboardEvent) {
         if (e.target instanceof HTMLInputElement &&
                 (e.key === "Enter" || e.key === "Tab")) {
+            const {create} = this.props;
+            const {searchValue} = this.state;
             const {value} = e.target;
             if (value) {
-                const options = this.filterOptions(value);
+                const options = this.getFilteredOptions();
                 if (options.length > 0) {
-                    this.addValue(options[0].value);
+                    this.addValue(options[0].value, options[0].label);
+                } else if (create && searchValue) {
+                    this.addValue(searchValue, searchValue);
                 }
                 e.preventDefault();
             }
@@ -160,35 +205,83 @@ class MultiSelect extends React.Component {
     }
 
     handleInput(searchValue: string) {
-        this.setState({searchValue});
+        const {loadOptions, options} = this.props;
+
+        this.setState({
+            searchValue,
+            error: undefined,
+            options: undefined,
+            loading: false,
+        });
+
+        if (searchValue === undefined) {
+            return;
+        }
+
+        if (loadOptions) {
+            if (this.queryCache && this.queryCache[searchValue]) {
+                return this.setState({
+                    options: this.queryCache[searchValue],
+                });
+            }
+
+            this.setState({loading: true});
+
+            loadOptions(searchValue).then((options) => {
+                if (this.state.searchValue === searchValue) {
+                    this.queryCache[searchValue] = options;
+                    this.setState({options, loading: false});
+                }
+            }).catch((error) => {
+                if (this.state.searchValue === searchValue) {
+                    this.setState({error, loading: false});
+                }
+            });
+        } else {
+            const search = new RegExp(latinize(searchValue).split("")
+                .map((char) => /\W/.test(char) ? `\\${char}` : char).join(".*"),
+                "i");
+
+            this.setState({
+                options: options.filter((option) =>
+                    search.test(latinize(option.label))),
+            });
+        }
     }
 
     closeMenu() {
         this.setState({searchValue: undefined});
     }
 
-    filterOptions(searchValue: string) {
-        const {options, value} = this.props;
-        const search = new RegExp(latinize(searchValue).split("")
-            .map((char) => /\W/.test(char) ? `\\${char}` : char).join(".*"),
-            "i");
-
-        return options.filter((option) =>
-            (!value || !value.includes(option.value)) &&
-            search.test(latinize(option.label)));
-    }
-
     renderMenu() {
-        const {searchValue} = this.state;
-        const {gettext} = this.context;
+        const {create} = this.props;
+        const {searchValue, options, error} = this.state;
+        const {gettext, format} = this.context;
 
         if (searchValue === undefined) {
             return null;
         }
 
-        const options = this.filterOptions(searchValue);
+        if (error) {
+            console.error(error);
+            return <div style={{marginTop: "8px"}}>
+                <span className="label label-danger">
+                    {gettext("Error loading options.")}
+                </span>
+            </div>;
+        }
 
-        if (options.length === 0) {
+        if (!options) {
+            return <div style={{marginTop: "8px"}}>
+                <span className="label label-default">
+                    {gettext("Loading...")}
+                </span>
+            </div>;
+        }
+
+        const filteredOptions = this.getFilteredOptions();
+
+        if (filteredOptions.length === 0 && !create) {
             return <div style={{marginTop: "8px"}}>
                 <span className="label label-default">
                     {gettext("No results found.")}
@@ -202,13 +295,13 @@ class MultiSelect extends React.Component {
                 display: "block",
                 position: "static",
                 width: "100%",
-                maxHeight: "150px",
+                height: "150px",
                 overflow: "auto",
                 boxShadow: "none",
                 marginTop: "8px",
             }}
         >
-            {options.map((option, i) => <li
+            {filteredOptions.map((option, i) => <li
                 key={option.value}
                 className={i === 0 && searchValue ? "active" : ""}
             >
@@ -216,12 +309,25 @@ class MultiSelect extends React.Component {
                     href="javascript: void(0)"
                     onClick={(e) => {
                         e.preventDefault();
-                        this.addValue(option.value);
+                        this.addValue(option.value, option.label);
                     }}
                 >
                     {option.label}
                 </a>
             </li>)}
+            {create && searchValue && <li
+                className={filteredOptions.length === 0 ? "active" : ""}
+            >
+                <a
+                    href="javascript: void(0)"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        this.addValue(searchValue, searchValue);
+                    }}
+                >
+                    {format(gettext("Add %(value)s..."), {value: searchValue})}
+                </a>
+            </li>}
         </ul>;
     }
 
@@ -305,11 +411,11 @@ class Select extends React.Component {
     }
 
     render() {
-        const {multi, placeholder} = this.props;
+        const {multi, create, loadOptions, placeholder} = this.props;
         const {gettext} = this.context;
         let Selector = SimpleSelect;
 
-        if (multi) {
+        if (multi || create || loadOptions) {
             Selector = MultiSelect;
         }
 

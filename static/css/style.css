@@ -194,14 +194,22 @@
  * Styling for the metadata view.
  */
 
-.table > tbody > tr.plain > th,
-.table > tbody > tr.plain > td {
+.table > tbody > tr > th,
+.table > tbody > tr > td {
     border-top: none;
 }
 
-.table > tbody > tr.plain:hover > th,
-.table > tbody > tr.plain:hover > td {
+.table > tbody > tr:hover > th,
+.table > tbody > tr:hover > td {
     background: #fff;
+}
+
+.table > tbody > tr > th {
+    white-space: pre;
+}
+
+.table > tbody > tr > td {
+    width: 100%;
 }
 
 .table td {
