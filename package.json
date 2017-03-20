@@ -51,7 +51,6 @@
     "farmhash": "1.2.1",
     "formidable": "felixge/node-formidable#ad7ef2f8e537eb7be98f73245fb149430970a266",
     "gm": "1.23.0",
-    "i18n-abide": "0.0.25",
     "iconv-lite": "0.4.15",
     "imageinfo": "1.0.4",
     "intl": "1.2.5",
