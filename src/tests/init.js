@@ -6,6 +6,7 @@ const sinon = require("sinon");
 const mockfs = require("mock-fs");
 const async = require("async");
 const iconv = require("iconv-lite");
+const MongoInMemory = require("mongo-in-memory");
 
 // Force ICONV to pre-load its encodings
 iconv.getCodec("utf8");
@@ -21,6 +22,7 @@ require("react-select");
 // Load in global ENV
 process.env.BASE_DATA_DIR = path.resolve(process.cwd(), "data");
 process.env.STATIC_DIR = path.resolve(process.cwd(), "static");
+process.env.MONGODB_URL = "mongodb://127.0.0.1:27018/test";
 
 const record = require("../lib/record");
 const models = require("../lib/models");
@@ -79,6 +81,10 @@ const normalLogin = (request, callback) =>
 
 // Sandbox the bound methods
 let sandbox;
+
+// Test files to load into the DB
+const testDBFiles = path.resolve(__dirname,
+    "..", "..", "tests", "db");
 
 // Root Files
 const pkgFile = fs.readFileSync(path.resolve(__dirname, "../../package.json"));
@@ -964,6 +970,7 @@ const i18n = {
 };
 
 let app;
+let db;
 
 bindStubs();
 
@@ -978,9 +985,23 @@ const init = (done) => {
         },
 
         (callback) => {
-            server((err, _app) => {
-                app = _app;
-                callback(err);
+            db = new MongoInMemory(27018);
+
+            db.start((err) => {
+                if (err) {
+                    return callback(err);
+                }
+
+                db.addDirectoryOfCollections("test", testDBFiles, (err) => {
+                    if (err) {
+                        return callback(err);
+                    }
+
+                    server((err, _app) => {
+                        app = _app;
+                        callback(err);
+                    });
+                });
             });
         },
     ], done);
@@ -990,7 +1011,7 @@ tap.beforeEach(init);
 
 tap.afterEach((done) => {
     app.close();
-    done();
+    db.stop(done);
 });
 
 const mockFS = (callback) => {

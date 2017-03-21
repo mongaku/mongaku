@@ -4,6 +4,7 @@ const express = require("express");
 
 const init = require("../lib/init");
 const config = require("../lib/config");
+const db = require("../lib/db");
 
 const expressInit = require("./express");
 const passport = require("./passport");
@@ -36,6 +37,10 @@ module.exports = (callback: (err: ?Error, server: Server) => void) => {
             if (process.send) {
                 process.send("online");
             }
+        });
+
+        server.on("close", () => {
+            db.close();
         });
 
         /* istanbul ignore if */

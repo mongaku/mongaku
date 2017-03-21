@@ -263,7 +263,6 @@ class MultiSelect extends React.Component {
         }
 
         if (error) {
-            console.error(error);
             return <div style={{marginTop: "8px"}}>
                 <span className="label label-danger">
                     {gettext("Error loading options.")}

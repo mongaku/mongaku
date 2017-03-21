@@ -22,7 +22,7 @@
     "update-i18n": "tx pull -a && po2json.js -p translations/de/messages.po > translations/de/messages.json && po2json.js -p translations/it/messages.po > translations/it/messages.json",
     "migrate": "migrate",
     "coverage": "NODE_ENV=test tap --cov --coverage-report=lcov build/tests/*/*.js",
-    "test-file": "NODE_ENV=test tap --cov",
+    "test-file": "NODE_ENV=test tap",
     "flow": "flow"
   },
   "repository": {
