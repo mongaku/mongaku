@@ -11,14 +11,25 @@ module.exports = {
     types: mongoose.Types,
 
     connect(callback) {
-        mongoose.connect(config.MONGODB_URL);
-
-        mongoose.connection.on("error", (err) => {
-            console.error("Mongo Connection Error:", err);
-            callback(err);
+        mongoose.connect(config.MONGODB_URL, {
+            server: {
+                reconnectTries: Number.MAX_VALUE,
+            },
         });
 
-        mongoose.connection.once("open", callback);
+        const handleError = (err) => {
+            console.error("Mongo Connection Error:", err);
+            mongoose.connection.removeListener("open", handleOpen);
+            callback(err);
+        };
+
+        const handleOpen = () => {
+            mongoose.connection.removeListener("error", handleError);
+            callback();
+        };
+
+        mongoose.connection.on("error", handleError);
+        mongoose.connection.once("open", handleOpen);
     },
 
     close: () => mongoose.connection.close(),
