@@ -291,6 +291,7 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, (t) => {
         type: "artworks",
         source: "nga",
         lang: "en",
+        images: ["foo.jpg"],
     }, i18n), {
         "error": "Required field `url` is empty.",
         "warnings": [],
@@ -302,6 +303,7 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, (t) => {
         source: "nga",
         lang: "en",
         url: "",
+        images: ["foo.jpg"],
     }, i18n), {
         "error": "Required field `url` is empty.",
         "warnings": [],
@@ -686,7 +688,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
     }, i18n), {
         "error": "Required field `url` is empty.",
         "warnings": [
-            "`url` must be properly-formatted URL.",
+            "Field must be properly-formatted URL.",
         ],
     }, "URL");
 
