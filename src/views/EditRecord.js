@@ -95,33 +95,32 @@ const Image = ({
 
 Image.contextTypes = childContextTypes;
 
-const Title = ({title}: {title: string}) => <tr className="plain">
-    <th/>
-    <th className="col-xs-12 text-center">
-        <h1 className="panel-title">
-            {title}
-        </h1>
-    </th>
-</tr>;
+const Title = ({title}: {title: string}) => <div
+    className="col-xs-12 text-center"
+    style={{
+        borderBottom: "1px solid lightgrey",
+        paddingBottom: 10,
+        marginBottom: 15,
+    }}
+>
+    <h1 className="panel-title">
+        {title}
+    </h1>
+</div>;
 
 const Images = (props: Props & {title: string}) => {
     const {record, title} = props;
 
-    return <tr className="plain">
-        <th/>
-        <td>
-            <div>
-                <div>
-                    {record && record.imageModels.map((image, i) => <Image
-                        {...props}
-                        key={i}
-                        image={image}
-                        title={title}
-                    />)}
-                </div>
-            </div>
-        </td>
-    </tr>;
+    return <div className="col-xs-12 text-center">
+        <div>
+            {record && record.imageModels.map((image, i) => <Image
+                {...props}
+                key={i}
+                image={image}
+                title={title}
+            />)}
+        </div>
+    </div>;
 };
 
 const ImageForm = (props, {gettext}: Context) => <tr>
@@ -221,6 +220,10 @@ class IDForm extends React.Component {
 
 IDForm.contextTypes = childContextTypes;
 
+const HiddenSourceID = ({id}: {id: string}) => <tr style={{display: "none"}}>
+    <td><input type="hidden" name="source" value={id} /></td>
+</tr>;
+
 const SourceForm = ({
     source,
     sources,
@@ -229,7 +232,7 @@ const SourceForm = ({
     onSourceChange: (curSource: string) => void,
 }, {gettext}: Context) => {
     if (source) {
-        return <input type="hidden" name="source" value={source} />;
+        return <HiddenSourceID id={source} />;
     }
 
     if (!sources) {
@@ -237,7 +240,7 @@ const SourceForm = ({
     }
 
     if (sources.length === 1) {
-        return <input type="hidden" name="source" value={sources[0]._id} />;
+        return <HiddenSourceID id={sources[0]._id} />;
     }
 
     return <tr>
@@ -534,12 +537,20 @@ const CloneButton = ({
     record,
     mode,
 }: Props, {gettext}: Context) => <div className="row">
-    <a
-        href={record && record.getCloneURL}
-        className="btn btn-primary pull-right"
+    <div
+        className="col-xs-12"
+        style={{
+            marginBottom: 15,
+            overflow: "auto",
+        }}
     >
-        {gettext("Clone Record")}
-    </a>
+        <a
+            href={record && record.getCloneURL}
+            className="btn btn-primary pull-right"
+        >
+            {gettext("Clone Record")}
+        </a>
+    </div>
 </div>;
 
 CloneButton.contextTypes = childContextTypes;
@@ -556,14 +567,8 @@ const EditRecord = (props: Props) => {
         {mode === "edit" && <CloneButton {...props} />}
         <div className="row">
             <div className="col-md-12 imageholder">
-                <div className="responsive-table">
-                    <table className="table table-hover">
-                        <thead>
-                            <Title title={title} />
-                            <Images {...props} title={title} />
-                        </thead>
-                    </table>
-                </div>
+                <Title title={title} />
+                <Images {...props} title={title} />
                 <form
                     action={postURL}
                     method="POST"
