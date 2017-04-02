@@ -14,6 +14,7 @@ type Props = {
     multiline?: boolean,
     value?: string | Array<string>,
     values?: Array<ValueType>,
+    fixed?: boolean,
     multiple?: boolean,
 };
 
@@ -60,7 +61,7 @@ const Value = ({
 };
 
 const FixedStringEdit = (props: Props) => {
-    const {name, value, values, multiple} = props;
+    const {name, value, values, fixed, multiple} = props;
 
     // If we have values to choose from then we render a select
     if (Array.isArray(values)) {
@@ -73,7 +74,7 @@ const FixedStringEdit = (props: Props) => {
                 label: value.name,
             }))}
             clearable={multiple}
-            create={true}
+            create={!fixed}
         />;
 
     // If we're expecting multiple input values

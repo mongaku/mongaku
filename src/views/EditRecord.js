@@ -294,8 +294,9 @@ const TypeEdit = ({
             id,
             name: expectedValues[id].name,
         }));
+        const fixed = (values.length !== 0);
 
-        if (values.length === 0) {
+        if (!fixed) {
             values = allValues.map((text) => ({
                 id: text,
                 name: text,
@@ -307,6 +308,7 @@ const TypeEdit = ({
             type={type}
             value={value}
             values={values}
+            fixed={fixed}
             multiple={multiple}
         />;
 
