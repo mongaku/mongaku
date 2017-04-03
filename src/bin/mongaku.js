@@ -57,6 +57,16 @@ if (args.v || args.version) {
 } else if (cmd === "restart") {
     shell.exec(`${getBinary("naught")} deploy mongaku.ipc`);
 
+} else if (cmd === "build") {
+    const rootDir = localFile("../..");
+    const srcDir = path.join(rootDir, "src");
+    const buildDir = path.join(rootDir, "build");
+
+    shell.exec(`${getBinary("babel")} ${srcDir} --out-dir ${buildDir}`);
+
+    const webpackConfig = path.join(rootDir, "webpack.config.js");
+    shell.exec(`${getBinary("webpack")} --config ${webpackConfig}`);
+
 } else if (cmd === "dev") {
     const cwd = process.cwd();
     const localDir = localFile("..");
@@ -64,6 +74,8 @@ if (args.v || args.version) {
     const ignored = [
         path.join(localDir, "node_modules"),
         path.join(cwd, "node_modules"),
+        path.join(localDir, "..", "static"),
+        path.join(cwd, "static"),
     ].join(",");
 
     const devCmd = [
@@ -76,6 +88,15 @@ if (args.v || args.version) {
     ].concat(extraArgs).join(" ");
 
     shell.exec(devCmd);
+
+    const rootDir = localFile("../..");
+    const srcDir = path.join(rootDir, "src");
+    const buildDir = path.join(rootDir, "build");
+
+    shell.exec(`${getBinary("babel")} ${srcDir} --out-dir ${buildDir} -w`);
+
+    const webpackConfig = path.join(rootDir, "webpack.config.js");
+    shell.exec(`${getBinary("webpack")} --config ${webpackConfig} -w`);
 
 } else if (cmd === "create" || cmd === "convert") {
     const [name] = extraArgs;
