@@ -2,20 +2,12 @@
     "parser": "babel-eslint",
     "rules": {
         "array-callback-return": 2,
-        "arrow-spacing": 2,
-        "brace-style": [2, "1tbs", { "allowSingleLine": true }],
         "camelcase": [2, { "properties": "never" }],
-        "comma-dangle": [1, "always-multiline"],
-        "comma-spacing": [2, { "before": false, "after": true }],
         "constructor-super": 2,
         "curly": 2,
-        "dot-location": [2, "property"],
         "dot-notation": 2,
-        "eol-last": 1,
         "eqeqeq": 2,
         "guard-for-in": 0,
-        "indent": [2, 4, {"SwitchCase": 1}],
-        "keyword-spacing": 2,
         "linebreak-style": [2, "unix"],
         "max-len": [1, 80, 4, { "ignoreUrls": true, "ignorePattern": "\\brequire\\([\"']|eslint-disable" }],
         "no-alert": 2,
@@ -37,7 +29,6 @@
         "no-lone-blocks": 2,
         "no-loop-func": 0,
         //"no-magic-numbers": [2, {"ignoreArrayIndexes": true, "enforceConst": true}],
-        "no-multi-spaces": 2,
         "no-multi-str": 2,
         "no-native-reassign": 2,
         "no-new": 2,
@@ -50,10 +41,8 @@
         "no-self-assign": 2,
         "no-self-compare": 2,
         "no-sequences": 2,
-        "no-spaced-func": 2,
         "no-this-before-super": 2,
         "no-throw-literal": 2,
-        "no-trailing-spaces": 2,
         "no-undef": 2,
         "no-unexpected-multiline": 2,
         "no-unmodified-loop-condition": 2,
@@ -69,9 +58,6 @@
         "prefer-spread": 2,
         "prefer-template": 2,
         "react/forbid-prop-types": [2, { "forbid": [ "array", "object" ] }],
-        "react/jsx-closing-bracket-location": [2, "line-aligned"],
-        "react/jsx-curly-spacing": [2, "never"],
-        "react/jsx-indent-props": 2,
         "react/jsx-no-duplicate-props": 2,
         "react/jsx-no-undef": 2,
         "react/jsx-sort-props": 0,
@@ -85,24 +71,16 @@
         "react/self-closing-comp": 2,
         "react/sort-comp": 2,
         "react/sort-prop-types": 2,
-        "semi": [2, "always"],
-        "space-before-blocks": 2,
-        "space-before-function-paren": [2, "never"],
-        "space-infix-ops": 2,
-        "space-unary-ops": 2,
         "strict": [2, "global"],
-        "arrow-parens": 1,
+        "arrow-parens": 0,
         "no-var": 1,
         "prefer-arrow-callback": 1,
         "object-curly-spacing": [0, "always"],
         "yoda": 2,
         "flowtype/boolean-style": [2, "boolean"],
         "flowtype/define-flow-type": 1, // suppress no-undef on flow types
-        "flowtype/delimiter-dangle": [2, "always-multiline"],
-        "flowtype/generic-spacing": [2, "never"],
         "flowtype/no-dupe-keys": 2,
         "flowtype/no-weak-types": 0,    // allow 'any' for now
-        "flowtype/object-type-delimiter": [2, "comma"],
         // flow may still require parameter types in certain situations
         "flowtype/require-parameter-type": 0,
         "flowtype/require-return-type": 0,
@@ -112,13 +90,8 @@
                 "annotationStyle": "line"
             }
         ],
-        "flowtype/semi": [2, "always"],
         "flowtype/sort": 0,
-        "flowtype/space-after-type-colon": [2, "always"],
-        "flowtype/space-before-generic-bracket": [2, "never"],
-        "flowtype/space-before-type-colon": [2, "never"],
         "flowtype/type-id-match": 0,
-        "flowtype/union-intersection-spacing": [2, "always"],
         "flowtype/use-flow-type": 1,  // suppress no-unused-vars on flow types
     },
     "ecmaFeatures": {
@@ -147,5 +120,10 @@
             "onlyFilesWithFlowAnnotation": true
         }
     },
-    "extends": "eslint:recommended"
+    "extends": [
+        "eslint:recommended",
+        "prettier",
+        "prettier/flowtype",
+        "prettier/react"
+    ]
 }

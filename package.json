@@ -24,7 +24,8 @@
     "migrate": "migrate",
     "coverage": "NODE_ENV=test tap --cov --coverage-report=lcov build/tests/*/*.js",
     "test-file": "NODE_ENV=test tap",
-    "flow": "flow"
+    "flow": "flow",
+    "prettier": "prettier --write --no-bracket-spacing --trailing-comma=es5 --tab-width=4 --parser=flow"
   },
   "repository": {
     "type": "git",
@@ -95,6 +96,7 @@
     "babel-preset-env": "1.1.8",
     "babel-preset-react": "6.16.0",
     "eslint": "3.13.1",
+    "eslint-config-prettier": "1.6.0",
     "eslint-plugin-flowtype": "2.30.0",
     "eslint-plugin-react": "6.9.0",
     "exports-loader": "0.6.4",
@@ -105,6 +107,7 @@
     "null-loader": "0.1.1",
     "phantom-pool": "1.2.0",
     "pre-commit": "1.2.2",
+    "prettier": "1.1.0",
     "react": "15.4.2",
     "react-dom": "15.4.2",
     "sinon": "1.17.7",
