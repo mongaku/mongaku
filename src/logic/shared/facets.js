@@ -3,7 +3,7 @@ const metadata = require("../../lib/metadata");
 
 const defaultFacets = {
     source: {
-        title: (i18n) => i18n.gettext("Source"),
+        title: i18n => i18n.gettext("Source"),
 
         facet: () => ({
             terms: {
@@ -11,15 +11,16 @@ const defaultFacets = {
             },
         }),
 
-        formatBuckets: (buckets) => buckets.map((bucket) => ({
-            text: models("Source").getSource(bucket.key).name,
-            count: bucket.doc_count,
-            url: {source: bucket.key},
-        })),
+        formatBuckets: buckets =>
+            buckets.map(bucket => ({
+                text: models("Source").getSource(bucket.key).name,
+                count: bucket.doc_count,
+                url: {source: bucket.key},
+            })),
     },
 };
 
-module.exports = (type) => {
+module.exports = type => {
     const facets = Object.assign({}, defaultFacets);
     const model = metadata.model(type);
 

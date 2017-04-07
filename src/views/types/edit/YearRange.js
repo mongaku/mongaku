@@ -9,16 +9,16 @@ const YearRangeEdit = ({
     name: string,
     value?: Array<{original?: string}>,
 }) => {
-    const defaultValue = value &&
-        value[0] &&
-        value[0].original;
+    const defaultValue = value && value[0] && value[0].original;
 
-    return <input
-        name={name}
-        type="text"
-        className="form-control"
-        defaultValue={defaultValue}
-    />;
+    return (
+        <input
+            name={name}
+            type="text"
+            className="form-control"
+            defaultValue={defaultValue}
+        />
+    );
 };
 
 module.exports = YearRangeEdit;

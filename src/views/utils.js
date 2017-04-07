@@ -6,9 +6,13 @@ import type {Source, Options} from "./types.js";
 
 declare var Intl;
 
-module.exports = (lang: string, options: Options, translations: {
-    [message: string]: ?Array<string>,
-}) => {
+module.exports = (
+    lang: string,
+    options: Options,
+    translations: {
+        [message: string]: ?Array<string>,
+    }
+) => {
     const urls = require("../lib/urls")(options);
     const numberFormat = new Intl.NumberFormat(lang);
     const dateFormat = new Intl.DateTimeFormat(lang);
@@ -22,7 +26,9 @@ module.exports = (lang: string, options: Options, translations: {
             let url = urls.gen(lang, path);
 
             if (query) {
-                url = url + (url.indexOf("?") >= 0 ? "&" : "?") +
+                url =
+                    url +
+                    (url.indexOf("?") >= 0 ? "&" : "?") +
                     qs.stringify(query);
             }
 
@@ -43,16 +49,15 @@ module.exports = (lang: string, options: Options, translations: {
         },
 
         format(fmt: string = "", props: {[key: string]: any}): string {
-            return fmt.replace(/%\(\s*([^)]+)\s*\)s/g,
-                (m, v) => String(props[v.trim()]));
+            return fmt.replace(/%\(\s*([^)]+)\s*\)s/g, (m, v) =>
+                String(props[v.trim()])
+            );
         },
 
         gettext(message: string): string {
             const translation = translations[message];
 
-            return translation && translation[1] ?
-                translation[1] :
-                message;
+            return translation && translation[1] ? translation[1] : message;
         },
 
         getSource(sourceId: string, sources: Array<Source>): ?Source {

@@ -60,20 +60,22 @@ const UploadImage = new db.schema({
     },
 
     // Similar images (as determined by image similarity)
-    similarImages: [{
-        // The ID of the visually similar image
-        _id: {
-            type: String,
-            required: true,
-        },
+    similarImages: [
+        {
+            // The ID of the visually similar image
+            _id: {
+                type: String,
+                required: true,
+            },
 
-        // The similarity score between the images
-        score: {
-            type: Number,
-            required: true,
-            min: 1,
+            // The similarity score between the images
+            score: {
+                type: Number,
+                required: true,
+                min: 1,
+            },
         },
-    }],
+    ],
 });
 
 const getDirBase = function() {
@@ -98,28 +100,36 @@ UploadImage.methods = Object.assign({}, Image.methods, {
                 return callback(err);
             }
 
-            async.mapLimit(matches, 1, (match, callback) => {
-                // Skip matches for the image itself
-                if (match.id === this.hash) {
-                    return callback();
-                }
-
-                Image.findOne({
-                    hash: match.id,
-                }, (err, image) => {
-                    if (err || !image) {
+            async.mapLimit(
+                matches,
+                1,
+                (match, callback) => {
+                    // Skip matches for the image itself
+                    if (match.id === this.hash) {
                         return callback();
                     }
 
-                    callback(null, {
-                        _id: image._id,
-                        score: match.score,
-                    });
-                });
-            }, (err, matches) => {
-                this.similarImages = matches.filter((match) => match);
-                callback();
-            });
+                    Image.findOne(
+                        {
+                            hash: match.id,
+                        },
+                        (err, image) => {
+                            if (err || !image) {
+                                return callback();
+                            }
+
+                            callback(null, {
+                                _id: image._id,
+                                score: match.score,
+                            });
+                        }
+                    );
+                },
+                (err, matches) => {
+                    this.similarImages = matches.filter(match => match);
+                    callback();
+                }
+            );
         });
     },
 });
@@ -173,7 +183,7 @@ UploadImage.statics = Object.assign({}, Image.statics, {
                         height,
                     });
 
-                    model.validate((err) => {
+                    model.validate(err => {
                         /* istanbul ignore if */
                         if (err) {
                             return callback(new Error("ERROR_SAVING"));

@@ -10,7 +10,7 @@ const metadata = require("./metadata");
 
 const records = {};
 
-module.exports = (type) => {
+module.exports = type => {
     if (records[type]) {
         return records[type];
     }
@@ -26,20 +26,32 @@ module.exports = (type) => {
     const schemaProps = Object.assign({}, Record.schema, modelProps);
 
     if (typeInfo.noImages) {
-        schemaProps.images = Object.assign({required: false},
-            schemaProps.images);
-        schemaProps.defaultImageHash = Object.assign({required: false},
-            schemaProps.defaultImageHash);
+        schemaProps.images = Object.assign(
+            {required: false},
+            schemaProps.images
+        );
+        schemaProps.defaultImageHash = Object.assign(
+            {required: false},
+            schemaProps.defaultImageHash
+        );
     } else if (typeInfo.imagesRequired) {
-        schemaProps.images = Object.assign({required: true},
-            schemaProps.images);
-        schemaProps.defaultImageHash = Object.assign({required: true},
-            schemaProps.defaultImageHash);
+        schemaProps.images = Object.assign(
+            {required: true},
+            schemaProps.images
+        );
+        schemaProps.defaultImageHash = Object.assign(
+            {required: true},
+            schemaProps.defaultImageHash
+        );
     } else {
-        schemaProps.images = Object.assign({recommended: true},
-            schemaProps.images);
-        schemaProps.defaultImageHash = Object.assign({recommended: true},
-            schemaProps.defaultImageHash);
+        schemaProps.images = Object.assign(
+            {recommended: true},
+            schemaProps.images
+        );
+        schemaProps.defaultImageHash = Object.assign(
+            {recommended: true},
+            schemaProps.defaultImageHash
+        );
     }
 
     const Schema = new db.schema(schemaProps, {
@@ -47,9 +59,12 @@ module.exports = (type) => {
     });
 
     Schema.methods = Record.methods;
-    Schema.statics = Object.assign({
-        getType: () => type,
-    }, Record.statics);
+    Schema.statics = Object.assign(
+        {
+            getType: () => type,
+        },
+        Record.statics
+    );
 
     const es = url.parse(config.ELASTICSEARCH_URL);
 

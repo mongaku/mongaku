@@ -10,7 +10,6 @@ let optionsFile = path.resolve(process.cwd(), "mongaku.js");
 
 if (process.env.NODE_ENV === "test") {
     optionsFile = "../tests/options.js";
-
 } else {
     try {
         // Detect if the file exists, throwing an exception if it does not
@@ -28,8 +27,11 @@ if (loadFile) {
 }
 
 for (const typeName in options.types) {
-    options.types[typeName] =
-        Object.assign({}, recordOptions, options.types[typeName]);
+    options.types[typeName] = Object.assign(
+        {},
+        recordOptions,
+        options.types[typeName]
+    );
 }
 
 // Bring in options that could be configured via the config

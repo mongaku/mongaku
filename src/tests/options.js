@@ -1,78 +1,90 @@
 const types = {
     architecture: {
-        name: (i18n) => i18n.gettext("Architecture"),
+        name: i18n => i18n.gettext("Architecture"),
     },
 
     "decorative arts": {
-        name: (i18n) => i18n.gettext("Decorative Arts"),
+        name: i18n => i18n.gettext("Decorative Arts"),
     },
 
     drawing: {
-        name: (i18n) => i18n.gettext("Drawing"),
+        name: i18n => i18n.gettext("Drawing"),
     },
 
     fresco: {
-        name: (i18n) => i18n.gettext("Fresco"),
+        name: i18n => i18n.gettext("Fresco"),
     },
 
     medal: {
-        name: (i18n) => i18n.gettext("Medal"),
+        name: i18n => i18n.gettext("Medal"),
     },
 
     miniature: {
-        name: (i18n) => i18n.gettext("Miniature"),
+        name: i18n => i18n.gettext("Miniature"),
     },
 
     mosaic: {
-        name: (i18n) => i18n.gettext("Mosaic"),
+        name: i18n => i18n.gettext("Mosaic"),
     },
 
     painting: {
-        name: (i18n) => i18n.gettext("Painting"),
+        name: i18n => i18n.gettext("Painting"),
     },
 
     photo: {
-        name: (i18n) => i18n.gettext("Photo"),
+        name: i18n => i18n.gettext("Photo"),
     },
 
     print: {
-        name: (i18n) => i18n.gettext("Print"),
+        name: i18n => i18n.gettext("Print"),
     },
 
     sculpture: {
-        name: (i18n) => i18n.gettext("Sculpture"),
+        name: i18n => i18n.gettext("Sculpture"),
     },
 
     "stained glass": {
-        name: (i18n) => i18n.gettext("Stained Glass"),
+        name: i18n => i18n.gettext("Stained Glass"),
     },
 };
 
 module.exports = {
     types: {
         artworks: {
-            filters: ["artists", "locations", "objectType", "dates",
-                "dimensions"],
+            filters: [
+                "artists",
+                "locations",
+                "objectType",
+                "dates",
+                "dimensions",
+            ],
 
-            display: ["artists", "dates", "objectType", "medium", "dimensions",
-                "categories", "locations"],
+            display: [
+                "artists",
+                "dates",
+                "objectType",
+                "medium",
+                "dimensions",
+                "categories",
+                "locations",
+            ],
 
             sorts: {
-                "dates.asc": (i18n) => i18n.gettext("Date, earliest first"),
-                "dates.desc": (i18n) => i18n.gettext("Date, latest first"),
+                "dates.asc": i18n => i18n.gettext("Date, earliest first"),
+                "dates.desc": i18n => i18n.gettext("Date, latest first"),
             },
 
             model: {
                 url: {
                     type: "URL",
-                    title: (i18n) => i18n.gettext("URL"),
+                    title: i18n => i18n.gettext("URL"),
                     required: true,
                 },
 
                 // The title of the record.
                 title: {
                     type: "SimpleString",
-                    title: (i18n) => i18n.gettext("Title"),
+                    title: i18n => i18n.gettext("Title"),
                     recommended: true,
                 },
 
@@ -80,8 +92,8 @@ module.exports = {
                 artists: {
                     type: "Name",
                     searchName: "artist",
-                    title: (i18n) => i18n.gettext("Artist"),
-                    placeholder: (i18n) =>
+                    title: i18n => i18n.gettext("Artist"),
+                    placeholder: i18n =>
                         i18n.gettext("Sample: Andrea del Sarto"),
                 },
 
@@ -89,7 +101,7 @@ module.exports = {
                 dates: {
                     type: "YearRange",
                     searchName: "date",
-                    title: (i18n) => i18n.gettext("Date"),
+                    title: i18n => i18n.gettext("Date"),
                     placeholder: () => ({
                         end: 1900,
                         start: 1000,
@@ -100,27 +112,27 @@ module.exports = {
                 objectType: {
                     type: "FixedString",
                     searchName: "objectType",
-                    title: (i18n) => i18n.gettext("Type"),
-                    placeholder: (i18n) => i18n.gettext("Any Type"),
+                    title: i18n => i18n.gettext("Type"),
+                    placeholder: i18n => i18n.gettext("Any Type"),
                     allowUnknown: false,
                     values: types,
                     recommended: true,
-                    url: (value) => `/artworks/type/${value}`,
+                    url: value => `/artworks/type/${value}`,
                 },
 
                 // The medium of the record (e.g. "watercolor")
                 medium: {
                     type: "SimpleString",
-                    title: (i18n) => i18n.gettext("Medium"),
+                    title: i18n => i18n.gettext("Medium"),
                     searchField: "filter",
                 },
 
                 // The size of the record (e.g. 100mm x 200mm)
                 dimensions: {
                     type: "Dimension",
-                    title: (i18n) => i18n.gettext("Dimensions"),
-                    heightTitle: (i18n) => i18n.gettext("Height"),
-                    widthTitle: (i18n) => i18n.gettext("Width"),
+                    title: i18n => i18n.gettext("Dimensions"),
+                    heightTitle: i18n => i18n.gettext("Height"),
+                    widthTitle: i18n => i18n.gettext("Width"),
                     placeholder: () => ({
                         max: 200,
                         min: 10,
@@ -131,15 +143,15 @@ module.exports = {
                 locations: {
                     type: "Location",
                     searchName: "location",
-                    title: (i18n) => i18n.gettext("Location"),
-                    placeholder: (i18n) => i18n.gettext("Sample: Louvre"),
+                    title: i18n => i18n.gettext("Location"),
+                    placeholder: i18n => i18n.gettext("Sample: Louvre"),
                 },
 
                 // Categories classifying the record
                 // The medium of the record (e.g. "watercolor")
                 categories: {
                     type: "SimpleString",
-                    title: (i18n) => i18n.gettext("Categories"),
+                    title: i18n => i18n.gettext("Categories"),
                     multiple: true,
                     searchField: "filter",
                 },

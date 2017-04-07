@@ -43,13 +43,11 @@ Name.prototype = {
     },
 
     filter(value, sanitize) {
-        const query = Array.isArray(value) ?
-            value :
-            [value];
+        const query = Array.isArray(value) ? value : [value];
 
         return {
             bool: {
-                must: query.map((value) => ({
+                must: query.map(value => ({
                     multi_match: {
                         fields: [`${this.options.name}.name`],
                         query: sanitize(value),
@@ -64,7 +62,7 @@ Name.prototype = {
     facet() {
         return {
             [this.options.name]: {
-                title: (i18n) => this.options.title(i18n),
+                title: i18n => this.options.title(i18n),
 
                 // TODO: Make the number of facets configurable
                 facet: () => ({
@@ -74,15 +72,16 @@ Name.prototype = {
                     },
                 }),
 
-                formatBuckets: (buckets) => buckets.map((bucket) => ({
-                    text: bucket.key,
-                    count: bucket.doc_count,
-                    url: {
-                        [this.options.name]: {
-                            name: bucket.key,
+                formatBuckets: buckets =>
+                    buckets.map(bucket => ({
+                        text: bucket.key,
+                        count: bucket.doc_count,
+                        url: {
+                            [this.options.name]: {
+                                name: bucket.key,
+                            },
                         },
-                    },
-                })),
+                    })),
             },
         };
     },
@@ -118,53 +117,44 @@ Name.prototype = {
 
             // Same but in ascii (for example: Hokushō becomes Hokushoo)
             ascii: String,
-
             // Same but with diacritics stripped (Hokushō becomes Hokusho)
-            plain: {type: String, es_indexed: true},
-
+            plain: {
+                type: String,
+                es_indexed: true,
+            },
             // The English form of the given name
             given: String,
-
             // The English form of the middle name
             middle: String,
-
             // The English form of the surname
             surname: String,
-
             // A number representing the generation of the artist
             generation: Number,
-
             // A pseudonym for the person
-            pseudonym: {type: String, es_indexed: true},
-
+            pseudonym: {
+                type: String,
+                es_indexed: true,
+            },
             // Is the artist unknown/unattributed
             unknown: Boolean,
-
             // Is this artist part of a school
             school: Boolean,
-
             // Was this work done in the style of, or after, an artist
             after: Boolean,
-
             // Is this work attributed to an artist
             attributed: Boolean,
-
             // Date when the name was used
             dates: YearRange.prototype.schema(Schema),
         });
-
         // Dynamically generate the _id attribute
         NameSchema.pre("validate", function(next) {
             this._id = this.original || this.name;
             next();
         });
-
         return {
             type: [NameSchema],
-            convert: (obj) => typeof obj === "string" ?
-                {name: obj} : obj,
+            convert: obj => (typeof obj === "string" ? {name: obj} : obj),
         };
     },
 };
-
 module.exports = Name;

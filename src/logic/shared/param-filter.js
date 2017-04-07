@@ -28,9 +28,7 @@ const paramFilter = (values, keepSecondary) => {
             continue;
         }
 
-        const fields = query.fields ?
-            query.fields(value) :
-            {[name]: value};
+        const fields = query.fields ? query.fields(value) : {[name]: value};
 
         if (query.secondary) {
             Object.assign(secondary, fields);

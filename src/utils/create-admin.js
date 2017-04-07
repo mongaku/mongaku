@@ -17,7 +17,7 @@ module.exports = (args, callback) => {
         siteAdmin: true,
     });
 
-    user.save((err) => {
+    user.save(err => {
         if (err) {
             return callback(err);
         }

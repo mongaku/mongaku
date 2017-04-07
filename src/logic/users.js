@@ -3,7 +3,7 @@ const passport = require("passport");
 const options = require("../lib/options");
 const urls = require("../lib/urls")(options);
 
-module.exports = (app) => {
+module.exports = app => {
     return {
         login({i18n}, res) {
             res.render("Login", {
@@ -20,8 +20,8 @@ module.exports = (app) => {
                 }
 
                 req.login(user, () => {
-                    const redirectTo = session.redirectTo ||
-                        urls.gen(lang, "/");
+                    const redirectTo =
+                        session.redirectTo || urls.gen(lang, "/");
                     delete session.redirectTo;
                     res.redirect(redirectTo);
                 });

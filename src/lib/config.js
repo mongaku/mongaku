@@ -3,11 +3,7 @@ const path = require("path");
 
 const dotenv = require("dotenv");
 
-const required = [
-    "MONGODB_URL",
-    "ELASTICSEARCH_URL",
-    "PASTEC_URL",
-];
+const required = ["MONGODB_URL", "ELASTICSEARCH_URL", "PASTEC_URL"];
 
 const config = {
     NODE_ENV: process.env.NODE_ENV,
@@ -49,7 +45,6 @@ config.STATIC_DIR = path.resolve(process.cwd(), config.STATIC_DIR);
 if (config.NODE_ENV !== "test") {
     try {
         fs.statSync(config.BASE_DATA_DIR).isDirectory();
-
     } catch (e) {
         console.error(`${config.BASE_DATA_DIR} does not exist.`);
         process.exit(1);
@@ -57,7 +52,6 @@ if (config.NODE_ENV !== "test") {
 
     try {
         fs.statSync(config.STATIC_DIR).isDirectory();
-
     } catch (e) {
         console.error(`${config.STATIC_DIR} does not exist.`);
         process.exit(1);

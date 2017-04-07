@@ -28,7 +28,7 @@ module.exports = (args, callback) => {
         converter,
     });
 
-    source.save((err) => {
+    source.save(err => {
         if (err) {
             return callback(err);
         }

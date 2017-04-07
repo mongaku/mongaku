@@ -39,17 +39,20 @@ if (travis) {
 let sauceProcess;
 let client;
 
-const loadConnect = new Promise((resolve) => {
+const loadConnect = new Promise(resolve => {
     if (!travis) {
         return resolve();
     }
 
-    sauce({
-        username: user,
-        accessKey: key,
-    }, (err, sauceProcess) => {
-        resolve(sauceProcess);
-    });
+    sauce(
+        {
+            username: user,
+            accessKey: key,
+        },
+        (err, sauceProcess) => {
+            resolve(sauceProcess);
+        }
+    );
 });
 
 tap.tearDown(() => {
@@ -62,8 +65,8 @@ tap.tearDown(() => {
     });
 });
 
-tap.test("Load Client", (t) => {
-    loadConnect.then((_sauceProcess) => {
+tap.test("Load Client", t => {
+    loadConnect.then(_sauceProcess => {
         sauceProcess = _sauceProcess;
 
         client = webdriverio.remote(options).init().then(() => {
@@ -72,28 +75,28 @@ tap.test("Load Client", (t) => {
     });
 });
 
-tap.test("Home Page", (t) => {
-    return client
-        .url("http://localhost:3000")
-        .getTitle()
-        .then((title) => {
-            t.equal(title, "Mongaku");
-        });
+tap.test("Home Page", t => {
+    return client.url("http://localhost:3000").getTitle().then(title => {
+        t.equal(title, "Mongaku");
+    });
 });
 
-tap.test("Login as Admin", (t) => {
+tap.test("Login as Admin", t => {
     return client
         .url("http://localhost:3000/login")
-        .getTitle().then((title) => {
+        .getTitle()
+        .then(title => {
             t.equal(title, "Login: Mongaku");
         })
         .setValue("input[name=email]", "test@test.com")
         .setValue("input[name=password]", "test")
         .submitForm("form[action='/login']")
-        .getText("a[href='/logout']").then((text) => {
+        .getText("a[href='/logout']")
+        .then(text => {
             t.equal(text, "Logout");
         })
-        .getSource().then((source) => {
+        .getSource()
+        .then(source => {
             t.match(source, '"email":"test@test.com"');
         });
 });

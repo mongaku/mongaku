@@ -55,7 +55,7 @@ SimpleDate.prototype = {
     facet() {
         return {
             [this.options.name]: {
-                title: (i18n) => this.options.title(i18n),
+                title: i18n => this.options.title(i18n),
 
                 facet: () => ({
                     date_histogram: {
@@ -65,14 +65,19 @@ SimpleDate.prototype = {
                     },
                 }),
 
-                formatBuckets: (buckets, i18n) => buckets.map((bucket) => ({
-                    text: bucket.key_as_string,
-                    count: bucket.doc_count,
-                    url: {
-                        [this.options.name]:
-                            this.formatDate(bucket.key_as_string, i18n),
-                    },
-                })).reverse(),
+                formatBuckets: (buckets, i18n) =>
+                    buckets
+                        .map(bucket => ({
+                            text: bucket.key_as_string,
+                            count: bucket.doc_count,
+                            url: {
+                                [this.options.name]: this.formatDate(
+                                    bucket.key_as_string,
+                                    i18n
+                                ),
+                            },
+                        }))
+                        .reverse(),
             },
         };
     },

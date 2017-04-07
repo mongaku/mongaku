@@ -19,7 +19,7 @@ const reactViews = require("./react-views.js");
 
 const rootPath = path.resolve(__dirname, "..");
 
-module.exports = (app) => {
+module.exports = app => {
     /* istanbul ignore if */
     if (config.NODE_ENV !== "test") {
         // A basic logger for tracking who is accessing the service
@@ -54,9 +54,11 @@ module.exports = (app) => {
 
     // Parses the contents of HTTP POST bodies, handling URL-encoded forms
     // and also JSON blobs
-    app.use(bodyParser.urlencoded({
-        extended: true,
-    }));
+    app.use(
+        bodyParser.urlencoded({
+            extended: true,
+        })
+    );
 
     // Adds in support for overriding HTTP verbs to help
     // clients support DELETE and PUT
@@ -76,10 +78,12 @@ module.exports = (app) => {
         });
     }
 
-    app.use(session({
-        resave: false,
-        saveUninitialized: false,
-        secret: pkg.name,
-        store,
-    }));
+    app.use(
+        session({
+            resave: false,
+            saveUninitialized: false,
+            secret: pkg.name,
+            store,
+        })
+    );
 };

@@ -3,7 +3,7 @@ const tap = require("tap");
 const init = require("../init");
 const User = init.User;
 
-tap.test("password", {autoend: true}, (t) => {
+tap.test("password", {autoend: true}, t => {
     const user = init.getUser();
 
     user.password = "test";
@@ -13,7 +13,7 @@ tap.test("password", {autoend: true}, (t) => {
     t.equal(user.password, "");
 });
 
-tap.test("authenticate", {autoend: true}, (t) => {
+tap.test("authenticate", {autoend: true}, t => {
     const user = init.getUser();
 
     user.password = "test";
@@ -22,51 +22,51 @@ tap.test("authenticate", {autoend: true}, (t) => {
     t.equal(user.authenticate("nottest"), false);
 });
 
-tap.test("validate", (t) => {
+tap.test("validate", t => {
     const user = new User({
         email: "new@test.com",
         password: "test",
     });
 
-    user.validate((err) => {
+    user.validate(err => {
         t.error(err);
         t.end();
     });
 });
 
-tap.test("validate (not new)", (t) => {
-    const user = new User({
-        email: "new@test.com",
-        password: "test",
-    });
-    user.isNew = false;
-
-    user.validate((err) => {
-        t.error(err);
-        t.end();
-    });
-});
-
-tap.test("validate (modified)", (t) => {
+tap.test("validate (not new)", t => {
     const user = new User({
         email: "new@test.com",
         password: "test",
     });
     user.isNew = false;
 
-    user.validate((err) => {
+    user.validate(err => {
         t.error(err);
         t.end();
     });
 });
 
-tap.test("validate (existing email)", (t) => {
+tap.test("validate (modified)", t => {
+    const user = new User({
+        email: "new@test.com",
+        password: "test",
+    });
+    user.isNew = false;
+
+    user.validate(err => {
+        t.error(err);
+        t.end();
+    });
+});
+
+tap.test("validate (existing email)", t => {
     const user = new User({
         email: "test@test.com",
         password: "test",
     });
 
-    user.validate((err) => {
+    user.validate(err => {
         t.equal(err.message, "User validation failed");
         t.end();
     });

@@ -6,8 +6,10 @@ const path = require("path");
 const options = require("./options");
 
 const translationsMap = {};
-const translationsDir = path.resolve(process.cwd(),
-    options.translationsDir || "translations");
+const translationsDir = path.resolve(
+    process.cwd(),
+    options.translationsDir || "translations"
+);
 const defaultLocale = Object.keys(options.locales)[0] || "en";
 
 for (const locale in options.locales) {
@@ -35,9 +37,7 @@ module.exports = (lang: string) => {
         gettext(message: string) {
             const translation = translations[message];
 
-            return translation && translation[1] ?
-                translation[1] :
-                message;
+            return translation && translation[1] ? translation[1] : message;
         },
 
         format(msg: string, fields: {}) {

@@ -3,7 +3,7 @@ const request = require("request").defaults({jar: true});
 
 const {adminLogin, normalLogin} = require("../init");
 
-tap.test("Edit Record", (t) => {
+tap.test("Edit Record", t => {
     const url = "http://localhost:3000/artworks/test/1235/edit";
     adminLogin(request, () => {
         request.get(url, (err, res) => {
@@ -14,7 +14,7 @@ tap.test("Edit Record", (t) => {
     });
 });
 
-tap.test("Edit Record (Missing)", (t) => {
+tap.test("Edit Record (Missing)", t => {
     const url = "http://localhost:3000/artworks/test/abcd/edit";
     adminLogin(request, () => {
         request.get(url, (err, res) => {
@@ -25,7 +25,7 @@ tap.test("Edit Record (Missing)", (t) => {
     });
 });
 
-tap.test("Edit Record (Wrong Type)", (t) => {
+tap.test("Edit Record (Wrong Type)", t => {
     const url = "http://localhost:3000/abcd/test/1235/edit";
     adminLogin(request, () => {
         request.get(url, (err, res) => {
@@ -36,18 +36,17 @@ tap.test("Edit Record (Wrong Type)", (t) => {
     });
 });
 
-tap.test("Edit Record (Logged Out)", (t) => {
+tap.test("Edit Record (Logged Out)", t => {
     const url = "http://localhost:3000/artworks/test/1235/edit";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
-        t.match(res.request.uri.href,
-            "http://localhost:3000/login");
+        t.match(res.request.uri.href, "http://localhost:3000/login");
         t.end();
     });
 });
 
-tap.test("Edit Record (Unauthorized User)", (t) => {
+tap.test("Edit Record (Unauthorized User)", t => {
     const url = "http://localhost:3000/artworks/test/1235/edit";
     normalLogin(request, () => {
         request.get(url, (err, res) => {

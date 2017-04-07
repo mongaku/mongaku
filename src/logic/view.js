@@ -10,12 +10,11 @@ const options = require("../lib/options");
 module.exports = function(app: express$Application) {
     const Source = models("Source");
 
-    const show = ({
-        i18n,
-        originalUrl,
-        params,
-        query,
-    }: express$Request, res, next) => {
+    const show = (
+        {i18n, originalUrl, params, query}: express$Request,
+        res,
+        next
+    ) => {
         const typeName = params.type;
 
         if (!options.types[typeName]) {
@@ -29,7 +28,7 @@ module.exports = function(app: express$Application) {
         }
 
         const Record = record(typeName);
-        const compare = ("compare" in query);
+        const compare = "compare" in query;
         const id = `${params.source}/${params.recordName}`;
 
         Record.findById(id, (err, record) => {
@@ -50,21 +49,21 @@ module.exports = function(app: express$Application) {
 
                 const clonedRecord = cloneModel(record, i18n);
 
-                clonedRecord.imageModels = record.images
-                    .map((image) => cloneModel(image, i18n));
+                clonedRecord.imageModels = record.images.map(image =>
+                    cloneModel(image, i18n)
+                );
 
                 // Sort the similar records by score
-                clonedRecord.similarRecords = record.similarRecords
-                    .sort((a, b) => b.score - a.score);
+                clonedRecord.similarRecords = record.similarRecords.sort(
+                    (a, b) => b.score - a.score
+                );
 
                 if (!compare) {
-                    const similarRecords = record.similarRecords
-                        .map((match) => ({
-                            _id: match._id,
-                            score: match.score,
-                            recordModel:
-                                cloneModel(match.recordModel, i18n),
-                        }));
+                    const similarRecords = record.similarRecords.map(match => ({
+                        _id: match._id,
+                        score: match.score,
+                        recordModel: cloneModel(match.recordModel, i18n),
+                    }));
 
                     return res.render("Record", {
                         title,
@@ -72,43 +71,52 @@ module.exports = function(app: express$Application) {
                         compare: false,
                         records: [clonedRecord],
                         similar: similarRecords,
-                        sources: Source.getSourcesByType(typeName)
-                            .map((source) => cloneModel(source, i18n)),
+                        sources: Source.getSourcesByType(typeName).map(source =>
+                            cloneModel(source, i18n)
+                        ),
                     });
                 }
 
-                async.eachLimit(record.similarRecords, 4,
+                async.eachLimit(
+                    record.similarRecords,
+                    4,
                     (similar, callback) => {
                         similar.recordModel.loadImages(false, callback);
-                    }, () => {
-                        const similarRecords = record.similarRecords
-                            .map((similar) => {
-                                const clonedRecord =
-                                    cloneModel(similar.recordModel, i18n);
-                                clonedRecord.imageModels = record.images
-                                    .map((image) => cloneModel(image, i18n));
+                    },
+                    () => {
+                        const similarRecords = record.similarRecords.map(
+                            similar => {
+                                const clonedRecord = cloneModel(
+                                    similar.recordModel,
+                                    i18n
+                                );
+                                clonedRecord.imageModels = record.images.map(
+                                    image => cloneModel(image, i18n)
+                                );
                                 return clonedRecord;
-                            });
+                            }
+                        );
                         res.render("Record", {
                             title,
                             social,
                             compare: true,
                             noIndex: true,
                             similar: [],
-                            records: [clonedRecord]
-                                .concat(similarRecords),
-                            sources: Source.getSourcesByType(typeName)
-                                .map((source) => cloneModel(source, i18n)),
+                            records: [clonedRecord].concat(similarRecords),
+                            sources: Source.getSourcesByType(
+                                typeName
+                            ).map(source => cloneModel(source, i18n)),
                         });
-                    });
+                    }
+                );
             });
         });
     };
 
-    const json = ({
-        params: {type, source, recordName},
-        i18n,
-    }: express$Request, res) => {
+    const json = (
+        {params: {type, source, recordName}, i18n}: express$Request,
+        res
+    ) => {
         const id = `${source}/${recordName}`;
         const Record = record(type);
 

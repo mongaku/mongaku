@@ -17,7 +17,7 @@ module.exports = {
             },
         });
 
-        const handleError = (err) => {
+        const handleError = err => {
             console.error("Mongo Connection Error:", err);
             mongoose.connection.removeListener("open", handleOpen);
             callback(err);

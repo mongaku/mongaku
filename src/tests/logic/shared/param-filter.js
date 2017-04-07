@@ -4,7 +4,7 @@ require("../../init");
 
 const paramFilter = require("../../../logic/shared/param-filter");
 
-tap.test("paramFilter - primary", {autoend: true}, (t) => {
+tap.test("paramFilter - primary", {autoend: true}, t => {
     const query = {
         filter: "test",
     };
@@ -16,7 +16,7 @@ tap.test("paramFilter - primary", {autoend: true}, (t) => {
     });
 });
 
-tap.test("paramFilter - secondary", {autoend: true}, (t) => {
+tap.test("paramFilter - secondary", {autoend: true}, t => {
     const query = {
         filter: "test",
         start: 0,

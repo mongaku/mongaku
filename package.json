@@ -25,7 +25,7 @@
     "coverage": "NODE_ENV=test tap --cov --coverage-report=lcov build/tests/*/*.js",
     "test-file": "NODE_ENV=test tap",
     "flow": "flow",
-    "prettier": "prettier --write --no-bracket-spacing --trailing-comma=es5 --tab-width=4 --parser=flow"
+    "prettier": "prettier --write --no-bracket-spacing --trailing-comma=es5 --tab-width=4 --parser=babylon"
   },
   "repository": {
     "type": "git",

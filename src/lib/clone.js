@@ -18,22 +18,27 @@ type i18nObject = {
 const getArgs = (func: Function): Array<string> => {
     const strFunc = func.toString();
     // First match everything inside the function argument parens.
-    const args = strFunc.match(/function\s.*?\(([^)]*)\)/) ||
+    const args =
+        strFunc.match(/function\s.*?\(([^)]*)\)/) ||
         strFunc.match(/^\(?([^)]*)\)?\s*=>/) ||
         strFunc.match(/.*?\(([^)]*)\)/);
 
     // Split the arguments string into an array comma delimited.
-    return (args ? args[1] : "").split(",")
-        // Ensure no inline comments are parsed and trim the whitespace.
-        .map((arg) => arg.replace(/\/\*.*\*\//, '').trim())
-        // Ensure no undefined values are added.
-        .filter((arg) => arg);
+    return (
+        (args ? args[1] : "")
+            .split(",")
+            // Ensure no inline comments are parsed and trim the whitespace.
+            .map(arg => arg.replace(/\/\*.*\*\//, "").trim())
+            // Ensure no undefined values are added.
+            .filter(arg => arg)
+    );
 };
 
-const serializeValue = (
-    i18n: i18nObject,
-    blacklist: Array<string> = []
-) => (value: any, key: string, object: Object) => {
+const serializeValue = (i18n: i18nObject, blacklist: Array<string> = []) => (
+    value: any,
+    key: string,
+    object: Object
+) => {
     if (blacklist.includes(key)) {
         return null;
     }
@@ -58,7 +63,7 @@ const serializeValue = (
 const cloneObject = (
     object: {},
     i18n: i18nObject,
-    blacklist: Array<string> = [],
+    blacklist: Array<string> = []
 ) => {
     return cloneDeepWith(object, serializeValue(i18n, blacklist));
 };

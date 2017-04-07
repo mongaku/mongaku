@@ -22,30 +22,34 @@ const getDate = (date: YearRange): string => {
 
     if (date.start || date.end) {
         // TODO(jeresig): Handle "ca. " for non-English locales
-        return (date.circa ? "ca. " : "") +
-            date.start + (date.end && date.end !== date.start ?
-            `-${date.end}` : "");
+        return (
+            (date.circa ? "ca. " : "") +
+            date.start +
+            (date.end && date.end !== date.start ? `-${date.end}` : "")
+        );
     }
 
     return "";
 };
 
 const YearRange = ({date, url}: {date: YearRangeType, url: string}) => {
-    return <span key={date._id}>
-        <a href={url}>
-            {getDate(date)}
-        </a><br/>
-    </span>;
+    return (
+        <span key={date._id}>
+            <a href={url}>
+                {getDate(date)}
+            </a><br />
+        </span>
+    );
 };
 
 const YearRangeView = ({value, url}: Props) => {
-    return <span>
-        {value.map((date, i) => <YearRange
-            key={date._id}
-            date={date}
-            url={url[i]}
-        />)}
-    </span>;
+    return (
+        <span>
+            {value.map((date, i) => (
+                <YearRange key={date._id} date={date} url={url[i]} />
+            ))}
+        </span>
+    );
 };
 
 module.exports = YearRangeView;

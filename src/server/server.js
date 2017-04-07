@@ -48,13 +48,13 @@ module.exports = (callback: (err: ?Error, server: Server) => void) => {
             // Start the app by listening on <port>
             console.log(`PORT: ${port}`);
 
-            process.on("message", (message) => {
+            process.on("message", message => {
                 if (message === "shutdown") {
                     process.exit(0);
                 }
             });
 
-            process.on("uncaughtException", (err) => {
+            process.on("uncaughtException", err => {
                 console.error("Exception:", err.stack);
 
                 if (process.send) {

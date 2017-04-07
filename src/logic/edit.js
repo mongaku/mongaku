@@ -27,10 +27,11 @@ module.exports = function(app: express$Application) {
                 return next(new Error(i18n.gettext("Not found.")));
             }
 
-            record.remove((err) => {
+            record.remove(err => {
                 if (err) {
-                    return next(new Error(
-                        i18n.gettext("Error removing record.")));
+                    return next(
+                        new Error(i18n.gettext("Error removing record."))
+                    );
                 }
 
                 res.redirect(urls.gen(lang, "/"));
@@ -38,10 +39,10 @@ module.exports = function(app: express$Application) {
         });
     };
 
-    const editView = ({
-        params: {type, source, recordName},
-        i18n,
-    }: express$Request, res) => {
+    const editView = (
+        {params: {type, source, recordName}, i18n}: express$Request,
+        res
+    ) => {
         const Record = record(type);
         const id = `${source}/${recordName}`;
 
@@ -55,15 +56,17 @@ module.exports = function(app: express$Application) {
             const recordTitle = record.getTitle(i18n);
             const title = i18n.format(
                 i18n.gettext("Updating '%(recordTitle)s'"),
-                    {recordTitle});
+                {recordTitle}
+            );
 
             record.loadImages(true, () => {
                 Record.getFacets(i18n, (err, globalFacets) => {
                     record.getDynamicValues(i18n, (err, dynamicValues) => {
                         const clonedRecord = cloneModel(record, i18n);
 
-                        clonedRecord.imageModels = record.images
-                            .map((image) => cloneModel(image, i18n));
+                        clonedRecord.imageModels = record.images.map(image =>
+                            cloneModel(image, i18n)
+                        );
 
                         res.render("EditRecord", {
                             title,
@@ -95,8 +98,9 @@ module.exports = function(app: express$Application) {
         form.parse(req, (err, fields, files) => {
             /* istanbul ignore if */
             if (err) {
-                return next(new Error(
-                    i18n.gettext("Error processing upload.")));
+                return next(
+                    new Error(i18n.gettext("Error processing upload."))
+                );
             }
 
             if (fields.removeRecord) {
@@ -127,80 +131,90 @@ module.exports = function(app: express$Application) {
                 source,
             };
 
-            const images = Array.isArray(files.images) ?
-                files.images :
-                files.images ?
-                    [files.images] :
-                    [];
+            const images = Array.isArray(files.images)
+                ? files.images
+                : files.images ? [files.images] : [];
 
-            async.mapSeries(images, (file, callback) => {
-                if (!file.path || file.size <= 0) {
-                    return process.nextTick(callback);
-                }
-
-                Image.fromFile(mockBatch, file, (err, image) => {
-                    // TODO: Display better error message
-                    if (err) {
-                        return callback(
-                            new Error(
-                                i18n.gettext("Error processing image.")));
+            async.mapSeries(
+                images,
+                (file, callback) => {
+                    if (!file.path || file.size <= 0) {
+                        return process.nextTick(callback);
                     }
 
-                    image.save((err) => {
-                        /* istanbul ignore if */
+                    Image.fromFile(mockBatch, file, (err, image) => {
+                        // TODO: Display better error message
                         if (err) {
-                            return callback(err);
+                            return callback(
+                                new Error(
+                                    i18n.gettext("Error processing image.")
+                                )
+                            );
                         }
 
-                        callback(null, image);
-                    });
-                });
-            }, (err, unfilteredImages) => {
-                if (err) {
-                    return next(err);
-                }
+                        image.save(err => {
+                            /* istanbul ignore if */
+                            if (err) {
+                                return callback(err);
+                            }
 
-                Record.findById(_id, (err, record) => {
-                    if (err || !record) {
-                        return res.status(404).render("Error", {
-                            title: i18n.gettext("Not found."),
+                            callback(null, image);
                         });
-                    }
-
-                    record.set(data);
-
-                    for (const prop in model) {
-                        if (!fields[prop] && !data[prop]) {
-                            record[prop] = undefined;
-                        }
-                    }
-
-                    record.images = record.images.concat(
-                        unfilteredImages
-                            .filter((image) => image)
-                            .map((image) => image._id));
-
-                    record.save((err) => {
-                        if (err) {
-                            return next(new Error(
-                                i18n.gettext("Error saving record.")));
-                        }
-
-                        const finish = () =>
-                            res.redirect(record.getURL(lang));
-
-                        if (record.images.length === 0 || !hasImageSearch) {
-                            return finish();
-                        }
-
-                        // If new images were added then we need to update
-                        // their similarity and the similarity of all other
-                        // images, as well.
-                        Image.queueBatchSimilarityUpdate(mockBatch._id,
-                            finish);
                     });
-                });
-            });
+                },
+                (err, unfilteredImages) => {
+                    if (err) {
+                        return next(err);
+                    }
+
+                    Record.findById(_id, (err, record) => {
+                        if (err || !record) {
+                            return res.status(404).render("Error", {
+                                title: i18n.gettext("Not found."),
+                            });
+                        }
+
+                        record.set(data);
+
+                        for (const prop in model) {
+                            if (!fields[prop] && !data[prop]) {
+                                record[prop] = undefined;
+                            }
+                        }
+
+                        record.images = record.images.concat(
+                            unfilteredImages
+                                .filter(image => image)
+                                .map(image => image._id)
+                        );
+
+                        record.save(err => {
+                            if (err) {
+                                return next(
+                                    new Error(
+                                        i18n.gettext("Error saving record.")
+                                    )
+                                );
+                            }
+
+                            const finish = () =>
+                                res.redirect(record.getURL(lang));
+
+                            if (record.images.length === 0 || !hasImageSearch) {
+                                return finish();
+                            }
+
+                            // If new images were added then we need to update
+                            // their similarity and the similarity of all other
+                            // images, as well.
+                            Image.queueBatchSimilarityUpdate(
+                                mockBatch._id,
+                                finish
+                            );
+                        });
+                    });
+                }
+            );
         });
     };
 
@@ -216,8 +230,9 @@ module.exports = function(app: express$Application) {
         form.parse(req, (err, fields) => {
             /* istanbul ignore if */
             if (err) {
-                return next(new Error(
-                    i18n.gettext("Error processing request.")));
+                return next(
+                    new Error(i18n.gettext("Error processing request."))
+                );
             }
 
             const imageID = fields.image;
@@ -227,17 +242,18 @@ module.exports = function(app: express$Application) {
                     return next(new Error(i18n.gettext("Not found.")));
                 }
 
-                record.images = record.images
-                    .filter((image) => image !== imageID);
+                record.images = record.images.filter(
+                    image => image !== imageID
+                );
 
-                record.save((err) => {
+                record.save(err => {
                     if (err) {
-                        return next(new Error(
-                            i18n.gettext("Error saving record.")));
+                        return next(
+                            new Error(i18n.gettext("Error saving record."))
+                        );
                     }
 
-                    const finish = () =>
-                        res.redirect(record.getURL(lang));
+                    const finish = () => res.redirect(record.getURL(lang));
 
                     if (!hasImageSearch) {
                         return finish();
@@ -252,12 +268,14 @@ module.exports = function(app: express$Application) {
     return {
         routes() {
             // Handle these last as they'll catch almost anything
-            app.get("/:type/:source/:recordName/edit", auth, canEdit,
-                editView);
-            app.post("/:type/:source/:recordName/edit", auth, canEdit,
-                edit);
-            app.post("/:type/:source/:recordName/remove-image", auth, canEdit,
-                removeImage);
+            app.get("/:type/:source/:recordName/edit", auth, canEdit, editView);
+            app.post("/:type/:source/:recordName/edit", auth, canEdit, edit);
+            app.post(
+                "/:type/:source/:recordName/remove-image",
+                auth,
+                canEdit,
+                removeImage
+            );
         },
     };
 };

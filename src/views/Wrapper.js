@@ -29,8 +29,7 @@ class Wrapper extends React.Component {
             [message: string]: ?Array<string>,
         },
         children?: React.Element<*>,
-    }
-
+    };
     render() {
         return this.props.children;
     }

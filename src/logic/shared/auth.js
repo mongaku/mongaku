@@ -29,7 +29,6 @@ const canEdit = ({user, params: {type, source}, i18n}, res, next) => {
         try {
             const Source = models("Source");
             Source.getSource(source);
-
         } catch (e) {
             return res.status(404).render("Error", {
                 title: i18n.gettext("Source not found."),

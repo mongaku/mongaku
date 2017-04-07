@@ -17,7 +17,7 @@ const Source = new db.schema({
     _id: String,
 
     // The type of the record
-    type:  {
+    type: {
         type: String,
         required: true,
     },
@@ -67,9 +67,12 @@ Source.methods = {
 
     getConverter() {
         const converter = this.converter || "default";
-        const converters = Object.assign({
-            default: defaultConverter,
-        }, options.converters);
+        const converters = Object.assign(
+            {
+                default: defaultConverter,
+            },
+            options.converters
+        );
 
         /* istanbul ignore if */
         if (!converters[converter]) {
@@ -89,29 +92,32 @@ Source.methods = {
     },
 
     cacheTotals(callback) {
-        record(this.type).aggregate([
-            {
-                $match: {
-                    source: this._id,
+        record(this.type).aggregate(
+            [
+                {
+                    $match: {
+                        source: this._id,
+                    },
                 },
-            },
-            {
-                $group: {
-                    _id: null,
-                    total: {$sum: 1},
-                    totalImages: {$sum: {$size: "$images"}},
+                {
+                    $group: {
+                        _id: null,
+                        total: {$sum: 1},
+                        totalImages: {$sum: {$size: "$images"}},
+                    },
                 },
-            },
-        ], (err, results) => {
-            if (results && results[0]) {
-                this.numRecords = results[0].total;
-                this.numImages = results[0].totalImages;
-            } else {
-                this.numRecords = 0;
-                this.numImages = 0;
+            ],
+            (err, results) => {
+                if (results && results[0]) {
+                    this.numRecords = results[0].total;
+                    this.numImages = results[0].totalImages;
+                } else {
+                    this.numRecords = 0;
+                    this.numImages = 0;
+                }
+                callback();
             }
-            callback();
-        });
+        );
     },
 };
 
@@ -120,11 +126,16 @@ Source.statics = {
         models("Source").find({}, (err, sources) => {
             sourceCache = sources;
 
-            async.eachLimit(sources, 2, (source, callback) => {
-                source.cacheTotals(callback);
-            }, () => {
-                callback(err, sources);
-            });
+            async.eachLimit(
+                sources,
+                2,
+                (source, callback) => {
+                    source.cacheTotals(callback);
+                },
+                () => {
+                    callback(err, sources);
+                }
+            );
         });
     },
 
@@ -133,7 +144,7 @@ Source.statics = {
     },
 
     getSourcesByType(type) {
-        return this.getSources().filter((source) => source.type === type);
+        return this.getSources().filter(source => source.type === type);
     },
 
     getSource(sourceName) {

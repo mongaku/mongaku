@@ -16,19 +16,15 @@ const MAX_ATTEMPTS = 3;
 // How long to wait, in milliseconds, for the download
 const DOWNLOAD_TIMEOUT = 10000;
 
-module.exports = (app) => {
+module.exports = app => {
     const Upload = models("Upload");
     const UploadImage = models("UploadImage");
     const Source = models("Source");
 
-    const genTmpFile = () => path.join(os.tmpdir(),
-        (new Date).getTime().toString());
+    const genTmpFile = () =>
+        path.join(os.tmpdir(), new Date().getTime().toString());
 
-    const handleUpload = ({
-        i18n,
-        params,
-        lang,
-    }, res, next) => (err, file) => {
+    const handleUpload = ({i18n, params, lang}, res, next) => (err, file) => {
         /* istanbul ignore if */
         if (err) {
             return next(err);
@@ -46,13 +42,13 @@ module.exports = (app) => {
                     return next(err);
                 }
 
-                image.updateSimilarity((err) => {
+                image.updateSimilarity(err => {
                     /* istanbul ignore if */
                     if (err) {
                         return next(err);
                     }
 
-                    image.save((err) => {
+                    image.save(err => {
                         /* istanbul ignore if */
                         if (err) {
                             return next(err);
@@ -60,8 +56,9 @@ module.exports = (app) => {
 
                         // TODO: Add in uploader's user name (once those exist)
                         upload.updateSimilarity(() => {
-                            upload.save(() => res.redirect(
-                                upload.getURL(lang)));
+                            upload.save(() =>
+                                res.redirect(upload.getURL(lang))
+                            );
                         });
                     });
                 });
@@ -85,7 +82,7 @@ module.exports = (app) => {
                 timeout: DOWNLOAD_TIMEOUT,
             });
 
-            stream.on("response", (res) => {
+            stream.on("response", res => {
                 if (res.statusCode === 200) {
                     return stream.pipe(outStream);
                 }
@@ -111,7 +108,8 @@ module.exports = (app) => {
             }
 
             download(url, (err, file) =>
-                handleUpload(req, res, next)(err, file));
+                handleUpload(req, res, next)(err, file)
+            );
         },
 
         fileUpload(req, res, next) {
@@ -123,14 +121,18 @@ module.exports = (app) => {
             form.parse(req, (err, fields, files) => {
                 /* istanbul ignore if */
                 if (err) {
-                    return next(new Error(
-                        i18n.gettext("Error processing upload.")));
+                    return next(
+                        new Error(i18n.gettext("Error processing upload."))
+                    );
                 }
 
-                if (files && files.file && files.file.path &&
-                        files.file.size > 0) {
+                if (
+                    files &&
+                    files.file &&
+                    files.file.path &&
+                    files.file.size > 0
+                ) {
                     handleUpload(req, res, next)(null, files.file.path);
-
                 } else {
                     next(new Error(i18n.gettext("No image specified.")));
                 }
@@ -149,27 +151,35 @@ module.exports = (app) => {
                 }
 
                 upload.loadImages(true, () => {
-                    async.eachLimit(upload.similarRecords, 4,
+                    async.eachLimit(
+                        upload.similarRecords,
+                        4,
                         (similar, callback) => {
                             similar.recordModel.loadImages(false, callback);
-                        }, () => {
-                            const similarRecords = upload.similarRecords
-                                .map((match) => ({
+                        },
+                        () => {
+                            const similarRecords = upload.similarRecords.map(
+                                match => ({
                                     _id: match._id,
                                     score: match.score,
-                                    recordModel:
-                                        cloneModel(match.recordModel, i18n),
-                                }));
+                                    recordModel: cloneModel(
+                                        match.recordModel,
+                                        i18n
+                                    ),
+                                })
+                            );
 
                             res.render("Upload", {
                                 title: upload.getTitle(i18n),
                                 similar: similarRecords,
                                 image: cloneModel(upload.images[0], i18n),
-                                sources: Source.getSources()
-                                    .map((source) => cloneModel(source, i18n)),
+                                sources: Source.getSources().map(source =>
+                                    cloneModel(source, i18n)
+                                ),
                                 noIndex: true,
                             });
-                        });
+                        }
+                    );
                 });
             });
         },

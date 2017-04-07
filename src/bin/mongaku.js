@@ -12,8 +12,8 @@ const args = minimist(process.argv.slice(2));
 const cmd = args._[0];
 const extraArgs = args._.slice(1);
 
-const localFile = (file) => path.resolve(__dirname, file);
-const getBinary = (bin) => {
+const localFile = file => path.resolve(__dirname, file);
+const getBinary = bin => {
     const binPath = localFile(`../../node_modules/.bin/${bin}`);
 
     if (!shell.which(binPath)) {
@@ -26,7 +26,6 @@ const getBinary = (bin) => {
 
 if (args.v || args.version) {
     console.log(pkg.version);
-
 } else if (cmd === "start") {
     process.env.NODE_ENV = "production";
 
@@ -46,17 +45,17 @@ if (args.v || args.version) {
         `--stdout ${stdoutLog}`,
         `--stderr ${stderrLog}`,
         serverjs,
-    ].concat(extraArgs).join(" ");
+    ]
+        .concat(extraArgs)
+        .join(" ");
 
     shell.exec(startCmd);
-
 } else if (cmd === "stop") {
-    shell.exec(`${getBinary("naught")} stop ` +
-        `--pid-file mongaku.pid mongaku.ipc`);
-
+    shell.exec(
+        `${getBinary("naught")} stop --pid-file mongaku.pid mongaku.ipc`
+    );
 } else if (cmd === "restart") {
     shell.exec(`${getBinary("naught")} deploy mongaku.ipc`);
-
 } else if (cmd === "build") {
     const rootDir = localFile("../..");
     const srcDir = path.join(rootDir, "src");
@@ -66,7 +65,6 @@ if (args.v || args.version) {
 
     const webpackConfig = path.join(rootDir, "webpack.config.js");
     shell.exec(`${getBinary("webpack")} --config ${webpackConfig}`);
-
 } else if (cmd === "dev") {
     const cwd = process.cwd();
     const localDir = localFile("..");
@@ -85,7 +83,9 @@ if (args.v || args.version) {
         `-i ${ignored}`,
         "--",
         serverjs,
-    ].concat(extraArgs).join(" ");
+    ]
+        .concat(extraArgs)
+        .join(" ");
 
     shell.exec(devCmd);
 
@@ -97,7 +97,6 @@ if (args.v || args.version) {
 
     const webpackConfig = path.join(rootDir, "webpack.config.js");
     shell.exec(`${getBinary("webpack")} --config ${webpackConfig} -w`);
-
 } else if (cmd === "create" || cmd === "convert") {
     const [name] = extraArgs;
 
@@ -105,7 +104,7 @@ if (args.v || args.version) {
     const logic = require(`../utils/${cmd}-${name}.js`);
 
     init(() => {
-        logic(extraArgs.slice(2), (err) => {
+        logic(extraArgs.slice(2), err => {
             if (err) {
                 console.error(err);
                 process.exit(1);
@@ -114,9 +113,9 @@ if (args.v || args.version) {
             }
         });
     });
-
 } else {
-    console.log(`${pkg.name}: ${pkg.description}
+    console.log(
+        `${pkg.name}: ${pkg.description}
 
 usage: mongaku <command>
 
@@ -136,6 +135,6 @@ Commands:
 
 -v: Show program version
 -h: Show available commands
-`);
-
+`
+    );
 }

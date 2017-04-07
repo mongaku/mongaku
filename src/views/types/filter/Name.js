@@ -20,21 +20,23 @@ const NameFilter = ({
     title,
     value,
     values,
-}: Props) => <div className="form-group">
-    <label htmlFor={searchName} className="control-label">
-        {title}
-    </label>
-    <Select
-        name={searchName}
-        value={value}
-        options={values.map((name) => ({
-            value: name,
-            label: name,
-        }))}
-        placeholder={placeholder}
-        multi={multiple}
-        clearable={true}
-    />
-</div>;
+}: Props) => (
+    <div className="form-group">
+        <label htmlFor={searchName} className="control-label">
+            {title}
+        </label>
+        <Select
+            name={searchName}
+            value={value}
+            options={values.map(name => ({
+                value: name,
+                label: name,
+            }))}
+            placeholder={placeholder}
+            multi={multiple}
+            clearable={true}
+        />
+    </div>
+);
 
 module.exports = NameFilter;

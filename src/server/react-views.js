@@ -13,9 +13,7 @@ const Page = require("../views/Page.js");
 const Wrapper = require("../views/Wrapper.js");
 
 const blacklist = (key, value) =>
-    key === "_locals" || key === "settings" ?
-        undefined :
-        value;
+    (key === "_locals" || key === "settings" ? undefined : value);
 
 if (config.NODE_ENV === "production") {
     const originalLoader = Module._load;
@@ -43,20 +41,25 @@ const engine = (filePath: string, options: Object, callback: Function) => {
 
     // WARNING: Fixes security issues around embedding JSON in HTML:
     // http://redux.js.org/docs/recipes/ServerRendering.html#security-considerations
-    const state = JSON.stringify(options, blacklist)
-        .replace(/</g, "\\u003c");
+    const state = JSON.stringify(options, blacklist).replace(/</g, "\\u003c");
 
-    const head = renderToStaticMarkup(<Wrapper {...options}>
-        <Head {...options} />
-    </Wrapper>);
+    const head = renderToStaticMarkup(
+        <Wrapper {...options}>
+            <Head {...options} />
+        </Wrapper>
+    );
 
-    const output = renderToString(<Wrapper {...options}>
-        <Page {...options}>
-            <View {...options} />
-        </Page>
-    </Wrapper>);
+    const output = renderToString(
+        <Wrapper {...options}>
+            <Page {...options}>
+                <View {...options} />
+            </Page>
+        </Wrapper>
+    );
 
-    callback(null, `<!DOCTYPE html>
+    callback(
+        null,
+        `<!DOCTYPE html>
 <html lang="${options.lang}">
 ${head}
 <body>
@@ -66,7 +69,8 @@ ${head}
     <script src="${urls.genStatic("/js/shared.js")}" defer></script>
     <script src="${urls.genStatic(`/js/${viewName}.js`)}" defer></script>
 </body>
-</html>`);
+</html>`
+    );
 };
 
 module.exports = engine;

@@ -45,19 +45,23 @@ const Value = ({
     const defaultValue = getValue(stringValue, values);
 
     if (multiline) {
-        return <textarea
-            name={name}
-            className="form-control"
-            defaultValue={defaultValue}
-        />;
+        return (
+            <textarea
+                name={name}
+                className="form-control"
+                defaultValue={defaultValue}
+            />
+        );
     }
 
-    return <input
-        name={name}
-        type="text"
-        className="form-control"
-        defaultValue={defaultValue}
-    />;
+    return (
+        <input
+            name={name}
+            type="text"
+            className="form-control"
+            defaultValue={defaultValue}
+        />
+    );
 };
 
 const FixedStringEdit = (props: Props) => {
@@ -65,19 +69,24 @@ const FixedStringEdit = (props: Props) => {
 
     // If we have values to choose from then we render a select
     if (Array.isArray(values)) {
-        return <Select
-            name={name}
-            value={value}
-            multi={multiple}
-            options={values && values.map((value) => ({
-                value: value.id,
-                label: value.name,
-            }))}
-            clearable={multiple}
-            create={!fixed}
-        />;
+        return (
+            <Select
+                name={name}
+                value={value}
+                multi={multiple}
+                options={
+                    values &&
+                        values.map(value => ({
+                            value: value.id,
+                            label: value.name,
+                        }))
+                }
+                clearable={multiple}
+                create={!fixed}
+            />
+        );
 
-    // If we're expecting multiple input values
+        // If we're expecting multiple input values
     } else if (multiple || Array.isArray(value)) {
         // TODO(jeresig): Support inputting multiple values without a select
         return null;

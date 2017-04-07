@@ -24,8 +24,14 @@ type ImportResults = {
     warnings: Array<any>,
 };
 
-type Expanded = "models" | "unprocessed" | "created" | "changed" | "deleted" |
-        "errors" | "warnings";
+type Expanded =
+    | "models"
+    | "unprocessed"
+    | "created"
+    | "changed"
+    | "deleted"
+    | "errors"
+    | "warnings";
 
 type Props = {
     batch: Import,
@@ -36,54 +42,47 @@ type Props = {
     title: string,
 };
 
-const ImportResult = (props: Props, {
-    gettext,
-    stringNum,
-    URL,
-    format,
-}: Context) => {
-    const {
-        batch,
-        expanded,
-        id,
-        numShow = 5,
-        renderResult,
-        title,
-    } = props;
+const ImportResult = (
+    props: Props,
+    {gettext, stringNum, URL, format}: Context
+) => {
+    const {batch, expanded, id, numShow = 5, renderResult, title} = props;
     const allResults = batch.getFilteredResults[id];
-    const showAll = format(gettext(
-        "Show all %(count)s results..."),
-        {count: stringNum(allResults.length)});
+    const showAll = format(gettext("Show all %(count)s results..."), {
+        count: stringNum(allResults.length),
+    });
     const expandURL = URL(batch.getURL, {expanded: id});
-    const isExpanded = (expanded === id || allResults.length <= numShow);
+    const isExpanded = expanded === id || allResults.length <= numShow;
     const results = isExpanded ? allResults : allResults.slice(0, numShow);
 
     if (results.length === 0) {
         return null;
     }
 
-    return <div className="panel panel-default">
-        <div className="panel-heading">
-            <h3 id={id} className="panel-title">
-                {title}
-                {" "}
-                ({stringNum(allResults.length)})
-            </h3>
-        </div>
-        <div className="panel-body">
-            <div className="row">
-                <ul className="col-xs-12">
-                    {results.map(renderResult)}
-                </ul>
+    return (
+        <div className="panel panel-default">
+            <div className="panel-heading">
+                <h3 id={id} className="panel-title">
+                    {title}
+                    {" "}
+                    ({stringNum(allResults.length)})
+                </h3>
             </div>
-            <div className="row">
-                <div className="col-xs-12">
-                    {!isExpanded &&
-                        <a href={`${expandURL}#${id}`}>{showAll}</a>}
+            <div className="panel-body">
+                <div className="row">
+                    <ul className="col-xs-12">
+                        {results.map(renderResult)}
+                    </ul>
+                </div>
+                <div className="row">
+                    <div className="col-xs-12">
+                        {!isExpanded &&
+                            <a href={`${expandURL}#${id}`}>{showAll}</a>}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>;
+    );
 };
 
 ImportResult.contextTypes = childContextTypes;

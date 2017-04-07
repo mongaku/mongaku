@@ -33,24 +33,22 @@ FixedString.prototype = {
 
     searchTitle(name, i18n) {
         if (Array.isArray(name)) {
-            return name.map((name) => this.searchTitle(name, i18n)).join(", ");
+            return name.map(name => this.searchTitle(name, i18n)).join(", ");
         }
 
         const values = this.options.values || {};
         const nameMap = values[name];
-        return values.hasOwnProperty(name) && nameMap && nameMap.name ?
-            nameMap.name(i18n) :
-            name;
+        return values.hasOwnProperty(name) && nameMap && nameMap.name
+            ? nameMap.name(i18n)
+            : name;
     },
 
     filter(value) {
-        const query = Array.isArray(value) ?
-            value :
-            [value];
+        const query = Array.isArray(value) ? value : [value];
 
         return {
             bool: {
-                must: query.map((value) => ({
+                must: query.map(value => ({
                     term: {
                         [`${this.options.name}.raw`]: value,
                     },
@@ -62,7 +60,7 @@ FixedString.prototype = {
     facet() {
         return {
             [this.options.name]: {
-                title: (i18n) => this.options.title(i18n),
+                title: i18n => this.options.title(i18n),
 
                 facet: () => ({
                     terms: {
@@ -71,20 +69,21 @@ FixedString.prototype = {
                     },
                 }),
 
-                formatBuckets: (buckets, i18n) => buckets.map((bucket) => ({
-                    text: this.searchTitle(bucket.key, i18n),
-                    count: bucket.doc_count,
-                    url: {[this.options.name]: bucket.key},
-                })),
+                formatBuckets: (buckets, i18n) =>
+                    buckets.map(bucket => ({
+                        text: this.searchTitle(bucket.key, i18n),
+                        count: bucket.doc_count,
+                        url: {[this.options.name]: bucket.key},
+                    })),
             },
         };
     },
 
     schema() {
         let validate = {};
-        const values = Array.isArray(this.options.values) ?
-            this.options.values :
-            Object.keys(this.options.values);
+        const values = Array.isArray(this.options.values)
+            ? this.options.values
+            : Object.keys(this.options.values);
 
         // Only validate the values if there are values to validate against
         // and if unknown values aren't allowed
@@ -93,13 +92,18 @@ FixedString.prototype = {
         // restrictive, better to just warn them instead.
         if (values.length > 0 && !this.options.allowUnknown) {
             validate = {
-                validate: (val) => values.indexOf(val) >= 0,
-                validationMsg: (i18n) => i18n.format(
-                    i18n.gettext("`%(name)s` " +
-                    "must be one of the following types: %(types)s."), {
-                        name: this.options.name,
-                        types: values.join(", "),
-                    }),
+                validate: val => values.indexOf(val) >= 0,
+                validationMsg: i18n =>
+                    i18n.format(
+                        i18n.gettext(
+                            "`%(name)s` " +
+                                "must be one of the following types: %(types)s."
+                        ),
+                        {
+                            name: this.options.name,
+                            types: values.join(", "),
+                        }
+                    ),
             };
         }
 
@@ -107,16 +111,19 @@ FixedString.prototype = {
             validate.recommended = true;
         }
 
-        const schema = Object.assign({
-            type: String,
-            es_indexed: true,
-            es_type: "string",
-            // A raw type to use for building aggregations in Elasticsearch
-            es_fields: {
-                name: {type: "string", index: "analyzed"},
-                raw: {type: "string", index: "not_analyzed"},
+        const schema = Object.assign(
+            {
+                type: String,
+                es_indexed: true,
+                es_type: "string",
+                // A raw type to use for building aggregations in Elasticsearch
+                es_fields: {
+                    name: {type: "string", index: "analyzed"},
+                    raw: {type: "string", index: "not_analyzed"},
+                },
             },
-        }, validate);
+            validate
+        );
 
         return this.options.multiple ? [schema] : schema;
     },

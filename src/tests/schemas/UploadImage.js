@@ -5,35 +5,43 @@ const tap = require("tap");
 const init = require("../init");
 const {mockFS, UploadImage} = init;
 
-tap.test("getFilePath", {autoend: true}, (t) => {
+tap.test("getFilePath", {autoend: true}, t => {
     const image = init.getUploadImage();
-    t.equal(image.getFilePath(),
+    t.equal(
+        image.getFilePath(),
         path.resolve(process.cwd(), "data/uploads/images/4266906334.jpg"),
-        "Check file path");
+        "Check file path"
+    );
 });
 
-tap.test("getOriginalURL", {autoend: true}, (t) => {
+tap.test("getOriginalURL", {autoend: true}, t => {
     const image = init.getUploadImage();
-    t.equal(image.getOriginalURL(),
+    t.equal(
+        image.getOriginalURL(),
         "/data/uploads/images/4266906334.jpg",
-        "Check UploadImage URL");
+        "Check UploadImage URL"
+    );
 });
 
-tap.test("getScaledURL", {autoend: true}, (t) => {
+tap.test("getScaledURL", {autoend: true}, t => {
     const image = init.getUploadImage();
-    t.equal(image.getScaledURL(),
+    t.equal(
+        image.getScaledURL(),
         "/data/uploads/scaled/4266906334.jpg",
-        "Check Scaled URL");
+        "Check Scaled URL"
+    );
 });
 
-tap.test("getThumbURL", {autoend: true}, (t) => {
+tap.test("getThumbURL", {autoend: true}, t => {
     const image = init.getUploadImage();
-    t.equal(image.getThumbURL(),
+    t.equal(
+        image.getThumbURL(),
         "/data/uploads/thumbs/4266906334.jpg",
-        "Check Thumb URL");
+        "Check Thumb URL"
+    );
 });
 
-tap.test("updateSimilarity: New UploadImage", (t) => {
+tap.test("updateSimilarity: New UploadImage", t => {
     const image = new UploadImage({
         _id: "uploads/614431508.jpg",
         source: "uploads",
@@ -44,37 +52,45 @@ tap.test("updateSimilarity: New UploadImage", (t) => {
     });
 
     const oldSimilar = image.similarImages;
-    image.updateSimilarity((err) => {
+    image.updateSimilarity(err => {
         t.error(err, "No error should be thrown.");
-        t.notEqual(image.similarImages, oldSimilar,
-            "Similarity updated.");
-        t.equal(image.similarImages.length, 1,
-            "Has the correct number of results.");
-        t.same(image.similarImages[0].toJSON(),
+        t.notEqual(image.similarImages, oldSimilar, "Similarity updated.");
+        t.equal(
+            image.similarImages.length,
+            1,
+            "Has the correct number of results."
+        );
+        t.same(
+            image.similarImages[0].toJSON(),
             {_id: "test/bar.jpg", score: 9},
-            "Has the correct result.");
+            "Has the correct result."
+        );
         t.end();
     });
 });
 
-tap.test("updateSimilarity: Existing UploadImage", (t) => {
+tap.test("updateSimilarity: Existing UploadImage", t => {
     const image = init.getUploadImage();
     const oldSimilar = image.similarImages;
-    image.updateSimilarity((err) => {
+    image.updateSimilarity(err => {
         t.error(err, "No error should be thrown.");
-        t.notEqual(image.similarImages, oldSimilar,
-            "Similarity updated.");
-        t.equal(image.similarImages.length, 1,
-            "Has the correct number of results.");
-        t.same(image.similarImages[0].toJSON(),
+        t.notEqual(image.similarImages, oldSimilar, "Similarity updated.");
+        t.equal(
+            image.similarImages.length,
+            1,
+            "Has the correct number of results."
+        );
+        t.same(
+            image.similarImages[0].toJSON(),
             {_id: "test/bar.jpg", score: 10},
-            "Has the correct result.");
+            "Has the correct result."
+        );
         t.end();
     });
 });
 
-tap.test("UploadImage.fromFile: New UploadImage", (t) => {
-    mockFS((callback) => {
+tap.test("UploadImage.fromFile: New UploadImage", t => {
+    mockFS(callback => {
         const testFile = path.resolve(process.cwd(), "testData", "new1.jpg");
 
         UploadImage.fromFile(testFile, (err, image) => {
@@ -88,8 +104,8 @@ tap.test("UploadImage.fromFile: New UploadImage", (t) => {
     });
 });
 
-tap.test("UploadImage.fromFile: New UploadImage (Empty File)", (t) => {
-    mockFS((callback) => {
+tap.test("UploadImage.fromFile: New UploadImage (Empty File)", t => {
+    mockFS(callback => {
         const testFile = path.resolve(process.cwd(), "testData", "empty.jpg");
 
         UploadImage.fromFile(testFile, (err, image) => {
@@ -102,10 +118,13 @@ tap.test("UploadImage.fromFile: New UploadImage (Empty File)", (t) => {
     });
 });
 
-tap.test("UploadImage.fromFile: New UploadImage (Corrupted File)", (t) => {
-    mockFS((callback) => {
-        const testFile = path.resolve(process.cwd(), "testData",
-            "corrupted.jpg");
+tap.test("UploadImage.fromFile: New UploadImage (Corrupted File)", t => {
+    mockFS(callback => {
+        const testFile = path.resolve(
+            process.cwd(),
+            "testData",
+            "corrupted.jpg"
+        );
 
         UploadImage.fromFile(testFile, (err, image) => {
             t.ok(err, "Has error object.");
@@ -117,8 +136,8 @@ tap.test("UploadImage.fromFile: New UploadImage (Corrupted File)", (t) => {
     });
 });
 
-tap.test("UploadImage.fromFile: New UploadImage (Small File)", (t) => {
-    mockFS((callback) => {
+tap.test("UploadImage.fromFile: New UploadImage (Small File)", t => {
+    mockFS(callback => {
         const testFile = path.resolve(process.cwd(), "testData", "small.jpg");
 
         UploadImage.fromFile(testFile, (err, image) => {
@@ -131,8 +150,8 @@ tap.test("UploadImage.fromFile: New UploadImage (Small File)", (t) => {
     });
 });
 
-tap.test("UploadImage.fromFile: Updating UploadImage", (t) => {
-    mockFS((callback) => {
+tap.test("UploadImage.fromFile: Updating UploadImage", t => {
+    mockFS(callback => {
         const testFile = path.resolve(process.cwd(), "testData", "foo.jpg");
 
         UploadImage.fromFile(testFile, (err, image) => {
@@ -144,8 +163,8 @@ tap.test("UploadImage.fromFile: Updating UploadImage", (t) => {
     });
 });
 
-tap.test("UploadImage.fromFile: Updating (files already exist)", (t) => {
-    mockFS((callback) => {
+tap.test("UploadImage.fromFile: Updating (files already exist)", t => {
+    mockFS(callback => {
         const testFile = path.resolve(process.cwd(), "testData", "foo.jpg");
 
         UploadImage.fromFile(testFile, () => {

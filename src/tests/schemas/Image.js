@@ -7,53 +7,69 @@ const {mockFS} = init;
 const Image = init.Image;
 const ImageImport = init.ImageImport;
 
-tap.test("getFilePath", {autoend: true}, (t) => {
+tap.test("getFilePath", {autoend: true}, t => {
     const image = init.getImage();
-    t.equal(image.getFilePath(),
+    t.equal(
+        image.getFilePath(),
         path.resolve(process.cwd(), "data/test/images/4266906334.jpg"),
-        "Check file path");
+        "Check file path"
+    );
 });
 
-tap.test("getOriginalURL", {autoend: true}, (t) => {
+tap.test("getOriginalURL", {autoend: true}, t => {
     const image = init.getImage();
-    t.equal(image.getOriginalURL(),
-        "/data/test/images/4266906334.jpg", "Check Image URL");
+    t.equal(
+        image.getOriginalURL(),
+        "/data/test/images/4266906334.jpg",
+        "Check Image URL"
+    );
 });
 
-tap.test("getScaledURL", {autoend: true}, (t) => {
+tap.test("getScaledURL", {autoend: true}, t => {
     const image = init.getImage();
-    t.equal(image.getScaledURL(),
-        "/data/test/scaled/4266906334.jpg", "Check Scaled URL");
+    t.equal(
+        image.getScaledURL(),
+        "/data/test/scaled/4266906334.jpg",
+        "Check Scaled URL"
+    );
 });
 
-tap.test("getThumbURL", {autoend: true}, (t) => {
+tap.test("getThumbURL", {autoend: true}, t => {
     const image = init.getImage();
-    t.equal(image.getThumbURL(),
-        "/data/test/thumbs/4266906334.jpg", "Check Thumb URL");
+    t.equal(
+        image.getThumbURL(),
+        "/data/test/thumbs/4266906334.jpg",
+        "Check Thumb URL"
+    );
 });
 
-tap.test("getSource", {autoend: true}, (t) => {
+tap.test("getSource", {autoend: true}, t => {
     const image = init.getImage();
     const source = init.getSource();
     t.equal(image.getSource(), source, "Get Source");
 });
 
-tap.test("updateSimilarity: Existing Image", (t) => {
+tap.test("updateSimilarity: Existing Image", t => {
     const image = init.getImage();
     const oldSimilar = image.similarImages.slice(0);
-    image.updateSimilarity((err) => {
+    image.updateSimilarity(err => {
         t.error(err, "No error should be thrown.");
         t.notEqual(image.similarImages, oldSimilar, "Similarity updated.");
-        t.equal(image.similarImages.length, 1,
-            "Has the correct number of results.");
-        t.same(image.similarImages[0].toJSON(),
+        t.equal(
+            image.similarImages.length,
+            1,
+            "Has the correct number of results."
+        );
+        t.same(
+            image.similarImages[0].toJSON(),
             {_id: "test/bar.jpg", score: 10},
-            "Has the correct result.");
+            "Has the correct result."
+        );
         t.end();
     });
 });
 
-tap.test("updateSimilarity: Missing Image", (t) => {
+tap.test("updateSimilarity: Missing Image", t => {
     const image = new Image({
         _id: "test/foo",
         source: "test",
@@ -64,14 +80,14 @@ tap.test("updateSimilarity: Missing Image", (t) => {
     });
 
     const oldSimilar = image.similarImages;
-    image.updateSimilarity((err) => {
+    image.updateSimilarity(err => {
         t.error(err, "No error should be thrown.");
         t.equal(image.similarImages, oldSimilar, "Similarity not updated.");
         t.end();
     });
 });
 
-tap.test("indexSimilarity: Existing Image", (t) => {
+tap.test("indexSimilarity: Existing Image", t => {
     const image = init.getImage();
     image.indexSimilarity((err, indexed) => {
         t.error(err, "No error should be thrown.");
@@ -80,7 +96,7 @@ tap.test("indexSimilarity: Existing Image", (t) => {
     });
 });
 
-tap.test("indexSimilarity: Missing Image", (t) => {
+tap.test("indexSimilarity: Missing Image", t => {
     const image = new Image({
         _id: "test/foo",
         source: "test",
@@ -97,7 +113,7 @@ tap.test("indexSimilarity: Missing Image", (t) => {
     });
 });
 
-tap.test("indexSimilarity: Small Image", (t) => {
+tap.test("indexSimilarity: Small Image", t => {
     const image = new Image({
         _id: "test/foo2",
         source: "test",
@@ -114,8 +130,8 @@ tap.test("indexSimilarity: Small Image", (t) => {
     });
 });
 
-tap.test("Image.fromFile: New Image", (t) => {
-    mockFS((callback) => {
+tap.test("Image.fromFile: New Image", t => {
+    mockFS(callback => {
         const batch = new ImageImport({
             _id: "testBatch",
             source: "test",
@@ -135,8 +151,8 @@ tap.test("Image.fromFile: New Image", (t) => {
     });
 });
 
-tap.test("Image.fromFile: New Image (Empty File)", (t) => {
-    mockFS((callback) => {
+tap.test("Image.fromFile: New Image (Empty File)", t => {
+    mockFS(callback => {
         const batch = new ImageImport({
             _id: "testBatch",
             source: "test",
@@ -155,15 +171,18 @@ tap.test("Image.fromFile: New Image (Empty File)", (t) => {
     });
 });
 
-tap.test("Image.fromFile: New Image (Corrupted File)", (t) => {
-    mockFS((callback) => {
+tap.test("Image.fromFile: New Image (Corrupted File)", t => {
+    mockFS(callback => {
         const batch = new ImageImport({
             _id: "testBatch",
             source: "test",
         });
 
-        const testFile = path.resolve(process.cwd(), "testData",
-            "corrupted.jpg");
+        const testFile = path.resolve(
+            process.cwd(),
+            "testData",
+            "corrupted.jpg"
+        );
 
         Image.fromFile(batch, testFile, (err, image, warnings) => {
             t.ok(err, "Has error object.");
@@ -176,15 +195,18 @@ tap.test("Image.fromFile: New Image (Corrupted File)", (t) => {
     });
 });
 
-tap.test("Image.fromFile: New Image (Small File)", (t) => {
-    mockFS((callback) => {
+tap.test("Image.fromFile: New Image (Small File)", t => {
+    mockFS(callback => {
         const batch = new ImageImport({
             _id: "testBatch",
             source: "test",
         });
 
-        const testFile = path.resolve(process.cwd(), "testData",
-            "test-small.jpg");
+        const testFile = path.resolve(
+            process.cwd(),
+            "testData",
+            "test-small.jpg"
+        );
 
         Image.fromFile(batch, testFile, (err, image, warnings) => {
             t.error(err, "No error should be thrown.");
@@ -196,15 +218,18 @@ tap.test("Image.fromFile: New Image (Small File)", (t) => {
     });
 });
 
-tap.test("Image.fromFile: Updating Image", (t) => {
-    mockFS((callback) => {
+tap.test("Image.fromFile: Updating Image", t => {
+    mockFS(callback => {
         const batch = new ImageImport({
             _id: "testBatch",
             source: "test",
         });
 
-        const testFile = path.resolve(process.cwd(), "testData",
-            "nosimilar.jpg");
+        const testFile = path.resolve(
+            process.cwd(),
+            "testData",
+            "nosimilar.jpg"
+        );
 
         Image.fromFile(batch, testFile, (err, image, warnings) => {
             t.error(err, "No error should be thrown.");
@@ -216,8 +241,8 @@ tap.test("Image.fromFile: Updating Image", (t) => {
     });
 });
 
-tap.test("Image.fromFile: Updating Image (files already exist)", (t) => {
-    mockFS((callback) => {
+tap.test("Image.fromFile: Updating Image (files already exist)", t => {
+    mockFS(callback => {
         const batch = new ImageImport({
             _id: "testBatch",
             source: "test",

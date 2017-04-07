@@ -3,7 +3,7 @@ const request = require("request");
 
 require("../init");
 
-tap.test("Home Page", (t) => {
+tap.test("Home Page", t => {
     const url = "http://localhost:3000/";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");

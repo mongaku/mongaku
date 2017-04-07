@@ -17,12 +17,14 @@ const SimpleDateEdit = ({
 
     dateString = dateString.toString().replace(/T.*$/, "");
 
-    return <input
-        name={name}
-        type="date"
-        className="form-control"
-        defaultValue={dateString}
-    />;
+    return (
+        <input
+            name={name}
+            type="date"
+            className="form-control"
+            defaultValue={dateString}
+        />
+    );
 };
 
 module.exports = SimpleDateEdit;

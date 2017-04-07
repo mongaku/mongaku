@@ -65,13 +65,16 @@ let user;
 let users;
 
 const login = (request, email, callback) => {
-    request.post({
-        url: "http://localhost:3000/login",
-        form: {
-            email,
-            password: "test",
+    request.post(
+        {
+            url: "http://localhost:3000/login",
+            form: {
+                email,
+                password: "test",
+            },
         },
-    }, callback);
+        callback
+    );
 };
 
 const adminLogin = (request, callback) =>
@@ -83,8 +86,7 @@ const normalLogin = (request, callback) =>
 let sandbox;
 
 // Test files to load into the DB
-const testDBFiles = path.resolve(__dirname,
-    "..", "..", "tests", "db");
+const testDBFiles = path.resolve(__dirname, "..", "..", "tests", "db");
 
 // Root Files
 const pkgFile = fs.readFileSync(path.resolve(__dirname, "../../package.json"));
@@ -105,7 +107,7 @@ const dbFilesDir = path.resolve(process.cwd(), "tests", "db");
 
 for (const dir of fs.readdirSync(dbFilesDir)) {
     const dirPath = path.resolve(dbFilesDir, dir);
-    const files = dbFiles[dir] = {};
+    const files = (dbFiles[dir] = {});
 
     for (const file of fs.readdirSync(dirPath)) {
         const filePath = path.resolve(dirPath, file);
@@ -128,8 +130,9 @@ const sharedViewDir = path.resolve(__dirname, "..", "views", "shared");
 
 for (const file of fs.readdirSync(sharedViewDir)) {
     if (file.indexOf(".js") >= 0) {
-        sharedViewFiles[file] =
-            fs.readFileSync(path.resolve(sharedViewDir, file));
+        sharedViewFiles[file] = fs.readFileSync(
+            path.resolve(sharedViewDir, file)
+        );
     }
 }
 
@@ -147,8 +150,9 @@ const typeFilterDir = path.resolve(__dirname, "..", "views", "types", "filter");
 
 for (const file of fs.readdirSync(typeFilterDir)) {
     if (file.indexOf(".js") >= 0) {
-        typeFilterFiles[file] =
-            fs.readFileSync(path.resolve(typeFilterDir, file));
+        typeFilterFiles[file] = fs.readFileSync(
+            path.resolve(typeFilterDir, file)
+        );
     }
 }
 
@@ -157,8 +161,7 @@ const typeEditDir = path.resolve(__dirname, "..", "views", "types", "edit");
 
 for (const file of fs.readdirSync(typeEditDir)) {
     if (file.indexOf(".js") >= 0) {
-        typeEditFiles[file] =
-            fs.readFileSync(path.resolve(typeEditDir, file));
+        typeEditFiles[file] = fs.readFileSync(path.resolve(typeEditDir, file));
     }
 }
 
@@ -168,7 +171,7 @@ const staticDir = process.env.STATIC_DIR;
 
 for (const dir of fs.readdirSync(staticDir)) {
     const dirPath = path.resolve(staticDir, dir);
-    const files = staticFiles[dir] = {};
+    const files = (staticFiles[dir] = {});
 
     for (const file of fs.readdirSync(dirPath)) {
         const filePath = path.resolve(dirPath, file);
@@ -187,70 +190,84 @@ const genData = () => {
         title: "Test",
         objectType: "painting",
         medium: "oil",
-        artists: [{
-            name: "Test",
-            dates: [{
+        artists: [
+            {
+                name: "Test",
+                dates: [
+                    {
+                        original: "ca. 1456-1457",
+                        start: 1456,
+                        end: 1457,
+                        circa: true,
+                    },
+                ],
+            },
+        ],
+        dimensions: [{width: 123, height: 130, unit: "mm"}],
+        dates: [
+            {
                 original: "ca. 1456-1457",
                 start: 1456,
                 end: 1457,
                 circa: true,
-            }],
-        }],
-        dimensions: [{width: 123, height: 130, unit: "mm"}],
-        dates: [{
-            original: "ca. 1456-1457",
-            start: 1456,
-            end: 1457,
-            circa: true,
-        }],
+            },
+        ],
         locations: [{city: "New York City"}],
     };
 
     records = {
-        "test/1234": new Record(Object.assign({}, recordData, {
-            _id: "test/1234",
-            id: "1234",
-            images: ["test/foo.jpg"],
-            defaultImageHash: "4266906334",
-        })),
+        "test/1234": new Record(
+            Object.assign({}, recordData, {
+                _id: "test/1234",
+                id: "1234",
+                images: ["test/foo.jpg"],
+                defaultImageHash: "4266906334",
+            })
+        ),
 
-        "test/1235": new Record(Object.assign({}, recordData, {
-            _id: "test/1235",
-            id: "1235",
-            images: ["test/bar.jpg"],
-            defaultImageHash: "2508884691",
-            similarRecords: [
-                {
-                    _id: "test/1236",
-                    record: "test/1236",
-                    score: 17,
-                    source: "test",
-                    images: ["test/new1.jpg", "test/new2.jpg"],
-                },
-                {
-                    _id: "test/1234",
-                    record: "test/1234",
-                    score: 10,
-                    source: "test",
-                    images: ["test/foo.jpg"],
-                },
-            ],
-        })),
+        "test/1235": new Record(
+            Object.assign({}, recordData, {
+                _id: "test/1235",
+                id: "1235",
+                images: ["test/bar.jpg"],
+                defaultImageHash: "2508884691",
+                similarRecords: [
+                    {
+                        _id: "test/1236",
+                        record: "test/1236",
+                        score: 17,
+                        source: "test",
+                        images: ["test/new1.jpg", "test/new2.jpg"],
+                    },
+                    {
+                        _id: "test/1234",
+                        record: "test/1234",
+                        score: 10,
+                        source: "test",
+                        images: ["test/foo.jpg"],
+                    },
+                ],
+            })
+        ),
 
-        "test/1236": new Record(Object.assign({}, recordData, {
-            _id: "test/1236",
-            id: "1236",
-            images: ["test/new1.jpg", "test/new2.jpg", "test/new3.jpg"],
-            defaultImageHash: "2533156274",
-        })),
+        "test/1236": new Record(
+            Object.assign({}, recordData, {
+                _id: "test/1236",
+                id: "1236",
+                images: ["test/new1.jpg", "test/new2.jpg", "test/new3.jpg"],
+                defaultImageHash: "2533156274",
+            })
+        ),
 
-        "test/1237": new Record(Object.assign({}, recordData, {
-            _id: "test/1237",
-            id: "1237",
-            images: ["test/nosimilar.jpg"],
-            defaultImageHash: "4246873662",
-            similarRecords: [],
-        })),
+        "test/1237": new Record(
+            Object.assign({}, recordData, {
+                _id: "test/1237",
+                id: "1237",
+                images: ["test/nosimilar.jpg"],
+                defaultImageHash: "4246873662",
+                similarRecords: [],
+            })
+        ),
     };
 
     const remove = function(callback) {
@@ -290,61 +307,56 @@ const genData = () => {
 
     imageResultsData = [
         {
-            "_id": "bar.jpg",
-            "fileName": "bar.jpg",
-            "warnings": [],
-            "model": "test/bar.jpg",
+            _id: "bar.jpg",
+            fileName: "bar.jpg",
+            warnings: [],
+            model: "test/bar.jpg",
         },
         {
-            "_id": "corrupted.jpg",
-            "fileName": "corrupted.jpg",
-            "error": "MALFORMED_IMAGE",
+            _id: "corrupted.jpg",
+            fileName: "corrupted.jpg",
+            error: "MALFORMED_IMAGE",
         },
         {
-            "_id": "empty.jpg",
-            "fileName": "empty.jpg",
-            "error": "EMPTY_IMAGE",
+            _id: "empty.jpg",
+            fileName: "empty.jpg",
+            error: "EMPTY_IMAGE",
         },
         {
-            "_id": "foo.jpg",
-            "fileName": "foo.jpg",
-            "warnings": [],
-            "model": "test/foo.jpg",
+            _id: "foo.jpg",
+            fileName: "foo.jpg",
+            warnings: [],
+            model: "test/foo.jpg",
         },
         {
-            "_id": "new1.jpg",
-            "fileName": "new1.jpg",
-            "warnings": [],
-            "model": "test/new1.jpg",
+            _id: "new1.jpg",
+            fileName: "new1.jpg",
+            warnings: [],
+            model: "test/new1.jpg",
         },
         {
-            "_id": "new2.jpg",
-            "fileName": "new2.jpg",
-            "warnings": [],
-            "model": "test/new2.jpg",
+            _id: "new2.jpg",
+            fileName: "new2.jpg",
+            warnings: [],
+            model: "test/new2.jpg",
         },
         {
-            "_id": "small.jpg",
-            "fileName": "small.jpg",
-            "warnings": [
-                "NEW_VERSION",
-                "TOO_SMALL",
-            ],
-            "model": "test/small.jpg",
+            _id: "small.jpg",
+            fileName: "small.jpg",
+            warnings: ["NEW_VERSION", "TOO_SMALL"],
+            model: "test/small.jpg",
         },
         {
-            "_id": "new3.jpg",
-            "fileName": "new3.jpg",
-            "warnings": [],
-            "model": "test/new3.jpg",
+            _id: "new3.jpg",
+            fileName: "new3.jpg",
+            warnings: [],
+            model: "test/new3.jpg",
         },
         {
-            "_id": "nosimilar.jpg",
-            "fileName": "nosimilar.jpg",
-            "warnings": [
-                "NEW_VERSION",
-            ],
-            "model": "test/nosimilar.jpg",
+            _id: "nosimilar.jpg",
+            fileName: "nosimilar.jpg",
+            warnings: ["NEW_VERSION"],
+            model: "test/nosimilar.jpg",
         },
     ];
 
@@ -579,12 +591,8 @@ const genData = () => {
             {id: "614431508", score: 100},
             {id: "2508884691", score: 9},
         ],
-        "204571459": [
-            {id: "204571459", score: 100},
-        ],
-        "1306644102": [
-            {id: "1306644102", score: 100},
-        ],
+        "204571459": [{id: "204571459", score: 100}],
+        "1306644102": [{id: "1306644102", score: 100}],
     };
 
     similarAdded = [];
@@ -614,8 +622,7 @@ const bindStubs = () => {
         if (records[id]) {
             process.nextTick(() => callback(null, records[id]));
         } else {
-            process.nextTick(() => callback(
-                new Error("Record not found.")));
+            process.nextTick(() => callback(new Error("Record not found.")));
         }
     });
 
@@ -623,7 +630,7 @@ const bindStubs = () => {
         let matches = [];
 
         if (query.$or) {
-            const imageIds = query.$or.map((query) => query.images);
+            const imageIds = query.$or.map(query => query.images);
 
             for (const id in records) {
                 const record = records[id];
@@ -640,20 +647,20 @@ const bindStubs = () => {
                 }
             }
         } else if (query.source) {
-            matches = Object.keys(records).filter((id) =>
-                records[id].source === query.source)
-                .map((id) => records[id]);
+            matches = Object.keys(records)
+                .filter(id => records[id].source === query.source)
+                .map(id => records[id]);
         } else if (query.images) {
-            matches = Object.keys(records).filter((id) =>
-                records[id].images.indexOf(query.images) >= 0)
-                .map((id) => records[id]);
+            matches = Object.keys(records)
+                .filter(id => records[id].images.indexOf(query.images) >= 0)
+                .map(id => records[id]);
         } else {
-            matches = Object.keys(records).map((id) => records[id]);
+            matches = Object.keys(records).map(id => records[id]);
         }
 
         for (const record of matches) {
             if (!record.save.restore) {
-                sandbox.stub(record, "save", (callback) => {
+                sandbox.stub(record, "save", callback => {
                     if (!(record._id in records)) {
                         records[record._id] = record;
                     }
@@ -666,8 +673,8 @@ const bindStubs = () => {
         if (!callback || extra) {
             const ret = {
                 lean: () => ret,
-                distinct: (name) => {
-                    matches = matches.map((match) => match[name]);
+                distinct: name => {
+                    matches = matches.map(match => match[name]);
                     return ret;
                 },
                 stream: () => ret,
@@ -692,7 +699,7 @@ const bindStubs = () => {
                         ret._onclose();
                     }
                 },
-                exec: (callback) =>
+                exec: callback =>
                     process.nextTick(() => callback(null, matches)),
             };
             return ret;
@@ -702,7 +709,7 @@ const bindStubs = () => {
     });
 
     sandbox.stub(Record, "search", (query, options, callback) => {
-        const matches = Object.keys(records).map((id) => records[id]);
+        const matches = Object.keys(records).map(id => records[id]);
         const aggregations = {
             source: {
                 buckets: [{key: "test", doc_count: 2}],
@@ -724,47 +731,58 @@ const bindStubs = () => {
             },
         };
 
-        process.nextTick(() => callback(null, {
-            aggregations,
-            hits: {
-                total: matches.length,
-                hits: matches,
-            },
-        }));
+        process.nextTick(() =>
+            callback(null, {
+                aggregations,
+                hits: {
+                    total: matches.length,
+                    hits: matches,
+                },
+            })
+        );
     });
 
     sandbox.stub(Record, "update", (query, update, options, callback) => {
-        Object.keys(records).forEach((id) => {
+        Object.keys(records).forEach(id => {
             records[id].needsSimilarUpdate = true;
         });
         process.nextTick(callback);
     });
 
     sandbox.stub(Record, "count", (query, callback) => {
-        const count = Object.keys(records).filter((id) =>
-            !query.source || records[id].source === query.source).length;
+        const count = Object.keys(records).filter(
+            id => !query.source || records[id].source === query.source
+        ).length;
 
         process.nextTick(() => callback(null, count));
     });
 
     sandbox.stub(Record, "aggregate", (query, callback) => {
         const source = query[0].$match.source;
-        const count = Object.keys(records).filter((id) =>
-            records[id].source === source).length;
+        const count = Object.keys(records).filter(
+            id => records[id].source === source
+        ).length;
 
-        process.nextTick(() => callback(null, [{
-            total: count,
-            totalImages: count,
-        }]));
+        process.nextTick(() =>
+            callback(null, [
+                {
+                    total: count,
+                    totalImages: count,
+                },
+            ])
+        );
     });
 
     const fromData = Record.fromData;
 
     sandbox.stub(Record, "fromData", (tmpData, i18n, callback) => {
-        fromData.call(Record, tmpData, i18n,
+        fromData.call(
+            Record,
+            tmpData,
+            i18n,
             (err, record, warnings, creating) => {
                 if (record && !record.save.restore) {
-                    sandbox.stub(record, "save", (callback) => {
+                    sandbox.stub(record, "save", callback => {
                         if (!(record._id in records)) {
                             records[record._id] = record;
                         }
@@ -774,7 +792,8 @@ const bindStubs = () => {
                 }
 
                 callback(err, record, warnings, creating);
-            });
+            }
+        );
     });
 
     sandbox.stub(ImageImport, "find", (query, select, options, callback) => {
@@ -783,26 +802,27 @@ const bindStubs = () => {
 
     sandbox.stub(ImageImport, "findById", (id, callback) => {
         process.nextTick(() => {
-            callback(null, batches.find((batch) => batch._id === id));
+            callback(null, batches.find(batch => batch._id === id));
         });
     });
 
     const imageImportFromFile = ImageImport.fromFile;
 
     sandbox.stub(ImageImport, "fromFile", (fileName, source) => {
-        const batch = imageImportFromFile.call(ImageImport, fileName,
-            source);
+        const batch = imageImportFromFile.call(ImageImport, fileName, source);
         if (!batch.save.restore) {
-            sandbox.stub(batch, "save", (callback) => batch.validate((err) => {
-                /* istanbul ignore if */
-                if (err) {
-                    return callback(err);
-                }
+            sandbox.stub(batch, "save", callback =>
+                batch.validate(err => {
+                    /* istanbul ignore if */
+                    if (err) {
+                        return callback(err);
+                    }
 
-                batch.modified = new Date();
-                batches.push(batch);
-                callback(null, batch);
-            }));
+                    batch.modified = new Date();
+                    batches.push(batch);
+                    callback(null, batch);
+                })
+            );
         }
         return batch;
     });
@@ -815,26 +835,32 @@ const bindStubs = () => {
 
     sandbox.stub(RecordImport, "findById", (id, callback) => {
         process.nextTick(() => {
-            callback(null, recordBatches.find((batch) => batch._id === id));
+            callback(null, recordBatches.find(batch => batch._id === id));
         });
     });
 
     const recordImportFromFile = RecordImport.fromFile;
 
     sandbox.stub(RecordImport, "fromFile", (fileName, source, type) => {
-        const batch = recordImportFromFile.call(RecordImport, fileName,
-            source, type);
+        const batch = recordImportFromFile.call(
+            RecordImport,
+            fileName,
+            source,
+            type
+        );
         if (!batch.save.restore) {
-            sandbox.stub(batch, "save", (callback) => batch.validate((err) => {
-                /* istanbul ignore if */
-                if (err) {
-                    return callback(err);
-                }
+            sandbox.stub(batch, "save", callback =>
+                batch.validate(err => {
+                    /* istanbul ignore if */
+                    if (err) {
+                        return callback(err);
+                    }
 
-                batch.modified = new Date();
-                recordBatches.push(batch);
-                callback(null, batch);
-            }));
+                    batch.modified = new Date();
+                    recordBatches.push(batch);
+                    callback(null, batch);
+                })
+            );
         }
         return batch;
     });
@@ -849,8 +875,9 @@ const bindStubs = () => {
 
     sandbox.stub(Image, "findOne", (query, callback) => {
         // NOTE(jeresig): query.hash is assumed
-        const id = Object.keys(images)
-            .find((id) => images[id].hash === query.hash);
+        const id = Object.keys(images).find(
+            id => images[id].hash === query.hash
+        );
         const match = images[id];
 
         process.nextTick(() => callback(null, match));
@@ -865,7 +892,7 @@ const bindStubs = () => {
     sandbox.stub(Image, "fromFile", (batch, file, callback) => {
         fromFile.call(Image, batch, file, (err, image, warnings) => {
             if (image && !image.save.restore) {
-                sandbox.stub(image, "save", (callback) => {
+                sandbox.stub(image, "save", callback => {
                     images[image._id] = image;
                     image.validate(callback);
                 });
@@ -876,8 +903,9 @@ const bindStubs = () => {
     });
 
     sandbox.stub(Image, "count", (query, callback) => {
-        const count = Object.keys(images).filter((id) =>
-            !query.source || images[id].source === query.source).length;
+        const count = Object.keys(images).filter(
+            id => !query.source || images[id].source === query.source
+        ).length;
 
         process.nextTick(() => callback(null, count));
     });
@@ -891,7 +919,7 @@ const bindStubs = () => {
     sandbox.stub(UploadImage, "fromFile", (file, callback) => {
         uploadFromFile.call(UploadImage, file, (err, image, warnings) => {
             if (image && !image.save.restore) {
-                sandbox.stub(image, "save", (callback) => {
+                sandbox.stub(image, "save", callback => {
                     uploadImages[image._id] = image;
                     image.validate(callback);
                 });
@@ -910,7 +938,7 @@ const bindStubs = () => {
     sandbox.stub(Upload, "fromImage", (image, type, callback) => {
         fromImage.call(Upload, image, type, (err, upload) => {
             if (upload && !upload.save.restore) {
-                sandbox.stub(upload, "save", (callback) => {
+                sandbox.stub(upload, "save", callback => {
                     if (!(upload._id in uploads)) {
                         uploads[upload._id] = upload;
                     }
@@ -928,9 +956,11 @@ const bindStubs = () => {
     });
 
     sandbox.stub(User, "findOne", (query, callback) => {
-        const matches = users.filter((user) =>
-            (user.email === query.email ||
-                query._id && user._id.toString() === query._id.toString()));
+        const matches = users.filter(
+            user =>
+                user.email === query.email ||
+                (query._id && user._id.toString() === query._id.toString())
+        );
         process.nextTick(() => callback(null, matches[0]));
     });
 
@@ -950,9 +980,11 @@ const bindStubs = () => {
 
     sandbox.stub(similarity, "add", (file, hash, callback) => {
         if (hash === "99998") {
-            return process.nextTick(() => callback({
-                type: "IMAGE_SIZE_TOO_SMALL",
-            }));
+            return process.nextTick(() =>
+                callback({
+                    type: "IMAGE_SIZE_TOO_SMALL",
+                })
+            );
         }
 
         similarAdded.push({id: hash, score: 5});
@@ -965,7 +997,7 @@ const bindStubs = () => {
 const i18n = {
     format: (msg, fields) =>
         msg.replace(/%\((.*?)\)s/g, (all, name) => fields[name]),
-    gettext: (msg) => msg,
+    gettext: msg => msg,
     lang: "en",
 };
 
@@ -974,84 +1006,94 @@ let db;
 
 bindStubs();
 
-const init = (done) => {
+const init = done => {
     genData();
 
-    async.parallel([
-        (callback) => {
-            async.each(Object.keys(records), (id, callback) => {
-                records[id].validate(callback);
-            }, callback);
-        },
+    async.parallel(
+        [
+            callback => {
+                async.each(
+                    Object.keys(records),
+                    (id, callback) => {
+                        records[id].validate(callback);
+                    },
+                    callback
+                );
+            },
 
-        (callback) => {
-            db = new MongoInMemory(27018);
+            callback => {
+                db = new MongoInMemory(27018);
 
-            db.start((err) => {
-                if (err) {
-                    return callback(err);
-                }
-
-                db.addDirectoryOfCollections("test", testDBFiles, (err) => {
+                db.start(err => {
                     if (err) {
                         return callback(err);
                     }
 
-                    server((err, _app) => {
-                        app = _app;
-                        callback(err);
+                    db.addDirectoryOfCollections("test", testDBFiles, err => {
+                        if (err) {
+                            return callback(err);
+                        }
+
+                        server((err, _app) => {
+                            app = _app;
+                            callback(err);
+                        });
                     });
                 });
-            });
-        },
-    ], done);
+            },
+        ],
+        done
+    );
 };
 
 tap.beforeEach(init);
 
-tap.afterEach((done) => {
+tap.afterEach(done => {
     app.close();
     db.stop(done);
 });
 
-const mockFS = (callback) => {
+const mockFS = callback => {
     mockfs({
         "package.json": pkgFile,
-        "node_modules": {
+        node_modules: {
             ".cache": {
-                "nyc": {},
+                nyc: {},
             },
         },
-        "testData": testFiles,
-        "tests": {
-            "db": dbFiles,
+        testData: testFiles,
+        tests: {
+            db: dbFiles,
         },
-        "data": {
-            "test": {
-                "images": {},
-                "scaled": {},
-                "thumbs": {},
+        data: {
+            test: {
+                images: {},
+                scaled: {},
+                thumbs: {},
             },
-            "uploads": {
-                "images": {
+            uploads: {
+                images: {
                     "4266906334.jpg": testFiles["4266906334.jpg"],
                     "bar.jpg": testFiles["bar.jpg"],
                 },
-                "scaled": {},
-                "thumbs": {},
+                scaled: {},
+                thumbs: {},
             },
         },
-        "build": {
-            "views": Object.assign({
-                "shared": sharedViewFiles,
-                "types": {
-                    "filter": typeFilterFiles,
-                    "view": typeViewFiles,
-                    "edit": typeEditFiles,
+        build: {
+            views: Object.assign(
+                {
+                    shared: sharedViewFiles,
+                    types: {
+                        filter: typeFilterFiles,
+                        view: typeViewFiles,
+                        edit: typeEditFiles,
+                    },
                 },
-            }, viewFiles),
+                viewFiles
+            ),
         },
-        "static": staticFiles,
+        static: staticFiles,
     });
 
     return callback(() => mockfs.restore());

@@ -6,7 +6,7 @@ const request = require("request").defaults({jar: true});
 
 const {adminLogin, normalLogin, mockFS} = require("../init");
 
-tap.test("Admin Page", (t) => {
+tap.test("Admin Page", t => {
     adminLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/admin";
         request.get(url, (err, res) => {
@@ -17,18 +17,17 @@ tap.test("Admin Page", (t) => {
     });
 });
 
-tap.test("Admin Page (Logged Out)", (t) => {
+tap.test("Admin Page (Logged Out)", t => {
     const url = "http://localhost:3000/artworks/source/test/admin";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
         t.equal(res.statusCode, 200);
-        t.match(res.request.uri.href,
-            "http://localhost:3000/login");
+        t.match(res.request.uri.href, "http://localhost:3000/login");
         t.end();
     });
 });
 
-tap.test("Admin Page (Unauthorized User)", (t) => {
+tap.test("Admin Page (Unauthorized User)", t => {
     normalLogin(request, () => {
         const url = "http://localhost:3000/artworks/source/test/admin";
         request.get(url, (err, res) => {
@@ -39,9 +38,10 @@ tap.test("Admin Page (Unauthorized User)", (t) => {
     });
 });
 
-tap.test("Record Import Page", (t) => {
+tap.test("Record Import Page", t => {
     adminLogin(request, () => {
-        const url = "http://localhost:3000/artworks/source/test/admin" +
+        const url =
+            "http://localhost:3000/artworks/source/test/admin" +
             "?records=test/started";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
@@ -51,9 +51,10 @@ tap.test("Record Import Page", (t) => {
     });
 });
 
-tap.test("Record Import Page (Completed)", (t) => {
+tap.test("Record Import Page (Completed)", t => {
     adminLogin(request, () => {
-        const url = "http://localhost:3000/artworks/source/test/admin" +
+        const url =
+            "http://localhost:3000/artworks/source/test/admin" +
             "?records=test/completed";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
@@ -63,9 +64,10 @@ tap.test("Record Import Page (Completed)", (t) => {
     });
 });
 
-tap.test("Record Import Page (Error)", (t) => {
+tap.test("Record Import Page (Error)", t => {
     adminLogin(request, () => {
-        const url = "http://localhost:3000/artworks/source/test/admin" +
+        const url =
+            "http://localhost:3000/artworks/source/test/admin" +
             "?records=test/error";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
@@ -75,9 +77,10 @@ tap.test("Record Import Page (Error)", (t) => {
     });
 });
 
-tap.test("Record Import Page (Missing)", (t) => {
+tap.test("Record Import Page (Missing)", t => {
     adminLogin(request, () => {
-        const url = "http://localhost:3000/artworks/source/test/admin" +
+        const url =
+            "http://localhost:3000/artworks/source/test/admin" +
             "?records=test/foo";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
@@ -87,37 +90,44 @@ tap.test("Record Import Page (Missing)", (t) => {
     });
 });
 
-tap.test("Record Import Finalize", (t) => {
+tap.test("Record Import Finalize", t => {
     adminLogin(request, () => {
-        const url = "http://localhost:3000/artworks/source/test/admin" +
+        const url =
+            "http://localhost:3000/artworks/source/test/admin" +
             "?records=test/started&finalize=true";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 200);
-            t.match(res.request.uri.href,
-                "http://localhost:3000/artworks/source/test/admin");
+            t.match(
+                res.request.uri.href,
+                "http://localhost:3000/artworks/source/test/admin"
+            );
             t.end();
         });
     });
 });
 
-tap.test("Record Import Abandon", (t) => {
+tap.test("Record Import Abandon", t => {
     adminLogin(request, () => {
-        const url = "http://localhost:3000/artworks/source/test/admin" +
+        const url =
+            "http://localhost:3000/artworks/source/test/admin" +
             "?records=test/started&abandon=true";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 200);
-            t.match(res.request.uri.href,
-                "http://localhost:3000/artworks/source/test/admin");
+            t.match(
+                res.request.uri.href,
+                "http://localhost:3000/artworks/source/test/admin"
+            );
             t.end();
         });
     });
 });
 
-tap.test("Image Import Page", (t) => {
+tap.test("Image Import Page", t => {
     adminLogin(request, () => {
-        const url = "http://localhost:3000/artworks/source/test/admin" +
+        const url =
+            "http://localhost:3000/artworks/source/test/admin" +
             "?images=test/started";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
@@ -127,9 +137,10 @@ tap.test("Image Import Page", (t) => {
     });
 });
 
-tap.test("Image Import Page (Completed)", (t) => {
+tap.test("Image Import Page (Completed)", t => {
     adminLogin(request, () => {
-        const url = "http://localhost:3000/artworks/source/test/admin" +
+        const url =
+            "http://localhost:3000/artworks/source/test/admin" +
             "?images=test/completed";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
@@ -139,9 +150,10 @@ tap.test("Image Import Page (Completed)", (t) => {
     });
 });
 
-tap.test("Image Import Page (Completed, Expanded)", (t) => {
+tap.test("Image Import Page (Completed, Expanded)", t => {
     adminLogin(request, () => {
-        const url = "http://localhost:3000/artworks/source/test/admin" +
+        const url =
+            "http://localhost:3000/artworks/source/test/admin" +
             "?images=test/completed&expanded=models";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
@@ -151,9 +163,10 @@ tap.test("Image Import Page (Completed, Expanded)", (t) => {
     });
 });
 
-tap.test("Image Import Page (Error)", (t) => {
+tap.test("Image Import Page (Error)", t => {
     adminLogin(request, () => {
-        const url = "http://localhost:3000/artworks/source/test/admin" +
+        const url =
+            "http://localhost:3000/artworks/source/test/admin" +
             "?images=test/error";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
@@ -163,9 +176,10 @@ tap.test("Image Import Page (Error)", (t) => {
     });
 });
 
-tap.test("Image Import Page (Missing)", (t) => {
+tap.test("Image Import Page (Missing)", t => {
     adminLogin(request, () => {
-        const url = "http://localhost:3000/artworks/source/test/admin" +
+        const url =
+            "http://localhost:3000/artworks/source/test/admin" +
             "?images=test/foo";
         request.get(url, (err, res) => {
             t.error(err, "Error should be empty.");
@@ -175,8 +189,8 @@ tap.test("Image Import Page (Missing)", (t) => {
     });
 });
 
-tap.test("uploadData: Source not found", (t) => {
-    mockFS((callback) => {
+tap.test("uploadData: Source not found", t => {
+    mockFS(callback => {
         adminLogin(request, () => {
             const url = "http://localhost:3000/artworks/source/foo/upload-data";
             const formData = {};
@@ -190,10 +204,11 @@ tap.test("uploadData: Source not found", (t) => {
     });
 });
 
-tap.test("uploadData: No files", (t) => {
-    mockFS((callback) => {
+tap.test("uploadData: No files", t => {
+    mockFS(callback => {
         adminLogin(request, () => {
-            const url = "http://localhost:3000/artworks/source/test/upload-data";
+            const url =
+                "http://localhost:3000/artworks/source/test/upload-data";
             const formData = {};
             request.post({url, formData}, (err, res, body) => {
                 t.error(err, "Error should be empty.");
@@ -206,10 +221,11 @@ tap.test("uploadData: No files", (t) => {
     });
 });
 
-tap.test("uploadData: File Error", (t) => {
-    mockFS((callback) => {
+tap.test("uploadData: File Error", t => {
+    mockFS(callback => {
         adminLogin(request, () => {
-            const url = "http://localhost:3000/artworks/source/test/upload-data";
+            const url =
+                "http://localhost:3000/artworks/source/test/upload-data";
             const file = "default-error.json";
             const formData = {
                 files: {
@@ -219,24 +235,31 @@ tap.test("uploadData: File Error", (t) => {
                     },
                 },
             };
-            request.post({
-                url,
-                formData,
-            }, (err, res) => {
-                t.error(err, "Error should be empty.");
-                t.equal(res.statusCode, 302);
-                t.match(res.headers.location, "/artworks/source/test/admin");
-                t.end();
-                callback();
-            });
+            request.post(
+                {
+                    url,
+                    formData,
+                },
+                (err, res) => {
+                    t.error(err, "Error should be empty.");
+                    t.equal(res.statusCode, 302);
+                    t.match(
+                        res.headers.location,
+                        "/artworks/source/test/admin"
+                    );
+                    t.end();
+                    callback();
+                }
+            );
         });
     });
 });
 
-tap.test("uploadData: Default File", (t) => {
-    mockFS((callback) => {
+tap.test("uploadData: Default File", t => {
+    mockFS(callback => {
         adminLogin(request, () => {
-            const url = "http://localhost:3000/artworks/source/test/upload-data";
+            const url =
+                "http://localhost:3000/artworks/source/test/upload-data";
             const file = "default.json";
             const formData = {
                 files: {
@@ -246,24 +269,31 @@ tap.test("uploadData: Default File", (t) => {
                     },
                 },
             };
-            request.post({
-                url,
-                formData,
-            }, (err, res) => {
-                t.error(err, "Error should be empty.");
-                t.equal(res.statusCode, 302);
-                t.match(res.headers.location, "/artworks/source/test/admin");
-                t.end();
-                callback();
-            });
+            request.post(
+                {
+                    url,
+                    formData,
+                },
+                (err, res) => {
+                    t.error(err, "Error should be empty.");
+                    t.equal(res.statusCode, 302);
+                    t.match(
+                        res.headers.location,
+                        "/artworks/source/test/admin"
+                    );
+                    t.end();
+                    callback();
+                }
+            );
         });
     });
 });
 
-tap.test("uploadImages: Source not found", (t) => {
-    mockFS((callback) => {
+tap.test("uploadImages: Source not found", t => {
+    mockFS(callback => {
         adminLogin(request, () => {
-            const url = "http://localhost:3000/artworks/source/foo/upload-images";
+            const url =
+                "http://localhost:3000/artworks/source/foo/upload-images";
             const formData = {};
             request.post({url, formData}, (err, res) => {
                 t.error(err, "Error should be empty.");
@@ -275,10 +305,11 @@ tap.test("uploadImages: Source not found", (t) => {
     });
 });
 
-tap.test("uploadImages: No files", (t) => {
-    mockFS((callback) => {
+tap.test("uploadImages: No files", t => {
+    mockFS(callback => {
         adminLogin(request, () => {
-            const url = "http://localhost:3000/artworks/source/test/upload-images";
+            const url =
+                "http://localhost:3000/artworks/source/test/upload-images";
             const formData = {};
             request.post({url, formData}, (err, res, body) => {
                 t.error(err, "Error should be empty.");
@@ -291,10 +322,11 @@ tap.test("uploadImages: No files", (t) => {
     });
 });
 
-tap.test("uploadImages: Empty Zip", (t) => {
-    mockFS((callback) => {
+tap.test("uploadImages: Empty Zip", t => {
+    mockFS(callback => {
         adminLogin(request, () => {
-            const url = "http://localhost:3000/artworks/source/test/upload-images";
+            const url =
+                "http://localhost:3000/artworks/source/test/upload-images";
             const file = "empty.zip";
             const formData = {
                 zipField: {
@@ -304,24 +336,31 @@ tap.test("uploadImages: Empty Zip", (t) => {
                     },
                 },
             };
-            request.post({
-                url,
-                formData,
-            }, (err, res) => {
-                t.error(err, "Error should be empty.");
-                t.equal(res.statusCode, 302);
-                t.match(res.headers.location, "/artworks/source/test/admin");
-                t.end();
-                callback();
-            });
+            request.post(
+                {
+                    url,
+                    formData,
+                },
+                (err, res) => {
+                    t.error(err, "Error should be empty.");
+                    t.equal(res.statusCode, 302);
+                    t.match(
+                        res.headers.location,
+                        "/artworks/source/test/admin"
+                    );
+                    t.end();
+                    callback();
+                }
+            );
         });
     });
 });
 
-tap.test("uploadImages: Corrupted Zip", (t) => {
-    mockFS((callback) => {
+tap.test("uploadImages: Corrupted Zip", t => {
+    mockFS(callback => {
         adminLogin(request, () => {
-            const url = "http://localhost:3000/artworks/source/test/upload-images";
+            const url =
+                "http://localhost:3000/artworks/source/test/upload-images";
             const file = "corrupted.zip";
             const formData = {
                 zipField: {
@@ -331,24 +370,31 @@ tap.test("uploadImages: Corrupted Zip", (t) => {
                     },
                 },
             };
-            request.post({
-                url,
-                formData,
-            }, (err, res) => {
-                t.error(err, "Error should be empty.");
-                t.equal(res.statusCode, 302);
-                t.match(res.headers.location, "/artworks/source/test/admin");
-                t.end();
-                callback();
-            });
+            request.post(
+                {
+                    url,
+                    formData,
+                },
+                (err, res) => {
+                    t.error(err, "Error should be empty.");
+                    t.equal(res.statusCode, 302);
+                    t.match(
+                        res.headers.location,
+                        "/artworks/source/test/admin"
+                    );
+                    t.end();
+                    callback();
+                }
+            );
         });
     });
 });
 
-tap.test("uploadImages: Normal Zip", (t) => {
-    mockFS((callback) => {
+tap.test("uploadImages: Normal Zip", t => {
+    mockFS(callback => {
         adminLogin(request, () => {
-            const url = "http://localhost:3000/artworks/source/test/upload-images";
+            const url =
+                "http://localhost:3000/artworks/source/test/upload-images";
             const file = "test.zip";
             const formData = {
                 zipField: {
@@ -358,16 +404,22 @@ tap.test("uploadImages: Normal Zip", (t) => {
                     },
                 },
             };
-            request.post({
-                url,
-                formData,
-            }, (err, res) => {
-                t.error(err, "Error should be empty.");
-                t.equal(res.statusCode, 302);
-                t.match(res.headers.location, "/artworks/source/test/admin");
-                t.end();
-                callback();
-            });
+            request.post(
+                {
+                    url,
+                    formData,
+                },
+                (err, res) => {
+                    t.error(err, "Error should be empty.");
+                    t.equal(res.statusCode, 302);
+                    t.match(
+                        res.headers.location,
+                        "/artworks/source/test/admin"
+                    );
+                    t.end();
+                    callback();
+                }
+            );
         });
     });
 });

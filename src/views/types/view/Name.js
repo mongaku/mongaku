@@ -13,26 +13,31 @@ type Props = {
     url: Array<string>,
 };
 
-const Pseudonym = ({value}: {value: NameType}) => <span>
-    {" "}({value.pseudonym})
-</span>;
+const Pseudonym = ({value}: {value: NameType}) => (
+    <span>
+        {" "}({value.pseudonym})
+    </span>
+);
 
 const Name = ({value, url}: {value: NameType, url: string}) => {
-    return <span key={value._id}>
-        <a href={url}>{value.name}</a>
-        {value.pseudoynm && value.name !== value.pseudoynm &&
-            <Pseudonym value={value} />}
-    </span>;
+    return (
+        <span key={value._id}>
+            <a href={url}>{value.name}</a>
+            {value.pseudoynm &&
+                value.name !== value.pseudoynm &&
+                <Pseudonym value={value} />}
+        </span>
+    );
 };
 
 const NameView = ({value, url}: Props) => {
-    return <div>
-        {value.map((name, i) => <Name
-            key={name._id}
-            value={name}
-            url={url[i]}
-        />)}
-    </div>;
+    return (
+        <div>
+            {value.map((name, i) => (
+                <Name key={name._id} value={name} url={url[i]} />
+            ))}
+        </div>
+    );
 };
 
 module.exports = NameView;

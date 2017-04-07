@@ -3,23 +3,27 @@ const tap = require("tap");
 const init = require("../init");
 const {i18n, Record} = init;
 
-tap.test("getURL", {autoend: true}, (t) => {
+tap.test("getURL", {autoend: true}, t => {
     const record = init.getRecord();
-    t.equal(record.getURL("en"),
-        "/artworks/test/1234", "Check 'en' URL");
+    t.equal(record.getURL("en"), "/artworks/test/1234", "Check 'en' URL");
 
-    t.equal(record.getURL("de"),
-        "/artworks/test/1234?lang=de", "Check 'de' URL");
+    t.equal(
+        record.getURL("de"),
+        "/artworks/test/1234?lang=de",
+        "Check 'de' URL"
+    );
 });
 
-tap.test("getThumbURL", {autoend: true}, (t) => {
+tap.test("getThumbURL", {autoend: true}, t => {
     const record = init.getRecord();
-    t.equal(record.getThumbURL(),
+    t.equal(
+        record.getThumbURL(),
         "/data/test/thumbs/4266906334.jpg",
-        "Check Thumb URL");
+        "Check Thumb URL"
+    );
 });
 
-tap.test("getTitle", {autoend: true}, (t) => {
+tap.test("getTitle", {autoend: true}, t => {
     const record = init.getRecord();
     t.equal(record.getTitle(i18n), "Test", "Check Title");
 
@@ -29,15 +33,16 @@ tap.test("getTitle", {autoend: true}, (t) => {
     record.title = "Test";
 });
 
-tap.test("getSource", {autoend: true}, (t) => {
+tap.test("getSource", {autoend: true}, t => {
     const record = init.getRecord();
     const source = init.getSource();
     t.equal(record.getSource(), source, "Get Source");
 });
 
-tap.test("date", {autoend: true}, (t) => {
+tap.test("date", {autoend: true}, t => {
     const record = init.getRecord();
-    t.same(record.dates[0].toJSON(),
+    t.same(
+        record.dates[0].toJSON(),
         {
             _id: "ca. 1456-1457",
             original: "ca. 1456-1457",
@@ -45,27 +50,30 @@ tap.test("date", {autoend: true}, (t) => {
             end: 1457,
             circa: true,
         },
-        "Get Date");
+        "Get Date"
+    );
 });
 
-tap.test("Record.fromData: Data error", (t) => {
+tap.test("Record.fromData: Data error", t => {
     Record.fromData({}, i18n, (err, value, warnings) => {
-        t.equal(err.message, "Required field `id` is empty.",
-            "Data error.");
+        t.equal(err.message, "Required field `id` is empty.", "Data error.");
         t.equal(value, undefined, "No record should be returned.");
         t.equal(warnings, undefined, "There should be no warnings.");
         t.end();
     });
 });
 
-tap.test("Record.fromData: Existing record", (t) => {
+tap.test("Record.fromData: Existing record", t => {
     const record = init.getRecord();
     const recordData = init.getRecordData();
     Record.fromData(recordData, i18n, (err, value, warnings) => {
         t.error(err, "Error should be empty.");
         t.equal(value, record, "Record should be returned.");
-        t.equal(value.defaultImageHash, "4266906334",
-            "defaultImageHash is set.");
+        t.equal(
+            value.defaultImageHash,
+            "4266906334",
+            "defaultImageHash is set."
+        );
         t.equal(value.images.length, 1, "Images are set.");
         t.equal(value.images[0], "test/foo.jpg", "Images are set.");
         t.same(warnings, [], "There should be no warnings.");
@@ -73,7 +81,7 @@ tap.test("Record.fromData: Existing record", (t) => {
     });
 });
 
-tap.test("Record.fromData: New record", (t) => {
+tap.test("Record.fromData: New record", t => {
     const recordData = init.getRecordData();
     const newData = Object.assign({}, recordData, {
         id: "4266906334",
@@ -81,10 +89,12 @@ tap.test("Record.fromData: New record", (t) => {
 
     Record.fromData(newData, i18n, (err, value, warnings) => {
         t.error(err, "Error should be empty.");
-        t.equal(value._id, "test/4266906334",
-            "New record should be returned.");
-        t.equal(value.defaultImageHash, "4266906334",
-            "defaultImageHash is set.");
+        t.equal(value._id, "test/4266906334", "New record should be returned.");
+        t.equal(
+            value.defaultImageHash,
+            "4266906334",
+            "defaultImageHash is set."
+        );
         t.equal(value.images.length, 1, "Images are set.");
         t.equal(value.images[0], "test/foo.jpg", "Images are set.");
         t.same(warnings, [], "There should be no warnings.");
@@ -92,7 +102,7 @@ tap.test("Record.fromData: New record", (t) => {
     });
 });
 
-tap.test("Record.fromData: New record with warnings", (t) => {
+tap.test("Record.fromData: New record with warnings", t => {
     const recordData = init.getRecordData();
     const newData = Object.assign({}, recordData, {
         id: "4266906334",
@@ -101,19 +111,24 @@ tap.test("Record.fromData: New record with warnings", (t) => {
 
     Record.fromData(newData, i18n, (err, value, warnings) => {
         t.error(err, "Error should be empty.");
-        t.equal(value._id, "test/4266906334",
-            "New record should be returned.");
-        t.equal(value.defaultImageHash, "4266906334",
-            "defaultImageHash is set.");
+        t.equal(value._id, "test/4266906334", "New record should be returned.");
+        t.equal(
+            value.defaultImageHash,
+            "4266906334",
+            "defaultImageHash is set."
+        );
         t.equal(value.images.length, 1, "Images are set.");
         t.equal(value.images[0], "test/foo.jpg", "Images are set.");
-        t.same(warnings, ["Unrecognized field `batch`."],
-            "There should be a single warning.");
+        t.same(
+            warnings,
+            ["Unrecognized field `batch`."],
+            "There should be a single warning."
+        );
         t.end();
     });
 });
 
-tap.test("Record.fromData: New record missing images", (t) => {
+tap.test("Record.fromData: New record missing images", t => {
     const recordData = init.getRecordData();
     const newData = Object.assign({}, recordData, {
         id: "4266906334",
@@ -128,7 +143,7 @@ tap.test("Record.fromData: New record missing images", (t) => {
     });
 });
 
-tap.test("Record.fromData: New record missing single image", (t) => {
+tap.test("Record.fromData: New record missing single image", t => {
     const recordData = init.getRecordData();
     const newData = Object.assign({}, recordData, {
         id: "4266906334",
@@ -137,1028 +152,1343 @@ tap.test("Record.fromData: New record missing single image", (t) => {
 
     Record.fromData(newData, i18n, (err, value, warnings) => {
         t.error(err, "Error should be empty.");
-        t.equal(value._id, "test/4266906334",
-            "New record should be returned.");
-        t.equal(value.defaultImageHash, "4266906334",
-            "defaultImageHash is set.");
+        t.equal(value._id, "test/4266906334", "New record should be returned.");
+        t.equal(
+            value.defaultImageHash,
+            "4266906334",
+            "defaultImageHash is set."
+        );
         t.equal(value.images.length, 1, "Images are set.");
         t.equal(value.images[0], "test/foo.jpg", "Images are set.");
-        t.same(warnings, ["Image file not found: missing.jpg"],
-            "There should be a warning.");
+        t.same(
+            warnings,
+            ["Image file not found: missing.jpg"],
+            "There should be a warning."
+        );
         t.end();
     });
 });
 
-tap.test("updateSimilarity", (t) => {
+tap.test("updateSimilarity", t => {
     const record = init.getRecord();
-    record.updateSimilarity((err) => {
+    record.updateSimilarity(err => {
         t.error(err, "Error should be empty.");
-        t.equal(record.similarRecords.length, 1,
-            "Correct number of matches.");
-        t.same(record.similarRecords[0].toJSON(), {
-            _id: "test/1235",
-            record: "test/1235",
-            score: 10,
-            source: "test",
-            images: ["test/bar.jpg"],
-        }, "Check similar record result");
+        t.equal(record.similarRecords.length, 1, "Correct number of matches.");
+        t.same(
+            record.similarRecords[0].toJSON(),
+            {
+                _id: "test/1235",
+                record: "test/1235",
+                score: 10,
+                source: "test",
+                images: ["test/bar.jpg"],
+            },
+            "Check similar record result"
+        );
         t.end();
     });
 });
 
-tap.test("updateSimilarity with two matches", (t) => {
+tap.test("updateSimilarity with two matches", t => {
     const records = init.getRecords();
     const record = records["test/1235"];
-    record.updateSimilarity((err) => {
+    record.updateSimilarity(err => {
         t.error(err, "Error should be empty.");
-        t.equal(record.similarRecords.length, 2,
-            "Correct number of matches.");
-        t.same(record.similarRecords[0].toJSON(), {
-            _id: "test/1236",
-            record: "test/1236",
-            score: 17,
-            source: "test",
-            images: ["test/new1.jpg", "test/new2.jpg"],
-        }, "Check similar record result");
-        t.same(record.similarRecords[1].toJSON(), {
-            _id: "test/1234",
-            record: "test/1234",
-            score: 10,
-            source: "test",
-            images: ["test/foo.jpg"],
-        }, "Check similar record result");
+        t.equal(record.similarRecords.length, 2, "Correct number of matches.");
+        t.same(
+            record.similarRecords[0].toJSON(),
+            {
+                _id: "test/1236",
+                record: "test/1236",
+                score: 17,
+                source: "test",
+                images: ["test/new1.jpg", "test/new2.jpg"],
+            },
+            "Check similar record result"
+        );
+        t.same(
+            record.similarRecords[1].toJSON(),
+            {
+                _id: "test/1234",
+                record: "test/1234",
+                score: 10,
+                source: "test",
+                images: ["test/foo.jpg"],
+            },
+            "Check similar record result"
+        );
         t.end();
     });
 });
 
-tap.test("updateSimilarity with no similar", (t) => {
+tap.test("updateSimilarity with no similar", t => {
     const records = init.getRecords();
     const record = records["test/1237"];
-    record.updateSimilarity((err) => {
+    record.updateSimilarity(err => {
         t.error(err, "Error should be empty.");
-        t.equal(record.similarRecords.length, 0,
-            "Correct number of matches.");
+        t.equal(record.similarRecords.length, 0, "Correct number of matches.");
         t.end();
     });
 });
 
-tap.test("Record.lintData: Unknown Fields", {autoend: true}, (t) => {
-    t.same(Record.lintData({
-        batch: "test",
-    }, i18n), {
-        "error": "Required field `id` is empty.",
-        "warnings": [
-            "Unrecognized field `batch`.",
-        ],
-    }, "Known field");
+tap.test("Record.lintData: Unknown Fields", {autoend: true}, t => {
+    t.same(
+        Record.lintData(
+            {
+                batch: "test",
+            },
+            i18n
+        ),
+        {
+            error: "Required field `id` is empty.",
+            warnings: ["Unrecognized field `batch`."],
+        },
+        "Known field"
+    );
 
-    t.same(Record.lintData({
-        random: "test",
-    }, i18n), {
-        "error": "Required field `id` is empty.",
-        "warnings": [
-            "Unrecognized field `random`.",
-        ],
-    }, "Unknown field");
+    t.same(
+        Record.lintData(
+            {
+                random: "test",
+            },
+            i18n
+        ),
+        {
+            error: "Required field `id` is empty.",
+            warnings: ["Unrecognized field `random`."],
+        },
+        "Unknown field"
+    );
 });
 
-tap.test("Record.lintData: Required Fields", {autoend: true}, (t) => {
-    t.same(Record.lintData({}, i18n), {
-        "error": "Required field `id` is empty.",
-        "warnings": [],
-    }, "ID");
+tap.test("Record.lintData: Required Fields", {autoend: true}, t => {
+    t.same(
+        Record.lintData({}, i18n),
+        {
+            error: "Required field `id` is empty.",
+            warnings: [],
+        },
+        "ID"
+    );
 
-    t.same(Record.lintData({
-        id: "",
-    }, i18n), {
-        "error": "Required field `id` is empty.",
-        "warnings": [],
-    }, "ID Empty String");
+    t.same(
+        Record.lintData(
+            {
+                id: "",
+            },
+            i18n
+        ),
+        {
+            error: "Required field `id` is empty.",
+            warnings: [],
+        },
+        "ID Empty String"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-    }, i18n), {
-        "error": "Required field `type` is empty.",
-        "warnings": [],
-    }, "Type");
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+            },
+            i18n
+        ),
+        {
+            error: "Required field `type` is empty.",
+            warnings: [],
+        },
+        "Type"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "",
-    }, i18n), {
-        "error": "Required field `type` is empty.",
-        "warnings": [],
-    }, "Type Empty String");
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "",
+            },
+            i18n
+        ),
+        {
+            error: "Required field `type` is empty.",
+            warnings: [],
+        },
+        "Type Empty String"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-    }, i18n), {
-        "error": "Required field `source` is empty.",
-        "warnings": [],
-    }, "Source");
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+            },
+            i18n
+        ),
+        {
+            error: "Required field `source` is empty.",
+            warnings: [],
+        },
+        "Source"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "",
-    }, i18n), {
-        "error": "Required field `source` is empty.",
-        "warnings": [],
-    }, "Source Empty String");
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "",
+            },
+            i18n
+        ),
+        {
+            error: "Required field `source` is empty.",
+            warnings: [],
+        },
+        "Source Empty String"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-    }, i18n), {
-        "error": "Required field `lang` is empty.",
-        "warnings": [],
-    }, "Lang");
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+            },
+            i18n
+        ),
+        {
+            error: "Required field `lang` is empty.",
+            warnings: [],
+        },
+        "Lang"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "",
-    }, i18n), {
-        "error": "Required field `lang` is empty.",
-        "warnings": [],
-    }, "Lang Empty String");
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "",
+            },
+            i18n
+        ),
+        {
+            error: "Required field `lang` is empty.",
+            warnings: [],
+        },
+        "Lang Empty String"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        images: ["foo.jpg"],
-    }, i18n), {
-        "error": "Required field `url` is empty.",
-        "warnings": [],
-    }, "URL");
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                images: ["foo.jpg"],
+            },
+            i18n
+        ),
+        {
+            error: "Required field `url` is empty.",
+            warnings: [],
+        },
+        "URL"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "",
-        images: ["foo.jpg"],
-    }, i18n), {
-        "error": "Required field `url` is empty.",
-        "warnings": [],
-    }, "URL Empty String");
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "",
+                images: ["foo.jpg"],
+            },
+            i18n
+        ),
+        {
+            error: "Required field `url` is empty.",
+            warnings: [],
+        },
+        "URL Empty String"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com/",
-    }, i18n), {
-        "error": "Required field `images` is empty.",
-        "warnings": [],
-    }, "Images");
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+            },
+            i18n
+        ),
+        {
+            error: "Required field `images` is empty.",
+            warnings: [],
+        },
+        "Images"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com/",
-        images: [],
-    }, i18n), {
-        "error": "Required field `images` is empty.",
-        "warnings": [],
-    }, "Images Empty Array");
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: [],
+            },
+            i18n
+        ),
+        {
+            error: "Required field `images` is empty.",
+            warnings: [],
+        },
+        "Images Empty Array"
+    );
 });
 
-tap.test("Record.lintData: Recommended Fields", {autoend: true}, (t) => {
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com/",
-        images: ["foo.jpg"],
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com/",
-            images: ["nga/foo.jpg"],
-        },
-        "warnings": [
-            "Recommended field `title` is empty.",
-            "Recommended field `objectType` is empty.",
-        ],
-    }, "Title and objectType recommended.");
-
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com/",
-        images: ["foo.jpg"],
-        title: "",
-        objectType: "",
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com/",
-            images: ["nga/foo.jpg"],
-        },
-        "warnings": [
-            "Recommended field `title` is empty.",
-            "Recommended field `objectType` is empty.",
-        ],
-    }, "Title and objectType recommended.");
-
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com/",
-        images: ["foo.jpg"],
-        title: "Test",
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com/",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-        },
-        "warnings": [
-            "Recommended field `objectType` is empty.",
-        ],
-    }, "objectType recommended.");
-
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com/",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "",
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com/",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-        },
-        "warnings": [
-            "Recommended field `objectType` is empty.",
-        ],
-    }, "objectType recommended.");
-
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com/",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com/",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-            objectType: "painting",
-        },
-        "warnings": [],
-    }, "No recommended.");
-});
-
-tap.test("Record.lintData: Type checking", {autoend: true}, (t) => {
-    t.same(Record.lintData({
-        id: 1234,
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com/",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-    }, i18n), {
-        "error": "Required field `id` is empty.",
-        "warnings": [
-            "`id` is the wrong type. Expected a string.",
-        ],
-    }, "ID");
-
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: 1234,
-        lang: "en",
-        url: "http://google.com/",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-    }, i18n), {
-        "error": "Required field `source` is empty.",
-        "warnings": [
-            "`source` is the wrong type. Expected a string.",
-        ],
-    }, "Source");
-
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: true,
-        url: "http://google.com/",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-    }, i18n), {
-        "error": "Required field `lang` is empty.",
-        "warnings": [
-            "`lang` is the wrong type. Expected a string.",
-        ],
-    }, "Lang");
-
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: {},
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-    }, i18n), {
-        "error": "Required field `url` is empty.",
-        "warnings": [
-            "`url` is the wrong type. Expected a string.",
-        ],
-    }, "URL");
-
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com/",
-        images: {},
-        title: "Test",
-        objectType: "painting",
-    }, i18n), {
-        "error": "Required field `images` is empty.",
-        "warnings": [
-            "Images must be a valid image file name. For example: `image.jpg`.",
-        ],
-    }, "Images");
-
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com/",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-        dates: [
-            {start: "1234", end: 1976},
-        ],
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com/",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-            objectType: "painting",
-            dates: [
-                {start: 1234, end: 1976},
+tap.test("Record.lintData: Recommended Fields", {autoend: true}, t => {
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["foo.jpg"],
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["nga/foo.jpg"],
+            },
+            warnings: [
+                "Recommended field `title` is empty.",
+                "Recommended field `objectType` is empty.",
             ],
         },
-        "warnings": [],
-    }, "Date Start");
+        "Title and objectType recommended."
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com/",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-        dates: [
-            {start: 1234, end: 1976, circa: "foo"},
-        ],
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com/",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-            objectType: "painting",
-            dates: [
-                {start: 1234, end: 1976},
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["foo.jpg"],
+                title: "",
+                objectType: "",
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["nga/foo.jpg"],
+            },
+            warnings: [
+                "Recommended field `title` is empty.",
+                "Recommended field `objectType` is empty.",
             ],
         },
-        "warnings": [
-            "`dates`: `circa` is the wrong type. Expected a boolean.",
-        ],
-    }, "Date Circa");
+        "Title and objectType recommended."
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com/",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-        categories: {},
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com/",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-            objectType: "painting",
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["foo.jpg"],
+                title: "Test",
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+            },
+            warnings: ["Recommended field `objectType` is empty."],
         },
-        "warnings": [
-            "`categories` value is the wrong type. Expected a string.",
-        ],
-    }, "Categories");
+        "objectType recommended."
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com/",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-        categories: [true],
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com/",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-            objectType: "painting",
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "",
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+            },
+            warnings: ["Recommended field `objectType` is empty."],
         },
-        "warnings": [
-            "`categories` value is the wrong type. Expected a string.",
-        ],
-    }, "Categories Values");
+        "objectType recommended."
+    );
+
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+            },
+            warnings: [],
+        },
+        "No recommended."
+    );
 });
 
-tap.test("Record.lintData: Validation", {autoend: true}, (t) => {
-    t.same(Record.lintData({
-        id: "1234/456",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com/",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-    }, i18n), {
-        "error": "Required field `id` is empty.",
-        "warnings": [
-            "IDs can only contain letters, numbers, underscores, and hyphens.",
-        ],
-    }, "ID");
-
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "",
-        url: "http://google.com/",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-    }, i18n), {
-        "error": "Required field `lang` is empty.",
-        "warnings": [],
-    }, "Lang");
-
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http//google.com",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-    }, i18n), {
-        "error": "Required field `url` is empty.",
-        "warnings": [
-            "Field must be properly-formatted URL.",
-        ],
-    }, "URL");
-
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com",
-        images: ["foojpg"],
-        title: "Test",
-        objectType: "painting",
-    }, i18n), {
-        "error": "Required field `images` is empty.",
-        "warnings": [
-            "Images must be a valid image file name. For example: `image.jpg`.",
-        ],
-    }, "Images");
-
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "foo",
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com",
-            images: ["nga/foo.jpg"],
-            title: "Test",
+tap.test("Record.lintData: Type checking", {autoend: true}, t => {
+    t.same(
+        Record.lintData(
+            {
+                id: 1234,
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+            },
+            i18n
+        ),
+        {
+            error: "Required field `id` is empty.",
+            warnings: ["`id` is the wrong type. Expected a string."],
         },
-        "warnings": [
-            "`objectType` must be one of the following types: architecture, " +
-                "decorative arts, drawing, fresco, medal, miniature, mosaic, " +
-                "painting, photo, print, sculpture, stained glass.",
-            "Recommended field `objectType` is empty.",
-        ],
-    }, "objectType");
+        "ID"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-        artists: [{pseudonym: "Test"}],
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-            objectType: "painting",
-            artists: [{pseudonym: "Test"}],
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: 1234,
+                lang: "en",
+                url: "http://google.com/",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+            },
+            i18n
+        ),
+        {
+            error: "Required field `source` is empty.",
+            warnings: ["`source` is the wrong type. Expected a string."],
         },
-        "warnings": [
-            "`artists`: Recommended field `name` is empty.",
-        ],
-    }, "artists");
+        "Source"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-        artists: [{name: "Test"}],
-        dimensions: [{width: 123}],
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-            objectType: "painting",
-            artists: [{name: "Test"}],
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: true,
+                url: "http://google.com/",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+            },
+            i18n
+        ),
+        {
+            error: "Required field `lang` is empty.",
+            warnings: ["`lang` is the wrong type. Expected a string."],
         },
-        "warnings": [
-            "Dimensions must have a unit specified and at least a width " +
-                "or height.",
-        ],
-    }, "dimensions");
+        "Lang"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-        artists: [{name: "Test"}],
-        dimensions: [{unit: "mm"}],
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-            objectType: "painting",
-            artists: [{name: "Test"}],
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: {},
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+            },
+            i18n
+        ),
+        {
+            error: "Required field `url` is empty.",
+            warnings: ["`url` is the wrong type. Expected a string."],
         },
-        "warnings": [
-            "Dimensions must have a unit specified and at least a width " +
-                "or height.",
-        ],
-    }, "dimensions");
+        "URL"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-        artists: [{name: "Test"}],
-        dimensions: [{width: 123, unit: "mm"}],
-        dates: [{circa: true}],
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-            objectType: "painting",
-            artists: [{name: "Test"}],
-            dimensions: [{width: 123, unit: "mm"}],
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: {},
+                title: "Test",
+                objectType: "painting",
+            },
+            i18n
+        ),
+        {
+            error: "Required field `images` is empty.",
+            warnings: [
+                "Images must be a valid image file name. For example: " +
+                    "`image.jpg`.",
+            ],
         },
-        "warnings": [
-            "Dates must have a start or end specified.",
-        ],
-    }, "dates");
+        "Images"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-        artists: [{
-            name: "Test",
-            dates: [{circa: true}],
-        }],
-        dimensions: [{width: 123, unit: "mm"}],
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-            objectType: "painting",
-            artists: [{name: "Test"}],
-            dimensions: [{width: 123, unit: "mm"}],
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                dates: [{start: "1234", end: 1976}],
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                dates: [{start: 1234, end: 1976}],
+            },
+            warnings: [],
         },
-        "warnings": [
-            "`artists`: Dates must have a start or end specified.",
-        ],
-    }, "dates in artists");
+        "Date Start"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-        artists: [{name: "Test"}],
-        dimensions: [{width: 123, unit: "mm"}],
-        dates: [{start: 1456, end: 1457, circa: true}],
-        locations: [{country: "United States"}],
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-            objectType: "painting",
-            artists: [{name: "Test"}],
-            dimensions: [{width: 123, unit: "mm"}],
-            dates: [{start: 1456, end: 1457, circa: true}],
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                dates: [{start: 1234, end: 1976, circa: "foo"}],
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                dates: [{start: 1234, end: 1976}],
+            },
+            warnings: [
+                "`dates`: `circa` is the wrong type. Expected a boolean.",
+            ],
         },
-        "warnings": [
-            "Locations must have a name or city specified.",
-        ],
-    }, "locations");
+        "Date Circa"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-        artists: [{name: "Test"}],
-        dimensions: [{width: 123, unit: "mm"}],
-        dates: [{start: 1456, end: 1457, circa: true}],
-        locations: [{city: "New York City"}],
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-            objectType: "painting",
-            artists: [{name: "Test"}],
-            dimensions: [{width: 123, unit: "mm"}],
-            dates: [{start: 1456, end: 1457, circa: true}],
-            locations: [{city: "New York City"}],
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                categories: {},
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+            },
+            warnings: [
+                "`categories` value is the wrong type. Expected a string.",
+            ],
         },
-        "warnings": [],
-    }, "All pass");
+        "Categories"
+    );
+
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                categories: [true],
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+            },
+            warnings: [
+                "`categories` value is the wrong type. Expected a string.",
+            ],
+        },
+        "Categories Values"
+    );
 });
 
-tap.test("Record.lintData: Conversion", {autoend: true}, (t) => {
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-        artists: ["Test"],
-        dimensions: [{width: 123, unit: "mm"}],
-        dates: [{start: 1456, end: 1457, circa: true}],
-        locations: [{city: "New York City"}],
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-            objectType: "painting",
-            artists: [{name: "Test"}],
-            dimensions: [{width: 123, unit: "mm"}],
-            dates: [{start: 1456, end: 1457, circa: true}],
-            locations: [{city: "New York City"}],
+tap.test("Record.lintData: Validation", {autoend: true}, t => {
+    t.same(
+        Record.lintData(
+            {
+                id: "1234/456",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com/",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+            },
+            i18n
+        ),
+        {
+            error: "Required field `id` is empty.",
+            warnings: [
+                "IDs can only contain letters, numbers, underscores, " +
+                    "and hyphens.",
+            ],
         },
-        "warnings": [],
-    }, "Artists");
+        "ID"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-        artists: [{name: "Test"}],
-        dimensions: ["123 x 100 cm"],
-        dates: [{start: 1456, end: 1457, circa: true}],
-        locations: [{city: "New York City"}],
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-            objectType: "painting",
-            artists: [{name: "Test"}],
-            dimensions: [{
-                "original": "123 x 100 cm",
-                height: 1230,
-                width: 1000,
-                unit: "mm",
-            }],
-            dates: [{start: 1456, end: 1457, circa: true}],
-            locations: [{city: "New York City"}],
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "",
+                url: "http://google.com/",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+            },
+            i18n
+        ),
+        {
+            error: "Required field `lang` is empty.",
+            warnings: [],
         },
-        "warnings": [],
-    }, "Dimensions");
+        "Lang"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-        artists: [{name: "Test"}],
-        dimensions: ["123"],
-        dates: [{start: 1456, end: 1457, circa: true}],
-        locations: [{city: "New York City"}],
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-            objectType: "painting",
-            artists: [{name: "Test"}],
-            dates: [{start: 1456, end: 1457, circa: true}],
-            locations: [{city: "New York City"}],
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http//google.com",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+            },
+            i18n
+        ),
+        {
+            error: "Required field `url` is empty.",
+            warnings: ["Field must be properly-formatted URL."],
         },
-        "warnings": [
-            "Dimensions must have a unit specified and at least a width" +
-                " or height.",
-        ],
-    }, "Dimensions produce warnings");
+        "URL"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-        artists: [{name: "Test"}],
-        dimensions: [{width: 123, unit: "mm"}],
-        dates: ["ca. 1456-1457"],
-        locations: [{city: "New York City"}],
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-            objectType: "painting",
-            artists: [{name: "Test"}],
-            dimensions: [{width: 123, unit: "mm"}],
-            dates: [{
-                start: 1456,
-                end: 1457,
-                circa: true,
-                "original": "ca. 1456-1457",
-            }],
-            locations: [{city: "New York City"}],
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["foojpg"],
+                title: "Test",
+                objectType: "painting",
+            },
+            i18n
+        ),
+        {
+            error: "Required field `images` is empty.",
+            warnings: [
+                "Images must be a valid image file name. For example: " +
+                    "`image.jpg`.",
+            ],
         },
-        "warnings": [],
-    }, "Dates");
+        "Images"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-        artists: [{name: "Test"}],
-        dimensions: [{width: 123, unit: "mm"}],
-        dates: ["blah"],
-        locations: [{city: "New York City"}],
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-            objectType: "painting",
-            artists: [{name: "Test"}],
-            dimensions: [{width: 123, unit: "mm"}],
-            locations: [{city: "New York City"}],
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "foo",
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+            },
+            warnings: [
+                "`objectType` must be one of the following types: " +
+                    "architecture, decorative arts, drawing, fresco, medal, " +
+                    "miniature, mosaic, painting, photo, print, sculpture, " +
+                    "stained glass.",
+                "Recommended field `objectType` is empty.",
+            ],
         },
-        "warnings": [
-            "Dates must have a start or end specified.",
-        ],
-    }, "Dates produce warnings");
+        "objectType"
+    );
 
-    t.same(Record.lintData({
-        id: "1234",
-        type: "artworks",
-        source: "nga",
-        lang: "en",
-        url: "http://google.com",
-        images: ["foo.jpg"],
-        title: "Test",
-        objectType: "painting",
-        artists: [{
-            name: "Test",
-            dates: ["ca. 1456-1457"],
-        }],
-        dimensions: [{width: 123, unit: "mm"}],
-        dates: ["ca. 1456-1457"],
-        locations: [{city: "New York City"}],
-    }, i18n), {
-        data: {
-            id: "1234",
-            type: "artworks",
-            source: "nga",
-            lang: "en",
-            url: "http://google.com",
-            images: ["nga/foo.jpg"],
-            title: "Test",
-            objectType: "painting",
-            artists: [{
-                name: "Test",
-                dates: [{
-                    start: 1456,
-                    end: 1457,
-                    circa: true,
-                    "original": "ca. 1456-1457",
-                }],
-            }],
-            dimensions: [{width: 123, unit: "mm"}],
-            dates: [{
-                start: 1456,
-                end: 1457,
-                circa: true,
-                "original": "ca. 1456-1457",
-            }],
-            locations: [{city: "New York City"}],
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{pseudonym: "Test"}],
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{pseudonym: "Test"}],
+            },
+            warnings: ["`artists`: Recommended field `name` is empty."],
         },
-        "warnings": [],
-    }, "Dates in Artists");
+        "artists"
+    );
+
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+                dimensions: [{width: 123}],
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+            },
+            warnings: [
+                "Dimensions must have a unit specified and at least a width " +
+                    "or height.",
+            ],
+        },
+        "dimensions"
+    );
+
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+                dimensions: [{unit: "mm"}],
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+            },
+            warnings: [
+                "Dimensions must have a unit specified and at least a width " +
+                    "or height.",
+            ],
+        },
+        "dimensions"
+    );
+
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+                dimensions: [{width: 123, unit: "mm"}],
+                dates: [{circa: true}],
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+                dimensions: [{width: 123, unit: "mm"}],
+            },
+            warnings: ["Dates must have a start or end specified."],
+        },
+        "dates"
+    );
+
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [
+                    {
+                        name: "Test",
+                        dates: [{circa: true}],
+                    },
+                ],
+                dimensions: [{width: 123, unit: "mm"}],
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+                dimensions: [{width: 123, unit: "mm"}],
+            },
+            warnings: ["`artists`: Dates must have a start or end specified."],
+        },
+        "dates in artists"
+    );
+
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+                dimensions: [{width: 123, unit: "mm"}],
+                dates: [{start: 1456, end: 1457, circa: true}],
+                locations: [{country: "United States"}],
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+                dimensions: [{width: 123, unit: "mm"}],
+                dates: [{start: 1456, end: 1457, circa: true}],
+            },
+            warnings: ["Locations must have a name or city specified."],
+        },
+        "locations"
+    );
+
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+                dimensions: [{width: 123, unit: "mm"}],
+                dates: [{start: 1456, end: 1457, circa: true}],
+                locations: [{city: "New York City"}],
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+                dimensions: [{width: 123, unit: "mm"}],
+                dates: [{start: 1456, end: 1457, circa: true}],
+                locations: [{city: "New York City"}],
+            },
+            warnings: [],
+        },
+        "All pass"
+    );
+});
+
+tap.test("Record.lintData: Conversion", {autoend: true}, t => {
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: ["Test"],
+                dimensions: [{width: 123, unit: "mm"}],
+                dates: [{start: 1456, end: 1457, circa: true}],
+                locations: [{city: "New York City"}],
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+                dimensions: [{width: 123, unit: "mm"}],
+                dates: [{start: 1456, end: 1457, circa: true}],
+                locations: [{city: "New York City"}],
+            },
+            warnings: [],
+        },
+        "Artists"
+    );
+
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+                dimensions: ["123 x 100 cm"],
+                dates: [{start: 1456, end: 1457, circa: true}],
+                locations: [{city: "New York City"}],
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+                dimensions: [
+                    {
+                        original: "123 x 100 cm",
+                        height: 1230,
+                        width: 1000,
+                        unit: "mm",
+                    },
+                ],
+                dates: [{start: 1456, end: 1457, circa: true}],
+                locations: [{city: "New York City"}],
+            },
+            warnings: [],
+        },
+        "Dimensions"
+    );
+
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+                dimensions: ["123"],
+                dates: [{start: 1456, end: 1457, circa: true}],
+                locations: [{city: "New York City"}],
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+                dates: [{start: 1456, end: 1457, circa: true}],
+                locations: [{city: "New York City"}],
+            },
+            warnings: [
+                "Dimensions must have a unit specified and at least a width" +
+                    " or height.",
+            ],
+        },
+        "Dimensions produce warnings"
+    );
+
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+                dimensions: [{width: 123, unit: "mm"}],
+                dates: ["ca. 1456-1457"],
+                locations: [{city: "New York City"}],
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+                dimensions: [{width: 123, unit: "mm"}],
+                dates: [
+                    {
+                        start: 1456,
+                        end: 1457,
+                        circa: true,
+                        original: "ca. 1456-1457",
+                    },
+                ],
+                locations: [{city: "New York City"}],
+            },
+            warnings: [],
+        },
+        "Dates"
+    );
+
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+                dimensions: [{width: 123, unit: "mm"}],
+                dates: ["blah"],
+                locations: [{city: "New York City"}],
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [{name: "Test"}],
+                dimensions: [{width: 123, unit: "mm"}],
+                locations: [{city: "New York City"}],
+            },
+            warnings: ["Dates must have a start or end specified."],
+        },
+        "Dates produce warnings"
+    );
+
+    t.same(
+        Record.lintData(
+            {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [
+                    {
+                        name: "Test",
+                        dates: ["ca. 1456-1457"],
+                    },
+                ],
+                dimensions: [{width: 123, unit: "mm"}],
+                dates: ["ca. 1456-1457"],
+                locations: [{city: "New York City"}],
+            },
+            i18n
+        ),
+        {
+            data: {
+                id: "1234",
+                type: "artworks",
+                source: "nga",
+                lang: "en",
+                url: "http://google.com",
+                images: ["nga/foo.jpg"],
+                title: "Test",
+                objectType: "painting",
+                artists: [
+                    {
+                        name: "Test",
+                        dates: [
+                            {
+                                start: 1456,
+                                end: 1457,
+                                circa: true,
+                                original: "ca. 1456-1457",
+                            },
+                        ],
+                    },
+                ],
+                dimensions: [{width: 123, unit: "mm"}],
+                dates: [
+                    {
+                        start: 1456,
+                        end: 1457,
+                        circa: true,
+                        original: "ca. 1456-1457",
+                    },
+                ],
+                locations: [{city: "New York City"}],
+            },
+            warnings: [],
+        },
+        "Dates in Artists"
+    );
 });

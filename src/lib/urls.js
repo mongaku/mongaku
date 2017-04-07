@@ -19,19 +19,18 @@ module.exports = (options: Options) => {
                     base = urlBase.replace("://", `://${lang}.`);
                 }
 
-            // Otherwise fall back to using a query string
+                // Otherwise fall back to using a query string
             } else {
                 if (path.indexOf(`lang=`) >= 0) {
                     path = path.replace(/lang=\w+/, `lang=${lang}`);
-
                 } else {
                     const prefix = /\?/.test(path) ? "&" : "?";
                     suffix = `${prefix}lang=${lang}`;
                 }
             }
-
-        // Strip the lang= query param if you're generating a default lang URL
         } else if (lang === defaultLocale && !options.usei18nSubdomain) {
+            // Strip the lang= query param if you're generating a default
+            // lang URL
             path = path.replace(/lang=\w+&?/, "").replace(/\?$/, "");
         }
 

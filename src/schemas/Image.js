@@ -92,41 +92,42 @@ const Image = new db.schema({
     },
 
     // Similar images (as determined by image similarity)
-    similarImages: [{
-        // The ID of the visually similar image
-        _id: {
-            type: String,
-            required: true,
-        },
+    similarImages: [
+        {
+            // The ID of the visually similar image
+            _id: {
+                type: String,
+                required: true,
+            },
 
-        // The similarity score between the images
-        score: {
-            type: Number,
-            required: true,
-            min: 1,
+            // The similarity score between the images
+            score: {
+                type: Number,
+                required: true,
+                min: 1,
+            },
         },
-    }],
+    ],
 });
 
 Image.methods = {
     getFilePath() {
-        return path.resolve(this.getSource().getDirBase(),
-            `images/${this.hash}.jpg`);
+        return path.resolve(
+            this.getSource().getDirBase(),
+            `images/${this.hash}.jpg`
+        );
     },
 
     getOriginalURL() {
-        return urls.genData(
-            `/${this.source}/images/${this.hash}.jpg`);
+        return urls.genData(`/${this.source}/images/${this.hash}.jpg`);
     },
 
     getScaledURL() {
-        return urls.genData(
-            `/${this.source}/scaled/${this.hash}.jpg`);
+        return urls.genData(`/${this.source}/scaled/${this.hash}.jpg`);
     },
 
     getThumbURL() {
-        return urls.genData(
-            `/${this.source}/thumbs/${this.hash}.jpg`);
+        return urls.genData(`/${this.source}/thumbs/${this.hash}.jpg`);
     },
 
     getSource() {
@@ -136,16 +137,22 @@ Image.methods = {
     },
 
     relatedRecords(callback) {
-        async.map(Object.keys(options.types), (type, callback) => {
-            record(type).find({images: this._id}, callback);
-        }, (err, recordsList) => {
-            if (err) {
-                return callback(err);
-            }
+        async.map(
+            Object.keys(options.types),
+            (type, callback) => {
+                record(type).find({images: this._id}, callback);
+            },
+            (err, recordsList) => {
+                if (err) {
+                    return callback(err);
+                }
 
-            callback(null, recordsList.reduce(
-                (all, records) => all.concat(records)));
-        });
+                callback(
+                    null,
+                    recordsList.reduce((all, records) => all.concat(records))
+                );
+            }
+        );
     },
 
     canIndex() {
@@ -163,28 +170,36 @@ Image.methods = {
                 return callback(err);
             }
 
-            async.mapLimit(matches, 1, (match, callback) => {
-                // Skip matches for the image itself
-                if (match.id === this.hash) {
-                    return callback();
-                }
-
-                models("Image").findOne({
-                    hash: match.id,
-                }, (err, image) => {
-                    if (err || !image) {
+            async.mapLimit(
+                matches,
+                1,
+                (match, callback) => {
+                    // Skip matches for the image itself
+                    if (match.id === this.hash) {
                         return callback();
                     }
 
-                    callback(null, {
-                        _id: image._id,
-                        score: match.score,
-                    });
-                });
-            }, (err, matches) => {
-                this.similarImages = matches.filter((match) => match);
-                callback();
-            });
+                    models("Image").findOne(
+                        {
+                            hash: match.id,
+                        },
+                        (err, image) => {
+                            if (err || !image) {
+                                return callback();
+                            }
+
+                            callback(null, {
+                                _id: image._id,
+                                score: match.score,
+                            });
+                        }
+                    );
+                },
+                (err, matches) => {
+                    this.similarImages = matches.filter(match => match);
+                    callback();
+                }
+            );
         });
     },
 
@@ -199,7 +214,7 @@ Image.methods = {
 
             const file = this.getFilePath();
 
-            similar.add(file, this.hash, (err) => {
+            similar.add(file, this.hash, err => {
                 // Ignore small images, we just won't index them
                 /* istanbul ignore if */
                 if (err && err.type !== "IMAGE_SIZE_TOO_SMALL") {
@@ -220,31 +235,45 @@ Image.methods = {
                 return callback(err);
             }
 
-            async.eachLimit(records, 1, (record, callback) => {
-                record.updateSimilarity((err) => {
-                    /* istanbul ignore if */
-                    if (err) {
-                        return callback(err);
-                    }
+            async.eachLimit(
+                records,
+                1,
+                (record, callback) => {
+                    record.updateSimilarity(err => {
+                        /* istanbul ignore if */
+                        if (err) {
+                            return callback(err);
+                        }
 
-                    record.save(callback);
-                });
-            }, callback);
+                        record.save(callback);
+                    });
+                },
+                callback
+            );
         });
     },
 
     linkToRecords(callback) {
         const imageId = this._id;
 
-        async.eachSeries(Object.keys(options.types), (type, callback) => {
-            record(type).find({missingImages: imageId}, (err, records) => {
-                async.eachLimit(records, 4, (record, callback) => {
-                    record.images.push(imageId);
-                    record.missingImages.remove(imageId);
-                    record.save(callback);
-                }, callback);
-            });
-        }, callback);
+        async.eachSeries(
+            Object.keys(options.types),
+            (type, callback) => {
+                record(type).find({missingImages: imageId}, (err, records) => {
+                    async.eachLimit(
+                        records,
+                        4,
+                        (record, callback) => {
+                            record.images.push(imageId);
+                            record.missingImages.remove(imageId);
+                            record.save(callback);
+                        },
+                        callback
+                    );
+                });
+            },
+            callback
+        );
     },
 };
 
@@ -305,7 +334,6 @@ Image.statics = {
 
                     if (creating) {
                         model = new Image(data);
-
                     } else {
                         warnings.push("NEW_VERSION");
                         model.set(data);
@@ -315,7 +343,7 @@ Image.statics = {
                         warnings.push("TOO_SMALL");
                     }
 
-                    model.validate((err) => {
+                    model.validate(err => {
                         /* istanbul ignore if */
                         if (err) {
                             return callback(new Error("ERROR_SAVING"));
@@ -337,64 +365,70 @@ Image.statics = {
     },
 
     indexSimilarity(callback) {
-        models("Image").findOne({
-            needsSimilarIndex: true,
-        }, (err, image) => {
-            if (err || !image) {
-                return callback(err);
-            }
-
-            console.log("Indexing Similarity", image._id);
-
-            image.indexSimilarity((err) => {
-                /* istanbul ignore if */
-                if (err) {
-                    console.error(err);
+        models("Image").findOne(
+            {
+                needsSimilarIndex: true,
+            },
+            (err, image) => {
+                if (err || !image) {
                     return callback(err);
                 }
 
-                image.needsSimilarIndex = false;
-                image.needsSimilarUpdate = true;
-                image.save((err) => callback(err, true));
-            });
-        });
-    },
+                console.log("Indexing Similarity", image._id);
 
-    updateSimilarity(callback) {
-        models("Image").findOne({
-            needsSimilarUpdate: true,
-        }, (err, image) => {
-            if (err || !image) {
-                return callback(err);
-            }
-
-            console.log("Updating Similarity", image._id);
-
-            image.updateSimilarity((err) => {
-                /* istanbul ignore if */
-                if (err) {
-                    console.error(err);
-                    return callback(err);
-                }
-
-                image.needsSimilarUpdate = false;
-                image.save((err) => {
+                image.indexSimilarity(err => {
                     /* istanbul ignore if */
                     if (err) {
+                        console.error(err);
                         return callback(err);
                     }
 
-                    image.updateRelatedRecords((err) => {
+                    image.needsSimilarIndex = false;
+                    image.needsSimilarUpdate = true;
+                    image.save(err => callback(err, true));
+                });
+            }
+        );
+    },
+
+    updateSimilarity(callback) {
+        models("Image").findOne(
+            {
+                needsSimilarUpdate: true,
+            },
+            (err, image) => {
+                if (err || !image) {
+                    return callback(err);
+                }
+
+                console.log("Updating Similarity", image._id);
+
+                image.updateSimilarity(err => {
+                    /* istanbul ignore if */
+                    if (err) {
+                        console.error(err);
+                        return callback(err);
+                    }
+
+                    image.needsSimilarUpdate = false;
+                    image.save(err => {
                         /* istanbul ignore if */
                         if (err) {
                             return callback(err);
                         }
 
-                        callback(null, true);
+                        image.updateRelatedRecords(err => {
+                            /* istanbul ignore if */
+                            if (err) {
+                                return callback(err);
+                            }
+
+                            callback(null, true);
+                        });
                     });
                 });
-            });
-        });
+            }
+        );
     },
 
     queueBatchSimilarityUpdate(batchID, callback) {
@@ -402,7 +436,7 @@ Image.statics = {
             {batch: batchID},
             {needsSimilarIndex: true},
             {multi: true},
-            (err) => {
+            err => {
                 /* istanbul ignore if */
                 if (err) {
                     return callback(err);
@@ -436,9 +470,8 @@ const images = {
 
         stream
             .stream("jpg")
-            .on("error", (err) => {
-                callback(new Error(
-                    `Error converting file to JPEG: ${err}`));
+            .on("error", err => {
+                callback(new Error(`Error converting file to JPEG: ${err}`));
             })
             .pipe(fs.createWriteStream(outputFile))
             .on("finish", () => {
@@ -476,9 +509,14 @@ const images = {
         const thumbFile = path.resolve(baseDir, "thumbs", fileName);
         const size = this.parseSize(options.imageThumbSize);
 
-        this.convert(fs.createReadStream(imageFile), thumbFile, (img) => {
-            return img.resize(size.width, size.height);
-        }, callback);
+        this.convert(
+            fs.createReadStream(imageFile),
+            thumbFile,
+            img => {
+                return img.resize(size.width, size.height);
+            },
+            callback
+        );
     },
 
     makeScaled(baseDir, fileName, callback) {
@@ -486,30 +524,39 @@ const images = {
         const scaledFile = path.resolve(baseDir, "scaled", fileName);
         const scaled = this.parseSize(options.imageScaledSize);
 
-        this.convert(fs.createReadStream(imageFile), scaledFile, (img) => {
-            return img.resize(scaled.width, scaled.height, ">");
-        }, callback);
+        this.convert(
+            fs.createReadStream(imageFile),
+            scaledFile,
+            img => {
+                return img.resize(scaled.width, scaled.height, ">");
+            },
+            callback
+        );
     },
 
     makeThumbs(fullPath, callback) {
         const baseDir = path.resolve(path.dirname(fullPath), "..");
         const fileName = path.basename(fullPath);
 
-        async.series([
-            (callback) => this.makeThumb(baseDir, fileName, callback),
-            (callback) => this.makeScaled(baseDir, fileName, callback),
-        ], (err) => {
-            /* istanbul ignore if */
-            if (err) {
-                return callback(
-                    new Error(`Error converting thumbnails: ${err}`));
-            }
+        async.series(
+            [
+                callback => this.makeThumb(baseDir, fileName, callback),
+                callback => this.makeScaled(baseDir, fileName, callback),
+            ],
+            err => {
+                /* istanbul ignore if */
+                if (err) {
+                    return callback(
+                        new Error(`Error converting thumbnails: ${err}`)
+                    );
+                }
 
-            callback(null, [
-                path.resolve(baseDir, "thumbs", fileName),
-                path.resolve(baseDir, "scaled", fileName),
-            ]);
-        });
+                callback(null, [
+                    path.resolve(baseDir, "thumbs", fileName),
+                    path.resolve(baseDir, "scaled", fileName),
+                ]);
+            }
+        );
     },
 
     hashImage(sourceFile, callback) {
@@ -528,35 +575,46 @@ const images = {
         let imageFile;
         const existsError = new Error("Already exists.");
 
-        async.series([
-            // Generate a hash for the incoming image file
-            (callback) => {
-                this.hashImage(sourceFile, (err, imageHash) => {
-                    /* istanbul ignore if */
-                    if (err) {
-                        return callback(err);
-                    }
+        async.series(
+            [
+                // Generate a hash for the incoming image file
+                callback => {
+                    this.hashImage(sourceFile, (err, imageHash) => {
+                        /* istanbul ignore if */
+                        if (err) {
+                            return callback(err);
+                        }
 
-                    hash = imageHash;
-                    imageFile = path.resolve(baseDir, "images",
-                        `${hash}.jpg`);
+                        hash = imageHash;
+                        imageFile = path.resolve(
+                            baseDir,
+                            "images",
+                            `${hash}.jpg`
+                        );
 
-                    // Avoid doing the rest of this if it already exists
-                    fs.stat(imageFile, (err, stats) => {
-                        callback(stats ? existsError : null);
+                        // Avoid doing the rest of this if it already exists
+                        fs.stat(imageFile, (err, stats) => {
+                            callback(stats ? existsError : null);
+                        });
                     });
-                });
-            },
+                },
 
-            // Convert the image into our standard format
-            (callback) => this.convert(fs.createReadStream(sourceFile),
-                imageFile, null, callback),
+                // Convert the image into our standard format
+                callback =>
+                    this.convert(
+                        fs.createReadStream(sourceFile),
+                        imageFile,
+                        null,
+                        callback
+                    ),
 
-            // Generate thumbnails based on the image
-            (callback) => this.makeThumbs(imageFile, callback),
-        ], (err) => {
-            callback(err === existsError ? null : err, hash);
-        });
+                // Generate thumbnails based on the image
+                callback => this.makeThumbs(imageFile, callback),
+            ],
+            err => {
+                callback(err === existsError ? null : err, hash);
+            }
+        );
     },
 };
 

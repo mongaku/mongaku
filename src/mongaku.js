@@ -1,4 +1,4 @@
-require("./server/server")((err) => {
+require("./server/server")(err => {
     if (err) {
         console.error(err);
     } else {

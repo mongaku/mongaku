@@ -6,20 +6,22 @@ const tap = require("tap");
 const init = require("../init");
 const {i18n, RecordImport, mockFS} = init;
 
-tap.test("getURL", {autoend: true}, (t) => {
+tap.test("getURL", {autoend: true}, t => {
     const batch = init.getRecordBatch();
-    t.equal(batch.getURL(i18n.lang),
+    t.equal(
+        batch.getURL(i18n.lang),
         "/artworks/source/test/admin?records=test/started",
-        "Get URL");
+        "Get URL"
+    );
 });
 
-tap.test("getSource", {autoend: true}, (t) => {
+tap.test("getSource", {autoend: true}, t => {
     const batch = init.getRecordBatch();
     const source = init.getSource();
     t.equal(batch.getSource(), source, "Get Source");
 });
 
-tap.test("getCurState", {autoend: true}, (t) => {
+tap.test("getCurState", {autoend: true}, t => {
     const batch = init.getRecordBatch();
     const state = batch.getCurState();
     t.equal(state.id, "started", "Get State ID");
@@ -32,22 +34,26 @@ tap.test("getCurState", {autoend: true}, (t) => {
     t.equal(otherState.name(i18n), "Syncing similarity...", "Get State Name");
 });
 
-tap.test("getNextState", {autoend: true}, (t) => {
+tap.test("getNextState", {autoend: true}, t => {
     const batch = init.getRecordBatch();
     const state = batch.getNextState();
     t.equal(state.id, "process.started", "Get State ID");
     t.equal(state.name(i18n), "Processing...", "Get State Name");
 });
 
-tap.test("canAdvance", {autoend: true}, (t) => {
+tap.test("canAdvance", {autoend: true}, t => {
     const batch = init.getRecordBatch();
     t.equal(batch.canAdvance(), true, "Check if state can advance");
 });
 
-tap.test("getError", {autoend: true}, (t) => {
+tap.test("getError", {autoend: true}, t => {
     const batch = init.getRecordBatch();
-    const errors = ["ABANDONED", "ERROR_READING_DATA", "ERROR_SAVING",
-        "ERROR_DELETING"];
+    const errors = [
+        "ABANDONED",
+        "ERROR_READING_DATA",
+        "ERROR_SAVING",
+        "ERROR_DELETING",
+    ];
     for (const error of errors) {
         batch.error = error;
         t.ok(RecordImport.getError(i18n, batch.error), error);
@@ -55,7 +61,7 @@ tap.test("getError", {autoend: true}, (t) => {
     }
 });
 
-tap.test("saveState", (t) => {
+tap.test("saveState", t => {
     const batch = init.getRecordBatch();
     batch.saveState("process.started", () => {
         const state = batch.getCurState();
@@ -65,7 +71,7 @@ tap.test("saveState", (t) => {
     });
 });
 
-tap.test("abandon", (t) => {
+tap.test("abandon", t => {
     const batch = init.getRecordBatch();
     batch.abandon(() => {
         t.equal(batch.state, "error", "Get State ID");
@@ -74,11 +80,11 @@ tap.test("abandon", (t) => {
     });
 });
 
-tap.test("setResults", (t) => {
+tap.test("setResults", t => {
     const batch = init.getRecordBatch();
     const dataFile = path.resolve(process.cwd(), "testData", "default.json");
-    mockFS((callback) => {
-        batch.setResults([fs.createReadStream(dataFile)], (err) => {
+    mockFS(callback => {
+        batch.setResults([fs.createReadStream(dataFile)], err => {
             t.error(err, "Error should be empty.");
             t.equal(batch.results.length, 6, "Check number of results");
             for (const result of batch.results) {
@@ -92,20 +98,23 @@ tap.test("setResults", (t) => {
     });
 });
 
-tap.test("setResults (with error)", (t) => {
+tap.test("setResults (with error)", t => {
     const error = [
         "Parse error on line 2:",
-        "[    {        id: \"1234\",        ",
+        '[    {        id: "1234",        ',
         "--------------^",
         "Expecting 'STRING', '}', got 'undefined'",
     ].join("\n");
 
     const batch = init.getRecordBatch();
-    const dataFile = path.resolve(process.cwd(), "testData",
-        "default-error.json");
+    const dataFile = path.resolve(
+        process.cwd(),
+        "testData",
+        "default-error.json"
+    );
 
-    mockFS((callback) => {
-        batch.setResults([fs.createReadStream(dataFile)], (err) => {
+    mockFS(callback => {
+        batch.setResults([fs.createReadStream(dataFile)], err => {
             t.error(err, "Error should be empty.");
             t.equal(batch.error, error);
             t.equal(batch.getError(i18n), error);
@@ -117,7 +126,7 @@ tap.test("setResults (with error)", (t) => {
     });
 });
 
-tap.test("processRecords", (t) => {
+tap.test("processRecords", t => {
     const batch = init.getRecordBatch();
     const dataFile = path.resolve(process.cwd(), "testData", "default.json");
     const expected = [
@@ -127,58 +136,63 @@ tap.test("processRecords", (t) => {
             result: "changed",
             warnings: [],
             diff: {
-                "url": [
-                    "http://google.com",
-                    "http://yahoo.com",
-                ],
-                "locations": {
-                    "0": [{"city": "New York City 2"}],
-                    "_t": "a",
-                    "_0": [{"city": "New York City"}, 0, 0],
+                url: ["http://google.com", "http://yahoo.com"],
+                locations: {
+                    "0": [{city: "New York City 2"}],
+                    _t: "a",
+                    _0: [{city: "New York City"}, 0, 0],
                 },
-                "dates": {
-                    "0": [{
-                        "circa": true,
-                        "start": 1455,
-                        "end": 1457,
-                        "original": "ca. 1455-1457",
-                    }],
-                    "_t": "a",
-                    "_0": [{
-                        "start": 1456,
-                        "end": 1457,
-                        "circa": true,
-                        "original": "ca. 1456-1457",
-                    }, 0, 0],
+                dates: {
+                    "0": [
+                        {
+                            circa: true,
+                            start: 1455,
+                            end: 1457,
+                            original: "ca. 1455-1457",
+                        },
+                    ],
+                    _t: "a",
+                    _0: [
+                        {
+                            start: 1456,
+                            end: 1457,
+                            circa: true,
+                            original: "ca. 1456-1457",
+                        },
+                        0,
+                        0,
+                    ],
                 },
-                "dimensions": {
-                    "0": [{"width": 123, "height": 140, "unit": "mm"}],
-                    "_t": "a",
-                    "_0": [{"width": 123, "height": 130, "unit": "mm"}, 0, 0],
+                dimensions: {
+                    "0": [{width: 123, height: 140, unit: "mm"}],
+                    _t: "a",
+                    _0: [{width: 123, height: 130, unit: "mm"}, 0, 0],
                 },
-                "artists": {
+                artists: {
                     "0": {
-                        "dates": {
-                            "0": [{
-                                "circa": true,
-                                "start": 1456,
-                                "end": 1458,
-                                "original": "ca. 1456-1458",
-                            }],
-                            "_t": "a",
-                            "_0": [
+                        dates: {
+                            "0": [
                                 {
-                                    "start": 1456,
-                                    "end": 1457,
-                                    "circa": true,
-                                    "original": "ca. 1456-1457",
+                                    circa: true,
+                                    start: 1456,
+                                    end: 1458,
+                                    original: "ca. 1456-1458",
+                                },
+                            ],
+                            _t: "a",
+                            _0: [
+                                {
+                                    start: 1456,
+                                    end: 1457,
+                                    circa: true,
+                                    original: "ca. 1456-1457",
                                 },
                                 0,
                                 0,
                             ],
                         },
                     },
-                    "_t": "a",
+                    _t: "a",
                 },
             },
         },
@@ -199,12 +213,15 @@ tap.test("processRecords", (t) => {
         {model: "test/1237", result: "deleted"},
     ];
 
-    mockFS((callback) => {
-        batch.setResults([fs.createReadStream(dataFile)], (err) => {
+    mockFS(callback => {
+        batch.setResults([fs.createReadStream(dataFile)], err => {
             t.error(err);
             batch.processRecords(() => {
-                t.equal(batch.results.length, expected.length,
-                    "Check number of results");
+                t.equal(
+                    batch.results.length,
+                    expected.length,
+                    "Check number of results"
+                );
                 expected.forEach((expected, i) => {
                     const result = batch.results[i];
                     t.equal(result.state, "process.completed");
@@ -219,7 +236,7 @@ tap.test("processRecords", (t) => {
     });
 });
 
-tap.test("importRecords", (t) => {
+tap.test("importRecords", t => {
     const batch = init.getRecordBatch();
     const dataFile = path.resolve(process.cwd(), "testData", "default.json");
     const expected = [
@@ -247,13 +264,16 @@ tap.test("importRecords", (t) => {
         {model: "test/1237", result: "deleted"},
     ];
 
-    mockFS((callback) => {
-        batch.setResults([fs.createReadStream(dataFile)], (err) => {
+    mockFS(callback => {
+        batch.setResults([fs.createReadStream(dataFile)], err => {
             t.error(err);
             batch.processRecords(() => {
                 batch.importRecords(() => {
-                    t.equal(batch.results.length, expected.length,
-                        "Check number of results");
+                    t.equal(
+                        batch.results.length,
+                        expected.length,
+                        "Check number of results"
+                    );
                     expected.forEach((expected, i) => {
                         const result = batch.results[i];
                         t.equal(result.state, "import.completed");
@@ -269,15 +289,14 @@ tap.test("importRecords", (t) => {
     });
 });
 
-tap.test("updateSimilarity (empty results)", (t) => {
+tap.test("updateSimilarity (empty results)", t => {
     const batch = init.getRecordBatch();
 
     const recordMap = init.getRecords();
-    const records = Object.keys(recordMap)
-        .map((id) => recordMap[id]);
+    const records = Object.keys(recordMap).map(id => recordMap[id]);
 
     batch.updateSimilarity(() => {
-        records.forEach((record) => {
+        records.forEach(record => {
             t.equal(record.needsSimilarUpdate, false);
         });
 
@@ -285,20 +304,19 @@ tap.test("updateSimilarity (empty results)", (t) => {
     });
 });
 
-tap.test("updateSimilarity", (t) => {
+tap.test("updateSimilarity", t => {
     const batch = init.getRecordBatch();
     const dataFile = path.resolve(process.cwd(), "testData", "default.json");
 
     const recordMap = init.getRecords();
-    const records = Object.keys(recordMap)
-        .map((id) => recordMap[id]);
+    const records = Object.keys(recordMap).map(id => recordMap[id]);
 
-    mockFS((callback) => {
-        batch.setResults([fs.createReadStream(dataFile)], (err) => {
+    mockFS(callback => {
+        batch.setResults([fs.createReadStream(dataFile)], err => {
             t.error(err);
             batch.processRecords(() => {
                 batch.updateSimilarity(() => {
-                    records.forEach((record) => {
+                    records.forEach(record => {
                         t.equal(record.needsSimilarUpdate, true);
                     });
 
@@ -310,15 +328,15 @@ tap.test("updateSimilarity", (t) => {
     });
 });
 
-tap.test("getFilteredResults", {autoend: true}, (t) => {
+tap.test("getFilteredResults", {autoend: true}, t => {
     const results = init.getRecordBatch().getFilteredResults();
     t.same(results, {
-        "unprocessed": [],
-        "created": [],
-        "changed": [],
-        "deleted": [],
-        "errors": [],
-        "warnings": [],
+        unprocessed: [],
+        created: [],
+        changed: [],
+        deleted: [],
+        errors: [],
+        warnings: [],
     });
 
     const batch = new RecordImport({
@@ -353,60 +371,57 @@ tap.test("getFilteredResults", {autoend: true}, (t) => {
     });
 
     t.same(batch.getFilteredResults(), {
-        "unprocessed": [],
-        "changed": [
+        unprocessed: [],
+        changed: [
             {
-                "model": "test/1235",
-                "result": "changed",
-                "warnings": [],
+                model: "test/1235",
+                result: "changed",
+                warnings: [],
             },
         ],
-        "created": [
+        created: [
             {
-                "model": "test/9234",
-                "result": "created",
-                "warnings": [],
+                model: "test/9234",
+                result: "created",
+                warnings: [],
             },
             {
-                "model": "test/2234",
-                "result": "created",
-                "warnings": [
-                    "Recommended field `objectType` is empty.",
-                ],
+                model: "test/2234",
+                result: "created",
+                warnings: ["Recommended field `objectType` is empty."],
             },
         ],
-        "deleted": [
+        deleted: [
             {
-                "model": "test/1236",
-                "result": "deleted",
+                model: "test/1236",
+                result: "deleted",
             },
             {
-                "model": "test/1237",
-                "result": "deleted",
-            },
-        ],
-        "errors": [
-            {
-                "error": "Required field `images` is empty.",
-                "result": "error",
-            },
-            {
-                "error": "Required field `id` is empty.",
-                "result": "error",
+                model: "test/1237",
+                result: "deleted",
             },
         ],
-        "warnings": [
+        errors: [
             {
-                "model": "test/2234",
-                "result": "created",
-                "warnings": [
-                    "Recommended field `objectType` is empty.",
-                ],
+                error: "Required field `images` is empty.",
+                result: "error",
+            },
+            {
+                error: "Required field `id` is empty.",
+                result: "error",
+            },
+        ],
+        warnings: [
+            {
+                model: "test/2234",
+                result: "created",
+                warnings: ["Recommended field `objectType` is empty."],
             },
         ],
     });
 });
 
+// prettier-ignore
 tap.test("RecordImport.advance", (t) => {
     const checkStates = (batches, states) => {
         t.equal(batches.length, states.length);

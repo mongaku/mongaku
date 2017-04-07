@@ -20,7 +20,6 @@ module.exports = function(app: express$Application) {
             searchPage(req, res, next, {
                 url: Source.getSource(params.source).url,
             });
-
         } catch (e) {
             return res.status(404).render("Error", {
                 title: i18n.gettext("Source not found."),
@@ -36,10 +35,13 @@ module.exports = function(app: express$Application) {
             for (const typeName in options.types) {
                 const searchURLs = options.types[typeName].searchURLs;
                 for (const path in searchURLs) {
-                    app.get(`/:type${path}`, cache(1),
+                    app.get(
+                        `/:type${path}`,
+                        cache(1),
                         (req: express$Request, res, next) => {
                             return searchURLs[path](req, res, next, search);
-                        });
+                        }
+                    );
                 }
             }
         },

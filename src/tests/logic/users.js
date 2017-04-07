@@ -3,17 +3,20 @@ const request = require("request").defaults({jar: true});
 
 require("../init");
 
-const login = (callback) => {
-    request.post({
-        url: "http://localhost:3000/login",
-        form: {
-            email: "test@test.com",
-            password: "test",
+const login = callback => {
+    request.post(
+        {
+            url: "http://localhost:3000/login",
+            form: {
+                email: "test@test.com",
+                password: "test",
+            },
         },
-    }, callback);
+        callback
+    );
 };
 
-tap.test("Login Page", (t) => {
+tap.test("Login Page", t => {
     const url = "http://localhost:3000/login";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
@@ -22,7 +25,7 @@ tap.test("Login Page", (t) => {
     });
 });
 
-tap.test("Logout Page", (t) => {
+tap.test("Logout Page", t => {
     const url = "http://localhost:3000/logout";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
@@ -31,7 +34,7 @@ tap.test("Logout Page", (t) => {
     });
 });
 
-tap.test("Login then Logout", (t) => {
+tap.test("Login then Logout", t => {
     login(() => {
         const url = "http://localhost:3000/logout";
         request.get(url, (err, res) => {
@@ -42,16 +45,19 @@ tap.test("Login then Logout", (t) => {
     });
 });
 
-tap.test("Incorrect Login", (t) => {
-    request.post({
-        url: "http://localhost:3000/login",
-        form: {
-            email: "foo",
-            password: "bar",
+tap.test("Incorrect Login", t => {
+    request.post(
+        {
+            url: "http://localhost:3000/login",
+            form: {
+                email: "foo",
+                password: "bar",
+            },
         },
-    }, (err, res) => {
-        t.error(err, "Error should be empty.");
-        t.equal(res.statusCode, 302);
-        t.end();
-    });
+        (err, res) => {
+            t.error(err, "Error should be empty.");
+            t.equal(res.statusCode, 302);
+            t.end();
+        }
+    );
 });

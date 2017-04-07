@@ -2,7 +2,7 @@ const db = require("./db");
 
 const models = {};
 
-module.exports = (name) => {
+module.exports = name => {
     if (models[name]) {
         return models[name];
     }

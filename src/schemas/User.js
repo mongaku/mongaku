@@ -28,10 +28,12 @@ const User = new db.schema({
 
     // The sources to which the user is an administrator
     sourceAdmin: {
-        type: [{
-            type: String,
-            ref: "Source",
-        }],
+        type: [
+            {
+                type: String,
+                ref: "Source",
+            },
+        ],
     },
 
     // If this user is a site administrator
@@ -44,8 +46,7 @@ const User = new db.schema({
 
 const makeSalt = (): string => bcrypt.genSaltSync(10);
 
-User
-    .virtual("password")
+User.virtual("password")
     .set(function(password: string) {
         this._password = password;
         this.salt = makeSalt();
@@ -64,7 +65,6 @@ User.path("email").validate(function(email, callback) {
         User.findOne({email: email}, (err, user) => {
             callback(!err && !user);
         });
-
     } else {
         /* istanbul ignore next */
         callback(true);
@@ -90,8 +90,7 @@ User.methods = {
     },
 
     canEditSource(source: string) {
-        return this.siteAdmin ||
-            this.sourceAdmin.indexOf(source) >= 0;
+        return this.siteAdmin || this.sourceAdmin.indexOf(source) >= 0;
     },
 
     getEditableSourcesByType(): {[type: string]: Array<string>} {

@@ -11,12 +11,11 @@ module.exports = (app: express$Application) => {
 
         /* istanbul ignore next */
         const host = headers["x-forwarded-host"] || req.get("host") || "";
-        let locale = options.usei18nSubdomain ?
-            // Set the locale based upon the subdomain
-            /^\w*/.exec(host)[0] :
-
-            // Set the locale based upon the ?lang= query string
-            query.lang;
+        let locale = options.usei18nSubdomain
+            ? // Set the locale based upon the subdomain
+              /^\w*/.exec(host)[0]
+            : // Set the locale based upon the ?lang= query string
+              query.lang;
 
         // Fall back to the default locale if one isn't given, or it's invalid
         if (!options.locales[locale]) {

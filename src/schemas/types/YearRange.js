@@ -1,20 +1,19 @@
 const yearRange = require("yearrange");
 
-const numRange = (bucket) => bucket.to ?
-    `${bucket.from || 0}-${bucket.to}` :
-    `${bucket.from}+`;
+const numRange = bucket =>
+    (bucket.to ? `${bucket.from || 0}-${bucket.to}` : `${bucket.from}+`);
 
 const defaultRanges = [
-    { to: 999 },
-    { from: 1000, to: 1099 },
-    { from: 1100, to: 1199 },
-    { from: 1200, to: 1299 },
-    { from: 1300, to: 1399 },
-    { from: 1400, to: 1499 },
-    { from: 1500, to: 1599 },
-    { from: 1600, to: 1699 },
-    { from: 1700, to: 1799 },
-    { from: 1800 },
+    {to: 999},
+    {from: 1000, to: 1099},
+    {from: 1100, to: 1199},
+    {from: 1200, to: 1299},
+    {from: 1300, to: 1399},
+    {from: 1400, to: 1499},
+    {from: 1500, to: 1599},
+    {from: 1600, to: 1699},
+    {from: 1700, to: 1799},
+    {from: 1800},
 ];
 
 const YearRange = function(options) {
@@ -63,7 +62,7 @@ YearRange.prototype = {
     filter(value) {
         // NOTE(jeresig): There has got to be a better way to handle this.
         const start = value.start || -10000;
-        const end = value.end || (new Date).getYear() + 1900;
+        const end = value.end || new Date().getYear() + 1900;
 
         const startInside = {
             bool: {
@@ -133,11 +132,7 @@ YearRange.prototype = {
 
         return {
             bool: {
-                should: [
-                    startInside,
-                    endInside,
-                    contains,
-                ],
+                should: [startInside, endInside, contains],
             },
         };
     },
@@ -145,9 +140,9 @@ YearRange.prototype = {
     facet() {
         return {
             [this.options.name]: {
-                title: (i18n) => this.options.title(i18n),
+                title: i18n => this.options.title(i18n),
 
-                facet: (value) => {
+                facet: value => {
                     let ranges = this.options.ranges || defaultRanges;
 
                     if (value) {
@@ -173,16 +168,17 @@ YearRange.prototype = {
                     };
                 },
 
-                formatBuckets: (buckets) => buckets.map((bucket) => ({
-                    text: numRange(bucket),
-                    count: bucket.doc_count,
-                    url: {
-                        [this.options.name]: {
-                            start: bucket.from,
-                            end: bucket.to,
+                formatBuckets: buckets =>
+                    buckets.map(bucket => ({
+                        text: numRange(bucket),
+                        count: bucket.doc_count,
+                        url: {
+                            [this.options.name]: {
+                                start: bucket.from,
+                                end: bucket.to,
+                            },
                         },
-                    },
-                })),
+                    })),
             },
         };
     },
@@ -281,10 +277,10 @@ YearRange.prototype = {
 
         return {
             type: [YearRangeSchema],
-            convert: (obj) => typeof obj === "string" ?
-                yearRange.parse(obj) : obj,
-            validateArray: (val) => val.start || val.end,
-            validationMsg: (i18n) =>
+            convert: obj =>
+                (typeof obj === "string" ? yearRange.parse(obj) : obj),
+            validateArray: val => val.start || val.end,
+            validationMsg: i18n =>
                 i18n.gettext("Dates must have a start or end specified."),
         };
     },

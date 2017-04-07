@@ -87,8 +87,17 @@ type YearRange = BaseModelType & {
     },
 };
 
-export type ModelType = Dimension | FixedString | LinkedRecord | Location |
-    Name | SimpleDate | SimpleNumber | SimpleString | URL | YearRange;
+export type ModelType =
+    | Dimension
+    | FixedString
+    | LinkedRecord
+    | Location
+    | Name
+    | SimpleDate
+    | SimpleNumber
+    | SimpleString
+    | URL
+    | YearRange;
 
 type TypeOptions = {
     getSearchPlaceholder: string,

@@ -16,10 +16,10 @@ module.exports = function(app: express$Application) {
 
     const {auth, canEdit} = require("./shared/auth");
 
-    const cloneView = ({
-        i18n,
-        params: {type, source, recordName},
-    }: express$Request, res) => {
+    const cloneView = (
+        {i18n, params: {type, source, recordName}}: express$Request,
+        res
+    ) => {
         const Record = record(type);
         const model = metadata.model(type);
         const id = `${source}/${recordName}`;
@@ -34,7 +34,8 @@ module.exports = function(app: express$Application) {
             const recordTitle = oldRecord.getTitle(i18n);
             const title = i18n.format(
                 i18n.gettext("Cloning '%(recordTitle)s'"),
-                    {recordTitle});
+                {recordTitle}
+            );
 
             const data = {
                 type,
@@ -42,8 +43,8 @@ module.exports = function(app: express$Application) {
                 lang: oldRecord.lang,
             };
 
-            const cloneFields = options.types[type].cloneFields ||
-                Object.keys(model);
+            const cloneFields =
+                options.types[type].cloneFields || Object.keys(model);
 
             for (const typeName of cloneFields) {
                 data[typeName] = oldRecord[typeName];
@@ -71,12 +72,11 @@ module.exports = function(app: express$Application) {
         });
     };
 
-    const createView = ({
-        user,
-        params: {type},
-        query: {source},
-        i18n,
-    }: express$Request, res, next) => {
+    const createView = (
+        {user, params: {type}, query: {source}, i18n}: express$Request,
+        res,
+        next
+    ) => {
         if (!user) {
             return next();
         }
@@ -90,18 +90,17 @@ module.exports = function(app: express$Application) {
         }
 
         const Record = record(type);
-        const title = i18n.format(
-            i18n.gettext("%(recordName)s: Create New"), {
-                recordName: options.types[type].name(i18n),
-            });
+        const title = i18n.format(i18n.gettext("%(recordName)s: Create New"), {
+            recordName: options.types[type].name(i18n),
+        });
 
         Record.getFacets(i18n, (err, globalFacets) => {
             res.render("EditRecord", {
                 title,
                 source,
                 sources: sources
-                    .map((source) => Source.getSource(source))
-                    .map((source) => cloneModel(source, i18n)),
+                    .map(source => Source.getSource(source))
+                    .map(source => cloneModel(source, i18n)),
                 mode: "create",
                 type,
                 globalFacets,
@@ -125,15 +124,14 @@ module.exports = function(app: express$Application) {
         form.parse(req, (err, fields, files) => {
             /* istanbul ignore if */
             if (err) {
-                return next(new Error(
-                    i18n.gettext("Error processing upload.")));
+                return next(
+                    new Error(i18n.gettext("Error processing upload."))
+                );
             }
 
-            const images = Array.isArray(files.images) ?
-                files.images :
-                files.images ?
-                    [files.images] :
-                    [];
+            const images = Array.isArray(files.images)
+                ? files.images
+                : files.images ? [files.images] : [];
 
             for (const prop in model) {
                 props[prop] = fields[prop];
@@ -150,9 +148,7 @@ module.exports = function(app: express$Application) {
                 source: fields.source,
                 type,
                 // Hack to help pass validator
-                images: images
-                    .map((file) => file.name)
-                    .filter((file) => file),
+                images: images.map(file => file.name).filter(file => file),
             });
 
             const Record = record(type);
@@ -170,70 +166,85 @@ module.exports = function(app: express$Application) {
                 source: newRecord.source,
             };
 
-            async.mapSeries(images, (file, callback) => {
-                if (!file.path || file.size <= 0) {
-                    return process.nextTick(callback);
-                }
-
-                Image.fromFile(mockBatch, file, (err, image) => {
-                    // TODO: Display better error message
-                    if (err) {
-                        return callback(
-                            new Error(i18n.format(i18n.gettext(
-                                "Error processing image: %(image)s"),
-                                    {image: file.name})));
+            async.mapSeries(
+                images,
+                (file, callback) => {
+                    if (!file.path || file.size <= 0) {
+                        return process.nextTick(callback);
                     }
 
-                    image.save((err) => {
-                        /* istanbul ignore if */
+                    Image.fromFile(mockBatch, file, (err, image) => {
+                        // TODO: Display better error message
                         if (err) {
-                            return callback(err);
+                            return callback(
+                                new Error(
+                                    i18n.format(
+                                        i18n.gettext(
+                                            "Error processing image: %(image)s"
+                                        ),
+                                        {image: file.name}
+                                    )
+                                )
+                            );
                         }
 
-                        callback(null, image);
+                        image.save(err => {
+                            /* istanbul ignore if */
+                            if (err) {
+                                return callback(err);
+                            }
+
+                            callback(null, image);
+                        });
                     });
-                });
-            }, (err, unfilteredImages) => {
-                if (err) {
-                    return next(err);
-                }
-
-                const filteredImages = unfilteredImages
-                    .filter((image) => image);
-                newRecord.images = filteredImages
-                    .map((image) => image._id);
-
-                if (typeOptions.hasImages()) {
-                    if (filteredImages.length === 0) {
-                        // NOTE(jeresig): We shouldn't get to this point,
-                        // hopefully we'll error out before then.
-                        return next(new Error(
-                            "No valid images found, images are required."));
-                    }
-
-                    newRecord.defaultImageHash = filteredImages[0].hash;
-                }
-
-                newRecord.save((err) => {
+                },
+                (err, unfilteredImages) => {
                     if (err) {
-                        console.error(`Error saving record: ${err}`);
-                        return next(new Error(
-                            i18n.gettext("Error saving record.")));
+                        return next(err);
                     }
 
-                    const finish = () =>
-                        res.redirect(newRecord.getURL(lang));
+                    const filteredImages = unfilteredImages.filter(
+                        image => image
+                    );
+                    newRecord.images = filteredImages.map(image => image._id);
 
-                    if (newRecord.images.length === 0 || !hasImageSearch) {
-                        return finish();
+                    if (typeOptions.hasImages()) {
+                        if (filteredImages.length === 0) {
+                            // NOTE(jeresig): We shouldn't get to this point,
+                            // hopefully we'll error out before then.
+                            return next(
+                                new Error(
+                                    "No valid images found, " +
+                                        "images are required."
+                                )
+                            );
+                        }
+
+                        newRecord.defaultImageHash = filteredImages[0].hash;
                     }
 
-                    // If new images were added then we need to update
-                    // their similarity and the similarity of all other
-                    // images, as well.
-                    Image.queueBatchSimilarityUpdate(mockBatch._id, finish);
-                });
-            });
+                    newRecord.save(err => {
+                        if (err) {
+                            console.error(`Error saving record: ${err}`);
+                            return next(
+                                new Error(i18n.gettext("Error saving record."))
+                            );
+                        }
+
+                        const finish = () =>
+                            res.redirect(newRecord.getURL(lang));
+
+                        if (newRecord.images.length === 0 || !hasImageSearch) {
+                            return finish();
+                        }
+
+                        // If new images were added then we need to update
+                        // their similarity and the similarity of all other
+                        // images, as well.
+                        Image.queueBatchSimilarityUpdate(mockBatch._id, finish);
+                    });
+                }
+            );
         });
     };
 
@@ -241,8 +252,12 @@ module.exports = function(app: express$Application) {
         routes() {
             app.get("/:type/create", auth, canEdit, createView);
             app.post("/:type/create", auth, canEdit, create);
-            app.get("/:type/:source/:recordName/clone", auth, canEdit,
-                cloneView);
+            app.get(
+                "/:type/:source/:recordName/clone",
+                auth,
+                canEdit,
+                cloneView
+            );
         },
     };
 };

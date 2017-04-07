@@ -1,6 +1,6 @@
 const async = require("async");
 const jdp = require("jsondiffpatch").create({
-    objectHash: (obj) => obj._id,
+    objectHash: obj => obj._id,
 });
 
 const recordModel = require("../lib/record");
@@ -23,15 +23,18 @@ Record.schema = {
     // Source ID
     id: {
         type: String,
-        validate: (v) => /^[a-z0-9_-]+$/i.test(v),
-        validationMsg: (i18n) => i18n.gettext("IDs can only contain " +
-            "letters, numbers, underscores, and hyphens."),
+        validate: v => /^[a-z0-9_-]+$/i.test(v),
+        validationMsg: i18n =>
+            i18n.gettext(
+                "IDs can only contain " +
+                    "letters, numbers, underscores, and hyphens."
+            ),
         required: true,
         es_indexed: true,
     },
 
     // The type of the record
-    type:  {
+    type: {
         type: String,
         required: true,
         es_indexed: true,
@@ -87,18 +90,24 @@ Record.schema = {
     // The images associated with the record
     images: {
         type: [{type: String, ref: "Image"}],
-        validateArray: (v) => /^\w+\/[a-z0-9_-]+\.jpe?g$/i.test(v),
-        validationMsg: (i18n) => i18n.gettext("Images must be a valid " +
-            "image file name. For example: `image.jpg`."),
+        validateArray: v => /^\w+\/[a-z0-9_-]+\.jpe?g$/i.test(v),
+        validationMsg: i18n =>
+            i18n.gettext(
+                "Images must be a valid " +
+                    "image file name. For example: `image.jpg`."
+            ),
         convert: (name, data) => `${data.source}/${name}`,
     },
 
     // Images associated with the record that haven't been uploaded yet
     missingImages: {
         type: [String],
-        validateArray: (v) => /^\w+\/[a-z0-9_-]+\.jpe?g$/i.test(v),
-        validationMsg: (i18n) => i18n.gettext("Images must be a valid " +
-            "image file name. For example: `image.jpg`."),
+        validateArray: v => /^\w+\/[a-z0-9_-]+\.jpe?g$/i.test(v),
+        validationMsg: i18n =>
+            i18n.gettext(
+                "Images must be a valid " +
+                    "image file name. For example: `image.jpg`."
+            ),
     },
 
     // Keep track of if the record needs to update its record similarity
@@ -108,32 +117,34 @@ Record.schema = {
     },
 
     // Computed by looking at the results of images.similarImages
-    similarRecords: [{
-        _id: String,
+    similarRecords: [
+        {
+            _id: String,
 
-        record: {
-            type: String,
-            required: true,
-        },
+            record: {
+                type: String,
+                required: true,
+            },
 
-        images: {
-            type: [String],
-            required: true,
-        },
+            images: {
+                type: [String],
+                required: true,
+            },
 
-        source: {
-            type: String,
-            es_indexed: true,
-            required: true,
-        },
+            source: {
+                type: String,
+                es_indexed: true,
+                required: true,
+            },
 
-        score: {
-            type: Number,
-            es_indexed: true,
-            required: true,
-            min: 1,
+            score: {
+                type: Number,
+                es_indexed: true,
+                required: true,
+                min: 1,
+            },
         },
-    }],
+    ],
 };
 
 Record.methods = {
@@ -163,7 +174,8 @@ Record.methods = {
         }
 
         return urls.genData(
-            `/${this.source}/images/${this.defaultImageHash}.jpg`);
+            `/${this.source}/images/${this.defaultImageHash}.jpg`
+        );
     },
 
     getThumbURL() {
@@ -172,7 +184,8 @@ Record.methods = {
         }
 
         return urls.genData(
-            `/${this.source}/thumbs/${this.defaultImageHash}.jpg`);
+            `/${this.source}/thumbs/${this.defaultImageHash}.jpg`
+        );
     },
 
     getTitle(i18n) {
@@ -184,25 +197,34 @@ Record.methods = {
     },
 
     getImages(callback) {
-        async.mapLimit(this.images, 4, (id, callback) => {
-            if (typeof id !== "string") {
-                return process.nextTick(() => callback(null, id));
-            }
-            models("Image").findById(id, callback);
-        }, callback);
+        async.mapLimit(
+            this.images,
+            4,
+            (id, callback) => {
+                if (typeof id !== "string") {
+                    return process.nextTick(() => callback(null, id));
+                }
+                models("Image").findById(id, callback);
+            },
+            callback
+        );
     },
 
     getDynamicValues(i18n, callback) {
         const model = metadata.model(this.type);
 
-        async.mapValues(model, (propModel, propName, callback) => {
-            const value = this[propName];
-            if (propModel.loadDynamicValue && value !== undefined) {
-                propModel.loadDynamicValue(value, i18n, callback);
-            } else {
-                callback(null, value);
-            }
-        }, callback);
+        async.mapValues(
+            model,
+            (propModel, propName, callback) => {
+                const value = this[propName];
+                if (propModel.loadDynamicValue && value !== undefined) {
+                    propModel.loadDynamicValue(value, i18n, callback);
+                } else {
+                    callback(null, value);
+                }
+            },
+            callback
+        );
     },
 
     getValueURLs(lang) {
@@ -212,10 +234,11 @@ Record.methods = {
         for (const propName in model) {
             const value = this[propName];
 
-            const urlFromValue = (value) => searchURL(lang, {
-                type: this.type,
-                [propName]: value,
-            });
+            const urlFromValue = value =>
+                searchURL(lang, {
+                    type: this.type,
+                    [propName]: value,
+                });
 
             if (Array.isArray(value)) {
                 ret[propName] = value.map(urlFromValue);
@@ -241,7 +264,7 @@ Record.methods = {
 
             // Calculate record matches before saving
             const matches = images
-                .map((image) => image.similarImages)
+                .map(image => image.similarImages)
                 .reduce((a, b) => a.concat(b), []);
             const scores = matches.reduce((obj, match) => {
                 obj[match._id] = Math.max(match.score, obj[match._id] || 0);
@@ -253,70 +276,79 @@ Record.methods = {
                 return callback();
             }
 
-            const matchIds = matches.map((match) => match._id);
-            const query = matches.map((match) => ({
+            const matchIds = matches.map(match => match._id);
+            const query = matches.map(match => ({
                 images: match._id,
             }));
 
-            recordModel(this.type).find({
-                $or: query,
-                _id: {$ne: this._id},
-            }, (err, records) => {
-                /* istanbul ignore if */
-                if (err) {
-                    return callback(err);
+            recordModel(this.type).find(
+                {
+                    $or: query,
+                    _id: {$ne: this._id},
+                },
+                (err, records) => {
+                    /* istanbul ignore if */
+                    if (err) {
+                        return callback(err);
+                    }
+
+                    this.similarRecords = records
+                        .map(similar => {
+                            const score = similar.images
+                                .map(image => scores[image] || 0)
+                                .reduce((a, b) => a + b);
+
+                            return {
+                                _id: similar._id,
+                                record: similar._id,
+                                images: similar.images.filter(
+                                    id => matchIds.indexOf(id) >= 0
+                                ),
+                                score,
+                                source: similar.source,
+                            };
+                        })
+                        .filter(similar => similar.score > 0)
+                        .sort((a, b) => b.score - a.score);
+
+                    this.needsSimilarUpdate = false;
+                    callback();
                 }
-
-                this.similarRecords = records
-                    .map((similar) => {
-                        const score = similar.images
-                            .map((image) => scores[image] || 0)
-                            .reduce((a, b) => a + b);
-
-                        return {
-                            _id: similar._id,
-                            record: similar._id,
-                            images: similar.images
-                                .filter((id) => matchIds.indexOf(id) >= 0),
-                            score,
-                            source: similar.source,
-                        };
-                    })
-                    .filter((similar) => similar.score > 0)
-                    .sort((a, b) => b.score - a.score);
-
-                this.needsSimilarUpdate = false;
-                callback();
-            });
+            );
         });
     },
 
     loadImages(loadSimilarRecords, callback) {
-        async.parallel([
-            (callback) => {
-                this.getImages((err, images) => {
-                    // We filter out any invalid/un-found images
-                    // TODO: We should log out some details on when this
-                    // happens (hopefully never).
-                    this.images = images.filter((image) => !!image);
-                    callback();
-                });
-            },
+        async.parallel(
+            [
+                callback => {
+                    this.getImages((err, images) => {
+                        // We filter out any invalid/un-found images
+                        // TODO: We should log out some details on when this
+                        // happens (hopefully never).
+                        this.images = images.filter(image => !!image);
+                        callback();
+                    });
+                },
 
-            (callback) => {
-                if (!loadSimilarRecords) {
-                    return process.nextTick(callback);
-                }
+                callback => {
+                    if (!loadSimilarRecords) {
+                        return process.nextTick(callback);
+                    }
 
-                async.mapLimit(this.similarRecords, 4,
-                    (similar, callback) => {
-                        if (similar.recordModel) {
-                            return process.nextTick(() =>
-                                callback(null, similar));
-                        }
+                    async.mapLimit(
+                        this.similarRecords,
+                        4,
+                        (similar, callback) => {
+                            if (similar.recordModel) {
+                                return process.nextTick(() =>
+                                    callback(null, similar)
+                                );
+                            }
 
-                        recordModel(this.type).findById(similar.record,
-                            (err, record) => {
+                            recordModel(
+                                this.type
+                            ).findById(similar.record, (err, record) => {
                                 /* istanbul ignore if */
                                 if (err || !record) {
                                     return callback();
@@ -325,21 +357,34 @@ Record.methods = {
                                 similar.recordModel = record;
                                 callback(null, similar);
                             });
-                    }, (err, similar) => {
-                        // We filter out any invalid/un-found records
-                        // TODO: We should log out some details on when this
-                        // happens (hopefully never).
-                        this.similarRecords =
-                            similar.filter((similar) => !!similar);
-                        callback();
-                    });
-            },
-        ], callback);
+                        },
+                        (err, similar) => {
+                            // We filter out any invalid/un-found records
+                            // TODO: We should log out some details on when this
+                            // happens (hopefully never).
+                            this.similarRecords = similar.filter(
+                                similar => !!similar
+                            );
+                            callback();
+                        }
+                    );
+                },
+            ],
+            callback
+        );
     },
 };
 
-const internal = ["_id", "__v", "created", "modified", "defaultImageHash",
-    "batch", "needsSimilarUpdate", "similarRecords"];
+const internal = [
+    "_id",
+    "__v",
+    "created",
+    "modified",
+    "defaultImageHash",
+    "batch",
+    "needsSimilarUpdate",
+    "similarRecords",
+];
 
 const getExpectedType = (options, value) => {
     if (Array.isArray(options.type)) {
@@ -355,8 +400,9 @@ const getExpectedType = (options, value) => {
     }
 
     if (options.type === Date) {
-        return (typeof value === "string" || value instanceof Date) ?
-            false : "date";
+        return typeof value === "string" || value instanceof Date
+            ? false
+            : "date";
     }
 
     // Defaults to type of String
@@ -373,7 +419,7 @@ const stripProp = (obj, name) => {
     for (const prop in obj) {
         const value = obj[prop];
         if (Array.isArray(value)) {
-            value.forEach((item) => stripProp(item, name));
+            value.forEach(item => stripProp(item, name));
         } else if (typeof value === "object") {
             stripProp(value, name);
         }
@@ -405,97 +451,114 @@ Record.statics = {
         Record.findById(recordId, (err, record) => {
             const creating = !record;
 
-            async.mapLimit(data.images || [], 2, (imageId, callback) => {
-                Image.findById(imageId, (err, image) => {
-                    if (!image) {
-                        const fileName = imageId.replace(/^\w+[/]/, "");
-                        missingImages.push(imageId);
-                        warnings.push(i18n.format(i18n.gettext(
-                            "Image file not found: %(fileName)s"),
-                            {fileName}));
-                    }
-
-                    callback(null, image);
-                });
-            }, (err, images) => {
-                /* istanbul ignore if */
-                if (err) {
-                    return callback(new Error(i18n.gettext(
-                        "Error accessing image data.")));
-                }
-
-                if (typeOptions.hasImages()) {
-                    // Filter out any missing images
-                    const filteredImages = images.filter((image) => !!image);
-
-                    if (filteredImages.length === 0) {
-                        const errMsg = i18n.gettext("No images found.");
-
-                        if (typeOptions.imagesRequired) {
-                            return callback(new Error(errMsg));
+            async.mapLimit(
+                data.images || [],
+                2,
+                (imageId, callback) => {
+                    Image.findById(imageId, (err, image) => {
+                        if (!image) {
+                            const fileName = imageId.replace(/^\w+[\/]/, "");
+                            missingImages.push(imageId);
+                            warnings.push(
+                                i18n.format(
+                                    i18n.gettext(
+                                        "Image file not found: %(fileName)s"
+                                    ),
+                                    {fileName}
+                                )
+                            );
                         }
 
-                        warnings.push(errMsg);
-
-                    } else {
-                        data.defaultImageHash = filteredImages[0].hash;
-                    }
-
-                    data.images = filteredImages.map((image) => image._id);
-                    data.missingImages = missingImages;
-                }
-
-                let model = record;
-                let original;
-
-                if (creating) {
-                    model = new Record(data);
-                } else {
-                    original = model.toJSON();
-                    model.set(data);
-
-                    // Delete missing fields
-                    const {schema} = Record;
-
-                    for (const field in schema.paths) {
-                        // Skip internal fields
-                        if (internal.indexOf(field) >= 0) {
-                            continue;
-                        }
-
-                        if (data[field] === undefined && model[field] &&
-                                (model[field].length === undefined ||
-                                    model[field].length > 0)) {
-                            model[field] = undefined;
-                        }
-                    }
-                }
-
-                model.validate((err) => {
+                        callback(null, image);
+                    });
+                },
+                (err, images) => {
                     /* istanbul ignore if */
                     if (err) {
-                        const msg = i18n.gettext(
-                            "There was an error with the data format.");
-                        const errors = Object.keys(err.errors)
-                            .map((path) => err.errors[path].message)
-                            .join(", ");
-                        return callback(new Error(`${msg} ${errors}`));
+                        return callback(
+                            new Error(
+                                i18n.gettext("Error accessing image data.")
+                            )
+                        );
                     }
 
-                    if (!creating) {
-                        model.diff = stripProp(
-                            jdp.diff(original, model.toJSON()), "_id");
+                    if (typeOptions.hasImages()) {
+                        // Filter out any missing images
+                        const filteredImages = images.filter(image => !!image);
+
+                        if (filteredImages.length === 0) {
+                            const errMsg = i18n.gettext("No images found.");
+
+                            if (typeOptions.imagesRequired) {
+                                return callback(new Error(errMsg));
+                            }
+
+                            warnings.push(errMsg);
+                        } else {
+                            data.defaultImageHash = filteredImages[0].hash;
+                        }
+
+                        data.images = filteredImages.map(image => image._id);
+                        data.missingImages = missingImages;
                     }
 
-                    callback(null, model, warnings, creating);
-                });
-            });
+                    let model = record;
+                    let original;
+
+                    if (creating) {
+                        model = new Record(data);
+                    } else {
+                        original = model.toJSON();
+                        model.set(data);
+
+                        // Delete missing fields
+                        const {schema} = Record;
+
+                        for (const field in schema.paths) {
+                            // Skip internal fields
+                            if (internal.indexOf(field) >= 0) {
+                                continue;
+                            }
+
+                            if (
+                                data[field] === undefined &&
+                                model[field] &&
+                                (model[field].length === undefined ||
+                                    model[field].length > 0)
+                            ) {
+                                model[field] = undefined;
+                            }
+                        }
+                    }
+
+                    model.validate(err => {
+                        /* istanbul ignore if */
+                        if (err) {
+                            const msg = i18n.gettext(
+                                "There was an error with the data format."
+                            );
+                            const errors = Object.keys(err.errors)
+                                .map(path => err.errors[path].message)
+                                .join(", ");
+                            return callback(new Error(`${msg} ${errors}`));
+                        }
+
+                        if (!creating) {
+                            model.diff = stripProp(
+                                jdp.diff(original, model.toJSON()),
+                                "_id"
+                            );
+                        }
+
+                        callback(null, model, warnings, creating);
+                    });
+                }
+            );
         });
     },
 
     lintData(data, i18n, optionalSchema) {
-        const schema = optionalSchema ||
-            recordModel(this.getType()).schema;
+        const schema = optionalSchema || recordModel(this.getType()).schema;
 
         const cleaned = {};
         const warnings = [];
@@ -505,8 +568,12 @@ Record.statics = {
             const options = schema.path(field);
 
             if (!options || internal.indexOf(field) >= 0) {
-                warnings.push(i18n.format(i18n.gettext(
-                    "Unrecognized field `%(field)s`."), {field}));
+                warnings.push(
+                    i18n.format(
+                        i18n.gettext("Unrecognized field `%(field)s`."),
+                        {field}
+                    )
+                );
                 continue;
             }
         }
@@ -520,8 +587,12 @@ Record.statics = {
             let value = data && data[field];
             const options = schema.path(field).options;
 
-            if (value !== "" && value !== null && value !== undefined &&
-                    (value.length === undefined || value.length > 0)) {
+            if (
+                value !== "" &&
+                value !== null &&
+                value !== undefined &&
+                (value.length === undefined || value.length > 0)
+            ) {
                 // Coerce single items that should be arrays into arrays
                 if (Array.isArray(options.type) && !Array.isArray(value)) {
                     value = [value];
@@ -536,57 +607,74 @@ Record.statics = {
 
                 if (expectedType) {
                     value = null;
-                    warnings.push(i18n.format(i18n.gettext(
-                        "`%(field)s` is the wrong type. Expected a " +
-                        "%(type)s."), {field, type: expectedType}));
-
+                    warnings.push(
+                        i18n.format(
+                            i18n.gettext(
+                                "`%(field)s` is the wrong type. Expected a " +
+                                    "%(type)s."
+                            ),
+                            {field, type: expectedType}
+                        )
+                    );
                 } else if (Array.isArray(options.type)) {
                     // Convert the value to its expected form, if a
                     // conversion method exists.
                     if (options.convert) {
-                        value = value.map((obj) =>
-                            options.convert(obj, data));
+                        value = value.map(obj => options.convert(obj, data));
                     }
 
                     if (options.type[0].type) {
-                        value = value.filter((entry) => {
-                            const expectedType =
-                                getExpectedType(options.type[0], entry);
+                        value = value.filter(entry => {
+                            const expectedType = getExpectedType(
+                                options.type[0],
+                                entry
+                            );
 
                             if (expectedType) {
-                                warnings.push(i18n.format(i18n.gettext(
-                                    "`%(field)s` value is the wrong type." +
-                                        " Expected a %(type)s."),
-                                    {field, type: expectedType}));
+                                warnings.push(
+                                    i18n.format(
+                                        i18n.gettext(
+                                            "`%(field)s` value is the wrong " +
+                                                "type. Expected a %(type)s."
+                                        ),
+                                        {field, type: expectedType}
+                                    )
+                                );
                                 return undefined;
                             }
 
                             return entry;
                         });
                     } else {
-                        value = value.map((entry) => {
-                            const results = this.lintData(entry, i18n,
-                                options.type[0]);
+                        value = value
+                            .map(entry => {
+                                const results = this.lintData(
+                                    entry,
+                                    i18n,
+                                    options.type[0]
+                                );
 
-                            if (results.error) {
-                                warnings.push(
-                                    `\`${field}\`: ${results.error}`);
-                                return undefined;
-                            }
+                                if (results.error) {
+                                    warnings.push(
+                                        `\`${field}\`: ${results.error}`
+                                    );
+                                    return undefined;
+                                }
 
-                            for (const warning of results.warnings) {
-                                warnings.push(
-                                    `\`${field}\`: ${warning}`);
-                            }
+                                for (const warning of results.warnings) {
+                                    warnings.push(`\`${field}\`: ${warning}`);
+                                }
 
-                            return results.data;
-                        }).filter((entry) => !!entry);
+                                return results.data;
+                            })
+                            .filter(entry => !!entry);
                     }
 
                     // Validate the array entries
                     if (options.validateArray) {
-                        const results = value.filter((entry) =>
-                            options.validateArray(entry));
+                        const results = value.filter(entry =>
+                            options.validateArray(entry)
+                        );
 
                         if (value.length !== results.length) {
                             warnings.push(options.validationMsg(i18n));
@@ -594,7 +682,6 @@ Record.statics = {
 
                         value = results;
                     }
-
                 } else {
                     // Validate the value
                     if (options.validate && !options.validate(value)) {
@@ -604,16 +691,27 @@ Record.statics = {
                 }
             }
 
-            if (value === null || value === undefined || value === "" ||
-                    value.length === 0) {
+            if (
+                value === null ||
+                value === undefined ||
+                value === "" ||
+                value.length === 0
+            ) {
                 if (options.required) {
-                    error = i18n.format(i18n.gettext(
-                        "Required field `%(field)s` is empty."), {field});
+                    error = i18n.format(
+                        i18n.gettext("Required field `%(field)s` is empty."),
+                        {field}
+                    );
                     break;
                 } else if (options.recommended) {
-                    warnings.push(i18n.format(i18n.gettext(
-                        "Recommended field `%(field)s` is empty."),
-                        {field}));
+                    warnings.push(
+                        i18n.format(
+                            i18n.gettext(
+                                "Recommended field `%(field)s` is empty."
+                            ),
+                            {field}
+                        )
+                    );
                 }
             } else {
                 cleaned[field] = value;
@@ -628,30 +726,33 @@ Record.statics = {
     },
 
     updateSimilarity(callback) {
-        recordModel(this.getType()).findOne({
-            needsSimilarUpdate: true,
-        }, (err, record) => {
-            if (err || !record) {
-                return callback(err);
-            }
-
-            record.updateSimilarity((err) => {
-                /* istanbul ignore if */
-                if (err) {
-                    console.error(err);
+        recordModel(this.getType()).findOne(
+            {
+                needsSimilarUpdate: true,
+            },
+            (err, record) => {
+                if (err || !record) {
                     return callback(err);
                 }
 
-                record.save((err) => {
+                record.updateSimilarity(err => {
                     /* istanbul ignore if */
                     if (err) {
+                        console.error(err);
                         return callback(err);
                     }
 
-                    callback(null, true);
+                    record.save(err => {
+                        /* istanbul ignore if */
+                        if (err) {
+                            return callback(err);
+                        }
+
+                        callback(null, true);
+                    });
                 });
-            });
-        });
+            }
+        );
     },
 
     getFacets(i18n, callback) {
@@ -663,28 +764,33 @@ Record.statics = {
 
         if (this.facetCache[lang]) {
             return process.nextTick(() =>
-                callback(null, this.facetCache[lang]));
+                callback(null, this.facetCache[lang])
+            );
         }
 
         const search = require("../logic/shared/search");
 
-        search({
-            type: this.getType(),
-            noRedirect: true,
-        }, {i18n}, (err, results) => {
-            if (err) {
-                return callback(err);
+        search(
+            {
+                type: this.getType(),
+                noRedirect: true,
+            },
+            {i18n},
+            (err, results) => {
+                if (err) {
+                    return callback(err);
+                }
+
+                const facets = {};
+
+                for (const facet of results.facets) {
+                    facets[facet.field] = facet.buckets;
+                }
+
+                this.facetCache[lang] = facets;
+                callback(null, facets);
             }
-
-            const facets = {};
-
-            for (const facet of results.facets) {
-                facets[facet.field] = facet.buckets;
-            }
-
-            this.facetCache[lang] = facets;
-            callback(null, facets);
-        });
+        );
     },
 };
 

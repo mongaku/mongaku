@@ -38,20 +38,26 @@ const Value = ({
 
     const title = getTitle(stringValue, values);
 
-    return <a href={urlValue}>
-        {title}
-    </a>;
+    return (
+        <a href={urlValue}>
+            {title}
+        </a>
+    );
 };
 
 const Values = (props: Props & {stringValues: Array<string>}) => {
     const {stringValues, url} = props;
 
-    return <span>
-        {stringValues.map((value, i) => <span key={i}>
-            <Value {...props} stringValue={value} urlValue={url[i]} />
-            {stringValues.length - 1 === i ? "" : ", "}
-        </span>)}
-    </span>;
+    return (
+        <span>
+            {stringValues.map((value, i) => (
+                <span key={i}>
+                    <Value {...props} stringValue={value} urlValue={url[i]} />
+                    {stringValues.length - 1 === i ? "" : ", "}
+                </span>
+            ))}
+        </span>
+    );
 };
 
 const FixedStringView = (props: Props) => {

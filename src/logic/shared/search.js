@@ -66,192 +66,214 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
     }
 
     // Query for the records in Elasticsearch
-    record(values.type).search({
-        bool: {
-            must: filters,
+    record(values.type).search(
+        {
+            bool: {
+                must: filters,
+            },
         },
-    }, {
-        size: values.rows,
-        from: values.start,
-        aggs: aggregations,
-        sort,
-        hydrate: true,
-    }, (err, results) => {
-        /* istanbul ignore if */
-        if (err) {
-            return callback(new Error(err.message));
-        }
-
-        // The number of the last item in this result set
-        const end = values.start + results.hits.hits.length;
-
-        // The link to the previous page of search results
-        const prevStart = values.start - values.rows;
-        const prevLink = (values.start > 0 ? searchURL(i18n.lang,
-            Object.assign({}, values, {
-                start: (prevStart > 0 ? prevStart : ""),
-            }), true) : "");
-
-        // The link to the next page of the search results
-        const nextStart = values.start + values.rows;
-        const nextLink = (end < results.hits.total ? searchURL(i18n.lang,
-            Object.assign({}, values, {
-                start: nextStart,
-            }), true) : "");
-
-        // Construct a nicer form of the facet data to feed in to
-        // the templates
-        const facetData = [];
-
-        if (results.aggregations) {
-            const typeOptions = options.types[type];
-            const minFacetCount = typeOptions.minFacetCount || 1;
-
-            for (const name in aggregations) {
-                const aggregation = results.aggregations[name];
-                const facet = typeFacets[name];
-                const buckets = facet.formatBuckets(aggregation.buckets, i18n)
-                    .filter((bucket) => {
-                        const url = Object.assign({}, values);
-                        for (const param in bucket.url) {
-                            const curValue = url[param];
-                            const value = bucket.url[param];
-
-                            if (curValue &&
-                                    !typeQueries[param].filterMultiple) {
-                                return false;
-                            }
-
-                            if (Array.isArray(curValue)) {
-                                if (curValue.includes(value)) {
-                                    return false;
-                                }
-                                url[param] = curValue.slice(0);
-                                url[param].push(value);
-                            } else if (curValue) {
-                                if (curValue === value) {
-                                    return false;
-                                }
-                                url[param] = [curValue, value];
-                            } else {
-                                url[param] = value;
-                            }
-                        }
-                        bucket.url = searchURL(i18n.lang, url);
-                        return bucket.count >= minFacetCount;
-                    });
-
-                // Skip facets that won't filter anything
-                if (buckets.length <= 1) {
-                    continue;
-                }
-
-                facetData.push({
-                    field: name,
-                    name: facet.title(i18n),
-                    buckets,
-                });
+        {
+            size: values.rows,
+            from: values.start,
+            aggs: aggregations,
+            sort,
+            hydrate: true,
+        },
+        (err, results) => {
+            /* istanbul ignore if */
+            if (err) {
+                return callback(new Error(err.message));
             }
-        }
 
-        // Construct a list of the possible sorts, their translated
-        // names and their selected state, for the template.
-        const sorts = options.types[values.type].sorts;
-        const sortData = Object.keys(sorts).map((id) => ({
-            id: id,
-            name: sorts[id](i18n),
-            selected: values.sort === id,
-        }));
+            // The number of the last item in this result set
+            const end = values.start + results.hits.hits.length;
 
-        // Figure out the title and breadcrumbs of the results
-        let title = i18n.gettext("Search Results");
-        const primary = paramFilter(values).primary;
-        const breadcrumbs = [];
+            // The link to the previous page of search results
+            const prevStart = values.start - values.rows;
+            const prevLink = values.start > 0
+                ? searchURL(
+                      i18n.lang,
+                      Object.assign({}, values, {
+                          start: prevStart > 0 ? prevStart : "",
+                      }),
+                      true
+                  )
+                : "";
 
-        for (const param of primary) {
-            // Handle custom-generated breadcrumb lists
-            if (typeQueries[param].breadcrumbs) {
-                const crumbs = typeQueries[param]
-                    .breadcrumbs(values[param], i18n);
-                for (const crumb of crumbs) {
+            // The link to the next page of the search results
+            const nextStart = values.start + values.rows;
+            const nextLink = end < results.hits.total
+                ? searchURL(
+                      i18n.lang,
+                      Object.assign({}, values, {
+                          start: nextStart,
+                      }),
+                      true
+                  )
+                : "";
+
+            // Construct a nicer form of the facet data to feed in to
+            // the templates
+            const facetData = [];
+
+            if (results.aggregations) {
+                const typeOptions = options.types[type];
+                const minFacetCount = typeOptions.minFacetCount || 1;
+
+                for (const name in aggregations) {
+                    const aggregation = results.aggregations[name];
+                    const facet = typeFacets[name];
+                    const buckets = facet
+                        .formatBuckets(aggregation.buckets, i18n)
+                        .filter(bucket => {
+                            const url = Object.assign({}, values);
+                            for (const param in bucket.url) {
+                                const curValue = url[param];
+                                const value = bucket.url[param];
+
+                                if (
+                                    curValue &&
+                                    !typeQueries[param].filterMultiple
+                                ) {
+                                    return false;
+                                }
+
+                                if (Array.isArray(curValue)) {
+                                    if (curValue.includes(value)) {
+                                        return false;
+                                    }
+                                    url[param] = curValue.slice(0);
+                                    url[param].push(value);
+                                } else if (curValue) {
+                                    if (curValue === value) {
+                                        return false;
+                                    }
+                                    url[param] = [curValue, value];
+                                } else {
+                                    url[param] = value;
+                                }
+                            }
+                            bucket.url = searchURL(i18n.lang, url);
+                            return bucket.count >= minFacetCount;
+                        });
+
+                    // Skip facets that won't filter anything
+                    if (buckets.length <= 1) {
+                        continue;
+                    }
+
+                    facetData.push({
+                        field: name,
+                        name: facet.title(i18n),
+                        buckets,
+                    });
+                }
+            }
+
+            // Construct a list of the possible sorts, their translated
+            // names and their selected state, for the template.
+            const sorts = options.types[values.type].sorts;
+            const sortData = Object.keys(sorts).map(id => ({
+                id: id,
+                name: sorts[id](i18n),
+                selected: values.sort === id,
+            }));
+
+            // Figure out the title and breadcrumbs of the results
+            let title = i18n.gettext("Search Results");
+            const primary = paramFilter(values).primary;
+            const breadcrumbs = [];
+
+            for (const param of primary) {
+                // Handle custom-generated breadcrumb lists
+                if (typeQueries[param].breadcrumbs) {
+                    const crumbs = typeQueries[param].breadcrumbs(
+                        values[param],
+                        i18n
+                    );
+                    for (const crumb of crumbs) {
+                        const rmValues = Object.assign({}, values);
+                        rmValues[param] = crumb.value;
+
+                        breadcrumbs.push({
+                            name: crumb.name,
+                            url: searchURL(i18n.lang, rmValues),
+                        });
+                    }
+
+                    // Handle when multiple values are specified, we add a crumb
+                    // for removing every item in the list.
+                } else if (Array.isArray(values[param])) {
+                    for (const value of values[param]) {
+                        const rmValues = Object.assign({}, values);
+                        rmValues[param] = values[param].filter(
+                            otherValue => otherValue !== value
+                        );
+
+                        breadcrumbs.push({
+                            name: typeQueries[param].searchTitle(value, i18n),
+                            url: searchURL(i18n.lang, rmValues),
+                        });
+                    }
+
+                    // Handle all other cases (just removing the parameter)
+                } else {
                     const rmValues = Object.assign({}, values);
-                    rmValues[param] = crumb.value;
+                    delete rmValues[param];
 
                     breadcrumbs.push({
-                        name: crumb.name,
+                        name: typeQueries[param].searchTitle(
+                            values[param],
+                            i18n
+                        ),
                         url: searchURL(i18n.lang, rmValues),
                     });
                 }
+            }
 
-            // Handle when multiple values are specified, we add a crumb
-            // for removing every item in the list.
-            } else if (Array.isArray(values[param])) {
-                for (const value of values[param]) {
-                    const rmValues = Object.assign({}, values);
-                    rmValues[param] = values[param]
-                        .filter((otherValue) => otherValue !== value);
-
-                    breadcrumbs.push({
-                        name: typeQueries[param]
-                            .searchTitle(value, i18n),
-                        url: searchURL(i18n.lang, rmValues),
-                    });
-                }
-
-            // Handle all other cases (just removing the parameter)
+            if (primary.length === 1) {
+                const name = primary[0];
+                const query = typeQueries[name];
+                title = query.searchTitle(values[name], i18n);
             } else {
-                const rmValues = Object.assign({}, values);
-                delete rmValues[param];
-
-                breadcrumbs.push({
-                    name: typeQueries[param]
-                        .searchTitle(values[param], i18n),
-                    url: searchURL(i18n.lang, rmValues),
-                });
+                title = options.types[values.type].name(i18n);
             }
+
+            // NOTE(jeresig): We use this instead of cloneModel to avoid sending
+            // down too much data that we don't need (plus cloning all of those
+            // models can be expensive).
+            const simplifyRecord = record => ({
+                _id: record._id,
+                type: record.type,
+                source: record.source,
+                getThumbURL: record.getThumbURL(),
+                getTitle: record.getTitle(i18n),
+                getURL: record.getURL(i18n.lang),
+            });
+
+            callback(null, {
+                title,
+                breadcrumbs: breadcrumbs.length === 1 ? [] : breadcrumbs,
+                sources: models("Source")
+                    .getSourcesByType(values.type)
+                    .filter(source => source.numRecords > 0)
+                    .map(source => cloneModel(source, i18n)),
+                values,
+                queries: cloneObject(typeQueries, i18n),
+                type: values.type,
+                sorts: sortData,
+                facets: facetData,
+                records: results.hits.hits
+                    .filter(record => record)
+                    .map(simplifyRecord),
+                total: results.hits.total,
+                start: results.hits.total > 0 ? values.start + 1 : 0,
+                end,
+                prev: prevLink,
+                next: nextLink,
+                // Don't index the search results
+                noIndex: true,
+            });
         }
-
-        if (primary.length === 1) {
-            const name = primary[0];
-            const query = typeQueries[name];
-            title = query.searchTitle(values[name], i18n);
-
-        } else {
-            title = options.types[values.type].name(i18n);
-        }
-
-        // NOTE(jeresig): We use this instead of cloneModel to avoid sending
-        // down too much data that we don't need (plus cloning all of those
-        // models can be expensive).
-        const simplifyRecord = (record) => ({
-            _id: record._id,
-            type: record.type,
-            source: record.source,
-            getThumbURL: record.getThumbURL(),
-            getTitle: record.getTitle(i18n),
-            getURL: record.getURL(i18n.lang),
-        });
-
-        callback(null, {
-            title,
-            breadcrumbs: breadcrumbs.length === 1 ? [] : breadcrumbs,
-            sources: models("Source").getSourcesByType(values.type)
-                .filter((source) => source.numRecords > 0)
-                .map((source) => cloneModel(source, i18n)),
-            values,
-            queries: cloneObject(typeQueries, i18n),
-            type: values.type,
-            sorts: sortData,
-            facets: facetData,
-            records: results.hits.hits
-                .filter((record) => record).map(simplifyRecord),
-            total: results.hits.total,
-            start: (results.hits.total > 0 ? values.start + 1 : 0),
-            end,
-            prev: prevLink,
-            next: nextLink,
-            // Don't index the search results
-            noIndex: true,
-        });
-    });
+    );
 };

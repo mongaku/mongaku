@@ -7,7 +7,7 @@ const config = require("../../lib/config");
 module.exports = (hours: number) => (
     req: express$Request,
     res: express$Response,
-    next: express$NextFunction,
+    next: express$NextFunction
 ) => {
     /* istanbul ignore if */
     if (config.NODE_ENV === "production") {

@@ -18,7 +18,7 @@ module.exports = (args, callback) => {
         sourceAdmin: source ? source.split(/,\s*/) : [],
     });
 
-    user.save((err) => {
+    user.save(err => {
         if (err) {
             return callback(err);
         }

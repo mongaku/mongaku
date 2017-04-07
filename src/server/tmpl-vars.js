@@ -5,7 +5,7 @@
 const {cloneObject, cloneModel} = require("../lib/clone");
 const options = require("../lib/options");
 
-module.exports = (app) => {
+module.exports = app => {
     const optionsCache = {};
     const blacklist = ["convertors", "searchURLs", "views"];
 

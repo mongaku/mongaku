@@ -7,7 +7,7 @@ module.exports = {
     noImages: false,
     noImageSearch: false,
 
-    name: (i18n) => i18n.gettext("Records"),
+    name: i18n => i18n.gettext("Records"),
 
     recordTitle(record) {
         return record.title;

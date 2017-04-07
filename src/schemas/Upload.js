@@ -15,7 +15,7 @@ const Upload = new db.schema({
     },
 
     // The type of the upload
-    type:  {
+    type: {
         type: String,
         required: true,
     },
@@ -49,33 +49,35 @@ const Upload = new db.schema({
     },
 
     // Computed by looking at the results of images.similarImages
-    similarRecords: [{
-        _id: String,
+    similarRecords: [
+        {
+            _id: String,
 
-        record: {
-            type: String,
-            ref: "Record",
-            required: true,
-        },
+            record: {
+                type: String,
+                ref: "Record",
+                required: true,
+            },
 
-        images: {
-            type: [String],
-            required: true,
-        },
+            images: {
+                type: [String],
+                required: true,
+            },
 
-        source: {
-            type: String,
-            es_indexed: true,
-            required: true,
-        },
+            source: {
+                type: String,
+                es_indexed: true,
+                required: true,
+            },
 
-        score: {
-            type: Number,
-            es_indexed: true,
-            required: true,
-            min: 1,
+            score: {
+                type: Number,
+                es_indexed: true,
+                required: true,
+                min: 1,
+            },
         },
-    }],
+    ],
 });
 
 Upload.methods = Object.assign({}, Record.methods, {
@@ -88,12 +90,17 @@ Upload.methods = Object.assign({}, Record.methods, {
     },
 
     getImages(callback) {
-        async.mapLimit(this.images, 4, (id, callback) => {
-            if (typeof id !== "string") {
-                return process.nextTick(() => callback(null, id));
-            }
-            models("UploadImage").findById(id, callback);
-        }, callback);
+        async.mapLimit(
+            this.images,
+            4,
+            (id, callback) => {
+                if (typeof id !== "string") {
+                    return process.nextTick(() => callback(null, id));
+                }
+                models("UploadImage").findById(id, callback);
+            },
+            callback
+        );
     },
 });
 

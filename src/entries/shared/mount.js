@@ -17,6 +17,6 @@ module.exports = (View: ReactClass<*>) => {
                 <View {...options} />
             </Page>
         </Wrapper>,
-        document.getElementById("root"),
+        document.getElementById("root")
     );
 };

@@ -3,7 +3,7 @@ const request = require("request");
 
 require("../init");
 
-tap.test("Record", (t) => {
+tap.test("Record", t => {
     const url = "http://localhost:3000/artworks/test/1234";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
@@ -12,7 +12,7 @@ tap.test("Record", (t) => {
     });
 });
 
-tap.test("Record (Similar Images)", (t) => {
+tap.test("Record (Similar Images)", t => {
     const url = "http://localhost:3000/artworks/test/1235";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
@@ -21,7 +21,7 @@ tap.test("Record (Similar Images)", (t) => {
     });
 });
 
-tap.test("Record Compare", (t) => {
+tap.test("Record Compare", t => {
     const url = "http://localhost:3000/artworks/test/1235?compare";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");
@@ -30,7 +30,7 @@ tap.test("Record Compare", (t) => {
     });
 });
 
-tap.test("Record Missing", (t) => {
+tap.test("Record Missing", t => {
     const url = "http://localhost:3000/artworks/test/foo";
     request.get(url, (err, res) => {
         t.error(err, "Error should be empty.");

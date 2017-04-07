@@ -67,9 +67,9 @@ Location.prototype = {
 
         return {
             type: [LocationSchema],
-            validateArray: (location) => location.name || location.city,
-            validationMsg: (i18n) => i18n.gettext("Locations must have a " +
-                "name or city specified."),
+            validateArray: location => location.name || location.city,
+            validationMsg: i18n =>
+                i18n.gettext("Locations must have a name or city specified."),
         };
     },
 };

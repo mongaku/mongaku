@@ -1,8 +1,9 @@
 const pd = require("parse-dimensions");
 
-const numRange = (bucket) => bucket.to ?
-    `${bucket.from || 0}-${bucket.to}${bucket.unit}` :
-    `${bucket.from}${bucket.unit}+`;
+const numRange = bucket =>
+    (bucket.to
+        ? `${bucket.from || 0}-${bucket.to}${bucket.unit}`
+        : `${bucket.from}${bucket.unit}+`);
 
 const Dimension = function(options) {
     this.options = options;
@@ -32,8 +33,10 @@ Dimension.prototype = {
         const heightMax = query[`${this.searchName()}.heightMax`];
         const widthMin = query[`${this.searchName()}.widthMin`];
         const widthMax = query[`${this.searchName()}.widthMax`];
-        const unit = query[`${this.searchName()}.unit`] ||
-            this.defaultSearchUnit || this.defaultUnit;
+        const unit =
+            query[`${this.searchName()}.unit`] ||
+            this.defaultSearchUnit ||
+            this.defaultUnit;
 
         if (heightMin || heightMax || widthMin || widthMax) {
             return {heightMin, heightMax, widthMin, widthMax, unit};
@@ -155,8 +158,10 @@ Dimension.prototype = {
                 range: {
                     [`${this.options.name}.width`]: {
                         gte: pd.convertNumber(
-                            parseFloat(value.widthMin), value.unit,
-                                this.defaultUnit),
+                            parseFloat(value.widthMin),
+                            value.unit,
+                            this.defaultUnit
+                        ),
                     },
                 },
             });
@@ -167,8 +172,10 @@ Dimension.prototype = {
                 range: {
                     [`${this.options.name}.width`]: {
                         lte: pd.convertNumber(
-                            parseFloat(value.widthMax), value.unit,
-                                this.defaultUnit),
+                            parseFloat(value.widthMax),
+                            value.unit,
+                            this.defaultUnit
+                        ),
                     },
                 },
             });
@@ -179,8 +186,10 @@ Dimension.prototype = {
                 range: {
                     [`${this.options.name}.height`]: {
                         gte: pd.convertNumber(
-                            parseFloat(value.heightMin), value.unit,
-                                this.defaultUnit),
+                            parseFloat(value.heightMin),
+                            value.unit,
+                            this.defaultUnit
+                        ),
                     },
                 },
             });
@@ -191,8 +200,10 @@ Dimension.prototype = {
                 range: {
                     [`${this.options.name}.height`]: {
                         lte: pd.convertNumber(
-                            parseFloat(value.heightMax), value.unit,
-                                this.defaultUnit),
+                            parseFloat(value.heightMax),
+                            value.unit,
+                            this.defaultUnit
+                        ),
                     },
                 },
             });
@@ -205,7 +216,7 @@ Dimension.prototype = {
         const defaultUnit = this.defaultUnit;
         const unit = this.defaultSearchUnit || this.defaultUnit;
 
-        const formatFacetBucket = (bucket) => {
+        const formatFacetBucket = bucket => {
             const text = numRange({
                 from: pd.convertNumber(bucket.from, defaultUnit, unit),
                 to: pd.convertNumber(bucket.to, defaultUnit, unit),
@@ -226,26 +237,26 @@ Dimension.prototype = {
         };
 
         const ranges = [
-            { to: 99 },
-            { from: 100, to: 199 },
-            { from: 200, to: 299 },
-            { from: 300, to: 399 },
-            { from: 400, to: 499 },
-            { from: 500, to: 599 },
-            { from: 600, to: 699 },
-            { from: 700, to: 799 },
-            { from: 800, to: 899 },
-            { from: 900, to: 999 },
-            { from: 1000, to: 1249 },
-            { from: 1250, to: 1599 },
-            { from: 1500, to: 1749 },
-            { from: 1750, to: 1999 },
-            { from: 2000 },
+            {to: 99},
+            {from: 100, to: 199},
+            {from: 200, to: 299},
+            {from: 300, to: 399},
+            {from: 400, to: 499},
+            {from: 500, to: 599},
+            {from: 600, to: 699},
+            {from: 700, to: 799},
+            {from: 800, to: 899},
+            {from: 900, to: 999},
+            {from: 1000, to: 1249},
+            {from: 1250, to: 1599},
+            {from: 1500, to: 1749},
+            {from: 1750, to: 1999},
+            {from: 2000},
         ];
 
         return {
             [`${this.options.name}.width`]: {
-                title: (i18n) => this.options.widthTitle(i18n),
+                title: i18n => this.options.widthTitle(i18n),
 
                 facet: () => ({
                     range: {
@@ -254,11 +265,11 @@ Dimension.prototype = {
                     },
                 }),
 
-                formatBuckets: (buckets) => buckets.map(formatFacetBucket),
+                formatBuckets: buckets => buckets.map(formatFacetBucket),
             },
 
             [`${this.options.name}.height`]: {
-                title: (i18n) => this.options.heightTitle(i18n),
+                title: i18n => this.options.heightTitle(i18n),
 
                 facet: () => ({
                     range: {
@@ -267,7 +278,7 @@ Dimension.prototype = {
                     },
                 }),
 
-                formatBuckets: (buckets) => buckets.map(formatFacetBucket),
+                formatBuckets: buckets => buckets.map(formatFacetBucket),
             },
         };
     },
@@ -303,19 +314,23 @@ Dimension.prototype = {
 
         // Dynamically generate the _id attribute
         DimensionSchema.pre("validate", function(next) {
-            this._id = this.original ||
-                [this.width, this.height, this.unit].join(",");
+            this._id =
+                this.original || [this.width, this.height, this.unit].join(",");
             next();
         });
 
         return {
             type: [DimensionSchema],
-            convert: (obj) => typeof obj === "string" ?
-                pd.parseDimension(obj, true, this.defaultUnit) :
-                pd.convertDimension(obj, this.defaultUnit),
-            validateArray: (val) => (val.width || val.height) && val.unit,
-            validationMsg: (i18n) => i18n.gettext("Dimensions must have a " +
-                "unit specified and at least a width or height."),
+            convert: obj =>
+                (typeof obj === "string"
+                    ? pd.parseDimension(obj, true, this.defaultUnit)
+                    : pd.convertDimension(obj, this.defaultUnit)),
+            validateArray: val => (val.width || val.height) && val.unit,
+            validationMsg: i18n =>
+                i18n.gettext(
+                    "Dimensions must have a " +
+                        "unit specified and at least a width or height."
+                ),
         };
     },
 };
