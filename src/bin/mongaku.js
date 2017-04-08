@@ -65,6 +65,15 @@ if (args.v || args.version) {
 
     const webpackConfig = path.join(rootDir, "webpack.config.js");
     shell.exec(`${getBinary("webpack")} --config ${webpackConfig}`);
+} else if (cmd === "build-watch") {
+    const rootDir = localFile("../..");
+    const srcDir = path.join(rootDir, "src");
+    const buildDir = path.join(rootDir, "build");
+
+    shell.exec(`${getBinary("babel")} ${srcDir} --out-dir ${buildDir} -w`);
+
+    const webpackConfig = path.join(rootDir, "webpack.config.js");
+    shell.exec(`${getBinary("webpack")} --config ${webpackConfig} -w`);
 } else if (cmd === "dev") {
     const cwd = process.cwd();
     const localDir = localFile("..");

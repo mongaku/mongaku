@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "./src/bin/mongaku.js build",
+    "build-watch": "./src/bin/mongaku.js build-watch",
     "client:prod": "NODE_ENV=production webpack -p",
     "lint": "eslint src && npm run flow",
     "postinstall": "npm run build",
