@@ -54,8 +54,10 @@ module.exports = type => {
         );
     }
 
+    const dbName = typeInfo.dbName || type;
+
     const Schema = new db.schema(schemaProps, {
-        collection: type,
+        collection: dbName,
     });
 
     Schema.methods = Record.methods;
@@ -63,13 +65,16 @@ module.exports = type => {
         {
             getType: () => type,
         },
+        {
+            getDBName: () => dbName,
+        },
         Record.statics
     );
 
     const es = url.parse(config.ELASTICSEARCH_URL);
 
     Schema.plugin(mongoosastic, {
-        index: type,
+        index: dbName,
         type,
         host: es.hostname,
         auth: es.auth,
@@ -79,7 +84,7 @@ module.exports = type => {
     });
 
     Schema.plugin(versioner, {
-        collection: `${type}_versions`,
+        collection: `${dbName}_versions`,
         suppressVersionIncrement: false,
         suppressRefIdIndex: false,
         refIdType: String,

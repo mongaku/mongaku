@@ -14,8 +14,8 @@ module.exports = (args, callback) => {
 
             console.log(`Deleting existing ${type} index...`);
 
-            // TODO(jeresig): Make this configurable
-            const esIndexURL = `${config.ELASTICSEARCH_URL}/${type}`;
+            const dbName = Record.getDBName();
+            const esIndexURL = `${config.ELASTICSEARCH_URL}/${dbName}`;
 
             request.delete(esIndexURL, () => {
                 console.log(`Re-building ${type} index...`);
