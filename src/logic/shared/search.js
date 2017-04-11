@@ -239,18 +239,6 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
                 title = options.types[values.type].name(i18n);
             }
 
-            // NOTE(jeresig): We use this instead of cloneModel to avoid sending
-            // down too much data that we don't need (plus cloning all of those
-            // models can be expensive).
-            const simplifyRecord = record => ({
-                _id: record._id,
-                type: record.type,
-                source: record.source,
-                getThumbURL: record.getThumbURL(),
-                getTitle: record.getTitle(i18n),
-                getURL: record.getURL(i18n.lang),
-            });
-
             callback(null, {
                 title,
                 breadcrumbs: breadcrumbs.length === 1 ? [] : breadcrumbs,
@@ -263,9 +251,7 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
                 type: values.type,
                 sorts: sortData,
                 facets: facetData,
-                records: results.hits.hits
-                    .filter(record => record)
-                    .map(simplifyRecord),
+                records: results.hits.hits.filter(record => record),
                 total: results.hits.total,
                 start: results.hits.total > 0 ? values.start + 1 : 0,
                 end,
