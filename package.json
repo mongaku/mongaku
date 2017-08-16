@@ -52,7 +52,7 @@
     "express": "4.14.0",
     "express-session": "1.14.2",
     "farmhash": "1.2.1",
-    "formidable": "felixge/node-formidable#ad7ef2f8e537eb7be98f73245fb149430970a266",
+    "formidable": "1.1.1",
     "gm": "1.23.0",
     "iconv-lite": "0.4.15",
     "imageinfo": "1.0.4",
