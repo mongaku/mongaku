@@ -76,17 +76,6 @@
     "env": {
         "development": {
             "plugins": ["flow-react-proptypes"],
-        },
-        "production": {
-            "plugins": [
-                ["module-resolver", {
-                    "root": ["."],
-                    "alias": {
-                        "react": "preact-compat",
-                        "react-dom": "preact-compat"
-                    }
-                }]
-            ],
         }
     }
 }
