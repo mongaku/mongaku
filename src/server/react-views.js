@@ -15,6 +15,9 @@ const Wrapper = require("../views/Wrapper.js");
 const blacklist = (key, value) =>
     (key === "_locals" || key === "settings" ? undefined : value);
 
+/*
+// NOTE(jeresig): Disable this for now, until bugs can be sorted.
+
 if (config.NODE_ENV === "production") {
     const originalLoader = Module._load;
 
@@ -28,6 +31,7 @@ if (config.NODE_ENV === "production") {
         return originalLoader(...arguments);
     };
 }
+*/
 
 // Import in the Intl polyfills for better locale support (only needed for
 // Node as the browser already has good support)
