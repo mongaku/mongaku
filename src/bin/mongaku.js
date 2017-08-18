@@ -113,7 +113,7 @@ if (args.v || args.version) {
     const logic = require(`../utils/${cmd}-${name}.js`);
 
     init(() => {
-        logic(extraArgs.slice(2), err => {
+        logic(extraArgs.slice(1), err => {
             if (err) {
                 console.error(err);
                 process.exit(1);

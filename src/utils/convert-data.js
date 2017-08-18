@@ -11,12 +11,29 @@ module.exports = ([converterName, fileName], callback) => {
     // Import the converter module
     const converter = options.converters[converterName];
 
-    converter.processFiles([fs.createReadStream(fileName)], (err, results) => {
-        if (err) {
-            callback(err);
-        } else {
-            console.log(JSON.stringify(results));
-            callback();
-        }
-    });
+    if (!converter) {
+        console.error(`Converter not found: ${converterName}.`);
+        process.exit(1);
+    }
+
+    if (!fileName) {
+        console.error(`No data file specified.`);
+        process.exit(1);
+    }
+
+    try {
+        const fileStream = fs.createReadStream(fileName);
+
+        converter.processFiles([fileStream], (err, results) => {
+            if (err) {
+                callback(err);
+            } else {
+                console.log(JSON.stringify(results));
+                callback();
+            }
+        });
+    } catch (e) {
+        console.error(`Error opening file: ${fileName}.`);
+        process.exit(1);
+    }
 };
