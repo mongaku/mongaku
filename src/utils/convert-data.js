@@ -7,7 +7,7 @@ const fs = require("fs");
 
 const options = require("../lib/options");
 
-module.exports = ([converterName, fileName], callback) => {
+module.exports = ([converterName, ...fileNames], callback) => {
     // Import the converter module
     const converter = options.converters[converterName];
 
@@ -16,15 +16,16 @@ module.exports = ([converterName, fileName], callback) => {
         process.exit(1);
     }
 
-    if (!fileName) {
+    if (fileNames.length === 0) {
         console.error(`No data file specified.`);
         process.exit(1);
     }
 
     try {
-        const fileStream = fs.createReadStream(fileName);
+        const fileStreams = fileNames
+            .map((fileName) => fs.createReadStream(fileName));
 
-        converter.processFiles([fileStream], (err, results) => {
+        converter.processFiles(fileStreams, (err, results) => {
             if (err) {
                 callback(err);
             } else {
@@ -33,7 +34,7 @@ module.exports = ([converterName, fileName], callback) => {
             }
         });
     } catch (e) {
-        console.error(`Error opening file: ${fileName}.`);
+        console.error(`Error opening files: ${fileNames.join(", ")}.`);
         process.exit(1);
     }
 };
