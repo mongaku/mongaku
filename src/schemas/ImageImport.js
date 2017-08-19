@@ -174,8 +174,15 @@ Object.assign(ImageImport.methods, Import.methods, {
     },
 
     setSimilarityState(callback) {
-        const Image = models("Image");
-        Image.queueBatchSimilarityUpdate(this._id, callback);
+        const {type} = this.getSource();
+        const hasImageSearch = options.types[type].hasImageSearch();
+
+        if (hasImageSearch) {
+            const Image = models("Image");
+            Image.queueBatchSimilarityUpdate(this._id, callback);
+        } else {
+            process.nextTick(callback);
+        }
     },
 
     addResult(file, callback) {
