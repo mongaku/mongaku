@@ -97,6 +97,7 @@ Record.schema = {
                     "image file name. For example: `image.jpg`."
             ),
         convert: (name, data) => `${data.source}/${name}`,
+        es_indexed: true,
     },
 
     // Images associated with the record that haven't been uploaded yet
