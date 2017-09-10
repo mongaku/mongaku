@@ -11,6 +11,7 @@ type Props = {
     value: string | Array<string>,
     values?: Array<FixedStringValue>,
     url: string | Array<string>,
+    multiline?: boolean,
 };
 
 const getTitle = (value: string, values?: Array<FixedStringValue>): string => {
@@ -31,12 +32,17 @@ const Value = ({
     stringValue,
     values,
     urlValue,
+    multiline,
 }: Props & {stringValue: string, urlValue: string}) => {
     if (!stringValue) {
         return null;
     }
 
     const title = getTitle(stringValue, values);
+
+    if (multiline) {
+        return <span>{title}</span>;
+    }
 
     return (
         <a href={urlValue}>
