@@ -1,6 +1,7 @@
 // @flow
 
 const React = require("react");
+const PropTypes = require("prop-types");
 
 const utils = require("./utils");
 
@@ -36,20 +37,20 @@ class Wrapper extends React.Component {
 }
 
 Wrapper.childContextTypes = {
-    lang: React.PropTypes.string,
-    user: React.PropTypes.any,
-    options: React.PropTypes.any,
-    originalUrl: React.PropTypes.string,
+    lang: PropTypes.string,
+    user: PropTypes.any,
+    options: PropTypes.any,
+    originalUrl: PropTypes.string,
 
     // Coming from utils.js
-    getOtherURL: React.PropTypes.func,
-    URL: React.PropTypes.func,
-    STATIC: React.PropTypes.func,
-    stringNum: React.PropTypes.func,
-    fixedDate: React.PropTypes.func,
-    format: React.PropTypes.func,
-    gettext: React.PropTypes.func,
-    getSource: React.PropTypes.func,
+    getOtherURL: PropTypes.func,
+    URL: PropTypes.func,
+    STATIC: PropTypes.func,
+    stringNum: PropTypes.func,
+    fixedDate: PropTypes.func,
+    format: PropTypes.func,
+    gettext: PropTypes.func,
+    getSource: PropTypes.func,
 };
 
 module.exports = Wrapper;
