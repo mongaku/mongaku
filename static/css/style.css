@@ -24,6 +24,10 @@
     min-width: 280px;
 }
 
+.dropdown img {
+    vertical-align: inherit;
+}
+
 /*
  * Styling for the home page splash.
  */

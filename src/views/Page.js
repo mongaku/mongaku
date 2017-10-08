@@ -29,51 +29,54 @@ const Logo = (props, {options, STATIC}: Context) => {
 
 Logo.contextTypes = childContextTypes;
 
-class NavLink extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {open: false};
-    }
+class Dropdown extends React.PureComponent {
+   constructor(props) {
+       super(props);
+       this.state = {open: false};
+   }
 
-    state: {open: boolean};
-    componentDidMount() {
-        this.boundHandleBlur = e => this.handleBlur(e);
-        document.addEventListener("focusin", this.boundHandleBlur);
-        document.addEventListener("click", this.boundHandleBlur);
-    }
+   state: {open: boolean};
+   componentDidMount() {
+       this.boundHandleBlur = e => this.handleBlur(e);
+       document.addEventListener("focusin", this.boundHandleBlur);
+       document.addEventListener("click", this.boundHandleBlur);
+   }
 
-    componentWillUnmount() {
-        document.removeEventListener("focusin", this.boundHandleBlur);
-        document.removeEventListener("click", this.boundHandleBlur);
-    }
+   componentWillUnmount() {
+       document.removeEventListener("focusin", this.boundHandleBlur);
+       document.removeEventListener("click", this.boundHandleBlur);
+   }
 
-    props: {type: string, title: string};
-    context: Context;
-    dropdown: Element;
-    boundHandleBlur: (e: Event) => void;
-    handleToggle(e: SyntheticMouseEvent) {
-        e.preventDefault();
-        this.setState({
-            open: !this.state.open,
-        });
-    }
+   props: {
+        children?: React.Element<*>,
+        title: React.Element<*> | string,
+        href?: string,
+   }
+   dropdown: Element;
+   boundHandleBlur: (e: Event) => void;
 
-    handleBlur(e: Event) {
-        const {target} = e;
+   handleToggle(e: SyntheticMouseEvent) {
+       e.preventDefault();
+       this.setState({
+           open: !this.state.open,
+       });
+   }
 
-        if (
-            !target ||
-            (target instanceof Node && !this.dropdown.contains(target))
-        ) {
-            this.setState({
-                open: false,
-            });
-        }
-    }
+   handleBlur(e: Event) {
+       const {target} = e;
 
-    render() {
-        const {type, title} = this.props;
-        const {gettext, user, URL} = this.context;
+       if (
+           !target ||
+           (target instanceof Node && !this.dropdown.contains(target))
+       ) {
+           this.setState({
+               open: false,
+           });
+       }
+   }
+
+   render() {
+        const {children, title, href} = this.props;
         return (
             <li
                 ref={r => {
@@ -82,7 +85,7 @@ class NavLink extends React.Component {
                 className={`dropdown ${this.state.open ? "open" : ""}`}
             >
                 <a
-                    href={URL(`/${type}/search`)}
+                    href={href || "javascript: void 0"}
                     className="dropdown-toggle"
                     role="button"
                     aria-haspopup="true"
@@ -94,46 +97,58 @@ class NavLink extends React.Component {
                     <span className="caret" />
                 </a>
                 <ul className="dropdown-menu">
-                    <li>
-                        <form
-                            action={URL(`/${type}/search`)}
-                            method="GET"
-                            className="form-search form-inline dropdown-search"
-                        >
-                            <div className="form-group">
-                                <input
-                                    type="search"
-                                    id="filter"
-                                    name="filter"
-                                    placeholder={gettext("Search")}
-                                    className="form-control search-query"
-                                />
-                            </div>
-                            {" "}
-                            <input
-                                type="submit"
-                                value={gettext("Search")}
-                                className="btn btn-primary"
-                            />
-                        </form>
-                    </li>
-                    <li>
-                        <a href={URL(`/${type}/search`)}>
-                            {gettext("Browse All")}
-                        </a>
-                    </li>
-                    {user &&
-                        user.getEditableSourcesByType[type].length > 0 &&
-                        <li>
-                            <a href={URL(`/${type}/create`)}>
-                                {gettext("Create New")}
-                            </a>
-                        </li>}
+                    {children}
                 </ul>
             </li>
         );
-    }
+   }
 }
+
+const NavLink = (
+    {type, title}: {type: string, title: string},
+    {gettext, user, URL}: Context
+) => (
+    <Dropdown
+        title={title}
+        href={URL(`/${type}/search`)}
+    >
+        <li>
+            <form
+                action={URL(`/${type}/search`)}
+                method="GET"
+                className="form-search form-inline dropdown-search"
+            >
+                <div className="form-group">
+                    <input
+                        type="search"
+                        id="filter"
+                        name="filter"
+                        placeholder={gettext("Search")}
+                        className="form-control search-query"
+                    />
+                </div>
+                {" "}
+                <input
+                    type="submit"
+                    value={gettext("Search")}
+                    className="btn btn-primary"
+                />
+            </form>
+        </li>
+        <li>
+            <a href={URL(`/${type}/search`)}>
+                {gettext("Browse All")}
+            </a>
+        </li>
+        {user &&
+            user.getEditableSourcesByType[type].length > 0 &&
+            <li>
+                <a href={URL(`/${type}/create`)}>
+                    {gettext("Create New")}
+                </a>
+            </li>}
+    </Dropdown>
+);
 
 NavLink.contextTypes = childContextTypes;
 
@@ -166,14 +181,8 @@ const LocaleMenu = (
     props,
     {lang, originalUrl, options, URL, getOtherURL}: Context
 ) => (
-    <li className="dropdown">
-        <a
-            href=""
-            className="dropdown-toggle"
-            data-toggle="dropdown"
-            role="button"
-            aria-expanded="false"
-        >
+    <Dropdown
+        title={<span>
             <img
                 alt={options.locales[lang]}
                 src={URL(`/images/${lang}.png`)}
@@ -182,27 +191,25 @@ const LocaleMenu = (
             />
             {" "}
             {options.locales[lang]}
-            <span className="caret" />
-        </a>
-        <ul className="dropdown-menu" role="menu">
-            {Object.keys(options.locales)
-                .filter(locale => locale !== lang)
-                .map(locale => (
-                    <li key={locale}>
-                        <a href={getOtherURL(originalUrl, locale)}>
-                            <img
-                                src={URL(`/images/${locale}.png`)}
-                                alt={options.locales[locale]}
-                                width="16"
-                                height="11"
-                            />
-                            {" "}
-                            {options.locales[locale]}
-                        </a>
-                    </li>
-                ))}
-        </ul>
-    </li>
+        </span>}
+    >
+        {Object.keys(options.locales)
+            .filter(locale => locale !== lang)
+            .map(locale => (
+                <li key={locale}>
+                    <a href={getOtherURL(originalUrl, locale)}>
+                        <img
+                            src={URL(`/images/${locale}.png`)}
+                            alt={options.locales[locale]}
+                            width="16"
+                            height="11"
+                        />
+                        {" "}
+                        {options.locales[locale]}
+                    </a>
+                </li>
+            ))}
+    </Dropdown>
 );
 
 LocaleMenu.contextTypes = childContextTypes;
