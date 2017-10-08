@@ -12,9 +12,11 @@ module.exports = {
 
     connect(callback) {
         mongoose.connect(config.MONGODB_URL, {
-            server: {
-                reconnectTries: Number.MAX_VALUE,
-            },
+            keepAlive: true,
+            useMongoClient: true,
+            // Get Mongoose using native promises
+            promiseLibrary: global.Promise,
+            reconnectTries: Number.MAX_VALUE,
         });
 
         const handleError = err => {

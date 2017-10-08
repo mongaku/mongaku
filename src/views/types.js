@@ -1,7 +1,7 @@
 // @flow
 
 type BaseModelType = {
-    name: string,
+    name?: string,
     title: string,
     private?: boolean,
     recommended?: boolean,
