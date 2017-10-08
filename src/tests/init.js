@@ -17,7 +17,6 @@ require("babel-polyfill");
 // Force dynamically loaded modules to load now
 require("negotiator/lib/mediaType");
 require("nyc/node_modules/istanbul-lib-instrument");
-require("react-select");
 
 // Load in global ENV
 process.env.BASE_DATA_DIR = path.resolve(process.cwd(), "data");

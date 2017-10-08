@@ -1,11 +1,9 @@
-const Module = require("module");
 const path = require("path");
 
 const IntlPolyfill = require("intl");
 const React = require("react");
 const {renderToString, renderToStaticMarkup} = require("react-dom/server");
 
-const config = require("../lib/config");
 const urlsLib = require("../lib/urls");
 
 const Head = require("../views/Head.js");
@@ -17,6 +15,9 @@ const blacklist = (key, value) =>
 
 /*
 // NOTE(jeresig): Disable this for now, until bugs can be sorted.
+
+const Module = require("module");
+const config = require("../lib/config");
 
 if (config.NODE_ENV === "production") {
     const originalLoader = Module._load;
