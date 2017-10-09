@@ -1,10 +1,10 @@
 // @flow
 
+import {defaultLocale} from "./options.js";
+
 import type {Options} from "../views/types.js";
 
 module.exports = (options: Options) => {
-    const defaultLocale = Object.keys(options.locales)[0] || "en";
-
     const genURL = (lang: ?string, urlBase: string, origPath: string) => {
         let suffix = "";
         let base = urlBase;

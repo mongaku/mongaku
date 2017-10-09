@@ -106,7 +106,7 @@ if (args.v || args.version) {
 
     const webpackConfig = path.join(rootDir, "webpack.config.js");
     shell.exec(`${getBinary("webpack")} --config ${webpackConfig} -w`);
-} else if (cmd === "create" || cmd === "convert") {
+} else if (cmd === "create" || cmd === "convert" || cmd === "i18n") {
     const [name] = extraArgs;
 
     const init = require("../lib/init");

@@ -53,6 +53,7 @@
     "express-session": "1.15.6",
     "farmhash": "2.0.4",
     "formidable": "1.1.1",
+    "glob": "7.1.2",
     "gm": "1.23.0",
     "iconv-lite": "0.4.19",
     "imageinfo": "1.0.4",

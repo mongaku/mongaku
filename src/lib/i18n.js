@@ -4,20 +4,16 @@ const fs = require("fs");
 const path = require("path");
 
 const options = require("./options");
+const config = require("./config");
 
 const translationsMap = {};
-const translationsDir = path.resolve(
-    process.cwd(),
-    options.translationsDir || "translations"
-);
-const defaultLocale = Object.keys(options.locales)[0] || "en";
 
 for (const locale in options.locales) {
-    if (locale === defaultLocale) {
+    if (locale === options.defaultLocale) {
         continue;
     }
 
-    const file = path.resolve(translationsDir, locale, "messages.json");
+    const file = path.resolve(config.TRANSLATIONS_DIR, locale, "messages.json");
     try {
         const {messages} = JSON.parse(fs.readFileSync(file, "utf8"));
         translationsMap[locale] = messages;
@@ -31,7 +27,7 @@ module.exports = (lang: string) => {
 
     return {
         lang,
-        defaultLocale,
+        defaultLocale: options.defaultLocale,
         translations,
 
         gettext(message: string) {

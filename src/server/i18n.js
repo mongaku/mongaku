@@ -3,8 +3,6 @@
 const options = require("../lib/options");
 const i18n = require("../lib/i18n");
 
-const defaultLocale = Object.keys(options.locales)[0] || "en";
-
 module.exports = (app: express$Application) => {
     app.use((req: express$Request, res, next) => {
         const {headers, query} = req;
@@ -19,7 +17,7 @@ module.exports = (app: express$Application) => {
 
         // Fall back to the default locale if one isn't given, or it's invalid
         if (!options.locales[locale]) {
-            locale = defaultLocale;
+            locale = options.defaultLocale;
         }
 
         req.i18n = i18n(locale);

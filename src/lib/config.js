@@ -18,6 +18,7 @@ const config = {
     BASE_DATA_DIR: "data",
     BASE_STATIC_URL: "/",
     STATIC_DIR: "static",
+    TRANSLATIONS_DIR: "translations",
 
     GM_PATH: "",
 };
@@ -41,6 +42,7 @@ for (const envName in config) {
 // This allows for the configuration to use a relative path
 config.BASE_DATA_DIR = path.resolve(process.cwd(), config.BASE_DATA_DIR);
 config.STATIC_DIR = path.resolve(process.cwd(), config.STATIC_DIR);
+config.TRANSLATIONS_DIR = path.resolve(process.cwd(), config.TRANSLATIONS_DIR);
 
 if (config.NODE_ENV !== "test") {
     try {
