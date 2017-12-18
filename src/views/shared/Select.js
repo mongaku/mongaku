@@ -21,9 +21,8 @@ type Props = {
     onChange?: (value: string | Array<string>) => void,
 };
 
-class SimpleSelect extends React.Component {
-    props: Props;
-    handleChange(e: SyntheticInputEvent) {
+class SimpleSelect extends React.Component<Props> {
+    handleChange(e: SyntheticInputEvent<HTMLSelectElement>) {
         if (!(e.target instanceof HTMLSelectElement)) {
             return;
         }
@@ -73,7 +72,15 @@ class SimpleSelect extends React.Component {
     }
 }
 
-class MultiSelect extends React.Component {
+class MultiSelect extends React.Component<Props, {
+    searchValue?: string,
+    loading: boolean,
+    options?: Array<{
+        value: string,
+        label: string,
+    }>,
+    error?: Error,
+}> {
     constructor(props) {
         super(props);
         this.state = {
@@ -85,17 +92,8 @@ class MultiSelect extends React.Component {
         }
     }
 
-    state: {
-        searchValue?: string,
-        loading: boolean,
-        options?: Array<{
-            value: string,
-            label: string,
-        }>,
-        error?: Error,
-    };
     componentDidMount() {
-        this.boundHandleBlur = e => this.handleBlur(e);
+        this.boundHandleBlur = (e: Event) => this.handleBlur(e);
         document.addEventListener("focusin", this.boundHandleBlur);
         document.addEventListener("click", this.boundHandleBlur);
     }
@@ -105,10 +103,9 @@ class MultiSelect extends React.Component {
         document.removeEventListener("click", this.boundHandleBlur);
     }
 
-    props: Props;
     context: Context;
-    control: HTMLElement;
-    input: HTMLInputElement;
+    control: ?HTMLElement;
+    input: ?HTMLInputElement;
     boundHandleBlur: (e: Event) => void;
     labelCache: {
         [value: string]: string,
@@ -127,6 +124,7 @@ class MultiSelect extends React.Component {
             searchValue !== undefined &&
             (!target ||
                 (target instanceof Node &&
+                    this.control &&
                     !this.control.contains(target) &&
                     document.documentElement &&
                     document.documentElement.contains(target)))
@@ -162,7 +160,9 @@ class MultiSelect extends React.Component {
                     : [addedValue]
             );
             this.clear();
-            this.input.focus();
+            if (this.input) {
+                this.input.focus();
+            }
             this.handleInput("");
         }
     }
@@ -175,7 +175,9 @@ class MultiSelect extends React.Component {
     }
 
     clear() {
-        this.input.value = "";
+        if (this.input) {
+            this.input.value = "";
+        }
         this.setState({searchValue: ""});
     }
 
@@ -192,7 +194,7 @@ class MultiSelect extends React.Component {
         );
     }
 
-    handleKey(e: SyntheticKeyboardEvent) {
+    handleKey(e: SyntheticKeyboardEvent<HTMLInputElement>) {
         if (
             e.target instanceof HTMLInputElement &&
             (e.key === "Enter" || e.key === "Tab")
@@ -423,7 +425,9 @@ class MultiSelect extends React.Component {
 
 MultiSelect.contextTypes = childContextTypes;
 
-class Select extends React.Component {
+class Select extends React.Component<Props, {
+    value?: string | Array<string>,
+}> {
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -433,10 +437,6 @@ class Select extends React.Component {
         };
     }
 
-    state: {
-        value?: string | Array<string>,
-    };
-    props: Props;
     context: Context;
     handleChange(value: string | Array<string>) {
         this.setState({value});
@@ -468,7 +468,7 @@ class Select extends React.Component {
 Select.contextTypes = childContextTypes;
 
 const latinize = str =>
-    str.replace(/[^A-Za-z0-9\[\] ]/g, a => latinMap[a] || a);
+    str.replace(/[^A-Za-z0-9[\] ]/g, a => latinMap[a] || a);
 
 // prettier-ignore
 const latinMap = {

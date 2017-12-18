@@ -29,15 +29,18 @@ const Logo = (props, {options, STATIC}: Context) => {
 
 Logo.contextTypes = childContextTypes;
 
-class Dropdown extends React.PureComponent {
+class Dropdown extends React.PureComponent<{
+    children?: React.Node,
+    title: React.Node,
+    href?: string,
+}, {open: boolean}> {
    constructor(props) {
        super(props);
        this.state = {open: false};
    }
 
-   state: {open: boolean};
    componentDidMount() {
-       this.boundHandleBlur = e => this.handleBlur(e);
+       this.boundHandleBlur = (e: Event) => this.handleBlur(e);
        document.addEventListener("focusin", this.boundHandleBlur);
        document.addEventListener("click", this.boundHandleBlur);
    }
@@ -47,15 +50,10 @@ class Dropdown extends React.PureComponent {
        document.removeEventListener("click", this.boundHandleBlur);
    }
 
-   props: {
-        children?: React.Element<*>,
-        title: React.Element<*> | string,
-        href?: string,
-   }
-   dropdown: Element;
+   dropdown: ?Element;
    boundHandleBlur: (e: Event) => void;
 
-   handleToggle(e: SyntheticMouseEvent) {
+   handleToggle(e: SyntheticMouseEvent<HTMLAnchorElement>) {
        e.preventDefault();
        this.setState({
            open: !this.state.open,
@@ -67,7 +65,8 @@ class Dropdown extends React.PureComponent {
 
        if (
            !target ||
-           (target instanceof Node && !this.dropdown.contains(target))
+           (target instanceof Node && this.dropdown &&
+                !this.dropdown.contains(target))
        ) {
            this.setState({
                open: false,

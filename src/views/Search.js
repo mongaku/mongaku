@@ -68,7 +68,12 @@ const FacetBucket = ({bucket}: {bucket: Bucket}) => (
     </li>
 );
 
-class Facet extends React.Component {
+class Facet extends React.Component<Props & {
+    type: string,
+    facet: FacetType,
+}, {
+    showMore: boolean,
+}> {
     constructor(props) {
         super(props);
         this.state = {
@@ -76,13 +81,6 @@ class Facet extends React.Component {
         };
     }
 
-    state: {
-        showMore: boolean,
-    };
-    props: Props & {
-        type: string,
-        facet: FacetType,
-    };
     context: Context;
     render() {
         const {facet} = this.props;

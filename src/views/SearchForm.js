@@ -193,11 +193,12 @@ const SourceFilter = ({values, sources}: Props, {gettext}: Context) => (
             placeholder={gettext("Filter by source...")}
             clearable={true}
             options={
-                sources &&
-                    sources.map(source => ({
+                sources
+                    ? sources.map(source => ({
                         value: source._id,
                         label: source.name,
                     }))
+                    : []
             }
         />
     </div>
@@ -261,11 +262,12 @@ const Sorts = ({values, sorts}: Props, {gettext}: Context) => (
             name="sort"
             value={values.sort}
             options={
-                sorts &&
-                    sorts.map(sort => ({
+                sorts
+                    ? sorts.map(sort => ({
                         value: sort.id,
                         label: sort.name,
                     }))
+                    : []
             }
             clearable={false}
         />

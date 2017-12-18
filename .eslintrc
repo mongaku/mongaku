@@ -9,7 +9,6 @@
         "eqeqeq": 2,
         "guard-for-in": 0,
         "linebreak-style": [2, "unix"],
-        "max-len": [1, 80, 4, { "ignoreUrls": true, "ignorePattern": "\\brequire\\([\"']|eslint-disable" }],
         "no-alert": 2,
         "no-array-constructor": 2,
         "no-caller": 2,
@@ -44,7 +43,6 @@
         "no-this-before-super": 2,
         "no-throw-literal": 2,
         "no-undef": 2,
-        "no-unexpected-multiline": 2,
         "no-unmodified-loop-condition": 2,
         "no-unreachable": 2,
         "no-unused-expressions": 2,
@@ -93,18 +91,6 @@
         "flowtype/sort": 0,
         "flowtype/type-id-match": 0,
         "flowtype/use-flow-type": 1,  // suppress no-unused-vars on flow types
-    },
-    "ecmaFeatures": {
-        "arrowFunctions": true,
-        "blockBindings": true,
-        "classes": true,
-        "destructuring": true,
-        "experimentalObjectRestSpread": true,
-        "forOf": true,
-        "jsx": true,
-        "restParams": true,
-        "spread": true,
-        "templateStrings": true
     },
     "plugins": [
         "react",

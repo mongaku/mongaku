@@ -17,9 +17,8 @@ type Props = {
     multiple?: boolean,
 };
 
-class LinkedRecordEdit extends React.Component {
-    props: Props;
-    getOptions(input: string) {
+class LinkedRecordEdit extends React.Component<Props> {
+    getOptions(input: string): Promise<Array<{value: string, label: string}>> {
         const {recordType} = this.props;
         const filter = encodeURIComponent(`${input || ""}*`);
         return fetch(`/${recordType}/search?format=json&filter=${filter}`, {

@@ -7,7 +7,16 @@ const utils = require("./utils");
 
 import type {User, Options} from "./types.js";
 
-class Wrapper extends React.Component {
+class Wrapper extends React.Component<{
+    lang: string,
+    originalUrl: string,
+    user: User,
+    options: Options,
+    translations: {
+        [message: string]: ?Array<string>,
+    },
+    children?: React.Element<*>,
+}> {
     getChildContext() {
         const {originalUrl, user, options, lang, translations} = this.props;
         // Object is needed, unfortunately, see:
@@ -21,16 +30,6 @@ class Wrapper extends React.Component {
         return Object.assign(context, utils(lang, options, translations));
     }
 
-    props: {
-        lang: string,
-        originalUrl: string,
-        user: User,
-        options: Options,
-        translations: {
-            [message: string]: ?Array<string>,
-        },
-        children?: React.Element<*>,
-    };
     render() {
         return this.props.children;
     }

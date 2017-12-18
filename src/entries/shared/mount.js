@@ -6,17 +6,33 @@ const {render} = require("react-dom");
 const Wrapper = require("../../views/Wrapper.js");
 const Page = require("../../views/Page.js");
 
-module.exports = (View: ReactClass<*>) => {
-    const options = window.__STATE__ || {};
+import type {User, Options} from "../../views/types.js";
 
-    delete window.__STATE__;
+module.exports = (View: React.ComponentType<*>) => {
+    const options: {
+        lang: string,
+        originalUrl: string,
+        user: User,
+        options: Options,
+        translations: {
+            [message: string]: ?Array<string>,
+        },
+    } = window.__STATE__;
 
-    render(
-        <Wrapper {...options}>
-            <Page {...options}>
-                <View {...options} />
-            </Page>
-        </Wrapper>,
-        document.getElementById("root")
-    );
+    if (options) {
+        delete window.__STATE__;
+
+        const root = document.getElementById("root");
+
+        if (root) {
+            render(
+                <Wrapper {...options}>
+                    <Page {...options}>
+                        <View {...options} />
+                    </Page>
+                </Wrapper>,
+                root
+            );
+        }
+    }
 };

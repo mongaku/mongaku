@@ -140,7 +140,12 @@ const ImageForm = (props, {gettext}: Context) => (
 
 ImageForm.contextTypes = childContextTypes;
 
-class IDForm extends React.Component {
+class IDForm extends React.Component<Props & {
+    curSource: string,
+    onValid: (state: boolean) => void,
+}, {
+    unused: boolean,
+}> {
     constructor(props) {
         super(props);
         this.state = {
@@ -148,19 +153,12 @@ class IDForm extends React.Component {
         };
     }
 
-    state: {
-        unused: boolean,
-    };
     componentDidUpdate(prevProps) {
         if (prevProps.curSource !== this.props.curSource) {
             this.checkID();
         }
     }
 
-    props: Props & {
-        curSource: string,
-        onValid: () => void,
-    };
     context: Context;
     currentID: string;
     setUnused(unused) {
@@ -183,7 +181,7 @@ class IDForm extends React.Component {
         });
     }
 
-    handleInput(e: SyntheticInputEvent) {
+    handleInput(e: SyntheticInputEvent<HTMLInputElement>) {
         this.currentID = e.target.value;
         this.checkID();
     }
@@ -371,7 +369,11 @@ const TypeEdit = ({
     return null;
 };
 
-class Contents extends React.Component {
+class Contents extends React.Component<Props, {
+    showPrivate: boolean,
+    valid: boolean,
+    curSource: string,
+}> {
     constructor(props) {
         super(props);
         this.state = {
@@ -381,19 +383,13 @@ class Contents extends React.Component {
         };
     }
 
-    state: {
-        showPrivate: boolean,
-        valid: boolean,
-        curSource: string,
-    };
     componentDidMount() {
         const {showPrivate} = window.localStorage;
         this.setState({showPrivate}); // eslint-disable-line react/no-did-mount-set-state
     }
 
-    props: Props;
     context: Context;
-    togglePrivate(e: SyntheticInputEvent) {
+    togglePrivate(e: SyntheticInputEvent<HTMLInputElement>) {
         const showPrivate = e.target.checked;
         if (showPrivate) {
             window.localStorage.showPrivate = showPrivate;
@@ -538,7 +534,7 @@ const DeleteButton = (props: Props, {gettext}: Context) => {
 
 DeleteButton.contextTypes = childContextTypes;
 
-const CloneButton = ({record, mode}: Props, {gettext}: Context) => (
+const CloneButton = ({record}: Props, {gettext}: Context) => (
     <div className="row">
         <div
             className="col-xs-12"

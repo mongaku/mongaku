@@ -107,7 +107,9 @@ const Image = ({
     </div>
 );
 
-class Images extends React.Component {
+class Images extends React.Component<Props & {record: RecordType}, {
+    curPos: number,
+}> {
     constructor(props) {
         super(props);
         this.state = {
@@ -115,10 +117,6 @@ class Images extends React.Component {
         };
     }
 
-    state: {
-        curPos: number,
-    };
-    props: Props & {record: RecordType};
     context: Context;
     toggleImage(newPos) {
         const max = this.props.record.imageModels.length;

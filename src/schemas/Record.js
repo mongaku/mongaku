@@ -458,7 +458,7 @@ Record.statics = {
                 (imageId, callback) => {
                     Image.findById(imageId, (err, image) => {
                         if (!image) {
-                            const fileName = imageId.replace(/^\w+[\/]/, "");
+                            const fileName = imageId.replace(/^\w+[/]/, "");
                             missingImages.push(imageId);
                             warnings.push(
                                 i18n.format(

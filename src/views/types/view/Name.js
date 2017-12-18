@@ -23,7 +23,7 @@ const Name = ({value, url}: {value: NameType, url: string}) => {
     return (
         <span key={value._id}>
             <a href={url}>{value.name}</a>
-            {value.pseudoynm &&
+            {value.pseudoynm !== undefined &&
                 value.name !== value.pseudoynm &&
                 <Pseudonym value={value} />}
         </span>
