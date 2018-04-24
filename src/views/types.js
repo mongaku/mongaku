@@ -134,6 +134,7 @@ export type Options = {
     baseURL: string,
     baseDataURL: string,
     baseStaticURL: string,
+    defaultLocale: string,
     getShortTitle: string,
     getTitle: string,
     noIndex: boolean,

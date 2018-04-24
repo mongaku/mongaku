@@ -1,7 +1,5 @@
 // @flow
 
-import {defaultLocale} from "./options.js";
-
 import type {Options} from "../views/types.js";
 
 module.exports = (options: Options) => {
@@ -11,7 +9,7 @@ module.exports = (options: Options) => {
         let path = origPath;
 
         // See if we're on a non-default lang
-        if (lang && lang !== defaultLocale) {
+        if (lang && lang !== options.defaultLocale) {
             // Use a sub-domain, if one is requested
             /* istanbul ignore if */
             if (options.usei18nSubdomain) {
@@ -28,7 +26,10 @@ module.exports = (options: Options) => {
                     suffix = `${prefix}lang=${lang}`;
                 }
             }
-        } else if (lang === defaultLocale && !options.usei18nSubdomain) {
+        } else if (
+            lang === options.defaultLocale &&
+            !options.usei18nSubdomain
+        ) {
             // Strip the lang= query param if you're generating a default
             // lang URL
             path = path.replace(/lang=\w+&?/, "").replace(/\?$/, "");
