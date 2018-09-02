@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 const async = require("async");
-const unzip = require("unzip2");
+const unzip = require("unzip-stream");
 
 const models = require("../lib/models");
 const db = require("../lib/db");
@@ -46,19 +46,19 @@ const errors = {
     MALFORMED_IMAGE: i18n =>
         i18n.gettext(
             "There was an error processing " +
-                "the image. Perhaps it is malformed in some way."
+                "the image. Perhaps it is malformed in some way.",
         ),
     EMPTY_IMAGE: i18n => i18n.gettext("The image is empty."),
     NEW_VERSION: i18n =>
         i18n.gettext(
             "A new version of the image was " +
-                "uploaded, replacing the old one."
+                "uploaded, replacing the old one.",
         ),
     TOO_SMALL: i18n =>
         i18n.gettext(
             "The image is too small to work with " +
                 "the image similarity algorithm. It must be at " +
-                "least 150px on each side."
+                "least 150px on each side.",
         ),
     ERROR_SAVING: i18n => i18n.gettext("Error saving image."),
 };
@@ -77,7 +77,7 @@ const ImageImport = new db.schema(
             type: String,
             required: true,
         },
-    })
+    }),
 );
 
 Object.assign(ImageImport.methods, Import.methods, {
@@ -85,7 +85,7 @@ Object.assign(ImageImport.methods, Import.methods, {
         return urls.gen(
             lang,
             `/${this.getSource().type}/source` +
-                `/${this.source}/admin?images=${this._id}`
+                `/${this.source}/admin?images=${this._id}`,
         );
     },
 
@@ -103,7 +103,7 @@ Object.assign(ImageImport.methods, Import.methods, {
         const files = [];
         const extractDir = path.join(
             os.tmpdir(),
-            new Date().getTime().toString()
+            new Date().getTime().toString(),
         );
 
         fs.mkdir(extractDir, () => {
@@ -167,7 +167,7 @@ Object.assign(ImageImport.methods, Import.methods, {
                             }
 
                             this.setSimilarityState(callback);
-                        }
+                        },
                     );
                 });
         });
@@ -229,7 +229,7 @@ Object.assign(ImageImport.methods, Import.methods, {
             models: this.results.filter(result => result.model),
             errors: this.results.filter(result => result.error),
             warnings: this.results.filter(
-                result => (result.warnings || []).length !== 0
+                result => (result.warnings || []).length !== 0,
             ),
         };
     },

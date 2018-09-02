@@ -11,7 +11,7 @@ const Page = require("../views/Page.js");
 const Wrapper = require("../views/Wrapper.js");
 
 const blacklist = (key, value) =>
-    (key === "_locals" || key === "settings" ? undefined : value);
+    key === "_locals" || key === "settings" ? undefined : value;
 
 /*
 // NOTE(jeresig): Disable this for now, until bugs can be sorted.
@@ -51,7 +51,7 @@ const engine = (filePath: string, options: Object, callback: Function) => {
     const head = renderToStaticMarkup(
         <Wrapper {...options}>
             <Head {...options} />
-        </Wrapper>
+        </Wrapper>,
     );
 
     const output = renderToString(
@@ -59,7 +59,7 @@ const engine = (filePath: string, options: Object, callback: Function) => {
             <Page {...options}>
                 <View {...options} />
             </Page>
-        </Wrapper>
+        </Wrapper>,
     );
 
     callback(
@@ -74,7 +74,7 @@ ${head}
     <script src="${urls.genStatic("/js/shared.js")}" defer></script>
     <script src="${urls.genStatic(`/js/${viewName}.js`)}" defer></script>
 </body>
-</html>`
+</html>`,
     );
 };
 

@@ -13,7 +13,7 @@ module.exports = {
     connect(callback) {
         mongoose.connect(config.MONGODB_URL, {
             keepAlive: true,
-            useMongoClient: true,
+            useNewUrlParser: true,
             // Get Mongoose using native promises
             promiseLibrary: global.Promise,
             reconnectTries: Number.MAX_VALUE,
