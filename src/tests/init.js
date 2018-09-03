@@ -6,7 +6,6 @@ const sinon = require("sinon");
 const mockfs = require("mock-fs");
 const async = require("async");
 const iconv = require("iconv-lite");
-const MongoInMemory = require("mongo-in-memory");
 
 // Force ICONV to pre-load its encodings
 iconv.getCodec("utf8");
@@ -84,9 +83,6 @@ const normalLogin = (request, callback) =>
 // Sandbox the bound methods
 let sandbox;
 
-// Test files to load into the DB
-const testDBFiles = path.resolve(__dirname, "..", "..", "tests", "db");
-
 // Root Files
 const pkgFile = fs.readFileSync(path.resolve(__dirname, "../../package.json"));
 
@@ -97,20 +93,6 @@ const dataDir = path.resolve(__dirname, "data");
 for (const file of fs.readdirSync(dataDir)) {
     if (/\.\w+$/.test(file)) {
         testFiles[file] = fs.readFileSync(path.resolve(dataDir, file));
-    }
-}
-
-// DB files used for testing
-const dbFiles = {};
-const dbFilesDir = path.resolve(process.cwd(), "tests", "db");
-
-for (const dir of fs.readdirSync(dbFilesDir)) {
-    const dirPath = path.resolve(dbFilesDir, dir);
-    const files = (dbFiles[dir] = {});
-
-    for (const file of fs.readdirSync(dirPath)) {
-        const filePath = path.resolve(dirPath, file);
-        files[file] = fs.readFileSync(filePath);
     }
 }
 
@@ -1011,7 +993,6 @@ const i18n = {
 };
 
 let app;
-let db;
 
 bindStubs();
 
@@ -1031,23 +1012,9 @@ const init = done => {
             },
 
             callback => {
-                db = new MongoInMemory(27018);
-
-                db.start(err => {
-                    if (err) {
-                        return callback(err);
-                    }
-
-                    db.addDirectoryOfCollections("test", testDBFiles, err => {
-                        if (err) {
-                            return callback(err);
-                        }
-
-                        server((err, _app) => {
-                            app = _app;
-                            callback(err);
-                        });
-                    });
+                server((err, _app) => {
+                    app = _app;
+                    callback(err);
                 });
             },
         ],
@@ -1059,7 +1026,7 @@ tap.beforeEach(init);
 
 tap.afterEach(done => {
     app.close();
-    db.stop(done);
+    done();
 });
 
 const mockFS = callback => {
@@ -1071,9 +1038,6 @@ const mockFS = callback => {
             },
         },
         testData: testFiles,
-        tests: {
-            db: dbFiles,
-        },
         data: {
             test: {
                 images: {},

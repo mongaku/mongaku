@@ -11,6 +11,10 @@ module.exports = {
     types: mongoose.Types,
 
     connect(callback) {
+        if (config.NODE_ENV === "test") {
+            return process.nextTick(callback);
+        }
+
         mongoose.connect(config.MONGODB_URL, {
             keepAlive: true,
             useNewUrlParser: true,
@@ -34,7 +38,11 @@ module.exports = {
         mongoose.connection.once("open", handleOpen);
     },
 
-    close: () => mongoose.connection.close(),
+    close: () => {
+        if (config.NODE_ENV !== "test") {
+            mongoose.connection.close();
+        }
+    },
 
     model(name, schema) {
         return mongoose.model(name, schema);
