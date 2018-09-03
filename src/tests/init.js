@@ -11,7 +11,7 @@ const iconv = require("iconv-lite");
 iconv.getCodec("utf8");
 
 // Bring in any polyfills used for testing (e.g. async)
-require("babel-polyfill");
+require("@babel/polyfill");
 
 // Force dynamically loaded modules to load now
 require("negotiator/lib/mediaType");
