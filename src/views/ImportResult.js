@@ -44,7 +44,7 @@ type Props = {
 
 const ImportResult = (
     props: Props,
-    {gettext, stringNum, URL, format}: Context
+    {gettext, stringNum, URL, format}: Context,
 ) => {
     const {batch, expanded, id, numShow = 5, renderResult, title} = props;
     const allResults = batch.getFilteredResults[id];
@@ -63,21 +63,18 @@ const ImportResult = (
         <div className="panel panel-default">
             <div className="panel-heading">
                 <h3 id={id} className="panel-title">
-                    {title}
-                    {" "}
-                    ({stringNum(allResults.length)})
+                    {title} ({stringNum(allResults.length)})
                 </h3>
             </div>
             <div className="panel-body">
                 <div className="row">
-                    <ul className="col-xs-12">
-                        {results.map(renderResult)}
-                    </ul>
+                    <ul className="col-xs-12">{results.map(renderResult)}</ul>
                 </div>
                 <div className="row">
                     <div className="col-xs-12">
-                        {!isExpanded &&
-                            <a href={`${expandURL}#${id}`}>{showAll}</a>}
+                        {!isExpanded && (
+                            <a href={`${expandURL}#${id}`}>{showAll}</a>
+                        )}
                     </div>
                 </div>
             </div>

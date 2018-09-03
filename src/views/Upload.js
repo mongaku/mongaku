@@ -72,7 +72,7 @@ UploadedImage.contextTypes = childContextTypes;
 
 const Match = (
     {sources, match: {recordModel, score}}: Props & {match: MatchType},
-    {gettext, format, getSource}: Context
+    {gettext, format, getSource}: Context,
 ) => {
     const source = getSource(recordModel.source, sources);
 
@@ -94,14 +94,15 @@ const Match = (
                         {format(gettext("Score: %(score)s"), {score: score})}
                     </span>
 
-                    {source &&
+                    {source && (
                         <a
                             className="pull-right"
                             href={source.getURL}
                             title={source.getFullName}
                         >
                             {source.getShortName}
-                        </a>}
+                        </a>
+                    )}
                 </div>
             </div>
         </div>
@@ -132,9 +133,7 @@ const Results = (props: Props, {gettext}: Context) => {
             <div className="panel-heading">
                 <strong>{gettext("Similar Images")}</strong>
             </div>
-            <div className="panel-body row">
-                {similarResults}
-            </div>
+            <div className="panel-body row">{similarResults}</div>
         </div>
     );
 };

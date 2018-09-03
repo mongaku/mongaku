@@ -100,7 +100,7 @@ tap.test("Record Import Finalize", t => {
             t.equal(res.statusCode, 200);
             t.match(
                 res.request.uri.href,
-                "http://localhost:3000/artworks/source/test/admin"
+                "http://localhost:3000/artworks/source/test/admin",
             );
             t.end();
         });
@@ -117,7 +117,7 @@ tap.test("Record Import Abandon", t => {
             t.equal(res.statusCode, 200);
             t.match(
                 res.request.uri.href,
-                "http://localhost:3000/artworks/source/test/admin"
+                "http://localhost:3000/artworks/source/test/admin",
             );
             t.end();
         });
@@ -245,11 +245,11 @@ tap.test("uploadData: File Error", t => {
                     t.equal(res.statusCode, 302);
                     t.match(
                         res.headers.location,
-                        "/artworks/source/test/admin"
+                        "/artworks/source/test/admin",
                     );
                     t.end();
                     callback();
-                }
+                },
             );
         });
     });
@@ -279,11 +279,11 @@ tap.test("uploadData: Default File", t => {
                     t.equal(res.statusCode, 302);
                     t.match(
                         res.headers.location,
-                        "/artworks/source/test/admin"
+                        "/artworks/source/test/admin",
                     );
                     t.end();
                     callback();
-                }
+                },
             );
         });
     });
@@ -346,11 +346,11 @@ tap.test("uploadImages: Empty Zip", t => {
                     t.equal(res.statusCode, 302);
                     t.match(
                         res.headers.location,
-                        "/artworks/source/test/admin"
+                        "/artworks/source/test/admin",
                     );
                     t.end();
                     callback();
-                }
+                },
             );
         });
     });
@@ -380,11 +380,11 @@ tap.test("uploadImages: Corrupted Zip", t => {
                     t.equal(res.statusCode, 302);
                     t.match(
                         res.headers.location,
-                        "/artworks/source/test/admin"
+                        "/artworks/source/test/admin",
                     );
                     t.end();
                     callback();
-                }
+                },
             );
         });
     });
@@ -414,11 +414,11 @@ tap.test("uploadImages: Normal Zip", t => {
                     t.equal(res.statusCode, 302);
                     t.match(
                         res.headers.location,
-                        "/artworks/source/test/admin"
+                        "/artworks/source/test/admin",
                     );
                     t.end();
                     callback();
-                }
+                },
             );
         });
     });

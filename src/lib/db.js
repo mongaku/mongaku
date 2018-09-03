@@ -15,13 +15,16 @@ module.exports = {
             return process.nextTick(callback);
         }
 
-        mongoose.connect(config.MONGODB_URL, {
-            keepAlive: true,
-            useNewUrlParser: true,
-            // Get Mongoose using native promises
-            promiseLibrary: global.Promise,
-            reconnectTries: Number.MAX_VALUE,
-        });
+        mongoose.connect(
+            config.MONGODB_URL,
+            {
+                keepAlive: true,
+                useNewUrlParser: true,
+                // Get Mongoose using native promises
+                promiseLibrary: global.Promise,
+                reconnectTries: Number.MAX_VALUE,
+            },
+        );
 
         const handleError = err => {
             console.error("Mongo Connection Error:", err);

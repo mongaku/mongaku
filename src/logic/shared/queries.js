@@ -54,7 +54,9 @@ const defaultQueries = {
         value: fields => fields.source,
         defaultValue: () => undefined,
         searchTitle: (value, i18n) =>
-            models("Source").getSource(value).getFullName(i18n.lang),
+            models("Source")
+                .getSource(value)
+                .getFullName(i18n.lang),
         url: value => models("Source").getSource(value),
         filter: value => ({
             match: {

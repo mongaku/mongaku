@@ -597,7 +597,7 @@ const genData = () => {
 };
 
 const bindStubs = () => {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
 
     sandbox.stub(Record, "findById").callsFake((id, callback) => {
         if (records[id]) {

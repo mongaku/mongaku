@@ -76,10 +76,10 @@ const FixedStringEdit = (props: Props) => {
                 multi={multiple}
                 options={
                     values &&
-                        values.map(value => ({
-                            value: value.id,
-                            label: value.name,
-                        }))
+                    values.map(value => ({
+                        value: value.id,
+                        label: value.name,
+                    }))
                 }
                 clearable={multiple}
                 create={!fixed}

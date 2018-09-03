@@ -12,7 +12,7 @@ tap.test("getFilePath", {autoend: true}, t => {
     t.equal(
         image.getFilePath(),
         path.resolve(process.cwd(), "data/test/images/4266906334.jpg"),
-        "Check file path"
+        "Check file path",
     );
 });
 
@@ -21,7 +21,7 @@ tap.test("getOriginalURL", {autoend: true}, t => {
     t.equal(
         image.getOriginalURL(),
         "/data/test/images/4266906334.jpg",
-        "Check Image URL"
+        "Check Image URL",
     );
 });
 
@@ -30,7 +30,7 @@ tap.test("getScaledURL", {autoend: true}, t => {
     t.equal(
         image.getScaledURL(),
         "/data/test/scaled/4266906334.jpg",
-        "Check Scaled URL"
+        "Check Scaled URL",
     );
 });
 
@@ -39,7 +39,7 @@ tap.test("getThumbURL", {autoend: true}, t => {
     t.equal(
         image.getThumbURL(),
         "/data/test/thumbs/4266906334.jpg",
-        "Check Thumb URL"
+        "Check Thumb URL",
     );
 });
 
@@ -58,12 +58,12 @@ tap.test("updateSimilarity: Existing Image", t => {
         t.equal(
             image.similarImages.length,
             1,
-            "Has the correct number of results."
+            "Has the correct number of results.",
         );
         t.same(
             image.similarImages[0].toJSON(),
             {_id: "test/bar.jpg", score: 10},
-            "Has the correct result."
+            "Has the correct result.",
         );
         t.end();
     });
@@ -181,7 +181,7 @@ tap.test("Image.fromFile: New Image (Corrupted File)", t => {
         const testFile = path.resolve(
             process.cwd(),
             "testData",
-            "corrupted.jpg"
+            "corrupted.jpg",
         );
 
         Image.fromFile(batch, testFile, (err, image, warnings) => {
@@ -205,7 +205,7 @@ tap.test("Image.fromFile: New Image (Small File)", t => {
         const testFile = path.resolve(
             process.cwd(),
             "testData",
-            "test-small.jpg"
+            "test-small.jpg",
         );
 
         Image.fromFile(batch, testFile, (err, image, warnings) => {
@@ -228,7 +228,7 @@ tap.test("Image.fromFile: Updating Image", t => {
         const testFile = path.resolve(
             process.cwd(),
             "testData",
-            "nosimilar.jpg"
+            "nosimilar.jpg",
         );
 
         Image.fromFile(batch, testFile, (err, image, warnings) => {

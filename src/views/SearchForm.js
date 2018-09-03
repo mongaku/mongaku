@@ -195,9 +195,9 @@ const SourceFilter = ({values, sources}: Props, {gettext}: Context) => (
             options={
                 sources
                     ? sources.map(source => ({
-                        value: source._id,
-                        label: source.name,
-                    }))
+                          value: source._id,
+                          label: source.name,
+                      }))
                     : []
             }
         />
@@ -264,9 +264,9 @@ const Sorts = ({values, sorts}: Props, {gettext}: Context) => (
             options={
                 sorts
                     ? sorts.map(sort => ({
-                        value: sort.id,
-                        label: sort.name,
-                    }))
+                          value: sort.id,
+                          label: sort.name,
+                      }))
                     : []
             }
             clearable={false}

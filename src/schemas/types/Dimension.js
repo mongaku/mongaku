@@ -1,9 +1,9 @@
 const pd = require("parse-dimensions");
 
 const numRange = bucket =>
-    (bucket.to
+    bucket.to
         ? `${bucket.from || 0}-${bucket.to}${bucket.unit}`
-        : `${bucket.from}${bucket.unit}+`);
+        : `${bucket.from}${bucket.unit}+`;
 
 const Dimension = function(options) {
     this.options = options;
@@ -160,7 +160,7 @@ Dimension.prototype = {
                         gte: pd.convertNumber(
                             parseFloat(value.widthMin),
                             value.unit,
-                            this.defaultUnit
+                            this.defaultUnit,
                         ),
                     },
                 },
@@ -174,7 +174,7 @@ Dimension.prototype = {
                         lte: pd.convertNumber(
                             parseFloat(value.widthMax),
                             value.unit,
-                            this.defaultUnit
+                            this.defaultUnit,
                         ),
                     },
                 },
@@ -188,7 +188,7 @@ Dimension.prototype = {
                         gte: pd.convertNumber(
                             parseFloat(value.heightMin),
                             value.unit,
-                            this.defaultUnit
+                            this.defaultUnit,
                         ),
                     },
                 },
@@ -202,7 +202,7 @@ Dimension.prototype = {
                         lte: pd.convertNumber(
                             parseFloat(value.heightMax),
                             value.unit,
-                            this.defaultUnit
+                            this.defaultUnit,
                         ),
                     },
                 },
@@ -322,14 +322,14 @@ Dimension.prototype = {
         return {
             type: [DimensionSchema],
             convert: obj =>
-                (typeof obj === "string"
+                typeof obj === "string"
                     ? pd.parseDimension(obj, true, this.defaultUnit)
-                    : pd.convertDimension(obj, this.defaultUnit)),
+                    : pd.convertDimension(obj, this.defaultUnit),
             validateArray: val => (val.width || val.height) && val.unit,
             validationMsg: i18n =>
                 i18n.gettext(
                     "Dimensions must have a " +
-                        "unit specified and at least a width or height."
+                        "unit specified and at least a width or height.",
                 ),
         };
     },

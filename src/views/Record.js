@@ -107,9 +107,12 @@ const Image = ({
     </div>
 );
 
-class Images extends React.Component<Props & {record: RecordType}, {
-    curPos: number,
-}> {
+class Images extends React.Component<
+    Props & {record: RecordType},
+    {
+        curPos: number,
+    },
+> {
     constructor(props) {
         super(props);
         this.state = {
@@ -154,9 +157,7 @@ class Images extends React.Component<Props & {record: RecordType}, {
                         className="glyphicon glyphicon-chevron-left"
                         aria-hidden="true"
                     />
-                    <span className="sr-only">
-                        {gettext("Previous")}
-                    </span>
+                    <span className="sr-only">{gettext("Previous")}</span>
                 </a>
                 <a
                     className="right carousel-control"
@@ -168,9 +169,7 @@ class Images extends React.Component<Props & {record: RecordType}, {
                         className="glyphicon glyphicon-chevron-right"
                         aria-hidden="true"
                     />
-                    <span className="sr-only">
-                        {gettext("Next")}
-                    </span>
+                    <span className="sr-only">{gettext("Next")}</span>
                 </a>
             </div>
         );
@@ -287,9 +286,7 @@ const Metadata = (props: Props, {options}: Context) => {
 
                 return (
                     <tr key={type}>
-                        <th className="text-right">
-                            {typeSchema.title}
-                        </th>
+                        <th className="text-right">{typeSchema.title}</th>
                         {records.map(record => (
                             <td key={record._id}>
                                 <TypeView
@@ -312,14 +309,10 @@ Metadata.contextTypes = childContextTypes;
 
 const Details = ({records}: Props, {gettext}: Context) => (
     <tr>
-        <th className="text-right">
-            {gettext("Details")}
-        </th>
+        <th className="text-right">{gettext("Details")}</th>
         {records.map(record => {
             const link = (
-                <a href={record.url}>
-                    {gettext("More information...")}
-                </a>
+                <a href={record.url}>{gettext("More information...")}</a>
             );
 
             return <td key={record._id}>{link}</td>;
@@ -331,18 +324,13 @@ Details.contextTypes = childContextTypes;
 
 const Sources = ({records, sources}: Props, {gettext, getSource}: Context) => (
     <tr>
-        <th className="text-right">
-            {gettext("Source")}
-        </th>
+        <th className="text-right">{gettext("Source")}</th>
         {records.map(record => {
             const source = getSource(record.source, sources);
 
             return (
                 <td key={record._id}>
-                    {source &&
-                        <a href={source.getURL}>
-                            {source.getFullName}
-                        </a>}
+                    {source && <a href={source.getURL}>{source.getFullName}</a>}
                 </td>
             );
         })}
@@ -357,10 +345,11 @@ const MainRecord = (props: Props, {gettext}: Context) => {
 
     return (
         <div className={`${recordWidth} imageholder`}>
-            {(compare || records.length > 1) &&
+            {(compare || records.length > 1) && (
                 <a href={records[0].getURL} className="btn btn-success">
                     « {gettext("End Comparison")}
-                </a>}
+                </a>
+            )}
             <div className="responsive-table">
                 <table className="table table-hover">
                     <thead>
@@ -399,7 +388,7 @@ const SimilarMatch = (
         source,
         match: {recordModel, score},
     }: Props & {source: ?Source, match: Match},
-    {gettext, format}: Context
+    {gettext, format}: Context,
 ) => (
     <div className="img col-md-12 col-xs-6 col-sm-4">
         <a href={recordModel.getURL}>
@@ -416,14 +405,15 @@ const SimilarMatch = (
                     {format(gettext("Score: %(score)s"), {score: score})}
                 </span>
 
-                {source &&
+                {source && (
                     <a
                         className="pull-right"
                         href={source.getURL}
                         title={source.getFullName}
                     >
                         {source.getShortName}
-                    </a>}
+                    </a>
+                )}
             </div>
         </div>
     </div>
@@ -445,9 +435,7 @@ const Similar = (props: Props, {gettext, getSource}: Context) => {
             </a>
 
             <div className="panel panel-default">
-                <div className="panel-heading">
-                    {gettext("Similar Images")}
-                </div>
+                <div className="panel-heading">{gettext("Similar Images")}</div>
                 <div className="panel-body row">
                     {similar.map(match => {
                         if (match.recordModel) {
@@ -456,7 +444,7 @@ const Similar = (props: Props, {gettext, getSource}: Context) => {
                                     {...props}
                                     source={getSource(
                                         match.recordModel.source,
-                                        sources
+                                        sources,
                                     )}
                                     match={match}
                                     key={match._id}

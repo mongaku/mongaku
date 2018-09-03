@@ -12,7 +12,7 @@ const login = callback => {
                 password: "test",
             },
         },
-        callback
+        callback,
     );
 };
 
@@ -58,6 +58,6 @@ tap.test("Incorrect Login", t => {
             t.error(err, "Error should be empty.");
             t.equal(res.statusCode, 302);
             t.end();
-        }
+        },
     );
 });

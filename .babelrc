@@ -83,7 +83,12 @@
     "env": {
         "development": {
             "plugins": [
-                "flow-react-proptypes"
+                "@babel/plugin-proposal-class-properties"
+            ]
+        },
+        "production": {
+            "plugins": [
+                "@babel/plugin-proposal-class-properties"
             ]
         }
     }

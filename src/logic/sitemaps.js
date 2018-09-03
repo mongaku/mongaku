@@ -23,10 +23,10 @@ module.exports = function(app) {
                         for (let i = 0; i < total; i += NUM_PER_SITEMAP) {
                             const url = urls.gen(
                                 lang,
-                                `/sitemap-${type}-${i}.xml`
+                                `/sitemap-${type}-${i}.xml`,
                             );
                             sitemaps.push(
-                                `<sitemap><loc>${url}</loc></sitemap>`
+                                `<sitemap><loc>${url}</loc></sitemap>`,
                             );
                         }
 
@@ -48,7 +48,7 @@ module.exports = function(app) {
 
                     res.header("Content-Type", "application/xml");
                     res.status(200).send(sitemap);
-                }
+                },
             );
         },
 
@@ -91,7 +91,7 @@ ${sitemaps.join("\n")}
 
                     res.header("Content-Type", "application/xml");
                     res.status(200).send(sitemap);
-                }
+                },
             );
         },
 

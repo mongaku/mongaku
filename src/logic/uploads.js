@@ -57,7 +57,7 @@ module.exports = app => {
                         // TODO: Add in uploader's user name (once those exist)
                         upload.updateSimilarity(() => {
                             upload.save(() =>
-                                res.redirect(upload.getURL(lang))
+                                res.redirect(upload.getURL(lang)),
                             );
                         });
                     });
@@ -100,7 +100,10 @@ module.exports = app => {
 
     return {
         urlUpload(req, res, next) {
-            const {query: {url}, i18n} = req;
+            const {
+                query: {url},
+                i18n,
+            } = req;
 
             // Handle the user accidentally hitting enter
             if (!url || url === "http://") {
@@ -108,7 +111,7 @@ module.exports = app => {
             }
 
             download(url, (err, file) =>
-                handleUpload(req, res, next)(err, file)
+                handleUpload(req, res, next)(err, file),
             );
         },
 
@@ -122,7 +125,7 @@ module.exports = app => {
                 /* istanbul ignore if */
                 if (err) {
                     return next(
-                        new Error(i18n.gettext("Error processing upload."))
+                        new Error(i18n.gettext("Error processing upload.")),
                     );
                 }
 
@@ -164,9 +167,9 @@ module.exports = app => {
                                     score: match.score,
                                     recordModel: cloneModel(
                                         match.recordModel,
-                                        i18n
+                                        i18n,
                                     ),
-                                })
+                                }),
                             );
 
                             res.render("Upload", {
@@ -174,11 +177,11 @@ module.exports = app => {
                                 similar: similarRecords,
                                 image: cloneModel(upload.images[0], i18n),
                                 sources: Source.getSources().map(source =>
-                                    cloneModel(source, i18n)
+                                    cloneModel(source, i18n),
                                 ),
                                 noIndex: true,
                             });
-                        }
+                        },
                     );
                 });
             });

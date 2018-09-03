@@ -8,13 +8,13 @@ tap.test("getURL", {autoend: true}, t => {
     t.equal(
         upload.getURL("en"),
         "/artworks/uploads/4266906334",
-        "Check 'en' URL"
+        "Check 'en' URL",
     );
 
     t.equal(
         upload.getURL("de"),
         "/artworks/uploads/4266906334?lang=de",
-        "Check 'de' URL"
+        "Check 'de' URL",
     );
 });
 
@@ -23,7 +23,7 @@ tap.test("getThumbURL", {autoend: true}, t => {
     t.equal(
         upload.getThumbURL(),
         "/data/uploads/thumbs/4266906334.jpg",
-        "Check Thumb URL"
+        "Check Thumb URL",
     );
 });
 
@@ -46,7 +46,7 @@ tap.test("updateSimilarity", t => {
                 source: "test",
                 images: ["test/bar.jpg"],
             },
-            "Check similar upload result"
+            "Check similar upload result",
         );
         t.end();
     });

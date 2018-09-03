@@ -17,7 +17,7 @@ type Props = {
 
 const Head = (
     {title, social, noIndex}: Props,
-    {lang, options, STATIC}: Context
+    {lang, options, STATIC}: Context,
 ) => {
     const siteTitle = options.getTitle;
     let pageTitle = siteTitle;
@@ -51,12 +51,13 @@ const Head = (
                 content="width=device-width, initial-scale=1.0"
             />
             {disableIndex && <meta name="robots" content="noindex" />}
-            {options.favicon &&
+            {options.favicon && (
                 <link
                     rel="icon"
                     type="image/x-icon"
                     href={STATIC(options.favicon)}
-                />}
+                />
+            )}
             <title>{pageTitle || title}</title>
             {socialMeta}
             <link rel="stylesheet" href={STATIC("/css/bootstrap.min.css")} />

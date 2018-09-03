@@ -10,7 +10,7 @@ tap.test("getURL", {autoend: true}, t => {
     t.equal(
         record.getURL("de"),
         "/artworks/test/1234?lang=de",
-        "Check 'de' URL"
+        "Check 'de' URL",
     );
 });
 
@@ -19,7 +19,7 @@ tap.test("getThumbURL", {autoend: true}, t => {
     t.equal(
         record.getThumbURL(),
         "/data/test/thumbs/4266906334.jpg",
-        "Check Thumb URL"
+        "Check Thumb URL",
     );
 });
 
@@ -50,7 +50,7 @@ tap.test("date", {autoend: true}, t => {
             end: 1457,
             circa: true,
         },
-        "Get Date"
+        "Get Date",
     );
 });
 
@@ -72,7 +72,7 @@ tap.test("Record.fromData: Existing record", t => {
         t.equal(
             value.defaultImageHash,
             "4266906334",
-            "defaultImageHash is set."
+            "defaultImageHash is set.",
         );
         t.equal(value.images.length, 1, "Images are set.");
         t.equal(value.images[0], "test/foo.jpg", "Images are set.");
@@ -93,7 +93,7 @@ tap.test("Record.fromData: New record", t => {
         t.equal(
             value.defaultImageHash,
             "4266906334",
-            "defaultImageHash is set."
+            "defaultImageHash is set.",
         );
         t.equal(value.images.length, 1, "Images are set.");
         t.equal(value.images[0], "test/foo.jpg", "Images are set.");
@@ -115,14 +115,14 @@ tap.test("Record.fromData: New record with warnings", t => {
         t.equal(
             value.defaultImageHash,
             "4266906334",
-            "defaultImageHash is set."
+            "defaultImageHash is set.",
         );
         t.equal(value.images.length, 1, "Images are set.");
         t.equal(value.images[0], "test/foo.jpg", "Images are set.");
         t.same(
             warnings,
             ["Unrecognized field `batch`."],
-            "There should be a single warning."
+            "There should be a single warning.",
         );
         t.end();
     });
@@ -156,14 +156,14 @@ tap.test("Record.fromData: New record missing single image", t => {
         t.equal(
             value.defaultImageHash,
             "4266906334",
-            "defaultImageHash is set."
+            "defaultImageHash is set.",
         );
         t.equal(value.images.length, 1, "Images are set.");
         t.equal(value.images[0], "test/foo.jpg", "Images are set.");
         t.same(
             warnings,
             ["Image file not found: missing.jpg"],
-            "There should be a warning."
+            "There should be a warning.",
         );
         t.end();
     });
@@ -183,7 +183,7 @@ tap.test("updateSimilarity", t => {
                 source: "test",
                 images: ["test/bar.jpg"],
             },
-            "Check similar record result"
+            "Check similar record result",
         );
         t.end();
     });
@@ -204,7 +204,7 @@ tap.test("updateSimilarity with two matches", t => {
                 source: "test",
                 images: ["test/new1.jpg", "test/new2.jpg"],
             },
-            "Check similar record result"
+            "Check similar record result",
         );
         t.same(
             record.similarRecords[1].toJSON(),
@@ -215,7 +215,7 @@ tap.test("updateSimilarity with two matches", t => {
                 source: "test",
                 images: ["test/foo.jpg"],
             },
-            "Check similar record result"
+            "Check similar record result",
         );
         t.end();
     });
@@ -237,13 +237,13 @@ tap.test("Record.lintData: Unknown Fields", {autoend: true}, t => {
             {
                 batch: "test",
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `id` is empty.",
             warnings: ["Unrecognized field `batch`."],
         },
-        "Known field"
+        "Known field",
     );
 
     t.same(
@@ -251,13 +251,13 @@ tap.test("Record.lintData: Unknown Fields", {autoend: true}, t => {
             {
                 random: "test",
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `id` is empty.",
             warnings: ["Unrecognized field `random`."],
         },
-        "Unknown field"
+        "Unknown field",
     );
 });
 
@@ -268,7 +268,7 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, t => {
             error: "Required field `id` is empty.",
             warnings: [],
         },
-        "ID"
+        "ID",
     );
 
     t.same(
@@ -276,13 +276,13 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, t => {
             {
                 id: "",
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `id` is empty.",
             warnings: [],
         },
-        "ID Empty String"
+        "ID Empty String",
     );
 
     t.same(
@@ -290,13 +290,13 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, t => {
             {
                 id: "1234",
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `type` is empty.",
             warnings: [],
         },
-        "Type"
+        "Type",
     );
 
     t.same(
@@ -305,13 +305,13 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, t => {
                 id: "1234",
                 type: "",
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `type` is empty.",
             warnings: [],
         },
-        "Type Empty String"
+        "Type Empty String",
     );
 
     t.same(
@@ -320,13 +320,13 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, t => {
                 id: "1234",
                 type: "artworks",
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `source` is empty.",
             warnings: [],
         },
-        "Source"
+        "Source",
     );
 
     t.same(
@@ -336,13 +336,13 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, t => {
                 type: "artworks",
                 source: "",
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `source` is empty.",
             warnings: [],
         },
-        "Source Empty String"
+        "Source Empty String",
     );
 
     t.same(
@@ -352,13 +352,13 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, t => {
                 type: "artworks",
                 source: "nga",
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `lang` is empty.",
             warnings: [],
         },
-        "Lang"
+        "Lang",
     );
 
     t.same(
@@ -369,13 +369,13 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, t => {
                 source: "nga",
                 lang: "",
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `lang` is empty.",
             warnings: [],
         },
-        "Lang Empty String"
+        "Lang Empty String",
     );
 
     t.same(
@@ -387,13 +387,13 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, t => {
                 lang: "en",
                 images: ["foo.jpg"],
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `url` is empty.",
             warnings: [],
         },
-        "URL"
+        "URL",
     );
 
     t.same(
@@ -406,13 +406,13 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, t => {
                 url: "",
                 images: ["foo.jpg"],
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `url` is empty.",
             warnings: [],
         },
-        "URL Empty String"
+        "URL Empty String",
     );
 
     t.same(
@@ -424,13 +424,13 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, t => {
                 lang: "en",
                 url: "http://google.com/",
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `images` is empty.",
             warnings: [],
         },
-        "Images"
+        "Images",
     );
 
     t.same(
@@ -443,13 +443,13 @@ tap.test("Record.lintData: Required Fields", {autoend: true}, t => {
                 url: "http://google.com/",
                 images: [],
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `images` is empty.",
             warnings: [],
         },
-        "Images Empty Array"
+        "Images Empty Array",
     );
 });
 
@@ -464,7 +464,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, t => {
                 url: "http://google.com/",
                 images: ["foo.jpg"],
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -480,7 +480,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, t => {
                 "Recommended field `objectType` is empty.",
             ],
         },
-        "Title and objectType recommended."
+        "Title and objectType recommended.",
     );
 
     t.same(
@@ -495,7 +495,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, t => {
                 title: "",
                 objectType: "",
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -511,7 +511,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, t => {
                 "Recommended field `objectType` is empty.",
             ],
         },
-        "Title and objectType recommended."
+        "Title and objectType recommended.",
     );
 
     t.same(
@@ -525,7 +525,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, t => {
                 images: ["foo.jpg"],
                 title: "Test",
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -539,7 +539,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, t => {
             },
             warnings: ["Recommended field `objectType` is empty."],
         },
-        "objectType recommended."
+        "objectType recommended.",
     );
 
     t.same(
@@ -554,7 +554,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, t => {
                 title: "Test",
                 objectType: "",
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -568,7 +568,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, t => {
             },
             warnings: ["Recommended field `objectType` is empty."],
         },
-        "objectType recommended."
+        "objectType recommended.",
     );
 
     t.same(
@@ -583,7 +583,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, t => {
                 title: "Test",
                 objectType: "painting",
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -598,7 +598,7 @@ tap.test("Record.lintData: Recommended Fields", {autoend: true}, t => {
             },
             warnings: [],
         },
-        "No recommended."
+        "No recommended.",
     );
 });
 
@@ -615,13 +615,13 @@ tap.test("Record.lintData: Type checking", {autoend: true}, t => {
                 title: "Test",
                 objectType: "painting",
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `id` is empty.",
             warnings: ["`id` is the wrong type. Expected a string."],
         },
-        "ID"
+        "ID",
     );
 
     t.same(
@@ -636,13 +636,13 @@ tap.test("Record.lintData: Type checking", {autoend: true}, t => {
                 title: "Test",
                 objectType: "painting",
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `source` is empty.",
             warnings: ["`source` is the wrong type. Expected a string."],
         },
-        "Source"
+        "Source",
     );
 
     t.same(
@@ -657,13 +657,13 @@ tap.test("Record.lintData: Type checking", {autoend: true}, t => {
                 title: "Test",
                 objectType: "painting",
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `lang` is empty.",
             warnings: ["`lang` is the wrong type. Expected a string."],
         },
-        "Lang"
+        "Lang",
     );
 
     t.same(
@@ -678,13 +678,13 @@ tap.test("Record.lintData: Type checking", {autoend: true}, t => {
                 title: "Test",
                 objectType: "painting",
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `url` is empty.",
             warnings: ["`url` is the wrong type. Expected a string."],
         },
-        "URL"
+        "URL",
     );
 
     t.same(
@@ -699,7 +699,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, t => {
                 title: "Test",
                 objectType: "painting",
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `images` is empty.",
@@ -708,7 +708,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, t => {
                     "`image.jpg`.",
             ],
         },
-        "Images"
+        "Images",
     );
 
     t.same(
@@ -724,7 +724,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, t => {
                 objectType: "painting",
                 dates: [{start: "1234", end: 1976}],
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -740,7 +740,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, t => {
             },
             warnings: [],
         },
-        "Date Start"
+        "Date Start",
     );
 
     t.same(
@@ -756,7 +756,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, t => {
                 objectType: "painting",
                 dates: [{start: 1234, end: 1976, circa: "foo"}],
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -774,7 +774,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, t => {
                 "`dates`: `circa` is the wrong type. Expected a boolean.",
             ],
         },
-        "Date Circa"
+        "Date Circa",
     );
 
     t.same(
@@ -790,7 +790,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, t => {
                 objectType: "painting",
                 categories: {},
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -807,7 +807,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, t => {
                 "`categories` value is the wrong type. Expected a string.",
             ],
         },
-        "Categories"
+        "Categories",
     );
 
     t.same(
@@ -823,7 +823,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, t => {
                 objectType: "painting",
                 categories: [true],
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -840,7 +840,7 @@ tap.test("Record.lintData: Type checking", {autoend: true}, t => {
                 "`categories` value is the wrong type. Expected a string.",
             ],
         },
-        "Categories Values"
+        "Categories Values",
     );
 });
 
@@ -857,7 +857,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
                 title: "Test",
                 objectType: "painting",
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `id` is empty.",
@@ -866,7 +866,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
                     "and hyphens.",
             ],
         },
-        "ID"
+        "ID",
     );
 
     t.same(
@@ -881,13 +881,13 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
                 title: "Test",
                 objectType: "painting",
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `lang` is empty.",
             warnings: [],
         },
-        "Lang"
+        "Lang",
     );
 
     t.same(
@@ -902,13 +902,13 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
                 title: "Test",
                 objectType: "painting",
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `url` is empty.",
             warnings: ["Field must be properly-formatted URL."],
         },
-        "URL"
+        "URL",
     );
 
     t.same(
@@ -923,7 +923,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
                 title: "Test",
                 objectType: "painting",
             },
-            i18n
+            i18n,
         ),
         {
             error: "Required field `images` is empty.",
@@ -932,7 +932,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
                     "`image.jpg`.",
             ],
         },
-        "Images"
+        "Images",
     );
 
     t.same(
@@ -947,7 +947,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
                 title: "Test",
                 objectType: "foo",
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -967,7 +967,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
                 "Recommended field `objectType` is empty.",
             ],
         },
-        "objectType"
+        "objectType",
     );
 
     t.same(
@@ -983,7 +983,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
                 objectType: "painting",
                 artists: [{pseudonym: "Test"}],
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -999,7 +999,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
             },
             warnings: ["`artists`: Recommended field `name` is empty."],
         },
-        "artists"
+        "artists",
     );
 
     t.same(
@@ -1016,7 +1016,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
                 artists: [{name: "Test"}],
                 dimensions: [{width: 123}],
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -1035,7 +1035,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
                     "or height.",
             ],
         },
-        "dimensions"
+        "dimensions",
     );
 
     t.same(
@@ -1052,7 +1052,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
                 artists: [{name: "Test"}],
                 dimensions: [{unit: "mm"}],
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -1071,7 +1071,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
                     "or height.",
             ],
         },
-        "dimensions"
+        "dimensions",
     );
 
     t.same(
@@ -1089,7 +1089,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
                 dimensions: [{width: 123, unit: "mm"}],
                 dates: [{circa: true}],
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -1106,7 +1106,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
             },
             warnings: ["Dates must have a start or end specified."],
         },
-        "dates"
+        "dates",
     );
 
     t.same(
@@ -1128,7 +1128,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
                 ],
                 dimensions: [{width: 123, unit: "mm"}],
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -1145,7 +1145,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
             },
             warnings: ["`artists`: Dates must have a start or end specified."],
         },
-        "dates in artists"
+        "dates in artists",
     );
 
     t.same(
@@ -1164,7 +1164,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
                 dates: [{start: 1456, end: 1457, circa: true}],
                 locations: [{country: "United States"}],
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -1182,7 +1182,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
             },
             warnings: ["Locations must have a name or city specified."],
         },
-        "locations"
+        "locations",
     );
 
     t.same(
@@ -1201,7 +1201,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
                 dates: [{start: 1456, end: 1457, circa: true}],
                 locations: [{city: "New York City"}],
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -1220,7 +1220,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
             },
             warnings: [],
         },
-        "All pass"
+        "All pass",
     );
 });
 
@@ -1241,7 +1241,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, t => {
                 dates: [{start: 1456, end: 1457, circa: true}],
                 locations: [{city: "New York City"}],
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -1260,7 +1260,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, t => {
             },
             warnings: [],
         },
-        "Artists"
+        "Artists",
     );
 
     t.same(
@@ -1279,7 +1279,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, t => {
                 dates: [{start: 1456, end: 1457, circa: true}],
                 locations: [{city: "New York City"}],
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -1305,7 +1305,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, t => {
             },
             warnings: [],
         },
-        "Dimensions"
+        "Dimensions",
     );
 
     t.same(
@@ -1324,7 +1324,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, t => {
                 dates: [{start: 1456, end: 1457, circa: true}],
                 locations: [{city: "New York City"}],
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -1345,7 +1345,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, t => {
                     " or height.",
             ],
         },
-        "Dimensions produce warnings"
+        "Dimensions produce warnings",
     );
 
     t.same(
@@ -1364,7 +1364,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, t => {
                 dates: ["ca. 1456-1457"],
                 locations: [{city: "New York City"}],
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -1390,7 +1390,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, t => {
             },
             warnings: [],
         },
-        "Dates"
+        "Dates",
     );
 
     t.same(
@@ -1409,7 +1409,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, t => {
                 dates: ["blah"],
                 locations: [{city: "New York City"}],
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -1427,7 +1427,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, t => {
             },
             warnings: ["Dates must have a start or end specified."],
         },
-        "Dates produce warnings"
+        "Dates produce warnings",
     );
 
     t.same(
@@ -1451,7 +1451,7 @@ tap.test("Record.lintData: Conversion", {autoend: true}, t => {
                 dates: ["ca. 1456-1457"],
                 locations: [{city: "New York City"}],
             },
-            i18n
+            i18n,
         ),
         {
             data: {
@@ -1489,6 +1489,6 @@ tap.test("Record.lintData: Conversion", {autoend: true}, t => {
             },
             warnings: [],
         },
-        "Dates in Artists"
+        "Dates in Artists",
     );
 });

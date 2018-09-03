@@ -25,7 +25,7 @@ for (const typeName in options.types) {
     options.types[typeName] = Object.assign(
         {},
         recordOptions,
-        options.types[typeName]
+        options.types[typeName],
     );
 }
 
@@ -43,8 +43,8 @@ if (config.NODE_ENV !== "test") {
     }
 }
 
-options.defaultLocale = options.defaultLocale ||
-    Object.keys(options.locales)[0] || "en";
+options.defaultLocale =
+    options.defaultLocale || Object.keys(options.locales)[0] || "en";
 
 // Bring in options that could be configured via the config
 options.baseURL = options.baseURL || config.BASE_URL;

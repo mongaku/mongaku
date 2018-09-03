@@ -29,7 +29,7 @@ tap.test("Upload New Image", t => {
                 t.match(res.headers.location, "/artworks/uploads/2508884691");
                 t.end();
                 callback();
-            }
+            },
         );
     });
 });
@@ -57,7 +57,7 @@ tap.test("Upload Existing Image", t => {
                 t.match(res.headers.location, "/artworks/uploads/4266906334");
                 t.end();
                 callback();
-            }
+            },
         );
     });
 });
@@ -84,7 +84,7 @@ tap.test("Upload Corrupted Image", t => {
                 t.equal(res.statusCode, 500);
                 t.end();
                 callback();
-            }
+            },
         );
     });
 });
@@ -103,7 +103,7 @@ tap.test("Upload No Image", t => {
                 t.equal(res.statusCode, 500);
                 t.end();
                 callback();
-            }
+            },
         );
     });
 });
@@ -112,7 +112,7 @@ tap.test("Upload New Image From URL", t => {
     mockFS(callback => {
         // TODO(jeresig): Change this to a local URL
         const uploadURL = encodeURIComponent(
-            "http://data.ukiyo-e.org/met/thumbs/2011_138_Strm1.jpg"
+            "http://data.ukiyo-e.org/met/thumbs/2011_138_Strm1.jpg",
         );
         const url = `http://localhost:3000/artworks/url-upload?url=${uploadURL}`;
 
@@ -125,11 +125,11 @@ tap.test("Upload New Image From URL", t => {
                 t.equal(res.statusCode, 200);
                 t.match(
                     res.request.uri.href,
-                    "http://localhost:3000/artworks/uploads/516463693"
+                    "http://localhost:3000/artworks/uploads/516463693",
                 );
                 t.end();
                 callback();
-            }
+            },
         );
     });
 });
@@ -148,7 +148,7 @@ tap.test("Upload No Image From URL", t => {
                 t.equal(res.statusCode, 500);
                 t.end();
                 callback();
-            }
+            },
         );
     });
 });
@@ -167,7 +167,7 @@ tap.test("Upload Missing Image From URL", t => {
                 t.equal(res.statusCode, 500);
                 t.end();
                 callback();
-            }
+            },
         );
     });
 });
@@ -184,7 +184,7 @@ tap.test("View Upload", t => {
                 t.equal(res.statusCode, 200);
                 t.end();
                 callback();
-            }
+            },
         );
     });
 });
@@ -201,7 +201,7 @@ tap.test("View Missing Upload", t => {
                 t.equal(res.statusCode, 404);
                 t.end();
                 callback();
-            }
+            },
         );
     });
 });

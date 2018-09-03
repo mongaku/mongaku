@@ -114,7 +114,7 @@ Image.methods = {
     getFilePath() {
         return path.resolve(
             this.getSource().getDirBase(),
-            `images/${this.hash}.jpg`
+            `images/${this.hash}.jpg`,
         );
     },
 
@@ -149,9 +149,9 @@ Image.methods = {
 
                 callback(
                     null,
-                    recordsList.reduce((all, records) => all.concat(records))
+                    recordsList.reduce((all, records) => all.concat(records)),
                 );
-            }
+            },
         );
     },
 
@@ -192,13 +192,13 @@ Image.methods = {
                                 _id: image._id,
                                 score: match.score,
                             });
-                        }
+                        },
                     );
                 },
                 (err, matches) => {
                     this.similarImages = matches.filter(match => match);
                     callback();
-                }
+                },
             );
         });
     },
@@ -248,7 +248,7 @@ Image.methods = {
                         record.save(callback);
                     });
                 },
-                callback
+                callback,
             );
         });
     },
@@ -268,11 +268,11 @@ Image.methods = {
                             record.missingImages.remove(imageId);
                             record.save(callback);
                         },
-                        callback
+                        callback,
                     );
                 });
             },
-            callback
+            callback,
         );
     },
 };
@@ -387,7 +387,7 @@ Image.statics = {
                     image.needsSimilarUpdate = true;
                     image.save(err => callback(err, true));
                 });
-            }
+            },
         );
     },
 
@@ -427,7 +427,7 @@ Image.statics = {
                         });
                     });
                 });
-            }
+            },
         );
     },
 
@@ -446,9 +446,9 @@ Image.statics = {
                     {batch: {$ne: batchID}},
                     {needsSimilarUpdate: true},
                     {multi: true},
-                    callback
+                    callback,
                 );
-            }
+            },
         );
     },
 };
@@ -515,7 +515,7 @@ const images = {
             img => {
                 return img.resize(size.width, size.height);
             },
-            callback
+            callback,
         );
     },
 
@@ -530,7 +530,7 @@ const images = {
             img => {
                 return img.resize(scaled.width, scaled.height, ">");
             },
-            callback
+            callback,
         );
     },
 
@@ -547,7 +547,7 @@ const images = {
                 /* istanbul ignore if */
                 if (err) {
                     return callback(
-                        new Error(`Error converting thumbnails: ${err}`)
+                        new Error(`Error converting thumbnails: ${err}`),
                     );
                 }
 
@@ -555,7 +555,7 @@ const images = {
                     path.resolve(baseDir, "thumbs", fileName),
                     path.resolve(baseDir, "scaled", fileName),
                 ]);
-            }
+            },
         );
     },
 
@@ -589,7 +589,7 @@ const images = {
                         imageFile = path.resolve(
                             baseDir,
                             "images",
-                            `${hash}.jpg`
+                            `${hash}.jpg`,
                         );
 
                         // Avoid doing the rest of this if it already exists
@@ -605,7 +605,7 @@ const images = {
                         fs.createReadStream(sourceFile),
                         imageFile,
                         null,
-                        callback
+                        callback,
                     ),
 
                 // Generate thumbnails based on the image
@@ -613,7 +613,7 @@ const images = {
             ],
             err => {
                 callback(err === existsError ? null : err, hash);
-            }
+            },
         );
     },
 };

@@ -52,7 +52,7 @@ if (args.v || args.version) {
     shell.exec(startCmd);
 } else if (cmd === "stop") {
     shell.exec(
-        `${getBinary("naught")} stop --pid-file mongaku.pid mongaku.ipc`
+        `${getBinary("naught")} stop --pid-file mongaku.pid mongaku.ipc`,
     );
 } else if (cmd === "restart") {
     shell.exec(`${getBinary("naught")} deploy mongaku.ipc`);
@@ -144,6 +144,6 @@ Commands:
 
 -v: Show program version
 -h: Show available commands
-`
+`,
     );
 }

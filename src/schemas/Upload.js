@@ -99,7 +99,7 @@ Upload.methods = Object.assign({}, Record.methods, {
                 }
                 models("UploadImage").findById(id, callback);
             },
-            callback
+            callback,
         );
     },
 });

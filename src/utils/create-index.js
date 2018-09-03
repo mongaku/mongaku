@@ -39,6 +39,6 @@ module.exports = (args, callback) => {
                 });
             });
         },
-        callback
+        callback,
     );
 };

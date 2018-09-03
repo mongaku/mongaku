@@ -10,7 +10,7 @@ module.exports = app => {
     passport.serializeUser((user, callback) => callback(null, user._id));
 
     passport.deserializeUser((id, callback) =>
-        User.findOne({_id: id}, callback)
+        User.findOne({_id: id}, callback),
     );
 
     // use local strategy
@@ -41,8 +41,8 @@ module.exports = app => {
 
                     return callback(null, user);
                 });
-            }
-        )
+            },
+        ),
     );
 
     // Initialize Passport and the Passport session, which allows users to

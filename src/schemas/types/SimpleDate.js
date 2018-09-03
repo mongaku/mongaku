@@ -73,7 +73,7 @@ SimpleDate.prototype = {
                             url: {
                                 [this.options.name]: this.formatDate(
                                     bucket.key_as_string,
-                                    i18n
+                                    i18n,
                                 ),
                             },
                         }))

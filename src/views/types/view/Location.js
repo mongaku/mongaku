@@ -16,11 +16,18 @@ type Props = {
 const Location = ({value, url}: {value: LocationType, url: string}) => {
     return (
         <span>
-            {value.name &&
+            {value.name && (
                 <span>
-                    <a href={url}>{value.name}</a><br />
-                </span>}
-            {value.city && <span>{value.city}<br /></span>}
+                    <a href={url}>{value.name}</a>
+                    <br />
+                </span>
+            )}
+            {value.city && (
+                <span>
+                    {value.city}
+                    <br />
+                </span>
+            )}
         </span>
     );
 };

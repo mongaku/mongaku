@@ -97,12 +97,12 @@ FixedString.prototype = {
                     i18n.format(
                         i18n.gettext(
                             "`%(name)s` " +
-                                "must be one of the following types: %(types)s."
+                                "must be one of the following types: %(types)s.",
                         ),
                         {
                             name: this.options.name,
                             types: values.join(", "),
-                        }
+                        },
                     ),
             };
         }
@@ -122,7 +122,7 @@ FixedString.prototype = {
                     raw: {type: "string", index: "not_analyzed"},
                 },
             },
-            validate
+            validate,
         );
 
         return this.options.multiple ? [schema] : schema;

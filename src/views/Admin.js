@@ -43,7 +43,7 @@ type ImportResults = {
 
 const ImageImport = (
     {batch}: Props & {batch: Import},
-    {gettext, format, fixedDate}: Context
+    {gettext, format, fixedDate}: Context,
 ) => {
     const results = batch.getFilteredResults;
     let columns;
@@ -65,7 +65,9 @@ const ImageImport = (
 
     return (
         <tr>
-            <td><a href={batch.getURL}>{batch.fileName}</a></td>
+            <td>
+                <a href={batch.getURL}>{batch.fileName}</a>
+            </td>
             <td>{fixedDate(batch.modified)}</td>
             {columns}
         </tr>
@@ -105,14 +107,12 @@ ImageImports.contextTypes = childContextTypes;
 const UploadImagesForm = ({source}: Props, {gettext, URL}: Context) => (
     <div className="panel panel-default">
         <div className="panel-heading">
-            <h3 className="panel-title">
-                {gettext("Upload Images")}
-            </h3>
+            <h3 className="panel-title">{gettext("Upload Images")}</h3>
         </div>
         <div className="panel-body">
             <form
                 action={URL(
-                    `/${source.type}/source/${source._id}/upload-images`
+                    `/${source.type}/source/${source._id}/upload-images`,
                 )}
                 method="POST"
                 encType="multipart/form-data"
@@ -120,20 +120,18 @@ const UploadImagesForm = ({source}: Props, {gettext, URL}: Context) => (
                 <p>
                     {gettext(
                         "Upload a Zip file (.zip) of " +
-                            "JPG images (.jpg or .jpeg)."
-                    )}
-                    {" "}
+                            "JPG images (.jpg or .jpeg).",
+                    )}{" "}
                     {gettext(
                         "Names of images should match " +
-                            "the names provided in the metadata."
-                    )}
-                    {" "}
+                            "the names provided in the metadata.",
+                    )}{" "}
                     {gettext(
                         "After you've uploaded a new " +
                             "batch of images they will be processed " +
                             "immediately but their similarity to other " +
                             "images will be computed in the background over " +
-                            "the subsequent hours and days."
+                            "the subsequent hours and days.",
                     )}
                 </p>
 
@@ -144,8 +142,7 @@ const UploadImagesForm = ({source}: Props, {gettext, URL}: Context) => (
                             name="zipField"
                             className="form-control"
                         />
-                    </div>
-                    {" "}
+                    </div>{" "}
                     <input
                         type="submit"
                         value={gettext("Upload")}
@@ -161,7 +158,7 @@ UploadImagesForm.contextTypes = childContextTypes;
 
 const DataImport = (
     {batch}: Props & {batch: Import},
-    {gettext, format, fixedDate}: Context
+    {gettext, format, fixedDate}: Context,
 ) => {
     const results = batch.getFilteredResults;
     let columns;
@@ -174,14 +171,16 @@ const DataImport = (
         );
     } else {
         columns = [
-            batch.state === "process.completed" &&
+            batch.state === "process.completed" && (
                 <td key="finalize">
                     <a href={batch.getURL} className="btn btn-success btn-xs">
                         {gettext("Finalize Import")}
                     </a>
-                </td>,
-            batch.state !== "process.completed" &&
-                <td key="state">{batch.getStateName}</td>,
+                </td>
+            ),
+            batch.state !== "process.completed" && (
+                <td key="state">{batch.getStateName}</td>
+            ),
             <td key="unprocessed">{results.unprocessed.length}</td>,
             <td key="created">{results.created.length}</td>,
             <td key="changed">{results.changed.length}</td>,
@@ -193,7 +192,9 @@ const DataImport = (
 
     return (
         <tr>
-            <td><a href={batch.getURL}>{batch.fileName}</a></td>
+            <td>
+                <a href={batch.getURL}>{batch.fileName}</a>
+            </td>
             <td>{fixedDate(batch.modified)}</td>
             {columns}
         </tr>
@@ -236,9 +237,7 @@ DataImports.contextTypes = childContextTypes;
 const UploadDataForm = ({source}: Props, {gettext, URL}: Context) => (
     <div className="panel panel-default">
         <div className="panel-heading">
-            <h3 className="panel-title">
-                {gettext("Upload Metadata")}
-            </h3>
+            <h3 className="panel-title">{gettext("Upload Metadata")}</h3>
         </div>
         <div className="panel-body">
             <form
@@ -257,14 +256,14 @@ const UploadDataForm = ({source}: Props, {gettext, URL}: Context) => (
                                     name="files"
                                     className="form-control"
                                 />
-                            </div>
-                            {" "}
-                            {source.getExpectedFiles.length - 1 === i &&
+                            </div>{" "}
+                            {source.getExpectedFiles.length - 1 === i && (
                                 <input
                                     type="submit"
                                     value={gettext("Upload")}
                                     className="btn btn-primary"
-                                />}
+                                />
+                            )}
                         </div>
                     </div>
                 ))}

@@ -12,7 +12,7 @@ module.exports = (req, res, next, tmplParams) => {
         if (err) {
             console.error(`Database error: ${err}`);
             return next(
-                new Error(i18n.gettext("Error connecting to database."))
+                new Error(i18n.gettext("Error connecting to database.")),
             );
         }
 
@@ -34,7 +34,9 @@ module.exports = (req, res, next, tmplParams) => {
 
             const records = data.records
                 .map(row =>
-                    Object.keys(model).map(prop => row[prop]).join("\t")
+                    Object.keys(model)
+                        .map(prop => row[prop])
+                        .join("\t"),
                 )
                 .join("\n");
 

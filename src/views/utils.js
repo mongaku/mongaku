@@ -11,7 +11,7 @@ module.exports = (
     options: Options,
     translations: {
         [message: string]: ?Array<string>,
-    }
+    },
 ) => {
     const urls = require("../lib/urls")(options);
     const numberFormat = new Intl.NumberFormat(lang);
@@ -50,7 +50,7 @@ module.exports = (
 
         format(fmt: string = "", props: {[key: string]: any}): string {
             return fmt.replace(/%\(\s*([^)]+)\s*\)s/g, (m, v) =>
-                String(props[v.trim()])
+                String(props[v.trim()]),
             );
         },
 

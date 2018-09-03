@@ -31,7 +31,7 @@ module.exports = (View: React.ComponentType<*>) => {
                         <View {...options} />
                     </Page>
                 </Wrapper>,
-                root
+                root,
             );
         }
     }

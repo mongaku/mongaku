@@ -12,13 +12,11 @@ const Login = ({title}: {title: string}, {gettext, URL}: Context) => {
 
             <form action={URL("/login")} method="post">
                 <div>
-                    <label htmlFor="email">{gettext("Email Address:")}</label>
-                    {" "}
+                    <label htmlFor="email">{gettext("Email Address:")}</label>{" "}
                     <input type="text" name="email" />
                 </div>
                 <div>
-                    <label htmlFor="password">{gettext("Password:")}</label>
-                    {" "}
+                    <label htmlFor="password">{gettext("Password:")}</label>{" "}
                     <input type="password" name="password" />
                 </div>
                 <div>

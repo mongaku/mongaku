@@ -7,8 +7,18 @@ const webpack = require("webpack");
 const entry = {};
 
 // TODO: Generate this dynamically
-const entries = ["Admin", "EditRecord", "Error", "Home", "ImportImages",
-    "ImportRecords", "Login", "Record", "Search", "Upload"];
+const entries = [
+    "Admin",
+    "EditRecord",
+    "Error",
+    "Home",
+    "ImportImages",
+    "ImportRecords",
+    "Login",
+    "Record",
+    "Search",
+    "Upload",
+];
 
 for (const file of entries) {
     entry[file] = path.resolve(__dirname, `src/entries/${file}.js`);
@@ -30,33 +40,37 @@ module.exports = {
         new webpack.ProvidePlugin({
             fetch: "exports-loader?self.fetch!whatwg-fetch",
         }),
-
-        new webpack.optimize.CommonsChunkPlugin({
-            name: "shared",
-            minChunks: 2,
-        }),
-
-        new webpack.optimize.CommonsChunkPlugin({
-            name: ["vendor", "manifest"],
-            chunks: ["shared"],
-            minChunks(module) {
-                return module.userRequest &&
-                    module.userRequest.indexOf("node_modules") >= 0;
-            },
-        }),
     ],
 
+    optimization: {
+        splitChunks: {
+            chunks: "all",
+
+            cacheGroups: {
+                vendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    priority: -10,
+                    name: "vendor",
+                },
+                default: {
+                    minChunks: 2,
+                    priority: -20,
+                    reuseExistingChunk: true,
+                    name: "shared",
+                },
+            },
+        },
+    },
+
     module: {
-        loaders: [
+        rules: [
             {
                 test: /regenerator-runtime/,
-                loader: path.resolve(__dirname, "node_modules",
-                    "null-loader"),
+                loader: path.resolve(__dirname, "node_modules", "null-loader"),
             },
             {
                 test: /\.js$/,
-                loader: path.resolve(__dirname, "node_modules",
-                    "babel-loader"),
+                loader: path.resolve(__dirname, "node_modules", "babel-loader"),
             },
         ],
     },

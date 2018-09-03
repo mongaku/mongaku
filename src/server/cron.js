@@ -9,7 +9,7 @@ module.exports = {
     updateRecordImport() {
         const advance = () =>
             models("RecordImport").advance(() =>
-                setTimeout(advance, QUERY_RATE)
+                setTimeout(advance, QUERY_RATE),
             );
 
         advance();
@@ -38,7 +38,7 @@ module.exports = {
     updateImageImport() {
         const advance = () =>
             models("ImageImport").advance(() =>
-                setTimeout(advance, QUERY_RATE)
+                setTimeout(advance, QUERY_RATE),
             );
 
         advance();

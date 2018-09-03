@@ -178,7 +178,7 @@ tap.test("Search: Defaults", t => {
         t.equal(res.statusCode, 200);
         t.equal(
             res.request.uri.href,
-            "http://localhost:3000/artworks/search?filter=test"
+            "http://localhost:3000/artworks/search?filter=test",
         );
         t.end();
     });
