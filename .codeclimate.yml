@@ -12,5 +12,6 @@ ratings:
   - "**.js"
 exclude_paths:
 - src/public/**/*
+- src/tests/**/*
 - locales/**/*
 - build/**/*
