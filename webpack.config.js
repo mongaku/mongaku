@@ -27,6 +27,8 @@ for (const file of entries) {
 module.exports = {
     entry,
 
+    mode: process.env.NODE_ENV === "production" ? "production" : "development",
+
     output: {
         filename: "[name].js",
         path: path.resolve(process.cwd(), "static", "js"),

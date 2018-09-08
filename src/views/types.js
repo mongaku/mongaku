@@ -120,7 +120,8 @@ type TypeOptions = {
     hasImages: boolean,
     requiresImages: boolean,
     hasImageSearch: boolean,
-    autoID?: boolean,
+    allowDirectoryUpload: boolean,
+    autoID: boolean,
 };
 
 export type Source = {

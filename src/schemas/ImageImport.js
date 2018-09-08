@@ -2,6 +2,7 @@ const os = require("os");
 const fs = require("fs");
 const path = require("path");
 
+const glob = require("glob");
 const async = require("async");
 const unzip = require("unzip-stream");
 
@@ -18,7 +19,13 @@ const states = [
         id: "started",
         name: i18n => i18n.gettext("Awaiting processing..."),
         advance(batch, callback) {
-            batch.processImages(callback);
+            if (batch.zipFile) {
+                batch.processZipFile(callback);
+            } else if (batch.directory) {
+                batch.processDirectory(callback);
+            } else {
+                process.nextTick(callback);
+            }
         },
     },
     {
@@ -69,7 +76,11 @@ const ImageImport = new db.schema(
         // (temporary, deleted after processing)
         zipFile: {
             type: String,
-            required: true,
+        },
+
+        // The directory location of the source images to import
+        directory: {
+            type: String,
         },
 
         // The name of the original file (e.g. `foo.zip`)
@@ -97,7 +108,7 @@ Object.assign(ImageImport.methods, Import.methods, {
         return states;
     },
 
-    processImages(callback) {
+    processZipFile(callback) {
         const zipFile = fs.createReadStream(this.zipFile);
         let zipError;
         const files = [];
@@ -153,24 +164,45 @@ Object.assign(ImageImport.methods, Import.methods, {
                         return callback(new Error("ZIP_FILE_EMPTY"));
                     }
 
-                    // Import all of the files as images
-                    async.eachLimit(
-                        files,
-                        1,
-                        (file, callback) => {
-                            this.addResult(file, callback);
-                        },
-                        err => {
-                            /* istanbul ignore if */
-                            if (err) {
-                                return callback(err);
-                            }
-
-                            this.setSimilarityState(callback);
-                        },
-                    );
+                    this.importImages(files, callback);
                 });
         });
+    },
+
+    processDirectory(callback) {
+        const fileGlob = path.join(
+            path.resolve(this.directory),
+            "**",
+            "*.@(jpg|jpeg)",
+        );
+
+        glob(fileGlob, (err, files) => {
+            /* istanbul ignore if */
+            if (err) {
+                return callback(err);
+            }
+
+            this.importImages(files, callback);
+        });
+    },
+
+    importImages(files, callback) {
+        // Import all of the files as images
+        async.eachLimit(
+            files,
+            1,
+            (file, callback) => {
+                this.addResult(file, callback);
+            },
+            err => {
+                /* istanbul ignore if */
+                if (err) {
+                    return callback(err);
+                }
+
+                this.setSimilarityState(callback);
+            },
+        );
     },
 
     setSimilarityState(callback) {

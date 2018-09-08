@@ -111,9 +111,7 @@ const UploadImagesForm = ({source}: Props, {gettext, URL}: Context) => (
         </div>
         <div className="panel-body">
             <form
-                action={URL(
-                    `/${source.type}/source/${source._id}/upload-images`,
-                )}
+                action={URL(`/${source.type}/source/${source._id}/upload-zip`)}
                 method="POST"
                 encType="multipart/form-data"
             >
@@ -155,6 +153,57 @@ const UploadImagesForm = ({source}: Props, {gettext, URL}: Context) => (
 );
 
 UploadImagesForm.contextTypes = childContextTypes;
+
+const UploadDirectoryForm = ({source}: Props, {gettext, URL}: Context) => (
+    <div className="panel panel-default">
+        <div className="panel-heading">
+            <h3 className="panel-title">
+                {gettext("Upload Directory of Images")}
+            </h3>
+        </div>
+        <div className="panel-body">
+            <form
+                action={URL(
+                    `/${source.type}/source/${source._id}/upload-directory`,
+                )}
+                method="POST"
+                encType="multipart/form-data"
+            >
+                <p>
+                    {gettext(
+                        "Upload a directory of " +
+                            "JPG images (.jpg or .jpeg).",
+                    )}{" "}
+                    {gettext(
+                        "Names of images should match " +
+                            "the names provided in the metadata.",
+                    )}{" "}
+                    {gettext(
+                        "Directory must be a file path on the same system" +
+                            " on which this server is running.",
+                    )}
+                </p>
+
+                <div className="form-inline">
+                    <div className="form-group">
+                        <input
+                            type="text"
+                            name="directory"
+                            className="form-control"
+                        />
+                    </div>{" "}
+                    <input
+                        type="submit"
+                        value={gettext("Upload")}
+                        className="btn btn-primary"
+                    />
+                </div>
+            </form>
+        </div>
+    </div>
+);
+
+UploadDirectoryForm.contextTypes = childContextTypes;
 
 const DataImport = (
     {batch}: Props & {batch: Import},
@@ -276,12 +325,14 @@ UploadDataForm.contextTypes = childContextTypes;
 
 const Admin = (props: Props, {options}: Context) => {
     const {title, imageImport, dataImport, source} = props;
-    const hasImages = options.types[source.type].hasImages;
+    const {hasImages, allowDirectoryUpload} = options.types[source.type];
 
     return (
         <div>
             <h1>{title}</h1>
             {hasImages && <UploadImagesForm {...props} />}
+            {hasImages &&
+                allowDirectoryUpload && <UploadDirectoryForm {...props} />}
             {imageImport.length > 0 && <ImageImports {...props} />}
             <UploadDataForm {...props} />
             {dataImport.length > 0 && <DataImports {...props} />}

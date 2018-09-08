@@ -61,7 +61,9 @@ if (args.v || args.version) {
     const srcDir = path.join(rootDir, "src");
     const buildDir = path.join(rootDir, "build");
 
-    shell.exec(`${getBinary("babel")} ${srcDir} --out-dir ${buildDir}`);
+    shell.exec(
+        `${getBinary("babel")} ${srcDir} --out-dir ${buildDir} --verbose`,
+    );
 
     const webpackConfig = path.join(rootDir, "webpack.config.js");
     shell.exec(`${getBinary("webpack")} --config ${webpackConfig}`);
@@ -70,10 +72,17 @@ if (args.v || args.version) {
     const srcDir = path.join(rootDir, "src");
     const buildDir = path.join(rootDir, "build");
 
-    shell.exec(`${getBinary("babel")} ${srcDir} --out-dir ${buildDir} -w`);
-
     const webpackConfig = path.join(rootDir, "webpack.config.js");
-    shell.exec(`${getBinary("webpack")} --config ${webpackConfig} -w`);
+    console.log(
+        shell.exec(`${getBinary("webpack")} --config ${webpackConfig} -w`, {
+            async: true,
+        }),
+    );
+
+    shell.exec(
+        `${getBinary("babel")} ${srcDir} --out-dir ${buildDir} -w --verbose`,
+        {async: true},
+    );
 } else if (cmd === "dev") {
     const cwd = process.cwd();
     const localDir = localFile("..");
@@ -96,16 +105,21 @@ if (args.v || args.version) {
         .concat(extraArgs)
         .join(" ");
 
-    shell.exec(devCmd);
+    shell.exec(devCmd, {async: true});
 
     const rootDir = localFile("../..");
     const srcDir = path.join(rootDir, "src");
     const buildDir = path.join(rootDir, "build");
 
-    shell.exec(`${getBinary("babel")} ${srcDir} --out-dir ${buildDir} -w`);
+    shell.exec(
+        `${getBinary("babel")} ${srcDir} --out-dir ${buildDir} -w --verbose`,
+        {async: true},
+    );
 
     const webpackConfig = path.join(rootDir, "webpack.config.js");
-    shell.exec(`${getBinary("webpack")} --config ${webpackConfig} -w`);
+    shell.exec(`${getBinary("webpack")} --config ${webpackConfig} -w`, {
+        async: true,
+    });
 } else if (cmd === "create" || cmd === "convert" || cmd === "i18n") {
     const [name] = extraArgs;
 

@@ -196,7 +196,7 @@ module.exports = function(app) {
             }
         },
 
-        uploadImages(req, res, next) {
+        uploadZipFile(req, res, next) {
             const {source, i18n, lang} = req;
 
             const form = new formidable.IncomingForm();
@@ -229,6 +229,42 @@ module.exports = function(app) {
                     if (err) {
                         return next(
                             new Error(i18n.gettext("Error saving zip file.")),
+                        );
+                    }
+
+                    res.redirect(source.getAdminURL(lang));
+                });
+            });
+        },
+
+        uploadDirectory(req, res, next) {
+            const {source, i18n, lang} = req;
+
+            const form = new formidable.IncomingForm();
+            form.encoding = "utf-8";
+
+            form.parse(req, (err, {directory}) => {
+                /* istanbul ignore if */
+                if (err) {
+                    return next(
+                        new Error(i18n.gettext("Error processing directory.")),
+                    );
+                }
+
+                if (!directory) {
+                    return next(
+                        new Error(i18n.gettext("No directory specified.")),
+                    );
+                }
+
+                const batch = ImageImport.fromFile(directory, source._id);
+                batch.directory = directory;
+
+                batch.save(err => {
+                    /* istanbul ignore if */
+                    if (err) {
+                        return next(
+                            new Error(i18n.gettext("Error saving directory.")),
                         );
                     }
 
@@ -318,11 +354,18 @@ module.exports = function(app) {
                 this.admin,
             );
             app.post(
-                "/:type/source/:source/upload-images",
+                "/:type/source/:source/upload-zip",
                 auth,
                 canEdit,
                 source,
-                this.uploadImages,
+                this.uploadZipFile,
+            );
+            app.post(
+                "/:type/source/:source/upload-directory",
+                auth,
+                canEdit,
+                source,
+                this.uploadDirectory,
             );
             app.post(
                 "/:type/source/:source/upload-data",

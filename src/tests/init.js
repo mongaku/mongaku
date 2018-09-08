@@ -5,7 +5,7 @@ const tap = require("tap");
 const sinon = require("sinon");
 const mockfs = require("mock-fs");
 const async = require("async");
-const iconv = require("iconv-lite");
+const iconv = require("body-parser/node_modules/iconv-lite");
 
 // Force ICONV to pre-load its encodings
 iconv.getCodec("utf8");
