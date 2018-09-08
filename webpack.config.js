@@ -73,6 +73,9 @@ module.exports = {
             {
                 test: /\.js$/,
                 loader: path.resolve(__dirname, "node_modules", "babel-loader"),
+                options: {
+                    babelrcRoots: __dirname,
+                },
             },
         ],
     },
