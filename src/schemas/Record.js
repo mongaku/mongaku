@@ -23,11 +23,11 @@ Record.schema = {
     // Source ID
     id: {
         type: String,
-        validate: v => /^[a-z0-9_-]+$/i.test(v),
+        validate: v => /^[a-z0-9_().-]+$/i.test(v),
         validationMsg: i18n =>
             i18n.gettext(
-                "IDs can only contain " +
-                    "letters, numbers, underscores, and hyphens.",
+                "IDs can only contain letters, numbers, underscores, parens, " +
+                    "periods, and hyphens.",
             ),
         required: true,
         es_indexed: true,
@@ -90,7 +90,7 @@ Record.schema = {
     // The images associated with the record
     images: {
         type: [{type: String, ref: "Image"}],
-        validateArray: v => /^\w+\/[a-z0-9_-]+\.jpe?g$/i.test(v),
+        validateArray: v => /^\w+\/[a-z0-9_().-]+\.jpe?g$/i.test(v),
         validationMsg: i18n =>
             i18n.gettext(
                 "Images must be a valid " +
