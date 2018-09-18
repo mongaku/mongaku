@@ -14,6 +14,8 @@ const config = require("../lib/config");
 
 const Import = require("./Import");
 
+const SAVE_RATE = 30 * 1000;
+
 const states = [
     {
         id: "started",
@@ -240,6 +242,7 @@ Object.assign(ImageImport.methods, Import.methods, {
 
             // Add the result
             this.results.push(result);
+            this.delayedSave();
 
             if (image) {
                 image.save(err => {
@@ -248,10 +251,8 @@ Object.assign(ImageImport.methods, Import.methods, {
                         return callback(err);
                     }
 
-                    image.linkToRecords(() => this.save(callback));
+                    image.linkToRecords(callback);
                 });
-            } else {
-                this.save(callback);
             }
         });
     },
@@ -264,6 +265,17 @@ Object.assign(ImageImport.methods, Import.methods, {
                 result => (result.warnings || []).length !== 0,
             ),
         };
+    },
+
+    delayedSave() {
+        if (this.saveDelay) {
+            return;
+        }
+
+        this.saveDelay = setTimeout(() => {
+            this.saveDelay = null;
+            this.save();
+        }, SAVE_RATE);
     },
 });
 
