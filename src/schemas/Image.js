@@ -170,12 +170,25 @@ Image.methods = {
                 return callback(err);
             }
 
+            let maxScore = 0;
+
+            // Turn the scores into a % of the # of hits in the original
+            // image (this gives a more useful number for display/analysis)
+            const matchPercent = score =>
+                maxScore ? Math.round((score / maxScore) * 100) : 100;
+
+            // Ignore records with too many matches
+            if (matches.length > 50) {
+                return callback();
+            }
+
             async.mapLimit(
                 matches,
-                1,
+                4,
                 (match, callback) => {
                     // Skip matches for the image itself
                     if (match.id === this.hash) {
+                        maxScore = match.score;
                         return callback();
                     }
 
@@ -189,14 +202,24 @@ Image.methods = {
                             }
 
                             callback(null, {
-                                _id: image._id,
-                                score: match.score,
+                                image,
+                                score: matchPercent(match.score),
                             });
                         },
                     );
                 },
-                (err, matches) => {
-                    this.similarImages = matches.filter(match => match);
+                (err, matchingImages) => {
+                    let matches = matchingImages.filter(match => match);
+
+                    if (options.filterImageSimilarity && matches.length > 0) {
+                        matches = options.filterImageSimilarity(this, matches);
+                    }
+
+                    this.similarImages = matches.map(({image, score}) => ({
+                        _id: image._id,
+                        score,
+                    }));
+
                     callback();
                 },
             );
@@ -228,7 +251,7 @@ Image.methods = {
         });
     },
 
-    updateRelatedRecords(callback) {
+    markRelatedRecordsForUpdate(callback) {
         this.relatedRecords((err, records) => {
             /* istanbul ignore if */
             if (err) {
@@ -239,14 +262,8 @@ Image.methods = {
                 records,
                 1,
                 (record, callback) => {
-                    record.updateSimilarity(err => {
-                        /* istanbul ignore if */
-                        if (err) {
-                            return callback(err);
-                        }
-
-                        record.save(callback);
-                    });
+                    record.needsSimilarUpdate = true;
+                    record.save(callback);
                 },
                 callback,
             );
@@ -401,7 +418,10 @@ Image.statics = {
                     return callback(err);
                 }
 
-                console.log("Updating Similarity", image._id);
+                /* istanbul ignore if */
+                if (config.NODE_ENV !== "test") {
+                    console.log("Updating Image Similarity", image._id);
+                }
 
                 image.updateSimilarity(err => {
                     /* istanbul ignore if */
@@ -417,7 +437,7 @@ Image.statics = {
                             return callback(err);
                         }
 
-                        image.updateRelatedRecords(err => {
+                        image.markRelatedRecordsForUpdate(err => {
                             /* istanbul ignore if */
                             if (err) {
                                 return callback(err);
