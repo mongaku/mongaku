@@ -252,11 +252,6 @@ Record.methods = {
     },
 
     updateSimilarity(callback) {
-        /* istanbul ignore if */
-        if (config.NODE_ENV !== "test") {
-            console.log("Updating Similarity", this._id);
-        }
-
         this.getImages((err, images) => {
             /* istanbul ignore if */
             if (err) {
@@ -293,9 +288,21 @@ Record.methods = {
                         return callback(err);
                     }
 
-                    this.similarRecords = records
+                    let similarRecords = records;
+
+                    if (options.filterRecordSimilarity) {
+                        similarRecords = similarRecords.filter(similar =>
+                            options.filterRecordSimilarity(
+                                this,
+                                images,
+                                similar,
+                            ),
+                        );
+                    }
+
+                    this.similarRecords = similarRecords
                         .map(similar => {
-                            const score = similar.images
+                            const avgScore = similar.images
                                 .map(image => scores[image] || 0)
                                 .reduce((a, b) => a + b);
 
@@ -305,7 +312,7 @@ Record.methods = {
                                 images: similar.images.filter(
                                     id => matchIds.indexOf(id) >= 0,
                                 ),
-                                score,
+                                score: avgScore,
                                 source: similar.source,
                             };
                         })
@@ -735,6 +742,11 @@ Record.statics = {
             (err, record) => {
                 if (err || !record) {
                     return callback(err);
+                }
+
+                /* istanbul ignore if */
+                if (config.NODE_ENV !== "test") {
+                    console.log("Updating Record Similarity", record._id);
                 }
 
                 record.updateSimilarity(err => {
