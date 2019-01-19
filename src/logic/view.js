@@ -90,7 +90,7 @@ module.exports = function(app: express$Application) {
                                     similar.recordModel,
                                     i18n,
                                 );
-                                clonedRecord.imageModels = record.images.map(
+                                clonedRecord.imageModels = similar.recordModel.images.map(
                                     image => cloneModel(image, i18n),
                                 );
                                 return clonedRecord;
