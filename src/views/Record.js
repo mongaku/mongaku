@@ -16,6 +16,7 @@ type ImageType = {
     getOriginalURL: string,
     getScaledURL: string,
     getThumbURL: string,
+    similarImages: Array<string>,
 };
 
 type UnpopulatedRecordType = {
@@ -462,8 +463,227 @@ const Similar = (props: Props, {gettext, getSource}: Context) => {
 
 Similar.contextTypes = childContextTypes;
 
-const Record = (props: Props) => {
-    const {similar} = props;
+const RecordDetails = (
+    {record}: {record: RecordType},
+    {gettext, options}: Context,
+) => (
+    <td style={{width: "auto", maxWidth: 300}}>
+        <table className="table">
+            <thead>
+                <tr className="plain">
+                    <th />
+                    <th>
+                        <a href={record.getURL} target="_blank">
+                            {record.title}
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {options.types[record.type].display.map(type => {
+                    // We assume that all the records are the same type
+                    const {model} = options.types[record.type];
+                    const typeSchema = model[type];
+
+                    // Hide if it there isn't at least one value to display
+                    if (!hasValue([record], type)) {
+                        return null;
+                    }
+
+                    return (
+                        <tr key={type}>
+                            <th className="text-right">{typeSchema.title}</th>
+                            <td>
+                                <TypeView
+                                    value={record[type]}
+                                    url={record.getValueURLs[type]}
+                                    typeSchema={typeSchema}
+                                />
+                            </td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+        </table>
+    </td>
+);
+
+RecordDetails.contextTypes = childContextTypes;
+
+const clusterImages = (records: Array<RecordType>) => {
+    const sourceRecord = records[0];
+    const rows = [
+        {
+            record: sourceRecord,
+            slots: [{noMatch: true, images: []}],
+        },
+    ];
+    const {slots} = rows[0];
+    let curSlot = slots[0];
+
+    for (const image of sourceRecord.imageModels) {
+        if (image.similarImages.length > 0) {
+            slots.push({
+                match: image._id,
+                matching: image.similarImages.map(similar => similar._id),
+                images: [image],
+            });
+
+            curSlot = {
+                noMatch: true,
+                images: [],
+            };
+            slots.push(curSlot);
+        } else {
+            curSlot.images.push(image);
+        }
+    }
+
+    for (let i = 1; i < records.length; i += 1) {
+        const record = records[i];
+        const row = {
+            record,
+            slots: rows[0].slots.map(slot => ({
+                noMatch: slot.noMatch,
+                match: slot.match,
+                matching: slot.matching,
+                expected: slot.images.length,
+                images: [],
+            })),
+        };
+        let curSlotPos = 0;
+
+        for (const image of record.imageModels) {
+            const matchingSlotPos = row.slots.findIndex(
+                ({matching}) => matching && matching.includes(image._id),
+            );
+
+            if (matchingSlotPos > -1) {
+                row.slots[matchingSlotPos].images.push(image);
+                curSlotPos = matchingSlotPos + 1;
+            } else {
+                row.slots[curSlotPos].images.push(image);
+            }
+        }
+
+        // Some hackiness to try and optimize the display a bit when there
+        // are more than 2 matches
+        for (let s = row.slots.length - 1; s >= 1; s -= 1) {
+            const slot = row.slots[s];
+
+            // Find a place where we expect some images but none was found
+            if (slot.expected > 0 && slot.images.length === 0) {
+                let needed = slot.expected;
+
+                for (let ss = s - 1; ss >= 0; ss -= 1) {
+                    const searchSlot = row.slots[ss];
+
+                    if (searchSlot.noMatch && searchSlot.images.length > 0) {
+                        if (searchSlot.images.length >= needed) {
+                            while (
+                                searchSlot.images.length > 0 &&
+                                slot.images.length < slot.expected
+                            ) {
+                                const image = searchSlot.images.pop();
+                                slot.images.push(image);
+                            }
+                        }
+                        break;
+                    } else if (searchSlot.expected > 0) {
+                        if (searchSlot.images.length > 0) {
+                            break;
+                        }
+                        needed += searchSlot.expected;
+                    }
+                }
+            }
+        }
+
+        rows.push(row);
+    }
+
+    return rows;
+};
+
+const BookStyleComparison = ({records}: Props, {gettext}: Context) => {
+    const rows = clusterImages(records);
+
+    return (
+        <div>
+            <table
+                className="table table-bordered"
+                style={{width: "max-content", maxWidth: "none"}}
+            >
+                <thead>
+                    <tr>
+                        <th>
+                            <a
+                                href={records[0].getURL}
+                                className="btn btn-success"
+                            >
+                                « {gettext("End Comparison")}
+                            </a>
+                        </th>
+                        {rows[0].slots.map((cluster, i) => (
+                            <th
+                                key={`cluster-${i}`}
+                                style={{
+                                    width: "auto",
+                                }}
+                                className={cluster.match ? "success" : ""}
+                            >
+                                {cluster.match && gettext("Matching Images")}
+                            </th>
+                        ))}
+                    </tr>
+                </thead>
+                <tbody>
+                    {rows.map((row, i) => (
+                        <tr key={`row-${i}`}>
+                            {<RecordDetails record={row.record} />}
+                            {row.slots.map((cluster, i) => (
+                                <td
+                                    key={`cluster-${i}`}
+                                    style={{
+                                        width: "auto",
+                                        whiteSpace: "nowrap",
+                                    }}
+                                    className={cluster.match ? "success" : ""}
+                                >
+                                    {cluster.images.map(image => (
+                                        <a
+                                            href={image.getOriginalURL}
+                                            target="_blank"
+                                            key={image._id}
+                                        >
+                                            <img
+                                                src={image.getScaledURL}
+                                                alt={row.record.getTitle}
+                                                title={row.record.getTitle}
+                                            />
+                                        </a>
+                                    ))}
+                                </td>
+                            ))}
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+};
+
+BookStyleComparison.contextTypes = childContextTypes;
+
+const Record = (props: Props, {options}: Context) => {
+    const {similar, records} = props;
+
+    if (records.length > 1) {
+        const recordType = records[0].type;
+        if (options.types[recordType].bookStyleComparison) {
+            return <BookStyleComparison {...props} />;
+        }
+    }
 
     return (
         <div className="row">
@@ -472,5 +692,7 @@ const Record = (props: Props) => {
         </div>
     );
 };
+
+Record.contextTypes = childContextTypes;
 
 module.exports = Record;
