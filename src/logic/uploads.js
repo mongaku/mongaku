@@ -169,6 +169,13 @@ module.exports = app => {
                                         match.recordModel,
                                         i18n,
                                     ),
+                                    imageModel: cloneModel(
+                                        match.recordModel.images.find(
+                                            image =>
+                                                image._id === match.images[0],
+                                        ),
+                                        i18n,
+                                    ),
                                 }),
                             );
 
