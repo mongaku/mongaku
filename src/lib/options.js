@@ -49,6 +49,7 @@ options.defaultLocale =
 // Bring in options that could be configured via the config
 options.baseURL = options.baseURL || config.BASE_URL;
 options.baseDataURL = options.baseDataURL || config.BASE_DATA_URL;
+options.baseUploadURL = options.baseUploadURL || config.BASE_UPLOAD_URL || options.baseDataURL;
 options.baseStaticURL = options.baseStaticURL || config.BASE_STATIC_URL;
 
 module.exports = options;

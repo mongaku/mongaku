@@ -118,16 +118,22 @@ Image.methods = {
         );
     },
 
+    _getURL(type) {
+        return this.source === "uploads"
+            ? urls.genUpload(`/${this.source}/${type}/${this.hash}.jpg`)
+            : urls.genData(`/${this.source}/${type}/${this.hash}.jpg`);
+    },
+
     getOriginalURL() {
-        return urls.genData(`/${this.source}/images/${this.hash}.jpg`);
+        return this._getURL("images");
     },
 
     getScaledURL() {
-        return urls.genData(`/${this.source}/scaled/${this.hash}.jpg`);
+        return this._getURL("scaled");
     },
 
     getThumbURL() {
-        return urls.genData(`/${this.source}/thumbs/${this.hash}.jpg`);
+        return this._getURL("thumbs");
     },
 
     getSource() {
