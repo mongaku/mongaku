@@ -66,6 +66,18 @@ const Head = (
                 href={STATIC("/css/bootstrap-theme.min.css")}
             />
             <link rel="stylesheet" href={STATIC("/css/style.css")} />
+            <link
+                rel="stylesheet"
+                href={STATIC("/libs/photoswipe/photoswipe.css")}
+            />
+            <link
+                rel="stylesheet"
+                href={STATIC("/libs/photoswipe/default-skin/default-skin.css")}
+            />
+            <script src={STATIC("/libs/photoswipe/photoswipe.min.js")} />
+            <script
+                src={STATIC("/libs/photoswipe/photoswipe-ui-default.min.js")}
+            />
         </head>
     );
 };

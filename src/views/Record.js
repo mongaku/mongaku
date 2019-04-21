@@ -17,6 +17,8 @@ type ImageType = {
     getScaledURL: string,
     getThumbURL: string,
     similarImages: Array<string>,
+    width: number,
+    height: number,
 };
 
 type UnpopulatedRecordType = {
@@ -605,61 +607,143 @@ const clusterImages = (records: Array<RecordType>) => {
     return rows;
 };
 
+const openModal = (rows, slotPos: number, rowPos: number) => {
+    const images = [];
+
+    for (const row of rows) {
+        for (const image of row.slots[slotPos].images) {
+            images.push({
+                src: image.getOriginalURL,
+                w: image.width,
+                h: image.height,
+            });
+        }
+    }
+
+    const psElem = document.querySelector(".pswp");
+    // $FlowFixMe
+    const gallery = new PhotoSwipe(psElem, PhotoSwipeUI_Default, images, {
+        index: rowPos,
+    });
+    gallery.init();
+};
+
+const PhotoSwipeHtml = (props, {gettext}: Context) => (
+    <div className="pswp" tabIndex="-1" role="dialog" aria-hidden="true">
+        <div className="pswp__bg" />
+
+        <div className="pswp__scroll-wrap">
+            <div className="pswp__container">
+                <div className="pswp__item" />
+                <div className="pswp__item" />
+                <div className="pswp__item" />
+            </div>
+
+            <div className="pswp__ui pswp__ui--hidden">
+                <div className="pswp__top-bar">
+                    <div className="pswp__counter" />
+
+                    <button
+                        className="pswp__button pswp__button--close"
+                        title={gettext("Close (Esc)")}
+                    />
+
+                    <button
+                        className="pswp__button pswp__button--share"
+                        title={gettext("Share")}
+                    />
+
+                    <button
+                        className="pswp__button pswp__button--fs"
+                        title={gettext("Toggle fullscreen")}
+                    />
+
+                    <button
+                        className="pswp__button pswp__button--zoom"
+                        title={gettext("Zoom in/out")}
+                    />
+                    <div className="pswp__preloader">
+                        <div className="pswp__preloader__icn">
+                            <div className="pswp__preloader__cut">
+                                <div className="pswp__preloader__donut" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                    <div className="pswp__share-tooltip" />
+                </div>
+
+                <button
+                    className="pswp__button pswp__button--arrow--left"
+                    title={gettext("Previous (arrow left)")}
+                />
+
+                <button
+                    className="pswp__button pswp__button--arrow--right"
+                    title={gettext("Next (arrow right)")}
+                />
+
+                <div className="pswp__caption">
+                    <div className="pswp__caption__center" />
+                </div>
+            </div>
+        </div>
+    </div>
+);
+
+PhotoSwipeHtml.contextTypes = childContextTypes;
+
 const BookStyleComparison = ({records}: Props, {gettext}: Context) => {
     const rows = clusterImages(records);
 
     return (
         <div>
+            <a href={records[0].getURL} className="btn btn-success">
+                « {gettext("End Comparison")}
+            </a>
+            <br />
+            <br />
             <table
                 className="table table-bordered"
-                style={{width: "max-content", maxWidth: "none"}}
+                style={{width: "min-content"}}
             >
                 <thead>
                     <tr>
-                        <th>
-                            <a
-                                href={records[0].getURL}
-                                className="btn btn-success"
-                            >
-                                « {gettext("End Comparison")}
-                            </a>
-                        </th>
-                        {rows[0].slots.map((cluster, i) => (
-                            <th
-                                key={`cluster-${i}`}
-                                style={{
-                                    width: "auto",
-                                }}
-                                className={cluster.match ? "success" : ""}
-                            >
-                                {cluster.match && gettext("Matching Images")}
-                            </th>
+                        {rows.map((row, i) => (
+                            <RecordDetails key={i} record={row.record} />
                         ))}
                     </tr>
                 </thead>
                 <tbody>
-                    {rows.map((row, i) => (
+                    {rows[0].slots.map((cluster, i) => (
                         <tr key={`row-${i}`}>
-                            {<RecordDetails record={row.record} />}
-                            {row.slots.map((cluster, i) => (
+                            {rows.map((row, rowPos) => (
                                 <td
-                                    key={`cluster-${i}`}
-                                    style={{
-                                        width: "auto",
-                                        whiteSpace: "nowrap",
-                                    }}
-                                    className={cluster.match ? "success" : ""}
+                                    key={`cluster-${i}-${rowPos}`}
+                                    style={{textAlign: "center"}}
+                                    className={
+                                        row.slots[i].match ? "success" : ""
+                                    }
                                 >
-                                    {cluster.images.map(image => (
+                                    {row.slots[i].images.map(image => (
                                         <a
                                             href={image.getOriginalURL}
                                             target="_blank"
                                             key={image._id}
+                                            onClick={e => {
+                                                if (row.slots[i].match) {
+                                                    e.preventDefault();
+                                                    openModal(rows, i, rowPos);
+                                                }
+                                            }}
                                         >
                                             <img
                                                 src={image.getScaledURL}
                                                 alt={row.record.getTitle}
                                                 title={row.record.getTitle}
+                                                style={{height: 250}}
                                             />
                                         </a>
                                     ))}
@@ -669,6 +753,7 @@ const BookStyleComparison = ({records}: Props, {gettext}: Context) => {
                     ))}
                 </tbody>
             </table>
+            <PhotoSwipeHtml />
         </div>
     );
 };

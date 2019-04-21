@@ -203,8 +203,8 @@
     border-top: none;
 }
 
-.table > tbody > tr:hover > th,
-.table > tbody > tr:hover > td {
+.table > tbody > tr:hover > th:not(.success),
+.table > tbody > tr:hover > td:not(.success) {
     background: #fff;
 }
 
