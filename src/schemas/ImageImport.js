@@ -274,7 +274,9 @@ Object.assign(ImageImport.methods, Import.methods, {
 
         this.saveDelay = setTimeout(() => {
             this.saveDelay = null;
-            this.save();
+            this.save(() => {
+                // Ignore the result
+            });
         }, SAVE_RATE);
     },
 });

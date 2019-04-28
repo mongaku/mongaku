@@ -863,7 +863,7 @@ tap.test("Record.lintData: Validation", {autoend: true}, t => {
             error: "Required field `id` is empty.",
             warnings: [
                 "IDs can only contain letters, numbers, underscores, " +
-                    "and hyphens.",
+                    "parens, periods, and hyphens.",
             ],
         },
         "ID",

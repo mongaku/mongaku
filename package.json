@@ -13,7 +13,7 @@
         "lint": "eslint src && npm run flow",
         "postinstall": "npm run build",
         "pretest": "cp -R src/tests/data/ build/tests/data/",
-        "test": "npm run lint && NODE_ENV=test tap --cov build/tests/*/*.js",
+        "test": "npm run lint && NODE_ENV=test tap build/tests/*/*.js",
         "start": "./build/bin/mongaku.js start",
         "stop": "./build/bin/mongaku.js stop",
         "restart": "./build/bin/mongaku.js restart",

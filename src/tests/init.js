@@ -156,7 +156,9 @@ for (const dir of fs.readdirSync(staticDir)) {
 
     for (const file of fs.readdirSync(dirPath)) {
         const filePath = path.resolve(dirPath, file);
-        files[file] = fs.readFileSync(filePath);
+        if (fs.statSync(filePath).isFile()) {
+            files[file] = fs.readFileSync(filePath);
+        }
     }
 }
 

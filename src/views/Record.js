@@ -17,7 +17,10 @@ type ImageType = {
     getOriginalURL: string,
     getScaledURL: string,
     getThumbURL: string,
-    similarImages: Array<string>,
+    similarImages: Array<{
+        _id: string,
+        score: number,
+    }>,
     width: number,
     height: number,
 };
@@ -515,7 +518,7 @@ const clusterImages = (records: Array<RecordType>) => {
     const rows = [
         {
             record: sourceRecord,
-            slots: [{noMatch: true, images: []}],
+            slots: [{noMatch: true, images: [], matching: [], match: ""}],
         },
     ];
     const {slots} = rows[0];
@@ -524,6 +527,7 @@ const clusterImages = (records: Array<RecordType>) => {
     for (const image of sourceRecord.imageModels) {
         if (image.similarImages.length > 0) {
             slots.push({
+                noMatch: false,
                 match: image._id,
                 matching: image.similarImages.map(similar => similar._id),
                 images: [image],
@@ -532,6 +536,8 @@ const clusterImages = (records: Array<RecordType>) => {
             curSlot = {
                 noMatch: true,
                 images: [],
+                matching: [],
+                match: "",
             };
             slots.push(curSlot);
         } else {
