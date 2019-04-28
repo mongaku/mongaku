@@ -1,4 +1,5 @@
 // @flow
+/* global PhotoSwipe, PhotoSwipeUI_Default */
 
 const React = require("react");
 
@@ -465,10 +466,7 @@ const Similar = (props: Props, {gettext, getSource}: Context) => {
 
 Similar.contextTypes = childContextTypes;
 
-const RecordDetails = (
-    {record}: {record: RecordType},
-    {gettext, options}: Context,
-) => (
+const RecordDetails = ({record}: {record: RecordType}, {options}: Context) => (
     <td style={{width: "auto", maxWidth: 300}}>
         <table className="table">
             <thead>
