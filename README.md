@@ -1,6 +1,6 @@
 # Mongaku
 
-[![Build Status](https://travis-ci.org/mongaku/mongaku.svg?branch=master)](https://travis-ci.org/mongaku/mongaku) [![Code Climate](https://codeclimate.com/github/mongaku/mongaku/badges/gpa.svg)](https://codeclimate.com/github/mongaku/mongaku) [![Coverage Status](https://coveralls.io/repos/github/mongaku/mongaku/badge.svg?branch=master)](https://coveralls.io/github/mongaku/mongaku?branch=master)
+[![Build Status](https://travis-ci.org/mongaku/mongaku.svg?branch=master)](https://travis-ci.org/mongaku/mongaku) [![Coverage Status](https://coveralls.io/repos/github/mongaku/mongaku/badge.svg?branch=master)](https://coveralls.io/github/mongaku/mongaku?branch=master)
 
 ## About
 
