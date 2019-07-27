@@ -52,7 +52,7 @@ if (args.v || args.version) {
     shell.exec(startCmd);
 } else if (cmd === "stop") {
     shell.exec(
-        `${getBinary("naught")} stop --pid-file mongaku.pid mongaku.ipc`
+        `${getBinary("naught")} stop --pid-file mongaku.pid mongaku.ipc`,
     );
 } else if (cmd === "restart") {
     shell.exec(`${getBinary("naught")} deploy mongaku.ipc`);
@@ -106,7 +106,12 @@ if (args.v || args.version) {
 
     const webpackConfig = path.join(rootDir, "webpack.config.js");
     shell.exec(`${getBinary("webpack")} --config ${webpackConfig} -w`);
-} else if (cmd === "create" || cmd === "convert" || cmd === "i18n") {
+} else if (
+    cmd === "create" ||
+    cmd === "convert" ||
+    cmd === "i18n" ||
+    cmd === "export"
+) {
     const [name] = extraArgs;
 
     const init = require("../lib/init");
@@ -135,6 +140,7 @@ Commands:
     create source
     create index
     convert data
+    export images
     start
       --logs
       --workers
@@ -144,6 +150,6 @@ Commands:
 
 -v: Show program version
 -h: Show available commands
-`
+`,
     );
 }
