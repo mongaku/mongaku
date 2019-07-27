@@ -4,7 +4,7 @@ engines:
     enabled: false
   eslint:
     enabled: true
-    channel: "eslint-2"
+    channel: "eslint-4"
   fixme:
     enabled: true
 ratings:
@@ -12,5 +12,6 @@ ratings:
   - "**.js"
 exclude_paths:
 - src/public/**/*
+- src/tests/**/*
 - locales/**/*
 - build/**/*

@@ -22,7 +22,7 @@ module.exports = callback => {
                 } else {
                     resolve();
                 }
-            }
+            },
         );
     });
 };

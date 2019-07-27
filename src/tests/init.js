@@ -5,14 +5,13 @@ const tap = require("tap");
 const sinon = require("sinon");
 const mockfs = require("mock-fs");
 const async = require("async");
-const iconv = require("iconv-lite");
-const MongoInMemory = require("mongo-in-memory");
+const iconv = require("body-parser/node_modules/iconv-lite");
 
 // Force ICONV to pre-load its encodings
 iconv.getCodec("utf8");
 
 // Bring in any polyfills used for testing (e.g. async)
-require("babel-polyfill");
+require("@babel/polyfill");
 
 // Force dynamically loaded modules to load now
 require("negotiator/lib/mediaType");
@@ -72,7 +71,7 @@ const login = (request, email, callback) => {
                 password: "test",
             },
         },
-        callback
+        callback,
     );
 };
 
@@ -84,9 +83,6 @@ const normalLogin = (request, callback) =>
 // Sandbox the bound methods
 let sandbox;
 
-// Test files to load into the DB
-const testDBFiles = path.resolve(__dirname, "..", "..", "tests", "db");
-
 // Root Files
 const pkgFile = fs.readFileSync(path.resolve(__dirname, "../../package.json"));
 
@@ -97,20 +93,6 @@ const dataDir = path.resolve(__dirname, "data");
 for (const file of fs.readdirSync(dataDir)) {
     if (/\.\w+$/.test(file)) {
         testFiles[file] = fs.readFileSync(path.resolve(dataDir, file));
-    }
-}
-
-// DB files used for testing
-const dbFiles = {};
-const dbFilesDir = path.resolve(process.cwd(), "tests", "db");
-
-for (const dir of fs.readdirSync(dbFilesDir)) {
-    const dirPath = path.resolve(dbFilesDir, dir);
-    const files = (dbFiles[dir] = {});
-
-    for (const file of fs.readdirSync(dirPath)) {
-        const filePath = path.resolve(dirPath, file);
-        files[file] = fs.readFileSync(filePath);
     }
 }
 
@@ -130,7 +112,7 @@ const sharedViewDir = path.resolve(__dirname, "..", "views", "shared");
 for (const file of fs.readdirSync(sharedViewDir)) {
     if (file.indexOf(".js") >= 0) {
         sharedViewFiles[file] = fs.readFileSync(
-            path.resolve(sharedViewDir, file)
+            path.resolve(sharedViewDir, file),
         );
     }
 }
@@ -150,7 +132,7 @@ const typeFilterDir = path.resolve(__dirname, "..", "views", "types", "filter");
 for (const file of fs.readdirSync(typeFilterDir)) {
     if (file.indexOf(".js") >= 0) {
         typeFilterFiles[file] = fs.readFileSync(
-            path.resolve(typeFilterDir, file)
+            path.resolve(typeFilterDir, file),
         );
     }
 }
@@ -174,7 +156,9 @@ for (const dir of fs.readdirSync(staticDir)) {
 
     for (const file of fs.readdirSync(dirPath)) {
         const filePath = path.resolve(dirPath, file);
-        files[file] = fs.readFileSync(filePath);
+        if (fs.statSync(filePath).isFile()) {
+            files[file] = fs.readFileSync(filePath);
+        }
     }
 }
 
@@ -221,7 +205,7 @@ const genData = () => {
                 id: "1234",
                 images: ["test/foo.jpg"],
                 defaultImageHash: "4266906334",
-            })
+            }),
         ),
 
         "test/1235": new Record(
@@ -246,7 +230,7 @@ const genData = () => {
                         images: ["test/foo.jpg"],
                     },
                 ],
-            })
+            }),
         ),
 
         "test/1236": new Record(
@@ -255,7 +239,7 @@ const genData = () => {
                 id: "1236",
                 images: ["test/new1.jpg", "test/new2.jpg", "test/new3.jpg"],
                 defaultImageHash: "2533156274",
-            })
+            }),
         ),
 
         "test/1237": new Record(
@@ -265,7 +249,7 @@ const genData = () => {
                 images: ["test/nosimilar.jpg"],
                 defaultImageHash: "4246873662",
                 similarRecords: [],
-            })
+            }),
         ),
     };
 
@@ -278,7 +262,7 @@ const genData = () => {
         const record = records[id];
         record.validateSync();
         record.isNew = false;
-        sinon.stub(record, "remove", remove);
+        sinon.stub(record, "remove").callsFake(remove);
     }
 
     primaryRecord = records["test/1234"];
@@ -425,7 +409,7 @@ const genData = () => {
     ];
 
     for (const batch of batches) {
-        sinon.stub(batch, "save", process.nextTick);
+        sinon.stub(batch, "save").callsFake(process.nextTick);
     }
 
     batch = batches[0];
@@ -463,7 +447,7 @@ const genData = () => {
     ];
 
     for (const recordBatch of recordBatches) {
-        sinon.stub(recordBatch, "save", process.nextTick);
+        sinon.stub(recordBatch, "save").callsFake(process.nextTick);
     }
 
     recordBatch = recordBatches[0];
@@ -615,9 +599,9 @@ const genData = () => {
 };
 
 const bindStubs = () => {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
 
-    sandbox.stub(Record, "findById", (id, callback) => {
+    sandbox.stub(Record, "findById").callsFake((id, callback) => {
         if (records[id]) {
             process.nextTick(() => callback(null, records[id]));
         } else {
@@ -625,7 +609,7 @@ const bindStubs = () => {
         }
     });
 
-    sandbox.stub(Record, "find", (query, callback, extra) => {
+    sandbox.stub(Record, "find").callsFake((query, callback, extra) => {
         let matches = [];
 
         if (query.$or) {
@@ -659,7 +643,7 @@ const bindStubs = () => {
 
         for (const record of matches) {
             if (!record.save.restore) {
-                sandbox.stub(record, "save", callback => {
+                sandbox.stub(record, "save").callsFake(callback => {
                     if (!(record._id in records)) {
                         records[record._id] = record;
                     }
@@ -707,7 +691,7 @@ const bindStubs = () => {
         process.nextTick(() => callback(null, matches));
     });
 
-    sandbox.stub(Record, "search", (query, options, callback) => {
+    sandbox.stub(Record, "search").callsFake((query, options, callback) => {
         const matches = Object.keys(records).map(id => records[id]);
         const aggregations = {
             source: {
@@ -737,29 +721,31 @@ const bindStubs = () => {
                     total: matches.length,
                     hits: matches,
                 },
-            })
+            }),
         );
     });
 
-    sandbox.stub(Record, "update", (query, update, options, callback) => {
-        Object.keys(records).forEach(id => {
-            records[id].needsSimilarUpdate = true;
+    sandbox
+        .stub(Record, "update")
+        .callsFake((query, update, options, callback) => {
+            Object.keys(records).forEach(id => {
+                records[id].needsSimilarUpdate = true;
+            });
+            process.nextTick(callback);
         });
-        process.nextTick(callback);
-    });
 
-    sandbox.stub(Record, "count", (query, callback) => {
+    sandbox.stub(Record, "count").callsFake((query, callback) => {
         const count = Object.keys(records).filter(
-            id => !query.source || records[id].source === query.source
+            id => !query.source || records[id].source === query.source,
         ).length;
 
         process.nextTick(() => callback(null, count));
     });
 
-    sandbox.stub(Record, "aggregate", (query, callback) => {
+    sandbox.stub(Record, "aggregate").callsFake((query, callback) => {
         const source = query[0].$match.source;
         const count = Object.keys(records).filter(
-            id => records[id].source === source
+            id => records[id].source === source,
         ).length;
 
         process.nextTick(() =>
@@ -768,20 +754,20 @@ const bindStubs = () => {
                     total: count,
                     totalImages: count,
                 },
-            ])
+            ]),
         );
     });
 
     const fromData = Record.fromData;
 
-    sandbox.stub(Record, "fromData", (tmpData, i18n, callback) => {
+    sandbox.stub(Record, "fromData").callsFake((tmpData, i18n, callback) => {
         fromData.call(
             Record,
             tmpData,
             i18n,
             (err, record, warnings, creating) => {
                 if (record && !record.save.restore) {
-                    sandbox.stub(record, "save", callback => {
+                    sandbox.stub(record, "save").callsFake(callback => {
                         if (!(record._id in records)) {
                             records[record._id] = record;
                         }
@@ -791,15 +777,17 @@ const bindStubs = () => {
                 }
 
                 callback(err, record, warnings, creating);
-            }
+            },
         );
     });
 
-    sandbox.stub(ImageImport, "find", (query, select, options, callback) => {
-        process.nextTick(() => callback(null, batches));
-    });
+    sandbox
+        .stub(ImageImport, "find")
+        .callsFake((query, select, options, callback) => {
+            process.nextTick(() => callback(null, batches));
+        });
 
-    sandbox.stub(ImageImport, "findById", (id, callback) => {
+    sandbox.stub(ImageImport, "findById").callsFake((id, callback) => {
         process.nextTick(() => {
             callback(null, batches.find(batch => batch._id === id));
         });
@@ -807,10 +795,10 @@ const bindStubs = () => {
 
     const imageImportFromFile = ImageImport.fromFile;
 
-    sandbox.stub(ImageImport, "fromFile", (fileName, source) => {
+    sandbox.stub(ImageImport, "fromFile").callsFake((fileName, source) => {
         const batch = imageImportFromFile.call(ImageImport, fileName, source);
         if (!batch.save.restore) {
-            sandbox.stub(batch, "save", callback =>
+            sandbox.stub(batch, "save").callsFake(callback =>
                 batch.validate(err => {
                     /* istanbul ignore if */
                     if (err) {
@@ -820,19 +808,21 @@ const bindStubs = () => {
                     batch.modified = new Date();
                     batches.push(batch);
                     callback(null, batch);
-                })
+                }),
             );
         }
         return batch;
     });
 
-    sandbox.stub(RecordImport, "find", (query, select, options, callback) => {
-        process.nextTick(() => {
-            callback(null, recordBatches);
+    sandbox
+        .stub(RecordImport, "find")
+        .callsFake((query, select, options, callback) => {
+            process.nextTick(() => {
+                callback(null, recordBatches);
+            });
         });
-    });
 
-    sandbox.stub(RecordImport, "findById", (id, callback) => {
+    sandbox.stub(RecordImport, "findById").callsFake((id, callback) => {
         process.nextTick(() => {
             callback(null, recordBatches.find(batch => batch._id === id));
         });
@@ -840,58 +830,62 @@ const bindStubs = () => {
 
     const recordImportFromFile = RecordImport.fromFile;
 
-    sandbox.stub(RecordImport, "fromFile", (fileName, source, type) => {
-        const batch = recordImportFromFile.call(
-            RecordImport,
-            fileName,
-            source,
-            type
-        );
-        if (!batch.save.restore) {
-            sandbox.stub(batch, "save", callback =>
-                batch.validate(err => {
-                    /* istanbul ignore if */
-                    if (err) {
-                        return callback(err);
-                    }
-
-                    batch.modified = new Date();
-                    recordBatches.push(batch);
-                    callback(null, batch);
-                })
+    sandbox
+        .stub(RecordImport, "fromFile")
+        .callsFake((fileName, source, type) => {
+            const batch = recordImportFromFile.call(
+                RecordImport,
+                fileName,
+                source,
+                type,
             );
-        }
-        return batch;
-    });
+            if (!batch.save.restore) {
+                sandbox.stub(batch, "save").callsFake(callback =>
+                    batch.validate(err => {
+                        /* istanbul ignore if */
+                        if (err) {
+                            return callback(err);
+                        }
 
-    sandbox.stub(Source, "find", (query, callback) => {
+                        batch.modified = new Date();
+                        recordBatches.push(batch);
+                        callback(null, batch);
+                    }),
+                );
+            }
+            return batch;
+        });
+
+    sandbox.stub(Source, "find").callsFake((query, callback) => {
         process.nextTick(() => callback(null, sources));
     });
 
-    sandbox.stub(Image, "findById", (id, callback) => {
+    sandbox.stub(Image, "findById").callsFake((id, callback) => {
         process.nextTick(() => callback(null, images[id]));
     });
 
-    sandbox.stub(Image, "findOne", (query, callback) => {
+    sandbox.stub(Image, "findOne").callsFake((query, callback) => {
         // NOTE(jeresig): query.hash is assumed
         const id = Object.keys(images).find(
-            id => images[id].hash === query.hash
+            id => images[id].hash === query.hash,
         );
         const match = images[id];
 
         process.nextTick(() => callback(null, match));
     });
 
-    sandbox.stub(Image, "update", (query, update, options, callback) => {
-        process.nextTick(callback);
-    });
+    sandbox
+        .stub(Image, "update")
+        .callsFake((query, update, options, callback) => {
+            process.nextTick(callback);
+        });
 
     const fromFile = Image.fromFile;
 
-    sandbox.stub(Image, "fromFile", (batch, file, callback) => {
+    sandbox.stub(Image, "fromFile").callsFake((batch, file, callback) => {
         fromFile.call(Image, batch, file, (err, image, warnings) => {
             if (image && !image.save.restore) {
-                sandbox.stub(image, "save", callback => {
+                sandbox.stub(image, "save").callsFake(callback => {
                     images[image._id] = image;
                     image.validate(callback);
                 });
@@ -901,24 +895,24 @@ const bindStubs = () => {
         });
     });
 
-    sandbox.stub(Image, "count", (query, callback) => {
+    sandbox.stub(Image, "count").callsFake((query, callback) => {
         const count = Object.keys(images).filter(
-            id => !query.source || images[id].source === query.source
+            id => !query.source || images[id].source === query.source,
         ).length;
 
         process.nextTick(() => callback(null, count));
     });
 
-    sandbox.stub(UploadImage, "findById", (id, callback) => {
+    sandbox.stub(UploadImage, "findById").callsFake((id, callback) => {
         process.nextTick(() => callback(null, uploadImages[id]));
     });
 
     const uploadFromFile = UploadImage.fromFile;
 
-    sandbox.stub(UploadImage, "fromFile", (file, callback) => {
+    sandbox.stub(UploadImage, "fromFile").callsFake((file, callback) => {
         uploadFromFile.call(UploadImage, file, (err, image, warnings) => {
             if (image && !image.save.restore) {
-                sandbox.stub(image, "save", callback => {
+                sandbox.stub(image, "save").callsFake(callback => {
                     uploadImages[image._id] = image;
                     image.validate(callback);
                 });
@@ -928,16 +922,16 @@ const bindStubs = () => {
         });
     });
 
-    sandbox.stub(Upload, "findById", (id, callback) => {
+    sandbox.stub(Upload, "findById").callsFake((id, callback) => {
         process.nextTick(() => callback(null, uploads[id]));
     });
 
     const fromImage = Upload.fromImage;
 
-    sandbox.stub(Upload, "fromImage", (image, type, callback) => {
+    sandbox.stub(Upload, "fromImage").callsFake((image, type, callback) => {
         fromImage.call(Upload, image, type, (err, upload) => {
             if (upload && !upload.save.restore) {
-                sandbox.stub(upload, "save", callback => {
+                sandbox.stub(upload, "save").callsFake(callback => {
                     if (!(upload._id in uploads)) {
                         uploads[upload._id] = upload;
                     }
@@ -950,39 +944,39 @@ const bindStubs = () => {
         });
     });
 
-    sandbox.stub(User, "find", (query, callback) => {
+    sandbox.stub(User, "find").callsFake((query, callback) => {
         process.nextTick(() => callback(null, users));
     });
 
-    sandbox.stub(User, "findOne", (query, callback) => {
+    sandbox.stub(User, "findOne").callsFake((query, callback) => {
         const matches = users.filter(
             user =>
                 user.email === query.email ||
-                (query._id && user._id.toString() === query._id.toString())
+                (query._id && user._id.toString() === query._id.toString()),
         );
         process.nextTick(() => callback(null, matches[0]));
     });
 
-    sandbox.stub(similarity, "similar", (hash, callback) => {
+    sandbox.stub(similarity, "similar").callsFake((hash, callback) => {
         process.nextTick(() => callback(null, similar[hash]));
     });
 
-    sandbox.stub(similarity, "fileSimilar", (file, callback) => {
+    sandbox.stub(similarity, "fileSimilar").callsFake((file, callback) => {
         // Cheat and just get the hash from the file name
         const hash = path.basename(file).replace(/\..*$/, "");
         process.nextTick(() => callback(null, similar[hash]));
     });
 
-    sandbox.stub(similarity, "idIndexed", (hash, callback) => {
+    sandbox.stub(similarity, "idIndexed").callsFake((hash, callback) => {
         process.nextTick(() => callback(null, !!similar[hash]));
     });
 
-    sandbox.stub(similarity, "add", (file, hash, callback) => {
+    sandbox.stub(similarity, "add").callsFake((file, hash, callback) => {
         if (hash === "99998") {
             return process.nextTick(() =>
                 callback({
                     type: "IMAGE_SIZE_TOO_SMALL",
-                })
+                }),
             );
         }
 
@@ -1001,7 +995,6 @@ const i18n = {
 };
 
 let app;
-let db;
 
 bindStubs();
 
@@ -1016,32 +1009,18 @@ const init = done => {
                     (id, callback) => {
                         records[id].validate(callback);
                     },
-                    callback
+                    callback,
                 );
             },
 
             callback => {
-                db = new MongoInMemory(27018);
-
-                db.start(err => {
-                    if (err) {
-                        return callback(err);
-                    }
-
-                    db.addDirectoryOfCollections("test", testDBFiles, err => {
-                        if (err) {
-                            return callback(err);
-                        }
-
-                        server((err, _app) => {
-                            app = _app;
-                            callback(err);
-                        });
-                    });
+                server((err, _app) => {
+                    app = _app;
+                    callback(err);
                 });
             },
         ],
-        done
+        done,
     );
 };
 
@@ -1049,7 +1028,7 @@ tap.beforeEach(init);
 
 tap.afterEach(done => {
     app.close();
-    db.stop(done);
+    done();
 });
 
 const mockFS = callback => {
@@ -1061,9 +1040,6 @@ const mockFS = callback => {
             },
         },
         testData: testFiles,
-        tests: {
-            db: dbFiles,
-        },
         data: {
             test: {
                 images: {},
@@ -1072,7 +1048,7 @@ const mockFS = callback => {
             },
             uploads: {
                 images: {
-                    "4266906334.jpg": testFiles["4266906334.jpg"],
+                    "4266906334.jpg": testFiles["foo.jpg"],
                     "bar.jpg": testFiles["bar.jpg"],
                 },
                 scaled: {},
@@ -1089,7 +1065,7 @@ const mockFS = callback => {
                         edit: typeEditFiles,
                     },
                 },
-                viewFiles
+                viewFiles,
             ),
         },
         static: staticFiles,

@@ -30,7 +30,7 @@ module.exports = function(app: express$Application) {
             record.remove(err => {
                 if (err) {
                     return next(
-                        new Error(i18n.gettext("Error removing record."))
+                        new Error(i18n.gettext("Error removing record.")),
                     );
                 }
 
@@ -41,7 +41,7 @@ module.exports = function(app: express$Application) {
 
     const editView = (
         {params: {type, source, recordName}, i18n}: express$Request,
-        res
+        res,
     ) => {
         const Record = record(type);
         const id = `${source}/${recordName}`;
@@ -56,7 +56,7 @@ module.exports = function(app: express$Application) {
             const recordTitle = record.getTitle(i18n);
             const title = i18n.format(
                 i18n.gettext("Updating '%(recordTitle)s'"),
-                {recordTitle}
+                {recordTitle},
             );
 
             record.loadImages(true, () => {
@@ -65,7 +65,7 @@ module.exports = function(app: express$Application) {
                         const clonedRecord = cloneModel(record, i18n);
 
                         clonedRecord.imageModels = record.images.map(image =>
-                            cloneModel(image, i18n)
+                            cloneModel(image, i18n),
                         );
 
                         res.render("EditRecord", {
@@ -84,7 +84,11 @@ module.exports = function(app: express$Application) {
     };
 
     const edit = (req: express$Request, res, next) => {
-        const {params: {type, recordName, source}, i18n, lang} = req;
+        const {
+            params: {type, recordName, source},
+            i18n,
+            lang,
+        } = req;
         const props = {};
         const model = metadata.model(type);
         const hasImageSearch = options.types[type].hasImageSearch();
@@ -99,7 +103,7 @@ module.exports = function(app: express$Application) {
             /* istanbul ignore if */
             if (err) {
                 return next(
-                    new Error(i18n.gettext("Error processing upload."))
+                    new Error(i18n.gettext("Error processing upload.")),
                 );
             }
 
@@ -133,7 +137,9 @@ module.exports = function(app: express$Application) {
 
             const images = Array.isArray(files.images)
                 ? files.images
-                : files.images ? [files.images] : [];
+                : files.images
+                    ? [files.images]
+                    : [];
 
             async.mapSeries(
                 images,
@@ -147,8 +153,8 @@ module.exports = function(app: express$Application) {
                         if (err) {
                             return callback(
                                 new Error(
-                                    i18n.gettext("Error processing image.")
-                                )
+                                    i18n.gettext("Error processing image."),
+                                ),
                             );
                         }
 
@@ -185,15 +191,15 @@ module.exports = function(app: express$Application) {
                         record.images = record.images.concat(
                             unfilteredImages
                                 .filter(image => image)
-                                .map(image => image._id)
+                                .map(image => image._id),
                         );
 
                         record.save(err => {
                             if (err) {
                                 return next(
                                     new Error(
-                                        i18n.gettext("Error saving record.")
-                                    )
+                                        i18n.gettext("Error saving record."),
+                                    ),
                                 );
                             }
 
@@ -209,17 +215,21 @@ module.exports = function(app: express$Application) {
                             // images, as well.
                             Image.queueBatchSimilarityUpdate(
                                 mockBatch._id,
-                                finish
+                                finish,
                             );
                         });
                     });
-                }
+                },
             );
         });
     };
 
     const removeImage = (req: express$Request, res, next) => {
-        const {params: {type, source, recordName}, i18n, lang} = req;
+        const {
+            params: {type, source, recordName},
+            i18n,
+            lang,
+        } = req;
         const Record = record(type);
         const hasImageSearch = options.types[type].hasImageSearch();
         const id = `${source}/${recordName}`;
@@ -231,7 +241,7 @@ module.exports = function(app: express$Application) {
             /* istanbul ignore if */
             if (err) {
                 return next(
-                    new Error(i18n.gettext("Error processing request."))
+                    new Error(i18n.gettext("Error processing request.")),
                 );
             }
 
@@ -243,13 +253,13 @@ module.exports = function(app: express$Application) {
                 }
 
                 record.images = record.images.filter(
-                    image => image !== imageID
+                    image => image !== imageID,
                 );
 
                 record.save(err => {
                     if (err) {
                         return next(
-                            new Error(i18n.gettext("Error saving record."))
+                            new Error(i18n.gettext("Error saving record.")),
                         );
                     }
 
@@ -274,7 +284,7 @@ module.exports = function(app: express$Application) {
                 "/:type/:source/:recordName/remove-image",
                 auth,
                 canEdit,
-                removeImage
+                removeImage,
             );
         },
     };

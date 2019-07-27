@@ -39,9 +39,11 @@ module.exports = (callback: (err: ?Error, server: Server) => void) => {
             }
         });
 
-        server.on("close", () => {
-            db.close();
-        });
+        if (server) {
+            server.on("close", () => {
+                db.close();
+            });
+        }
 
         /* istanbul ignore if */
         if (config.NODE_ENV !== "test") {

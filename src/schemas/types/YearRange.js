@@ -1,7 +1,7 @@
 const yearRange = require("yearrange");
 
 const numRange = bucket =>
-    (bucket.to ? `${bucket.from || 0}-${bucket.to}` : `${bucket.from}+`);
+    bucket.to ? `${bucket.from || 0}-${bucket.to}` : `${bucket.from}+`;
 
 const defaultRanges = [
     {to: 999},
@@ -278,7 +278,7 @@ YearRange.prototype = {
         return {
             type: [YearRangeSchema],
             convert: obj =>
-                (typeof obj === "string" ? yearRange.parse(obj) : obj),
+                typeof obj === "string" ? yearRange.parse(obj) : obj,
             validateArray: val => val.start || val.end,
             validationMsg: i18n =>
                 i18n.gettext("Dates must have a start or end specified."),

@@ -6,6 +6,8 @@ module.exports = {
     imagesRequired: true,
     noImages: false,
     noImageSearch: false,
+    allowDirectoryUpload: false,
+    autoID: false,
 
     name: i18n => i18n.gettext("Records"),
 

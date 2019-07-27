@@ -23,11 +23,11 @@ Record.schema = {
     // Source ID
     id: {
         type: String,
-        validate: v => /^[a-z0-9_-]+$/i.test(v),
+        validate: v => /^[a-z0-9_().-]+$/i.test(v),
         validationMsg: i18n =>
             i18n.gettext(
-                "IDs can only contain " +
-                    "letters, numbers, underscores, and hyphens."
+                "IDs can only contain letters, numbers, underscores, parens, " +
+                    "periods, and hyphens.",
             ),
         required: true,
         es_indexed: true,
@@ -90,11 +90,11 @@ Record.schema = {
     // The images associated with the record
     images: {
         type: [{type: String, ref: "Image"}],
-        validateArray: v => /^\w+\/[a-z0-9_-]+\.jpe?g$/i.test(v),
+        validateArray: v => /^\w+\/[a-z0-9_().-]+\.jpe?g$/i.test(v),
         validationMsg: i18n =>
             i18n.gettext(
                 "Images must be a valid " +
-                    "image file name. For example: `image.jpg`."
+                    "image file name. For example: `image.jpg`.",
             ),
         convert: (name, data) => `${data.source}/${name}`,
         es_indexed: true,
@@ -107,7 +107,7 @@ Record.schema = {
         validationMsg: i18n =>
             i18n.gettext(
                 "Images must be a valid " +
-                    "image file name. For example: `image.jpg`."
+                    "image file name. For example: `image.jpg`.",
             ),
     },
 
@@ -175,7 +175,7 @@ Record.methods = {
         }
 
         return urls.genData(
-            `/${this.source}/images/${this.defaultImageHash}.jpg`
+            `/${this.source}/images/${this.defaultImageHash}.jpg`,
         );
     },
 
@@ -185,7 +185,7 @@ Record.methods = {
         }
 
         return urls.genData(
-            `/${this.source}/thumbs/${this.defaultImageHash}.jpg`
+            `/${this.source}/thumbs/${this.defaultImageHash}.jpg`,
         );
     },
 
@@ -207,7 +207,7 @@ Record.methods = {
                 }
                 models("Image").findById(id, callback);
             },
-            callback
+            callback,
         );
     },
 
@@ -224,7 +224,7 @@ Record.methods = {
                     callback(null, value);
                 }
             },
-            callback
+            callback,
         );
     },
 
@@ -252,11 +252,6 @@ Record.methods = {
     },
 
     updateSimilarity(callback) {
-        /* istanbul ignore if */
-        if (config.NODE_ENV !== "test") {
-            console.log("Updating Similarity", this._id);
-        }
-
         this.getImages((err, images) => {
             /* istanbul ignore if */
             if (err) {
@@ -293,9 +288,21 @@ Record.methods = {
                         return callback(err);
                     }
 
-                    this.similarRecords = records
+                    let similarRecords = records;
+
+                    if (options.filterRecordSimilarity) {
+                        similarRecords = similarRecords.filter(similar =>
+                            options.filterRecordSimilarity(
+                                this,
+                                images,
+                                similar,
+                            ),
+                        );
+                    }
+
+                    this.similarRecords = similarRecords
                         .map(similar => {
-                            const score = similar.images
+                            const avgScore = similar.images
                                 .map(image => scores[image] || 0)
                                 .reduce((a, b) => a + b);
 
@@ -303,9 +310,9 @@ Record.methods = {
                                 _id: similar._id,
                                 record: similar._id,
                                 images: similar.images.filter(
-                                    id => matchIds.indexOf(id) >= 0
+                                    id => matchIds.indexOf(id) >= 0,
                                 ),
-                                score,
+                                score: avgScore,
                                 source: similar.source,
                             };
                         })
@@ -314,7 +321,7 @@ Record.methods = {
 
                     this.needsSimilarUpdate = false;
                     callback();
-                }
+                },
             );
         });
     },
@@ -343,35 +350,36 @@ Record.methods = {
                         (similar, callback) => {
                             if (similar.recordModel) {
                                 return process.nextTick(() =>
-                                    callback(null, similar)
+                                    callback(null, similar),
                                 );
                             }
 
-                            recordModel(
-                                this.type
-                            ).findById(similar.record, (err, record) => {
-                                /* istanbul ignore if */
-                                if (err || !record) {
-                                    return callback();
-                                }
+                            recordModel(this.type).findById(
+                                similar.record,
+                                (err, record) => {
+                                    /* istanbul ignore if */
+                                    if (err || !record) {
+                                        return callback();
+                                    }
 
-                                similar.recordModel = record;
-                                callback(null, similar);
-                            });
+                                    similar.recordModel = record;
+                                    callback(null, similar);
+                                },
+                            );
                         },
                         (err, similar) => {
                             // We filter out any invalid/un-found records
                             // TODO: We should log out some details on when this
                             // happens (hopefully never).
                             this.similarRecords = similar.filter(
-                                similar => !!similar
+                                similar => !!similar,
                             );
                             callback();
-                        }
+                        },
                     );
                 },
             ],
-            callback
+            callback,
         );
     },
 };
@@ -463,10 +471,10 @@ Record.statics = {
                             warnings.push(
                                 i18n.format(
                                     i18n.gettext(
-                                        "Image file not found: %(fileName)s"
+                                        "Image file not found: %(fileName)s",
                                     ),
-                                    {fileName}
-                                )
+                                    {fileName},
+                                ),
                             );
                         }
 
@@ -478,8 +486,8 @@ Record.statics = {
                     if (err) {
                         return callback(
                             new Error(
-                                i18n.gettext("Error accessing image data.")
-                            )
+                                i18n.gettext("Error accessing image data."),
+                            ),
                         );
                     }
 
@@ -536,7 +544,7 @@ Record.statics = {
                         /* istanbul ignore if */
                         if (err) {
                             const msg = i18n.gettext(
-                                "There was an error with the data format."
+                                "There was an error with the data format.",
                             );
                             const errors = Object.keys(err.errors)
                                 .map(path => err.errors[path].message)
@@ -547,13 +555,13 @@ Record.statics = {
                         if (!creating) {
                             model.diff = stripProp(
                                 jdp.diff(original, model.toJSON()),
-                                "_id"
+                                "_id",
                             );
                         }
 
                         callback(null, model, warnings, creating);
                     });
-                }
+                },
             );
         });
     },
@@ -572,8 +580,8 @@ Record.statics = {
                 warnings.push(
                     i18n.format(
                         i18n.gettext("Unrecognized field `%(field)s`."),
-                        {field}
-                    )
+                        {field},
+                    ),
                 );
                 continue;
             }
@@ -612,10 +620,10 @@ Record.statics = {
                         i18n.format(
                             i18n.gettext(
                                 "`%(field)s` is the wrong type. Expected a " +
-                                    "%(type)s."
+                                    "%(type)s.",
                             ),
-                            {field, type: expectedType}
-                        )
+                            {field, type: expectedType},
+                        ),
                     );
                 } else if (Array.isArray(options.type)) {
                     // Convert the value to its expected form, if a
@@ -628,7 +636,7 @@ Record.statics = {
                         value = value.filter(entry => {
                             const expectedType = getExpectedType(
                                 options.type[0],
-                                entry
+                                entry,
                             );
 
                             if (expectedType) {
@@ -636,10 +644,10 @@ Record.statics = {
                                     i18n.format(
                                         i18n.gettext(
                                             "`%(field)s` value is the wrong " +
-                                                "type. Expected a %(type)s."
+                                                "type. Expected a %(type)s.",
                                         ),
-                                        {field, type: expectedType}
-                                    )
+                                        {field, type: expectedType},
+                                    ),
                                 );
                                 return undefined;
                             }
@@ -652,12 +660,12 @@ Record.statics = {
                                 const results = this.lintData(
                                     entry,
                                     i18n,
-                                    options.type[0]
+                                    options.type[0],
                                 );
 
                                 if (results.error) {
                                     warnings.push(
-                                        `\`${field}\`: ${results.error}`
+                                        `\`${field}\`: ${results.error}`,
                                     );
                                     return undefined;
                                 }
@@ -674,7 +682,7 @@ Record.statics = {
                     // Validate the array entries
                     if (options.validateArray) {
                         const results = value.filter(entry =>
-                            options.validateArray(entry)
+                            options.validateArray(entry),
                         );
 
                         if (value.length !== results.length) {
@@ -701,17 +709,17 @@ Record.statics = {
                 if (options.required) {
                     error = i18n.format(
                         i18n.gettext("Required field `%(field)s` is empty."),
-                        {field}
+                        {field},
                     );
                     break;
                 } else if (options.recommended) {
                     warnings.push(
                         i18n.format(
                             i18n.gettext(
-                                "Recommended field `%(field)s` is empty."
+                                "Recommended field `%(field)s` is empty.",
                             ),
-                            {field}
-                        )
+                            {field},
+                        ),
                     );
                 }
             } else {
@@ -736,6 +744,11 @@ Record.statics = {
                     return callback(err);
                 }
 
+                /* istanbul ignore if */
+                if (config.NODE_ENV !== "test") {
+                    console.log("Updating Record Similarity", record._id);
+                }
+
                 record.updateSimilarity(err => {
                     /* istanbul ignore if */
                     if (err) {
@@ -752,7 +765,7 @@ Record.statics = {
                         callback(null, true);
                     });
                 });
-            }
+            },
         );
     },
 
@@ -765,7 +778,7 @@ Record.statics = {
 
         if (this.facetCache[lang]) {
             return process.nextTick(() =>
-                callback(null, this.facetCache[lang])
+                callback(null, this.facetCache[lang]),
             );
         }
 
@@ -790,7 +803,7 @@ Record.statics = {
 
                 this.facetCache[lang] = facets;
                 callback(null, facets);
-            }
+            },
         );
     },
 };

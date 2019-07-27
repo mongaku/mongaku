@@ -28,29 +28,29 @@ module.exports = type => {
     if (typeInfo.noImages) {
         schemaProps.images = Object.assign(
             {required: false},
-            schemaProps.images
+            schemaProps.images,
         );
         schemaProps.defaultImageHash = Object.assign(
             {required: false},
-            schemaProps.defaultImageHash
+            schemaProps.defaultImageHash,
         );
     } else if (typeInfo.imagesRequired) {
         schemaProps.images = Object.assign(
             {required: true},
-            schemaProps.images
+            schemaProps.images,
         );
         schemaProps.defaultImageHash = Object.assign(
             {required: true},
-            schemaProps.defaultImageHash
+            schemaProps.defaultImageHash,
         );
     } else {
         schemaProps.images = Object.assign(
             {recommended: true},
-            schemaProps.images
+            schemaProps.images,
         );
         schemaProps.defaultImageHash = Object.assign(
             {recommended: true},
-            schemaProps.defaultImageHash
+            schemaProps.defaultImageHash,
         );
     }
 
@@ -68,7 +68,7 @@ module.exports = type => {
         {
             getDBName: () => dbName,
         },
-        Record.statics
+        Record.statics,
     );
 
     const es = url.parse(config.ELASTICSEARCH_URL);

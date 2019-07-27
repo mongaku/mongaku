@@ -50,6 +50,10 @@ module.exports = (options: Options) => {
             return genURL(null, options.baseDataURL, filePath);
         },
 
+        genUpload(filePath: string) {
+            return genURL(null, options.baseUploadURL, filePath);
+        },
+
         genStatic(filePath: string) {
             return genURL(null, options.baseStaticURL, filePath);
         },

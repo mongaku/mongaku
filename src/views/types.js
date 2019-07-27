@@ -120,6 +120,9 @@ type TypeOptions = {
     hasImages: boolean,
     requiresImages: boolean,
     hasImageSearch: boolean,
+    allowDirectoryUpload: boolean,
+    autoID: boolean,
+    bookStyleComparison: boolean,
 };
 
 export type Source = {
@@ -133,6 +136,7 @@ export type Source = {
 export type Options = {
     baseURL: string,
     baseDataURL: string,
+    baseUploadURL: string,
     baseStaticURL: string,
     defaultLocale: string,
     getShortTitle: string,

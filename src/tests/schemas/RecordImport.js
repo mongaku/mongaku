@@ -11,7 +11,7 @@ tap.test("getURL", {autoend: true}, t => {
     t.equal(
         batch.getURL(i18n.lang),
         "/artworks/source/test/admin?records=test/started",
-        "Get URL"
+        "Get URL",
     );
 });
 
@@ -110,7 +110,7 @@ tap.test("setResults (with error)", t => {
     const dataFile = path.resolve(
         process.cwd(),
         "testData",
-        "default-error.json"
+        "default-error.json",
     );
 
     mockFS(callback => {
@@ -220,7 +220,7 @@ tap.test("processRecords", t => {
                 t.equal(
                     batch.results.length,
                     expected.length,
-                    "Check number of results"
+                    "Check number of results",
                 );
                 expected.forEach((expected, i) => {
                     const result = batch.results[i];
@@ -272,7 +272,7 @@ tap.test("importRecords", t => {
                     t.equal(
                         batch.results.length,
                         expected.length,
-                        "Check number of results"
+                        "Check number of results",
                     );
                     expected.forEach((expected, i) => {
                         const result = batch.results[i];

@@ -1,9 +1,0 @@
-{
-    "_id": "test/process-started",
-    "created": "2017-03-11T03:26:26.849Z",
-    "modified": "2017-03-11T03:26:26.849Z",
-    "source": "test",
-    "state": "process.started",
-    "zipFile": "testData/test.zip",
-    "fileName": "test.zip"
-}

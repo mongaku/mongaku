@@ -19,7 +19,7 @@ type Props = {
 
 const SearchForm = (
     {type}: {type: string},
-    {gettext, user, options, URL}: Context
+    {gettext, user, options, URL}: Context,
 ) => {
     const title = options.types[type].name;
     const sources = user && user.getEditableSourcesByType[type];
@@ -40,26 +40,24 @@ const SearchForm = (
                         placeholder={gettext("Search")}
                         className="form-control search-query"
                     />
-                </div>
-                {" "}
+                </div>{" "}
                 <input
                     type="submit"
                     value={gettext("Search")}
                     className="btn btn-primary"
-                />
-                {" "}
+                />{" "}
                 <a href={URL(`/${type}/search`)} className="btn btn-default">
                     {gettext("Browse All")}
-                </a>
-                {" "}
+                </a>{" "}
                 {sources &&
-                    sources.length > 0 &&
-                    <a
-                        href={URL(`/${type}/create`)}
-                        className="btn btn-success"
-                    >
-                        {gettext("Create New")}
-                    </a>}
+                    sources.length > 0 && (
+                        <a
+                            href={URL(`/${type}/create`)}
+                            className="btn btn-success"
+                        >
+                            {gettext("Create New")}
+                        </a>
+                    )}
             </form>
         </div>
     );
@@ -74,9 +72,7 @@ const ImageUploadForms = ({type}: {type: string}, {gettext, URL}: Context) => (
 
         <div className="panel panel-default">
             <div className="panel-heading">
-                <h3 className="panel-title">
-                    {gettext("Upload an Image")}
-                </h3>
+                <h3 className="panel-title">{gettext("Upload an Image")}</h3>
             </div>
             <div className="panel-body">
                 <form
@@ -92,8 +88,7 @@ const ImageUploadForms = ({type}: {type: string}, {gettext, URL}: Context) => (
                                 name="file"
                                 className="form-control"
                             />
-                        </div>
-                        {" "}
+                        </div>{" "}
                         <input
                             type="submit"
                             className="btn btn-primary"
@@ -106,9 +101,7 @@ const ImageUploadForms = ({type}: {type: string}, {gettext, URL}: Context) => (
 
         <div className="panel panel-default">
             <div className="panel-heading">
-                <h3 className="panel-title">
-                    {gettext("Paste Image URL")}
-                </h3>
+                <h3 className="panel-title">{gettext("Paste Image URL")}</h3>
             </div>
             <div className="panel-body">
                 <form action={URL(`/${type}/url-upload`)} method="GET">
@@ -121,8 +114,7 @@ const ImageUploadForms = ({type}: {type: string}, {gettext, URL}: Context) => (
                                 defaultValue="http://"
                                 className="form-control"
                             />
-                        </div>
-                        {" "}
+                        </div>{" "}
                         <input
                             type="submit"
                             value={gettext("Search by Image")}
@@ -139,7 +131,7 @@ ImageUploadForms.contextTypes = childContextTypes;
 
 const Source = (
     {type, source}: {type: string, source: SourceType},
-    {options, stringNum}: Context
+    {options, stringNum}: Context,
 ) => {
     const typeName = options.types[type].name;
     const recordCount = stringNum(source.numRecords);
@@ -148,9 +140,7 @@ const Source = (
     return (
         <div>
             <h4>
-                <a href={source.getURL}>
-                    {source.getFullName}
-                </a>
+                <a href={source.getURL}>{source.getFullName}</a>
             </h4>
             <p>{desc}</p>
         </div>
@@ -161,7 +151,7 @@ Source.contextTypes = childContextTypes;
 
 const Sources = (
     {type, sources}: Props & {type: string},
-    {gettext}: Context
+    {gettext}: Context,
 ) => (
     <div>
         <h3>{gettext("Browse by Collection:")}</h3>
@@ -182,10 +172,12 @@ const Type = ({type, sources}: Props & {type: string}, {options}: Context) => {
     return (
         <div className="col-sm-8 col-sm-offset-2 upload-box">
             <SearchForm type={type} />
-            {options.types[type].hasImageSearch &&
-                <ImageUploadForms type={type} />}
-            {sourcesByType.length > 1 &&
-                <Sources type={type} sources={sourcesByType} />}
+            {options.types[type].hasImageSearch && (
+                <ImageUploadForms type={type} />
+            )}
+            {sourcesByType.length > 1 && (
+                <Sources type={type} sources={sourcesByType} />
+            )}
         </div>
     );
 };

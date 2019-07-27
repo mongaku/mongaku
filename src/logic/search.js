@@ -40,7 +40,7 @@ module.exports = function(app: express$Application) {
                         cache(1),
                         (req: express$Request, res, next) => {
                             return searchURLs[path](req, res, next, search);
-                        }
+                        },
                     );
                 }
             }

@@ -57,7 +57,7 @@ module.exports = app => {
     app.use(
         bodyParser.urlencoded({
             extended: true,
-        })
+        }),
     );
 
     // Adds in support for overriding HTTP verbs to help
@@ -84,6 +84,6 @@ module.exports = app => {
             saveUninitialized: false,
             secret: pkg.name,
             store,
-        })
+        }),
     );
 };

@@ -30,6 +30,18 @@ SimpleString.prototype = {
         return `${this.options.title(i18n)}: ${displayValue}`;
     },
 
+    filter(value, sanitize) {
+        return {
+            match: {
+                [this.options.name]: {
+                    query: sanitize(value),
+                    operator: "and",
+                    zero_terms_query: "all",
+                },
+            },
+        };
+    },
+
     sort() {
         return {
             asc: [

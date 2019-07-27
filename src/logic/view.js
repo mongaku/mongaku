@@ -13,7 +13,7 @@ module.exports = function(app: express$Application) {
     const show = (
         {i18n, originalUrl, params, query}: express$Request,
         res,
-        next
+        next,
     ) => {
         const typeName = params.type;
 
@@ -50,12 +50,12 @@ module.exports = function(app: express$Application) {
                 const clonedRecord = cloneModel(record, i18n);
 
                 clonedRecord.imageModels = record.images.map(image =>
-                    cloneModel(image, i18n)
+                    cloneModel(image, i18n),
                 );
 
                 // Sort the similar records by score
                 clonedRecord.similarRecords = record.similarRecords.sort(
-                    (a, b) => b.score - a.score
+                    (a, b) => b.score - a.score,
                 );
 
                 if (!compare) {
@@ -72,7 +72,7 @@ module.exports = function(app: express$Application) {
                         records: [clonedRecord],
                         similar: similarRecords,
                         sources: Source.getSourcesByType(typeName).map(source =>
-                            cloneModel(source, i18n)
+                            cloneModel(source, i18n),
                         ),
                     });
                 }
@@ -88,13 +88,13 @@ module.exports = function(app: express$Application) {
                             similar => {
                                 const clonedRecord = cloneModel(
                                     similar.recordModel,
-                                    i18n
+                                    i18n,
                                 );
-                                clonedRecord.imageModels = record.images.map(
-                                    image => cloneModel(image, i18n)
+                                clonedRecord.imageModels = similar.recordModel.images.map(
+                                    image => cloneModel(image, i18n),
                                 );
                                 return clonedRecord;
-                            }
+                            },
                         );
                         res.render("Record", {
                             title,
@@ -103,11 +103,11 @@ module.exports = function(app: express$Application) {
                             noIndex: true,
                             similar: [],
                             records: [clonedRecord].concat(similarRecords),
-                            sources: Source.getSourcesByType(
-                                typeName
-                            ).map(source => cloneModel(source, i18n)),
+                            sources: Source.getSourcesByType(typeName).map(
+                                source => cloneModel(source, i18n),
+                            ),
                         });
-                    }
+                    },
                 );
             });
         });
@@ -115,7 +115,7 @@ module.exports = function(app: express$Application) {
 
     const json = (
         {params: {type, source, recordName}, i18n}: express$Request,
-        res
+        res,
     ) => {
         const id = `${source}/${recordName}`;
         const Record = record(type);

@@ -57,9 +57,7 @@ type Props = {
 };
 
 const UnprocessedResult = ({result: data}: {result: Result}) => (
-    <pre className="json">
-        {JSON.stringify(data, null, "    ")}
-    </pre>
+    <pre className="json">{JSON.stringify(data, null, "    ")}</pre>
 );
 
 const ErrorResult = ({result}: {result: Result}) => {
@@ -107,9 +105,7 @@ const ChangedResult = ({
     return (
         <div>
             <h4>
-                <a href={url}>
-                    {model}
-                </a>
+                <a href={url}>{model}</a>
             </h4>
             <div
                 className="diff"
@@ -122,9 +118,12 @@ const ChangedResult = ({
 };
 
 const CreatedResult = ({result, batch}: Props & {result: Result}) => {
-    const title = result.model && batch.state === "completed"
-        ? <a href={result.url}>{result.model}</a>
-        : result.data.id;
+    const title =
+        result.model && batch.state === "completed" ? (
+            <a href={result.url}>{result.model}</a>
+        ) : (
+            result.data.id
+        );
 
     return (
         <div>
@@ -139,9 +138,12 @@ const DeletedResult = ({result, batch}: Props & {result: Result}) => {
         return null;
     }
 
-    const title = batch.state === "completed"
-        ? <a href={result.url}>{result.model}</a>
-        : result.model;
+    const title =
+        batch.state === "completed" ? (
+            <a href={result.url}>{result.model}</a>
+        ) : (
+            result.model
+        );
 
     return <div>{title}</div>;
 };
@@ -153,8 +155,7 @@ const ConfirmButtons = ({batch}: Props, {gettext, URL}: Context) => (
             className="btn btn-success"
         >
             {gettext("Finalize Import")}
-        </a>
-        {" "}
+        </a>{" "}
         <a href={URL(batch.getURL, {abandon: true})} className="btn btn-danger">
             {gettext("Abandon Import")}
         </a>
@@ -165,13 +166,14 @@ ConfirmButtons.contextTypes = childContextTypes;
 
 const ImportData = (
     props: Props,
-    {gettext, format, fixedDate, STATIC}: Context
+    {gettext, format, fixedDate, STATIC}: Context,
 ) => {
     const {title, batch, adminURL} = props;
     const {state} = batch;
-    const stateText = state === "error"
-        ? format(gettext("Error: %(error)s"), {error: batch.getError})
-        : batch.getStateName;
+    const stateText =
+        state === "error"
+            ? format(gettext("Error: %(error)s"), {error: batch.getError})
+            : batch.getStateName;
     const uploadDate = format(gettext("Uploaded: %(date)s"), {
         date: fixedDate(batch.created),
     });
@@ -195,7 +197,9 @@ const ImportData = (
 
             <h1>{title}</h1>
             <p>{uploadDate}</p>
-            <p><strong>{stateText}</strong></p>
+            <p>
+                <strong>{stateText}</strong>
+            </p>
             {state !== "completed" && state !== "error" && <p>{lastUpdated}</p>}
             {state === "process.completed" && <ConfirmButtons {...props} />}
 

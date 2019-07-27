@@ -2,13 +2,7 @@
 
 const React = require("react");
 
-const Error = ({
-    title,
-    body,
-}: {
-    body?: string,
-    title: string,
-}) => (
+const Error = ({title, body}: {body?: string, title: string}) => (
     <div>
         <div className="row">
             <div className="col-xs-12">

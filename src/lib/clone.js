@@ -37,7 +37,7 @@ const getArgs = (func: Function): Array<string> => {
 const serializeValue = (i18n: i18nObject, blacklist: Array<string> = []) => (
     value: any,
     key: string,
-    object: Object
+    object: Object,
 ) => {
     if (blacklist.includes(key)) {
         return null;
@@ -63,7 +63,7 @@ const serializeValue = (i18n: i18nObject, blacklist: Array<string> = []) => (
 const cloneObject = (
     object: {},
     i18n: i18nObject,
-    blacklist: Array<string> = []
+    blacklist: Array<string> = [],
 ) => {
     return cloneDeepWith(object, serializeValue(i18n, blacklist));
 };

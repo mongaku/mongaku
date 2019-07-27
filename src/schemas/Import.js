@@ -155,18 +155,18 @@ Import.statics = {
                                     if (config.NODE_ENV !== "test") {
                                         console.log(
                                             `Advancing ${batch._id} to ` +
-                                                `${batch.getNextState().id}...`
+                                                `${batch.getNextState().id}...`,
                                         );
                                     }
                                     batch.advance(callback);
                                 });
                             },
-                            callback
+                            callback,
                         );
                     },
-                    callback
+                    callback,
                 );
-            }
+            },
         );
     },
 };

@@ -43,7 +43,7 @@ module.exports = function(app) {
                 result.error = batchError(result.error || "");
                 if (result.warnings) {
                     result.warnings = result.warnings.map(warning =>
-                        batchError(warning || "")
+                        batchError(warning || ""),
                     );
                 }
                 if (result.diff) {
@@ -56,7 +56,7 @@ module.exports = function(app) {
 
             const title = i18n.format(
                 i18n.gettext("Data Import: %(fileName)s"),
-                {fileName: batch.fileName}
+                {fileName: batch.fileName},
             );
 
             res.render("ImportRecords", {
@@ -85,16 +85,15 @@ module.exports = function(app) {
 
                 if (result.warnings) {
                     result.warnings = result.warnings.map(warning =>
-                        batchError(warning)
+                        batchError(warning),
                     );
                 }
             }
 
             const {expanded} = query;
             const results = batch.results.filter(result => !!result.model);
-            const toPopulate = expanded === "models"
-                ? results
-                : results.slice(0, 8);
+            const toPopulate =
+                expanded === "models" ? results : results.slice(0, 8);
 
             async.eachLimit(
                 toPopulate,
@@ -112,7 +111,7 @@ module.exports = function(app) {
                     const adminURL = source.getAdminURL(lang);
                     const title = i18n.format(
                         i18n.gettext("Image Import: %(fileName)s"),
-                        {fileName: batch.fileName}
+                        {fileName: batch.fileName},
                     );
 
                     res.render("ImportImages", {
@@ -121,7 +120,7 @@ module.exports = function(app) {
                         expanded,
                         adminURL,
                     });
-                }
+                },
             );
         });
     };
@@ -134,7 +133,7 @@ module.exports = function(app) {
                         {source: source._id},
                         null,
                         {sort: {created: "desc"}},
-                        callback
+                        callback,
                     ),
                 callback =>
                     RecordImport.find(
@@ -151,20 +150,20 @@ module.exports = function(app) {
                             "results.warnings": true,
                         },
                         {},
-                        callback
+                        callback,
                     ),
             ],
             (err, results) => {
                 /* istanbul ignore if */
                 if (err) {
                     return next(
-                        new Error(i18n.gettext("Error retrieving records."))
+                        new Error(i18n.gettext("Error retrieving records.")),
                     );
                 }
 
                 const imageImport = results[0];
                 const dataImport = results[1].sort(
-                    (a, b) => b.created - a.created
+                    (a, b) => b.created - a.created,
                 );
                 const title = i18n.format(i18n.gettext("%(name)s Admin Area"), {
                     name: source.getFullName(i18n),
@@ -174,13 +173,13 @@ module.exports = function(app) {
                     title,
                     source: cloneModel(source, i18n),
                     imageImport: imageImport.map(batch =>
-                        cloneModel(batch, i18n)
+                        cloneModel(batch, i18n),
                     ),
                     dataImport: dataImport.map(batch =>
-                        cloneModel(batch, i18n)
+                        cloneModel(batch, i18n),
                     ),
                 });
-            }
+            },
         );
     };
 
@@ -197,7 +196,7 @@ module.exports = function(app) {
             }
         },
 
-        uploadImages(req, res, next) {
+        uploadZipFile(req, res, next) {
             const {source, i18n, lang} = req;
 
             const form = new formidable.IncomingForm();
@@ -207,7 +206,7 @@ module.exports = function(app) {
                 /* istanbul ignore if */
                 if (err) {
                     return next(
-                        new Error(i18n.gettext("Error processing zip file."))
+                        new Error(i18n.gettext("Error processing zip file.")),
                     );
                 }
 
@@ -215,7 +214,7 @@ module.exports = function(app) {
 
                 if (!zipField || !zipField.path || zipField.size === 0) {
                     return next(
-                        new Error(i18n.gettext("No zip file specified."))
+                        new Error(i18n.gettext("No zip file specified.")),
                     );
                 }
 
@@ -229,7 +228,43 @@ module.exports = function(app) {
                     /* istanbul ignore if */
                     if (err) {
                         return next(
-                            new Error(i18n.gettext("Error saving zip file."))
+                            new Error(i18n.gettext("Error saving zip file.")),
+                        );
+                    }
+
+                    res.redirect(source.getAdminURL(lang));
+                });
+            });
+        },
+
+        uploadDirectory(req, res, next) {
+            const {source, i18n, lang} = req;
+
+            const form = new formidable.IncomingForm();
+            form.encoding = "utf-8";
+
+            form.parse(req, (err, {directory}) => {
+                /* istanbul ignore if */
+                if (err) {
+                    return next(
+                        new Error(i18n.gettext("Error processing directory.")),
+                    );
+                }
+
+                if (!directory) {
+                    return next(
+                        new Error(i18n.gettext("No directory specified.")),
+                    );
+                }
+
+                const batch = ImageImport.fromFile(directory, source._id);
+                batch.directory = directory;
+
+                batch.save(err => {
+                    /* istanbul ignore if */
+                    if (err) {
+                        return next(
+                            new Error(i18n.gettext("Error saving directory.")),
                         );
                     }
 
@@ -249,38 +284,39 @@ module.exports = function(app) {
                 /* istanbul ignore if */
                 if (err) {
                     return next(
-                        new Error(i18n.gettext("Error processing data files."))
+                        new Error(i18n.gettext("Error processing data files.")),
                     );
                 }
 
                 const inputFiles = (Array.isArray(files.files)
                     ? files.files
-                    : files.files ? [files.files] : []).filter(
-                    file => file.path && file.size > 0
-                );
+                    : files.files
+                        ? [files.files]
+                        : []
+                ).filter(file => file.path && file.size > 0);
 
                 if (inputFiles.length === 0) {
                     return next(
-                        new Error(i18n.gettext("No data files specified."))
+                        new Error(i18n.gettext("No data files specified.")),
                     );
                 }
 
                 const fileName = inputFiles.map(file => file.name).join(", ");
                 const inputStreams = inputFiles.map(file =>
-                    fs.createReadStream(file.path)
+                    fs.createReadStream(file.path),
                 );
 
                 const batch = RecordImport.fromFile(
                     fileName,
                     source._id,
-                    source.type
+                    source.type,
                 );
 
                 batch.setResults(inputStreams, err => {
                     /* istanbul ignore if */
                     if (err) {
                         return next(
-                            new Error(i18n.gettext("Error saving data file."))
+                            new Error(i18n.gettext("Error saving data file.")),
                         );
                     }
 
@@ -289,8 +325,8 @@ module.exports = function(app) {
                         if (err) {
                             return next(
                                 new Error(
-                                    i18n.gettext("Error saving data file.")
-                                )
+                                    i18n.gettext("Error saving data file."),
+                                ),
                             );
                         }
 
@@ -302,7 +338,9 @@ module.exports = function(app) {
 
         routes() {
             const source = (req, res, next) => {
-                const {params: {source}} = req;
+                const {
+                    params: {source},
+                } = req;
                 const Source = models("Source");
                 req.source = Source.getSource(source);
                 next();
@@ -313,21 +351,28 @@ module.exports = function(app) {
                 auth,
                 canEdit,
                 source,
-                this.admin
+                this.admin,
             );
             app.post(
-                "/:type/source/:source/upload-images",
+                "/:type/source/:source/upload-zip",
                 auth,
                 canEdit,
                 source,
-                this.uploadImages
+                this.uploadZipFile,
+            );
+            app.post(
+                "/:type/source/:source/upload-directory",
+                auth,
+                canEdit,
+                source,
+                this.uploadDirectory,
             );
             app.post(
                 "/:type/source/:source/upload-data",
                 auth,
                 canEdit,
                 source,
-                this.uploadData
+                this.uploadData,
             );
         },
     };

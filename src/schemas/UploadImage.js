@@ -122,13 +122,13 @@ UploadImage.methods = Object.assign({}, Image.methods, {
                                 _id: image._id,
                                 score: match.score,
                             });
-                        }
+                        },
                     );
                 },
                 (err, matches) => {
                     this.similarImages = matches.filter(match => match);
                     callback();
-                }
+                },
             );
         });
     },

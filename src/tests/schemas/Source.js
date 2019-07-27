@@ -12,7 +12,7 @@ tap.test("getURL", {autoend: true}, t => {
     t.equal(
         source.getURL("de"),
         "/artworks/source/test?lang=de",
-        "Check 'de' URL"
+        "Check 'de' URL",
     );
 });
 
@@ -68,7 +68,7 @@ tap.test("Source.getSource", t => {
         t.notEqual(Source.getSource("test2"), source);
         t.throws(
             () => Source.getSource("unknown"),
-            new Error("Source not found: unknown")
+            new Error("Source not found: unknown"),
         );
         t.end();
     });

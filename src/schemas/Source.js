@@ -71,7 +71,7 @@ Source.methods = {
             {
                 default: defaultConverter,
             },
-            options.converters
+            options.converters,
         );
 
         /* istanbul ignore if */
@@ -116,7 +116,7 @@ Source.methods = {
                     this.numImages = 0;
                 }
                 callback();
-            }
+            },
         );
     },
 };
@@ -134,7 +134,7 @@ Source.statics = {
                 },
                 () => {
                     callback(err, sources);
-                }
+                },
             );
         });
     },

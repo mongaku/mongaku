@@ -114,20 +114,26 @@ Image.methods = {
     getFilePath() {
         return path.resolve(
             this.getSource().getDirBase(),
-            `images/${this.hash}.jpg`
+            `images/${this.hash}.jpg`,
         );
     },
 
+    _getURL(type) {
+        return this.source === "uploads"
+            ? urls.genUpload(`/${this.source}/${type}/${this.hash}.jpg`)
+            : urls.genData(`/${this.source}/${type}/${this.hash}.jpg`);
+    },
+
     getOriginalURL() {
-        return urls.genData(`/${this.source}/images/${this.hash}.jpg`);
+        return this._getURL("images");
     },
 
     getScaledURL() {
-        return urls.genData(`/${this.source}/scaled/${this.hash}.jpg`);
+        return this._getURL("scaled");
     },
 
     getThumbURL() {
-        return urls.genData(`/${this.source}/thumbs/${this.hash}.jpg`);
+        return this._getURL("thumbs");
     },
 
     getSource() {
@@ -149,9 +155,9 @@ Image.methods = {
 
                 callback(
                     null,
-                    recordsList.reduce((all, records) => all.concat(records))
+                    recordsList.reduce((all, records) => all.concat(records)),
                 );
-            }
+            },
         );
     },
 
@@ -170,12 +176,25 @@ Image.methods = {
                 return callback(err);
             }
 
+            let maxScore = 0;
+
+            // Turn the scores into a % of the # of hits in the original
+            // image (this gives a more useful number for display/analysis)
+            const matchPercent = score =>
+                maxScore ? Math.round((score / maxScore) * 100) : 100;
+
+            // Ignore records with too many matches
+            if (matches.length > 50) {
+                return callback();
+            }
+
             async.mapLimit(
                 matches,
-                1,
+                4,
                 (match, callback) => {
                     // Skip matches for the image itself
                     if (match.id === this.hash) {
+                        maxScore = match.score;
                         return callback();
                     }
 
@@ -189,16 +208,26 @@ Image.methods = {
                             }
 
                             callback(null, {
-                                _id: image._id,
-                                score: match.score,
+                                image,
+                                score: matchPercent(match.score),
                             });
-                        }
+                        },
                     );
                 },
-                (err, matches) => {
-                    this.similarImages = matches.filter(match => match);
+                (err, matchingImages) => {
+                    let matches = matchingImages.filter(match => match);
+
+                    if (options.filterImageSimilarity && matches.length > 0) {
+                        matches = options.filterImageSimilarity(this, matches);
+                    }
+
+                    this.similarImages = matches.map(({image, score}) => ({
+                        _id: image._id,
+                        score,
+                    }));
+
                     callback();
-                }
+                },
             );
         });
     },
@@ -228,7 +257,7 @@ Image.methods = {
         });
     },
 
-    updateRelatedRecords(callback) {
+    markRelatedRecordsForUpdate(callback) {
         this.relatedRecords((err, records) => {
             /* istanbul ignore if */
             if (err) {
@@ -239,16 +268,10 @@ Image.methods = {
                 records,
                 1,
                 (record, callback) => {
-                    record.updateSimilarity(err => {
-                        /* istanbul ignore if */
-                        if (err) {
-                            return callback(err);
-                        }
-
-                        record.save(callback);
-                    });
+                    record.needsSimilarUpdate = true;
+                    record.save(callback);
                 },
-                callback
+                callback,
             );
         });
     },
@@ -268,11 +291,11 @@ Image.methods = {
                             record.missingImages.remove(imageId);
                             record.save(callback);
                         },
-                        callback
+                        callback,
                     );
                 });
             },
-            callback
+            callback,
         );
     },
 };
@@ -387,7 +410,7 @@ Image.statics = {
                     image.needsSimilarUpdate = true;
                     image.save(err => callback(err, true));
                 });
-            }
+            },
         );
     },
 
@@ -401,7 +424,10 @@ Image.statics = {
                     return callback(err);
                 }
 
-                console.log("Updating Similarity", image._id);
+                /* istanbul ignore if */
+                if (config.NODE_ENV !== "test") {
+                    console.log("Updating Image Similarity", image._id);
+                }
 
                 image.updateSimilarity(err => {
                     /* istanbul ignore if */
@@ -417,7 +443,7 @@ Image.statics = {
                             return callback(err);
                         }
 
-                        image.updateRelatedRecords(err => {
+                        image.markRelatedRecordsForUpdate(err => {
                             /* istanbul ignore if */
                             if (err) {
                                 return callback(err);
@@ -427,7 +453,7 @@ Image.statics = {
                         });
                     });
                 });
-            }
+            },
         );
     },
 
@@ -446,9 +472,9 @@ Image.statics = {
                     {batch: {$ne: batchID}},
                     {needsSimilarUpdate: true},
                     {multi: true},
-                    callback
+                    callback,
                 );
-            }
+            },
         );
     },
 };
@@ -515,7 +541,7 @@ const images = {
             img => {
                 return img.resize(size.width, size.height);
             },
-            callback
+            callback,
         );
     },
 
@@ -530,7 +556,7 @@ const images = {
             img => {
                 return img.resize(scaled.width, scaled.height, ">");
             },
-            callback
+            callback,
         );
     },
 
@@ -547,7 +573,7 @@ const images = {
                 /* istanbul ignore if */
                 if (err) {
                     return callback(
-                        new Error(`Error converting thumbnails: ${err}`)
+                        new Error(`Error converting thumbnails: ${err}`),
                     );
                 }
 
@@ -555,7 +581,7 @@ const images = {
                     path.resolve(baseDir, "thumbs", fileName),
                     path.resolve(baseDir, "scaled", fileName),
                 ]);
-            }
+            },
         );
     },
 
@@ -589,7 +615,7 @@ const images = {
                         imageFile = path.resolve(
                             baseDir,
                             "images",
-                            `${hash}.jpg`
+                            `${hash}.jpg`,
                         );
 
                         // Avoid doing the rest of this if it already exists
@@ -605,7 +631,7 @@ const images = {
                         fs.createReadStream(sourceFile),
                         imageFile,
                         null,
-                        callback
+                        callback,
                     ),
 
                 // Generate thumbnails based on the image
@@ -613,7 +639,7 @@ const images = {
             ],
             err => {
                 callback(err === existsError ? null : err, hash);
-            }
+            },
         );
     },
 };

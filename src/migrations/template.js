@@ -22,7 +22,7 @@ exports.up = next => {
                     })
                     .on("close", callback);
             },
-            next
+            next,
         );
     });
 };

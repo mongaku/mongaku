@@ -25,17 +25,13 @@ class LinkedRecordEdit extends React.Component<Props> {
             credentials: "same-origin",
         })
             .then(res => res.json())
-            .then((records: Array<{
-                _id: string,
-                getTitle: string,
-            }>) => {
-                return records.filter(record => record).map(({
-                    _id,
-                    getTitle,
-                }) => ({
-                    value: _id,
-                    label: getTitle,
-                }));
+            .then((records: Array<{_id: string, getTitle: string}>) => {
+                return records
+                    .filter(record => record)
+                    .map(({_id, getTitle}) => ({
+                        value: _id,
+                        label: getTitle,
+                    }));
             });
     }
 

@@ -72,15 +72,18 @@ class SimpleSelect extends React.Component<Props> {
     }
 }
 
-class MultiSelect extends React.Component<Props, {
-    searchValue?: string,
-    loading: boolean,
-    options?: Array<{
-        value: string,
-        label: string,
-    }>,
-    error?: Error,
-}> {
+class MultiSelect extends React.Component<
+    Props,
+    {
+        searchValue?: string,
+        loading: boolean,
+        options?: Array<{
+            value: string,
+            label: string,
+        }>,
+        error?: Error,
+    },
+> {
     constructor(props) {
         super(props);
         this.state = {
@@ -155,9 +158,9 @@ class MultiSelect extends React.Component<Props, {
             onChange(
                 value
                     ? value.includes(addedValue)
-                          ? value
-                          : value.concat(addedValue)
-                    : [addedValue]
+                        ? value
+                        : value.concat(addedValue)
+                    : [addedValue],
             );
             this.clear();
             if (this.input) {
@@ -190,7 +193,7 @@ class MultiSelect extends React.Component<Props, {
         }
 
         return options.filter(
-            option => !value || !value.includes(option.value)
+            option => !value || !value.includes(option.value),
         );
     }
 
@@ -255,12 +258,12 @@ class MultiSelect extends React.Component<Props, {
                     .split("")
                     .map(char => (/\W/.test(char) ? `\\${char}` : char))
                     .join(".*"),
-                "i"
+                "i",
             );
 
             this.setState({
                 options: options.filter(option =>
-                    search.test(latinize(option.label))
+                    search.test(latinize(option.label)),
                 ),
             });
         }
@@ -341,22 +344,25 @@ class MultiSelect extends React.Component<Props, {
                     </li>
                 ))}
                 {create &&
-                    searchValue &&
-                    <li
-                        className={filteredOptions.length === 0 ? "active" : ""}
-                    >
-                        <a
-                            href="javascript: void(0)"
-                            onClick={e => {
-                                e.preventDefault();
-                                this.addValue(searchValue, searchValue);
-                            }}
+                    searchValue && (
+                        <li
+                            className={
+                                filteredOptions.length === 0 ? "active" : ""
+                            }
                         >
-                            {format(gettext("Add %(value)s..."), {
-                                value: searchValue,
-                            })}
-                        </a>
-                    </li>}
+                            <a
+                                href="javascript: void(0)"
+                                onClick={e => {
+                                    e.preventDefault();
+                                    this.addValue(searchValue, searchValue);
+                                }}
+                            >
+                                {format(gettext("Add %(value)s..."), {
+                                    value: searchValue,
+                                })}
+                            </a>
+                        </li>
+                    )}
             </ul>
         );
     }
@@ -373,7 +379,6 @@ class MultiSelect extends React.Component<Props, {
                 {value.map(value => (
                     <span key={value}>
                         <input type="hidden" name={name} value={value} />
-
                         <button
                             type="button"
                             className="btn btn-default btn-xs"
@@ -383,11 +388,9 @@ class MultiSelect extends React.Component<Props, {
                             <span
                                 className="glyphicon glyphicon-remove"
                                 aria-hidden="true"
-                            />
-                            {" "}
+                            />{" "}
                             {this.getNameByValue(value)}
-                        </button>
-                        {" "}
+                        </button>{" "}
                     </span>
                 ))}
             </div>
@@ -425,15 +428,21 @@ class MultiSelect extends React.Component<Props, {
 
 MultiSelect.contextTypes = childContextTypes;
 
-class Select extends React.Component<Props, {
-    value?: string | Array<string>,
-}> {
+class Select extends React.Component<
+    Props,
+    {
+        value?: string | Array<string>,
+    },
+> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            value: props.multi && !Array.isArray(props.value)
-                ? props.value ? [props.value] : []
-                : props.value,
+            value:
+                props.multi && !Array.isArray(props.value)
+                    ? props.value
+                        ? [props.value]
+                        : []
+                    : props.value,
         };
     }
 
@@ -467,8 +476,7 @@ class Select extends React.Component<Props, {
 
 Select.contextTypes = childContextTypes;
 
-const latinize = str =>
-    str.replace(/[^A-Za-z0-9[\] ]/g, a => latinMap[a] || a);
+const latinize = str => str.replace(/[^A-Za-z0-9[\] ]/g, a => latinMap[a] || a);
 
 // prettier-ignore
 const latinMap = {

@@ -10,7 +10,7 @@ tap.test("getFilePath", {autoend: true}, t => {
     t.equal(
         image.getFilePath(),
         path.resolve(process.cwd(), "data/uploads/images/4266906334.jpg"),
-        "Check file path"
+        "Check file path",
     );
 });
 
@@ -19,7 +19,7 @@ tap.test("getOriginalURL", {autoend: true}, t => {
     t.equal(
         image.getOriginalURL(),
         "/data/uploads/images/4266906334.jpg",
-        "Check UploadImage URL"
+        "Check UploadImage URL",
     );
 });
 
@@ -28,7 +28,7 @@ tap.test("getScaledURL", {autoend: true}, t => {
     t.equal(
         image.getScaledURL(),
         "/data/uploads/scaled/4266906334.jpg",
-        "Check Scaled URL"
+        "Check Scaled URL",
     );
 });
 
@@ -37,7 +37,7 @@ tap.test("getThumbURL", {autoend: true}, t => {
     t.equal(
         image.getThumbURL(),
         "/data/uploads/thumbs/4266906334.jpg",
-        "Check Thumb URL"
+        "Check Thumb URL",
     );
 });
 
@@ -58,12 +58,12 @@ tap.test("updateSimilarity: New UploadImage", t => {
         t.equal(
             image.similarImages.length,
             1,
-            "Has the correct number of results."
+            "Has the correct number of results.",
         );
         t.same(
             image.similarImages[0].toJSON(),
             {_id: "test/bar.jpg", score: 9},
-            "Has the correct result."
+            "Has the correct result.",
         );
         t.end();
     });
@@ -78,12 +78,12 @@ tap.test("updateSimilarity: Existing UploadImage", t => {
         t.equal(
             image.similarImages.length,
             1,
-            "Has the correct number of results."
+            "Has the correct number of results.",
         );
         t.same(
             image.similarImages[0].toJSON(),
             {_id: "test/bar.jpg", score: 10},
-            "Has the correct result."
+            "Has the correct result.",
         );
         t.end();
     });
@@ -123,7 +123,7 @@ tap.test("UploadImage.fromFile: New UploadImage (Corrupted File)", t => {
         const testFile = path.resolve(
             process.cwd(),
             "testData",
-            "corrupted.jpg"
+            "corrupted.jpg",
         );
 
         UploadImage.fromFile(testFile, (err, image) => {

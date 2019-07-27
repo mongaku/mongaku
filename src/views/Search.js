@@ -63,17 +63,19 @@ type Props = {
 
 const FacetBucket = ({bucket}: {bucket: Bucket}) => (
     <li>
-        <a href={bucket.url}>{bucket.text}</a>
-        {" "}({bucket.count})
+        <a href={bucket.url}>{bucket.text}</a> ({bucket.count})
     </li>
 );
 
-class Facet extends React.Component<Props & {
-    type: string,
-    facet: FacetType,
-}, {
-    showMore: boolean,
-}> {
+class Facet extends React.Component<
+    Props & {
+        type: string,
+        facet: FacetType,
+    },
+    {
+        showMore: boolean,
+    },
+> {
     constructor(props) {
         super(props);
         this.state = {
@@ -172,13 +174,14 @@ const Sidebar = (props: Props, {gettext, format, stringNum}: Context) => {
                         })}
                     </strong>
                     <br />
-                    {!!end &&
+                    {!!end && (
                         <span>
                             {format(gettext("Viewing %(start)s to %(end)s."), {
                                 start: stringNum(start || 1),
                                 end: stringNum(end),
                             })}
-                        </span>}
+                        </span>
+                    )}
                 </div>
                 <div className="panel-body search-form">
                     <SearchForm {...props} />
@@ -193,7 +196,7 @@ Sidebar.contextTypes = childContextTypes;
 
 const Breadcrumb = (
     {crumb}: {crumb: BreadcrumbType},
-    {gettext, format}: Context
+    {gettext, format}: Context,
 ) => (
     <a
         href={crumb.url}
@@ -204,8 +207,7 @@ const Breadcrumb = (
             className="glyphicon glyphicon-remove-sign"
             style={{verticalAlign: -1}}
             aria-hidden="true"
-        />
-        {" "}
+        />{" "}
         <span aria-hidden="true">{crumb.name}</span>
         <span className="sr-only">
             {format(gettext("Remove %(query)s"), {query: crumb.name})}
@@ -250,20 +252,22 @@ NoResults.contextTypes = childContextTypes;
 const Pagination = ({prev, next}: Props, {gettext}: Context) => (
     <nav>
         <ul className="pager">
-            {prev &&
+            {prev && (
                 <li className="previous">
                     <a href={prev}>
                         <span aria-hidden="true">←</span>
                         {gettext("Previous")}
                     </a>
-                </li>}
-            {next &&
+                </li>
+            )}
+            {next && (
                 <li className="next">
                     <a href={next}>
                         {gettext("Next")}
                         <span aria-hidden="true">→</span>
                     </a>
-                </li>}
+                </li>
+            )}
         </ul>
     </nav>
 );
@@ -272,7 +276,7 @@ Pagination.contextTypes = childContextTypes;
 
 const ImageResultFooter = (
     {record, sources}: Props & {record: RecordType},
-    {getSource}: Context
+    {getSource}: Context,
 ) => {
     // Don't show the source selection if there isn't more than one source
     if (!sources || sources.length <= 1) {
@@ -284,7 +288,7 @@ const ImageResultFooter = (
     return (
         <div className="details">
             <div className="wrap">
-                {source &&
+                {source && (
                     <span>
                         <a
                             className="pull-right"
@@ -293,7 +297,8 @@ const ImageResultFooter = (
                         >
                             {source.getShortName}
                         </a>
-                    </span>}
+                    </span>
+                )}
             </div>
         </div>
     );
@@ -336,24 +341,25 @@ const Results = (props: Props, {options}: Context) => {
     return (
         <div className="results-main col-sm-9 col-sm-pull-3">
             {breadcrumbs &&
-                breadcrumbs.length > 0 &&
-                <Breadcrumbs {...props} />}
+                breadcrumbs.length > 0 && <Breadcrumbs {...props} />}
             {records.length === 0 && <NoResults {...props} />}
             <Pagination {...props} />
             <div className="row">
                 {records.map(
                     record =>
-                        (imageResult
-                            ? <ImageResult
-                                  {...props}
-                                  record={record}
-                                  key={record._id}
-                              />
-                            : <TextResult
-                                  {...props}
-                                  record={record}
-                                  key={record._id}
-                              />)
+                        imageResult ? (
+                            <ImageResult
+                                {...props}
+                                record={record}
+                                key={record._id}
+                            />
+                        ) : (
+                            <TextResult
+                                {...props}
+                                record={record}
+                                key={record._id}
+                            />
+                        ),
                 )}
             </div>
             <Pagination {...props} />
@@ -371,7 +377,11 @@ const Search = (props: Props) => {
             <div className="row">
                 <div className="col-xs-12">
                     <h1>{title}</h1>
-                    {url && <p><a href={url}>{url}</a></p>}
+                    {url && (
+                        <p>
+                            <a href={url}>{url}</a>
+                        </p>
+                    )}
                 </div>
             </div>
             <div className="row results-wrap">

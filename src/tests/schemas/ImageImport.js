@@ -3,14 +3,14 @@ const path = require("path");
 const tap = require("tap");
 
 const init = require("../init");
-const {stub, i18n, ImageImport, mockFS} = init;
+const {i18n, ImageImport} = init;
 
 tap.test("getURL", {autoend: true}, t => {
     const batch = init.getBatch();
     t.equal(
         batch.getURL(i18n.lang),
         "/artworks/source/test/admin?images=test/started",
-        "Get URL"
+        "Get URL",
     );
 });
 
@@ -183,172 +183,6 @@ tap.test("validate", t => {
         t.error(err, "Error should be empty.");
         t.ok(batch._id, "Should have an ID.");
         t.end();
-    });
-});
-
-tap.test("processImages", t => {
-    const batch = init.getBatch();
-    mockFS(callback => {
-        batch.processImages(err => {
-            t.error(err, "Error should be empty.");
-
-            const expected = init.getImageResultsData();
-
-            t.equal(batch.results.length, expected.length);
-            expected.forEach((item, i) => {
-                t.same(batch.results[i], item);
-            });
-
-            t.end();
-            callback();
-        });
-    });
-});
-
-tap.test("processImages (Corrupted File)", t => {
-    const testZip = path.resolve(process.cwd(), "testData", "corrupted.zip");
-
-    const batch = new ImageImport({
-        _id: "test/started",
-        source: "test",
-        zipFile: testZip,
-        fileName: "corrupted.zip",
-    });
-
-    mockFS(callback => {
-        batch.processImages(err => {
-            t.ok(err, "Expecting an error");
-            t.equal(err.message, "ERROR_READING_ZIP");
-            t.end();
-            callback();
-        });
-    });
-});
-
-tap.test("processImages (Empty File)", t => {
-    const testZip = path.resolve(process.cwd(), "testData", "empty.zip");
-
-    const batch = new ImageImport({
-        _id: "test/started",
-        source: "test",
-        zipFile: testZip,
-        fileName: "empty.zip",
-    });
-
-    mockFS(callback => {
-        batch.processImages(err => {
-            t.ok(err, "Expecting an error");
-            t.equal(err.message, "ZIP_FILE_EMPTY");
-            t.end();
-            callback();
-        });
-    });
-});
-
-tap.test("processImages (advance, started)", t => {
-    const batch = init.getBatch();
-    t.equal(batch.getCurState().name(i18n), "Awaiting processing...");
-
-    mockFS(callback => {
-        batch.advance(err => {
-            t.error(err, "Error should be empty.");
-
-            const expected = init.getImageResultsData();
-
-            t.equal(batch.results.length, expected.length);
-            expected.forEach((item, i) => {
-                t.same(batch.results[i], item);
-            });
-
-            t.equal(batch.state, "process.completed");
-
-            t.end();
-            callback();
-        });
-    });
-});
-
-tap.test("processImages (advance, process.started)", t => {
-    const batch = init.getBatches()[1];
-    t.equal(batch.getCurState().name(i18n), "Processing...");
-    batch.advance(err => {
-        t.error(err, "Error should be empty.");
-        t.equal(batch.results.length, 0);
-        t.equal(batch.state, "process.started");
-        t.end();
-    });
-});
-
-tap.test("processImages (advance, process.completed)", t => {
-    const batch = init.getBatches()[2];
-    t.equal(batch.getCurState().name(i18n), "Completed.");
-    batch.advance(err => {
-        t.error(err, "Error should be empty.");
-
-        const expected = init.getImageResultsData();
-
-        t.equal(batch.results.length, expected.length);
-        expected.forEach((item, i) => {
-            t.same(batch.results[i], item);
-        });
-
-        t.equal(batch.state, "completed");
-
-        t.end();
-    });
-});
-
-tap.test("processImages (advance, completed)", t => {
-    const batch = init.getBatches()[4];
-    t.equal(batch.getCurState().name(i18n), "Completed.");
-    batch.advance(err => {
-        t.error(err, "Error should be empty.");
-
-        const expected = init.getImageResultsData();
-
-        t.equal(batch.results.length, expected.length);
-        expected.forEach((item, i) => {
-            t.same(batch.results[i], item);
-        });
-
-        t.equal(batch.state, "completed");
-
-        t.end();
-    });
-});
-
-tap.test("processImages (advance, error)", t => {
-    const batch = init.getBatches()[5];
-    t.notOk(batch.getCurState());
-    batch.advance(err => {
-        t.error(err, "Error should be empty.");
-        t.equal(batch.results.length, 0);
-        t.equal(batch.state, "error");
-        t.end();
-    });
-});
-
-tap.test("processImages (advance, Corrupted File)", t => {
-    const testZip = path.resolve(process.cwd(), "testData", "corrupted.zip");
-
-    const batch = new ImageImport({
-        _id: "test/started",
-        source: "test",
-        zipFile: testZip,
-        fileName: "corrupted.zip",
-    });
-
-    stub(batch, "save", process.nextTick);
-
-    mockFS(callback => {
-        batch.advance(err => {
-            t.error(err, "Error should be empty.");
-            t.equal(batch.error, "ERROR_READING_ZIP");
-            t.equal(batch.results.length, 0);
-            t.equal(batch.state, "error");
-            t.end();
-            callback();
-        });
     });
 });
 

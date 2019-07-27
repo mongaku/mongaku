@@ -22,8 +22,9 @@ module.exports = ([converterName, ...fileNames], callback) => {
     }
 
     try {
-        const fileStreams = fileNames
-            .map((fileName) => fs.createReadStream(fileName));
+        const fileStreams = fileNames.map(fileName =>
+            fs.createReadStream(fileName),
+        );
 
         converter.processFiles(fileStreams, (err, results) => {
             if (err) {

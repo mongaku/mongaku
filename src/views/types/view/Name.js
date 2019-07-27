@@ -14,18 +14,15 @@ type Props = {
 };
 
 const Pseudonym = ({value}: {value: NameType}) => (
-    <span>
-        {" "}({value.pseudonym})
-    </span>
+    <span> ({value.pseudonym})</span>
 );
 
 const Name = ({value, url}: {value: NameType, url: string}) => {
     return (
         <span key={value._id}>
             <a href={url}>{value.name}</a>
-            {value.pseudoynm !== undefined &&
-                value.name !== value.pseudoynm &&
-                <Pseudonym value={value} />}
+            {value.pseudonym !== undefined &&
+                value.name !== value.pseudonym && <Pseudonym value={value} />}
         </span>
     );
 };

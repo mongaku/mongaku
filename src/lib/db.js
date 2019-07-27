@@ -11,13 +11,20 @@ module.exports = {
     types: mongoose.Types,
 
     connect(callback) {
-        mongoose.connect(config.MONGODB_URL, {
-            keepAlive: true,
-            useMongoClient: true,
-            // Get Mongoose using native promises
-            promiseLibrary: global.Promise,
-            reconnectTries: Number.MAX_VALUE,
-        });
+        if (config.NODE_ENV === "test") {
+            return process.nextTick(callback);
+        }
+
+        mongoose.connect(
+            config.MONGODB_URL,
+            {
+                keepAlive: true,
+                useNewUrlParser: true,
+                // Get Mongoose using native promises
+                promiseLibrary: global.Promise,
+                reconnectTries: Number.MAX_VALUE,
+            },
+        );
 
         const handleError = err => {
             console.error("Mongo Connection Error:", err);
@@ -34,7 +41,11 @@ module.exports = {
         mongoose.connection.once("open", handleOpen);
     },
 
-    close: () => mongoose.connection.close(),
+    close: () => {
+        if (config.NODE_ENV !== "test") {
+            mongoose.connection.close();
+        }
+    },
 
     model(name, schema) {
         return mongoose.model(name, schema);

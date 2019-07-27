@@ -90,27 +90,29 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
 
             // The link to the previous page of search results
             const prevStart = values.start - values.rows;
-            const prevLink = values.start > 0
-                ? searchURL(
-                      i18n.lang,
-                      Object.assign({}, values, {
-                          start: prevStart > 0 ? prevStart : "",
-                      }),
-                      true
-                  )
-                : "";
+            const prevLink =
+                values.start > 0
+                    ? searchURL(
+                          i18n.lang,
+                          Object.assign({}, values, {
+                              start: prevStart > 0 ? prevStart : "",
+                          }),
+                          true,
+                      )
+                    : "";
 
             // The link to the next page of the search results
             const nextStart = values.start + values.rows;
-            const nextLink = end < results.hits.total
-                ? searchURL(
-                      i18n.lang,
-                      Object.assign({}, values, {
-                          start: nextStart,
-                      }),
-                      true
-                  )
-                : "";
+            const nextLink =
+                end < results.hits.total
+                    ? searchURL(
+                          i18n.lang,
+                          Object.assign({}, values, {
+                              start: nextStart,
+                          }),
+                          true,
+                      )
+                    : "";
 
             // Construct a nicer form of the facet data to feed in to
             // the templates
@@ -189,7 +191,7 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
                 if (typeQueries[param].breadcrumbs) {
                     const crumbs = typeQueries[param].breadcrumbs(
                         values[param],
-                        i18n
+                        i18n,
                     );
                     for (const crumb of crumbs) {
                         const rmValues = Object.assign({}, values);
@@ -207,7 +209,7 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
                     for (const value of values[param]) {
                         const rmValues = Object.assign({}, values);
                         rmValues[param] = values[param].filter(
-                            otherValue => otherValue !== value
+                            otherValue => otherValue !== value,
                         );
 
                         breadcrumbs.push({
@@ -224,7 +226,7 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
                     breadcrumbs.push({
                         name: typeQueries[param].searchTitle(
                             values[param],
-                            i18n
+                            i18n,
                         ),
                         url: searchURL(i18n.lang, rmValues),
                     });
@@ -260,6 +262,6 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
                 // Don't index the search results
                 noIndex: true,
             });
-        }
+        },
     );
 };

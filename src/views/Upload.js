@@ -35,6 +35,7 @@ type Source = {
 type MatchType = {
     _id: string,
     recordModel: RecordType,
+    imageModel: ImageType,
     score: number,
     sources: Array<Source>,
 };
@@ -71,8 +72,11 @@ const UploadedImage = ({image}: Props, {gettext}: Context) => {
 UploadedImage.contextTypes = childContextTypes;
 
 const Match = (
-    {sources, match: {recordModel, score}}: Props & {match: MatchType},
-    {gettext, format, getSource}: Context
+    {
+        sources,
+        match: {recordModel, imageModel, score},
+    }: Props & {match: MatchType},
+    {gettext, format, getSource}: Context,
 ) => {
     const source = getSource(recordModel.source, sources);
 
@@ -81,7 +85,7 @@ const Match = (
             <div className="img-wrap">
                 <a href={recordModel.getURL}>
                     <img
-                        src={recordModel.getThumbURL}
+                        src={imageModel.getThumbURL}
                         alt={recordModel.getTitle}
                         title={recordModel.getTitle}
                         className="img-responsive center-block"
@@ -94,14 +98,15 @@ const Match = (
                         {format(gettext("Score: %(score)s"), {score: score})}
                     </span>
 
-                    {source &&
+                    {source && (
                         <a
                             className="pull-right"
                             href={source.getURL}
                             title={source.getFullName}
                         >
                             {source.getShortName}
-                        </a>}
+                        </a>
+                    )}
                 </div>
             </div>
         </div>
@@ -132,9 +137,7 @@ const Results = (props: Props, {gettext}: Context) => {
             <div className="panel-heading">
                 <strong>{gettext("Similar Images")}</strong>
             </div>
-            <div className="panel-body row">
-                {similarResults}
-            </div>
+            <div className="panel-body row">{similarResults}</div>
         </div>
     );
 };

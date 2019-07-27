@@ -18,8 +18,9 @@ const NameEdit = ({
     }>,
     multiple?: boolean,
 }) => {
-    let defaultValue = (value || [])
-        .map(name => name.name || name.original || "");
+    let defaultValue = (value || []).map(
+        name => name.name || name.original || "",
+    );
 
     if (!multiple) {
         defaultValue = defaultValue[0];
