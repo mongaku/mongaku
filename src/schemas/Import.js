@@ -38,6 +38,12 @@ Import.schema = {
 
     // The results of the import
     results: [{}],
+
+    // Can the import skip manual confirmation steps?
+    skipConfirmation: {
+        type: Boolean,
+        default: false,
+    },
 };
 
 Import.methods = {
@@ -73,7 +79,10 @@ Import.methods = {
         if (!curState) {
             return false;
         }
-        return !!curState.advance;
+        return (
+            !!curState.advance ||
+            (this.skipConfirmation && curState.requiresManualConfirmation)
+        );
     },
 
     advance(callback) {
@@ -84,10 +93,25 @@ Import.methods = {
             return process.nextTick(callback);
         }
 
+        const advanceState = () => {
+            // Advance to the next state
+            const nextState = this.getNextState();
+            if (nextState) {
+                this.markModified("results");
+                this.saveState(nextState.id, callback);
+            } else {
+                callback();
+            }
+        };
+
         this.saveState(nextState.id, err => {
             /* istanbul ignore if */
             if (err) {
                 return callback(err);
+            }
+
+            if (!state.advance) {
+                return advanceState();
             }
 
             state.advance(this, err => {
@@ -99,14 +123,7 @@ Import.methods = {
                     return this.saveState("error", callback);
                 }
 
-                // Advance to the next state
-                const nextState = this.getNextState();
-                if (nextState) {
-                    this.markModified("results");
-                    this.saveState(nextState.id, callback);
-                } else {
-                    callback();
-                }
+                advanceState();
             });
         });
     },

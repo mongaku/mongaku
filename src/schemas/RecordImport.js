@@ -24,6 +24,7 @@ const states = [
     {
         id: "process.completed",
         name: i18n => i18n.gettext("Confirmation required."),
+        requiresManualConfirmation: true,
         // NOTE(jeresig): Do not auto-advance to importing the data
         // we want the user to make the call on the results.
         // batch.importRecords(callback);
@@ -335,9 +336,9 @@ Object.assign(RecordImport.methods, Import.methods, {
 });
 
 Object.assign(RecordImport.statics, Import.statics, {
-    fromFile(fileName, source, type) {
+    fromFile(fileName, source, type, skipConfirmation) {
         const RecordImport = models("RecordImport");
-        return new RecordImport({source, fileName, type});
+        return new RecordImport({source, fileName, type, skipConfirmation});
     },
 
     getError(i18n, error) {

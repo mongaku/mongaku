@@ -310,6 +310,7 @@ module.exports = function(app) {
                     fileName,
                     source._id,
                     source.type,
+                    false,
                 );
 
                 batch.setResults(inputStreams, err => {
