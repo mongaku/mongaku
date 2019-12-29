@@ -184,7 +184,10 @@ Object.assign(ImageImport.methods, Import.methods, {
                 return callback(err);
             }
 
-            this.importImages(files, callback);
+            // Filter out any directories, we only want files
+            const onlyFiles = files.filter(file => fs.statSync(file).isFile());
+
+            this.importImages(onlyFiles, callback);
         });
     },
 
