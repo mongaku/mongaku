@@ -9,13 +9,17 @@ module.exports = (args, callback) => {
         defaultInput: genPassword(),
         hideEchoBack: true,
     });
-    const source = rl.question("Source Admin [Optional, Source ID]: ");
+    //const source = rl.question("Source Admin [Optional, Source ID]: ");
+    const canViewPrivateSources = rl.keyInYN(
+        "Can view private sources? [Y/N]: ",
+    );
 
     const User = models("User");
     const user = new User({
         email,
         password,
-        sourceAdmin: source ? source.split(/,\s*/) : [],
+        //sourceAdmin: source ? source.split(/[,\s]+/) : [],
+        canViewPrivateSources,
     });
 
     user.save(err => {

@@ -13,6 +13,7 @@ module.exports = (args, callback) => {
     const name = rl.question("Full Name (e.g. Frick Library): ");
     const shortName = rl.question("Short Name (e.g. Frick): ");
     const url = rl.question("URL (http://...): ");
+    const isPrivate = rl.keyInYN("Private? [Y/N]: ");
     const type = rl.question(`Data Type (${types.join(", ")}): `);
     const converter = rl.question("Data Convertor [default]: ", {
         defaultInput: "default",
@@ -24,6 +25,7 @@ module.exports = (args, callback) => {
         name,
         shortName,
         url,
+        private: isPrivate,
         type,
         converter,
     });

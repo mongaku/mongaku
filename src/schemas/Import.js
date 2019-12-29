@@ -51,6 +51,10 @@ Import.methods = {
         return models("Source").getSource(this.source);
     },
 
+    isCompleted() {
+        return !!(this.getCurState() && this.getCurState().id === "completed");
+    },
+
     saveState(state, callback) {
         this.state = state;
         this.save(callback);

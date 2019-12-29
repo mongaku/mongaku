@@ -142,7 +142,7 @@ module.exports = app => {
             });
         },
 
-        show({params, i18n}, res) {
+        show({params, i18n, user}, res) {
             // TODO: Update similar matches if new image data has
             // since come in since it was last updated.
             const _id = `uploads/${params.upload}`;
@@ -153,15 +153,21 @@ module.exports = app => {
                     });
                 }
 
+                // Filter out record matches from sources that the user isn't
+                // allowed to see
+                const similarRecords = upload.similarRecords.filter(match =>
+                    match.recordModel.canView(user),
+                );
+
                 upload.loadImages(true, () => {
                     async.eachLimit(
-                        upload.similarRecords,
+                        similarRecords,
                         4,
                         (similar, callback) => {
                             similar.recordModel.loadImages(false, callback);
                         },
                         () => {
-                            const similarRecords = upload.similarRecords.map(
+                            const formattedSimilarRecords = similarRecords.map(
                                 match => ({
                                     _id: match._id,
                                     score: match.score,
@@ -181,10 +187,10 @@ module.exports = app => {
 
                             res.render("Upload", {
                                 title: upload.getTitle(i18n),
-                                similar: similarRecords,
+                                similar: formattedSimilarRecords,
                                 image: cloneModel(upload.images[0], i18n),
-                                sources: Source.getSources().map(source =>
-                                    cloneModel(source, i18n),
+                                sources: Source.getSourcesByViewable(user).map(
+                                    source => cloneModel(source, i18n),
                                 ),
                                 noIndex: true,
                             });

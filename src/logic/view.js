@@ -11,7 +11,7 @@ module.exports = function(app: express$Application) {
     const Source = models("Source");
 
     const show = (
-        {i18n, originalUrl, params, query}: express$Request,
+        {i18n, originalUrl, params, query, user}: express$Request,
         res,
         next,
     ) => {
@@ -38,6 +38,12 @@ module.exports = function(app: express$Application) {
                 return next();
             }
 
+            if (!record.canView(user)) {
+                return res.status(403).send({
+                    error: i18n.gettext("Permission denied"),
+                });
+            }
+
             record.loadImages(true, () => {
                 // TODO: Handle error loading images?
                 const title = record.getTitle(i18n);
@@ -53,38 +59,47 @@ module.exports = function(app: express$Application) {
                     cloneModel(image, i18n),
                 );
 
+                // Filter out record matches from sources that the user isn't
+                // allowed to see
+                const similarRecords = record.similarRecords.filter(match =>
+                    match.recordModel.canView(user),
+                );
+
                 // Sort the similar records by score
-                clonedRecord.similarRecords = record.similarRecords.sort(
+                clonedRecord.similarRecords = similarRecords.sort(
                     (a, b) => b.score - a.score,
                 );
 
                 if (!compare) {
-                    const similarRecords = record.similarRecords.map(match => ({
-                        _id: match._id,
-                        score: match.score,
-                        recordModel: cloneModel(match.recordModel, i18n),
-                    }));
+                    const formattedSimilarRecords = similarRecords.map(
+                        match => ({
+                            _id: match._id,
+                            score: match.score,
+                            recordModel: cloneModel(match.recordModel, i18n),
+                        }),
+                    );
 
                     return res.render("Record", {
                         title,
                         social,
                         compare: false,
                         records: [clonedRecord],
-                        similar: similarRecords,
-                        sources: Source.getSourcesByType(typeName).map(source =>
-                            cloneModel(source, i18n),
-                        ),
+                        similar: formattedSimilarRecords,
+                        sources: Source.getSourcesByViewableType(
+                            user,
+                            typeName,
+                        ).map(source => cloneModel(source, i18n)),
                     });
                 }
 
                 async.eachLimit(
-                    record.similarRecords,
+                    similarRecords,
                     4,
                     (similar, callback) => {
                         similar.recordModel.loadImages(false, callback);
                     },
                     () => {
-                        const similarRecords = record.similarRecords.map(
+                        const formattedSimilarRecords = similarRecords.map(
                             similar => {
                                 const clonedRecord = cloneModel(
                                     similar.recordModel,
@@ -102,10 +117,13 @@ module.exports = function(app: express$Application) {
                             compare: true,
                             noIndex: true,
                             similar: [],
-                            records: [clonedRecord].concat(similarRecords),
-                            sources: Source.getSourcesByType(typeName).map(
-                                source => cloneModel(source, i18n),
+                            records: [clonedRecord].concat(
+                                formattedSimilarRecords,
                             ),
+                            sources: Source.getSourcesByViewableType(
+                                user,
+                                typeName,
+                            ).map(source => cloneModel(source, i18n)),
                         });
                     },
                 );

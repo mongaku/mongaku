@@ -14,11 +14,19 @@ module.exports = function(app: express$Application) {
     };
 
     const bySource = (req: express$Request, res, next) => {
-        const {i18n, params} = req;
+        const {i18n, params, user} = req;
 
         try {
+            const source = Source.getSource(params.source);
+
+            if (!source.canView(user)) {
+                return res.status(403).render("Error", {
+                    title: i18n.gettext("Permission denied."),
+                });
+            }
+
             searchPage(req, res, next, {
-                url: Source.getSource(params.source).url,
+                url: source.url,
             });
         } catch (e) {
             return res.status(404).render("Error", {

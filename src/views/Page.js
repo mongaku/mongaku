@@ -104,7 +104,7 @@ class Dropdown extends React.PureComponent<
 
 const NavLink = (
     {type, title}: {type: string, title: string},
-    {gettext, user, URL}: Context,
+    {gettext, user, URL, options}: Context,
 ) => (
     <Dropdown title={title} href={URL(`/${type}/search`)}>
         <li>
@@ -133,7 +133,8 @@ const NavLink = (
             <a href={URL(`/${type}/search`)}>{gettext("Browse All")}</a>
         </li>
         {user &&
-            user.getEditableSourcesByType[type].length > 0 && (
+            user.getEditableSourcesByType[type].length > 0 &&
+            options.canAddRecords && (
                 <li>
                     <a href={URL(`/${type}/create`)}>{gettext("Create New")}</a>
                 </li>

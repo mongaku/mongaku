@@ -37,6 +37,22 @@ const defaultQueries = {
         secondary: true,
     },
 
+    privateSources: {
+        value: (fields, user) =>
+            models("Source")
+                .getSourcesByViewable(user)
+                .map(source => source._id),
+        filter: sourceIDs => ({
+            match: {
+                "source.name": {
+                    query: sourceIDs.map(id => escape(id)).join(" "),
+                    operator: "or",
+                },
+            },
+        }),
+        secondary: true,
+    },
+
     filter: {
         value: fields => fields.filter,
         defaultValue: () => "",

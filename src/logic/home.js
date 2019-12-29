@@ -7,15 +7,14 @@ module.exports = app => {
     const Source = models("Source");
 
     return {
-        index({i18n}, res) {
-            const sources = Source.getSources()
-                .filter(source => source.numRecords > 0)
-                .map(source => {
-                    const cloned = cloneModel(source, i18n);
-                    cloned.numRecords = source.numRecords;
-                    cloned.numImages = source.numImages;
-                    return cloned;
-                });
+        index({i18n, user}, res) {
+            // Only show sources on the homepage that the user is allowed to see
+            const sources = Source.getSourcesByViewable(user).map(source => {
+                const cloned = cloneModel(source, i18n);
+                cloned.numRecords = source.numRecords;
+                cloned.numImages = source.numImages;
+                return cloned;
+            });
             let recordTotal = 0;
             let imageTotal = 0;
 

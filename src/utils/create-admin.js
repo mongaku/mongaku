@@ -15,6 +15,7 @@ module.exports = (args, callback) => {
         email,
         password,
         siteAdmin: true,
+        canViewPrivateSources: true,
     });
 
     user.save(err => {

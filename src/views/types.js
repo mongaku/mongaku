@@ -128,9 +128,12 @@ type TypeOptions = {
 export type Source = {
     _id: string,
     name: string,
+    type: string,
     getURL: string,
+    getAdminURL: string,
     getFullName: string,
     getShortName: string,
+    numRecords: number,
 };
 
 export type Options = {
@@ -142,6 +145,7 @@ export type Options = {
     getShortTitle: string,
     getTitle: string,
     noIndex: boolean,
+    canAddRecords: boolean,
     usei18nSubdomain: boolean,
     favicon?: string,
     logo?: string,

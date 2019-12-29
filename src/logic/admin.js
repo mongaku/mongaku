@@ -126,6 +126,8 @@ module.exports = function(app) {
     };
 
     const adminPage = ({source, i18n}, res, next) => {
+        const Image = models("Image");
+
         async.parallel(
             [
                 callback =>
@@ -152,8 +154,28 @@ module.exports = function(app) {
                         {},
                         callback,
                     ),
+                callback => Image.count({source: source._id}, callback),
+                callback =>
+                    Image.count(
+                        {source: source._id, needsSimilarIndex: false},
+                        callback,
+                    ),
+                callback =>
+                    Image.count(
+                        {source: source._id, needsSimilarUpdate: false},
+                        callback,
+                    ),
             ],
-            (err, results) => {
+            (
+                err,
+                [
+                    imageImport,
+                    dataImport,
+                    numImages,
+                    numImagesIndexed,
+                    numImagesUpdated,
+                ],
+            ) => {
                 /* istanbul ignore if */
                 if (err) {
                     return next(
@@ -161,10 +183,6 @@ module.exports = function(app) {
                     );
                 }
 
-                const imageImport = results[0];
-                const dataImport = results[1].sort(
-                    (a, b) => b.created - a.created,
-                );
                 const title = i18n.format(i18n.gettext("%(name)s Admin Area"), {
                     name: source.getFullName(i18n),
                 });
@@ -175,9 +193,18 @@ module.exports = function(app) {
                     imageImport: imageImport.map(batch =>
                         cloneModel(batch, i18n),
                     ),
-                    dataImport: dataImport.map(batch =>
-                        cloneModel(batch, i18n),
-                    ),
+                    dataImport: dataImport
+                        .sort((a, b) => b.created - a.created)
+                        .map(batch => cloneModel(batch, i18n)),
+                    numImages,
+                    numImagesIndexed,
+                    numImagesUpdated,
+                    allImagesImported:
+                        imageImport.length > 0 &&
+                        imageImport.every(batch => batch.isCompleted),
+                    allRecordsImported:
+                        dataImport.length > 0 &&
+                        dataImport.every(batch => batch.isCompleted),
                 });
             },
         );

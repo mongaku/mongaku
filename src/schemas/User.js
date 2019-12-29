@@ -60,6 +60,12 @@ const User = new db.schema({
         type: Boolean,
         default: false,
     },
+
+    // Can this user view private sources?
+    canViewPrivateSources: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const makeSalt = (): string => bcrypt.genSaltSync(10);
@@ -99,7 +105,7 @@ User.methods = {
     getEditableSourcesByType(): {[type: string]: Array<string>} {
         const Source = models("Source");
         const types = {};
-        const sources = Source.getSources();
+        const sources = Source.getSourcesByViewable(this);
 
         for (const source of sources) {
             if (!types[source.type]) {

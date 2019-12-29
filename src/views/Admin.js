@@ -17,6 +17,11 @@ type Props = {
         getFullName: string,
         getShortName: string,
     },
+    numImages: number,
+    numImagesIndexed: number,
+    numImagesUpdated: number,
+    allImagesImported: boolean,
+    allRecordsImported: boolean,
 };
 
 type Import = {
@@ -29,6 +34,7 @@ type Import = {
     getStateName: string,
     modified: Date,
     state: string,
+    isCompleted: boolean,
 };
 
 type ImportResults = {
@@ -104,8 +110,82 @@ const ImageImports = (props: Props, {gettext}: Context) => {
 
 ImageImports.contextTypes = childContextTypes;
 
-const UploadImagesForm = ({source}: Props, {gettext, URL}: Context) => (
-    <div className="panel panel-default">
+const ImageIndexingProgress = (props: Props, {gettext}: Context) => {
+    const {numImages, numImagesIndexed, numImagesUpdated} = props;
+
+    return (
+        <div
+            className={`panel panel-default ${
+                numImagesUpdated === numImages && numImagesIndexed === numImages
+                    ? "panel-success"
+                    : "panel-warning"
+            }`}
+        >
+            <div className="panel-heading">
+                <h3 className="panel-title">
+                    {gettext("Image Similarity Indexing Progress")}
+                </h3>
+            </div>
+            <div className="panel-body">
+                <p>
+                    {gettext(
+                        "After images have been imported into the database they will be indexed by the image similiarity search engine. This process can take a while (but you don't need to wait for it to finish before importing any metadata).",
+                    )}
+                </p>
+                <p>
+                    <strong>{gettext("Images Indexed:")}</strong>{" "}
+                    <strong
+                        className={
+                            numImagesUpdated === numImages
+                                ? "text-success"
+                                : "text-warning"
+                        }
+                    >
+                        {((numImagesIndexed * 100) / numImages).toFixed(1)}%
+                    </strong>{" "}
+                    <small>
+                        ({numImagesIndexed}/{numImages})
+                    </small>
+                    <br />
+                    {gettext(
+                        "As images get indexed by the simliarity search engine they will become findable via the image search.",
+                    )}
+                </p>
+                <p>
+                    <strong>{gettext("Images Similarity Updated:")}</strong>{" "}
+                    <strong
+                        className={
+                            numImagesUpdated === numImages
+                                ? "text-success"
+                                : "text-warning"
+                        }
+                    >
+                        {((numImagesUpdated * 100) / numImages).toFixed(1)}%
+                    </strong>{" "}
+                    <small>
+                        ({numImagesUpdated}/{numImages})
+                    </small>
+                    <br />
+                    {gettext(
+                        "Once all of the images are indexed their similarity records will update, making it possible to find similar records when browsing. If new images are added to the database it will cause all images to be updated.",
+                    )}
+                </p>
+            </div>
+        </div>
+    );
+};
+
+ImageIndexingProgress.contextTypes = childContextTypes;
+
+const UploadImagesForm = (
+    {source, allImagesImported}: Props,
+    {gettext, URL}: Context,
+) => (
+    <div
+        className={`panel panel-default ${
+            allImagesImported ? "panel-success" : "panel-warning"
+        }`}
+    >
         <div className="panel-heading">
             <h3 className="panel-title">{gettext("Upload Images")}</h3>
         </div>
@@ -154,8 +234,15 @@ const UploadImagesForm = ({source}: Props, {gettext, URL}: Context) => (
 
 UploadImagesForm.contextTypes = childContextTypes;
 
-const UploadDirectoryForm = ({source}: Props, {gettext, URL}: Context) => (
-    <div className="panel panel-default">
+const UploadDirectoryForm = (
+    {source, allImagesImported}: Props,
+    {gettext, URL}: Context,
+) => (
+    <div
+        className={`panel panel-default ${
+            allImagesImported ? "panel-success" : "panel-warning"
+        }`}
+    >
         <div className="panel-heading">
             <h3 className="panel-title">
                 {gettext("Upload Directory of Images")}
@@ -283,8 +370,39 @@ const DataImports = (props: Props, {gettext}: Context) => {
 
 DataImports.contextTypes = childContextTypes;
 
-const UploadDataForm = ({source}: Props, {gettext, URL}: Context) => (
-    <div className="panel panel-default">
+const UploadDataImagesRequired = (
+    {allRecordsImported}: Props,
+    {gettext, URL}: Context,
+) => (
+    <div
+        className={`panel panel-default ${
+            allRecordsImported ? "panel-success" : "panel-warning"
+        }`}
+    >
+        <div className="panel-heading">
+            <h3 className="panel-title">{gettext("Upload Metadata")}</h3>
+        </div>
+        <div className="panel-body">
+            <p>
+                {gettext(
+                    "Please upload some images, or wait for the images to finish processing, before uploading any metadata.",
+                )}
+            </p>
+        </div>
+    </div>
+);
+
+UploadDataImagesRequired.contextTypes = childContextTypes;
+
+const UploadDataForm = (
+    {source, allRecordsImported}: Props,
+    {gettext, URL}: Context,
+) => (
+    <div
+        className={`panel panel-default ${
+            allRecordsImported ? "panel-success" : "panel-warning"
+        }`}
+    >
         <div className="panel-heading">
             <h3 className="panel-title">{gettext("Upload Metadata")}</h3>
         </div>
@@ -324,18 +442,27 @@ const UploadDataForm = ({source}: Props, {gettext, URL}: Context) => (
 UploadDataForm.contextTypes = childContextTypes;
 
 const Admin = (props: Props, {options}: Context) => {
-    const {title, imageImport, dataImport, source} = props;
+    const {title, imageImport, dataImport, source, allImagesImported} = props;
     const {hasImages, allowDirectoryUpload} = options.types[source.type];
 
     return (
         <div>
             <h1>{title}</h1>
-            {hasImages && <UploadImagesForm {...props} />}
-            {hasImages &&
-                allowDirectoryUpload && <UploadDirectoryForm {...props} />}
+            {hasImages && allowDirectoryUpload ? (
+                <UploadDirectoryForm {...props} />
+            ) : (
+                <UploadImagesForm {...props} />
+            )}
             {imageImport.length > 0 && <ImageImports {...props} />}
-            <UploadDataForm {...props} />
-            {dataImport.length > 0 && <DataImports {...props} />}
+            {allImagesImported ? (
+                <>
+                    <ImageIndexingProgress {...props} />
+                    <UploadDataForm {...props} />
+                    {dataImport.length > 0 && <DataImports {...props} />}
+                </>
+            ) : (
+                <UploadDataImagesRequired {...props} />
+            )}
         </div>
     );
 };

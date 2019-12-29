@@ -42,6 +42,12 @@ const Source = new db.schema({
         type: String,
         default: "default",
     },
+
+    // Is the soure marked as private and not visible to logged-out users?
+    private: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 Source.methods = {
@@ -119,6 +125,18 @@ Source.methods = {
             },
         );
     },
+
+    canView(user) {
+        if (!this.private) {
+            return true;
+        }
+
+        if (!user) {
+            return false;
+        }
+
+        return user.canViewPrivateSources || user.canEditSource(this._id);
+    },
 };
 
 Source.statics = {
@@ -143,8 +161,14 @@ Source.statics = {
         return sourceCache;
     },
 
-    getSourcesByType(type) {
-        return this.getSources().filter(source => source.type === type);
+    getSourcesByViewable(user) {
+        return this.getSources().filter(source => source.canView(user));
+    },
+
+    getSourcesByViewableType(user, type) {
+        return this.getSources().filter(
+            source => source.canView(user) && source.type === type,
+        );
     },
 
     getSource(sourceName) {

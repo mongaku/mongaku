@@ -2,16 +2,8 @@
 
 const React = require("react");
 
-import type {Context} from "./types.js";
+import type {Context, Source as SourceType} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
-
-type SourceType = {
-    _id: string,
-    type: string,
-    numRecords: number,
-    getFullName: string,
-    getURL: string,
-};
 
 type Props = {
     sources: Array<SourceType>,
@@ -22,7 +14,8 @@ const SearchForm = (
     {gettext, user, options, URL}: Context,
 ) => {
     const title = options.types[type].name;
-    const sources = user && user.getEditableSourcesByType[type];
+    const sources =
+        options.canAddRecords && user && user.getEditableSourcesByType[type];
 
     return (
         <div>
@@ -131,16 +124,32 @@ ImageUploadForms.contextTypes = childContextTypes;
 
 const Source = (
     {type, source}: {type: string, source: SourceType},
-    {options, stringNum}: Context,
+    {options, user, stringNum, gettext}: Context,
 ) => {
     const typeName = options.types[type].name;
     const recordCount = stringNum(source.numRecords);
     const desc = `${recordCount} ${typeName}`;
+    const canEdit =
+        user &&
+        user.getEditableSourcesByType[type] &&
+        user.getEditableSourcesByType[type].includes(source._id);
+
+    if (!canEdit && source.numRecords === 0) {
+        return null;
+    }
 
     return (
         <div>
             <h4>
-                <a href={source.getURL}>{source.getFullName}</a>
+                <a href={source.getURL}>{source.getFullName}</a>{" "}
+                {canEdit && (
+                    <a
+                        href={source.getAdminURL}
+                        className="btn btn-primary btn-xs"
+                    >
+                        {gettext("Admin")}
+                    </a>
+                )}
             </h4>
             <p>{desc}</p>
         </div>

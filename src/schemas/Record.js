@@ -382,6 +382,16 @@ Record.methods = {
             callback,
         );
     },
+
+    canView(user) {
+        const source = this.getSource();
+
+        if (!source) {
+            return true;
+        }
+
+        return source.canView(user);
+    },
 };
 
 const internal = [

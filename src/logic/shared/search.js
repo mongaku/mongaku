@@ -11,7 +11,7 @@ const queries = require("./queries");
 const searchURL = require("./search-url");
 const paramFilter = require("./param-filter");
 
-module.exports = (fields, {originalUrl, i18n}, callback) => {
+module.exports = (fields, {originalUrl, i18n, user}, callback) => {
     // Collect all the values from the request to construct
     // the search URL and matches later
     // Generate the filters and facets which will be fed in to Elasticsearch
@@ -30,17 +30,17 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
 
     for (const name in typeQueries) {
         const query = typeQueries[name];
-        let value = query.value(fields);
+        let value = query.value(fields, user);
 
         if (!value && typeQueries[name].defaultValue) {
-            value = typeQueries[name].defaultValue(fields);
+            value = typeQueries[name].defaultValue(fields, user);
         }
 
         if (value !== undefined) {
             values[name] = value;
 
             if (query.filter) {
-                filters.push(query.filter(value, sanitize));
+                filters.push(query.filter(value, sanitize, user));
             }
         }
     }
@@ -245,7 +245,7 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
                 title,
                 breadcrumbs: breadcrumbs.length === 1 ? [] : breadcrumbs,
                 sources: models("Source")
-                    .getSourcesByType(values.type)
+                    .getSourcesByViewableType(user, values.type)
                     .filter(source => source.numRecords > 0)
                     .map(source => cloneModel(source, i18n)),
                 values,
@@ -253,7 +253,9 @@ module.exports = (fields, {originalUrl, i18n}, callback) => {
                 type: values.type,
                 sorts: sortData,
                 facets: facetData,
-                records: results.hits.hits.filter(record => record),
+                records: results.hits.hits.filter(
+                    record => record && record.canView(user),
+                ),
                 total: results.hits.total,
                 start: results.hits.total > 0 ? values.start + 1 : 0,
                 end,
