@@ -167,7 +167,7 @@ const ImageIndexingProgress = (props: Props, {gettext}: Context) => {
                     </small>
                     <br />
                     {gettext(
-                        "Once all of the images are indexed their similarity records will update, making it possible to find similar records when browsing. If new images are added to the database it will cause all images to be updated.",
+                        "Once all of the images are indexed their similarity records will update, making it possible to find similar records when browsing.",
                     )}
                 </p>
             </div>
