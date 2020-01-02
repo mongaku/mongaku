@@ -1,6 +1,6 @@
 // @flow
 
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 const models = require("../lib/models");
 const db = require("../lib/db");
