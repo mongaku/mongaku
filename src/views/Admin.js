@@ -372,7 +372,7 @@ DataImports.contextTypes = childContextTypes;
 
 const UploadDataImagesRequired = (
     {allRecordsImported}: Props,
-    {gettext, URL}: Context,
+    {gettext}: Context,
 ) => (
     <div
         className={`panel panel-default ${
