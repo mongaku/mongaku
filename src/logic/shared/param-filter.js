@@ -23,6 +23,11 @@ const paramFilter = (values, keepSecondary) => {
             continue;
         }
 
+        // Ignore params which are entirely internal
+        if (query.internal) {
+            continue;
+        }
+
         // Ignore params which are the same as the default value
         if (query.defaultValue && query.defaultValue(values) === value) {
             continue;

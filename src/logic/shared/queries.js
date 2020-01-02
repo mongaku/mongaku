@@ -51,6 +51,7 @@ const defaultQueries = {
             },
         }),
         secondary: true,
+        internal: true,
     },
 
     filter: {
