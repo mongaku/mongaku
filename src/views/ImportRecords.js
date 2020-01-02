@@ -13,6 +13,7 @@ type Import = {
     type: string,
     error?: string,
     getFilteredResults: ImportResults,
+    getFilteredResultsSummary: ImportResultsSummary,
     getURL: string,
     created: Date,
     modified: Date,
@@ -29,6 +30,16 @@ type ImportResults = {
     deleted: Array<Result>,
     errors: Array<Result>,
     warnings: Array<Result>,
+};
+
+type ImportResultsSummary = {
+    models: number,
+    unprocessed: number,
+    created: number,
+    changed: number,
+    deleted: number,
+    errors: number,
+    warnings: number,
 };
 
 type Result = {

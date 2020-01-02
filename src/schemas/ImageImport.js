@@ -243,19 +243,24 @@ Object.assign(ImageImport.methods, Import.methods, {
                 result.model = image._id;
             }
 
-            // Add the result
-            this.results.push(result);
-            this.delayedSave();
-
             if (image) {
                 image.save(err => {
                     /* istanbul ignore if */
                     if (err) {
-                        return callback(err);
+                        result.error = err.message;
+                        result.model = undefined;
+                    } else {
+                        image.linkToRecords(callback);
                     }
 
-                    image.linkToRecords(callback);
+                    // Add the result
+                    this.results.push(result);
+                    this.delayedSave();
                 });
+            } else {
+                // Add the result
+                this.results.push(result);
+                this.delayedSave();
             }
         });
     },
@@ -267,6 +272,15 @@ Object.assign(ImageImport.methods, Import.methods, {
             warnings: this.results.filter(
                 result => (result.warnings || []).length !== 0,
             ),
+        };
+    },
+
+    getFilteredResultsSummary() {
+        const filtered = this.getFilteredResults();
+        return {
+            models: filtered.models.length,
+            errors: filtered.errors.length,
+            warnings: filtered.warnings.length,
         };
     },
 

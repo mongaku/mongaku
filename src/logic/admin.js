@@ -54,15 +54,28 @@ module.exports = function(app) {
                 }
             }
 
+            const filteredResults = batch.getFilteredResults();
+            const {expanded} = query;
+
+            for (const name of Object.keys(filteredResults)) {
+                if (!expanded || expanded !== name) {
+                    filteredResults[name] = filteredResults[name].slice(0, 8);
+                }
+            }
+
             const title = i18n.format(
                 i18n.gettext("Data Import: %(fileName)s"),
                 {fileName: batch.fileName},
             );
 
+            delete cloned.results;
+            delete cloned.getFilteredResults;
+            cloned.getFilteredResults = filteredResults;
+
             res.render("ImportRecords", {
                 title,
                 batch: cloned,
-                expanded: query.expanded,
+                expanded,
                 adminURL,
             });
         });
@@ -90,13 +103,17 @@ module.exports = function(app) {
                 }
             }
 
+            const filteredResults = batch.getFilteredResults();
             const {expanded} = query;
-            const results = batch.results.filter(result => !!result.model);
-            const toPopulate =
-                expanded === "models" ? results : results.slice(0, 8);
+
+            for (const name of Object.keys(filteredResults)) {
+                if (!expanded || expanded !== name) {
+                    filteredResults[name] = filteredResults[name].slice(0, 8);
+                }
+            }
 
             async.eachLimit(
-                toPopulate,
+                filteredResults.models,
                 4,
                 (result, callback) => {
                     Image.findById(result.model, (err, image) => {
@@ -114,9 +131,14 @@ module.exports = function(app) {
                         {fileName: batch.fileName},
                     );
 
+                    const cloned = cloneModel(batch, i18n);
+                    delete cloned.results;
+                    delete cloned.getFilteredResults;
+                    cloned.getFilteredResults = filteredResults;
+
                     res.render("ImportImages", {
                         title,
-                        batch: cloneModel(batch, i18n),
+                        batch: cloned,
                         expanded,
                         adminURL,
                     });
@@ -133,7 +155,17 @@ module.exports = function(app) {
                 callback =>
                     ImageImport.find(
                         {source: source._id},
-                        null,
+                        {
+                            state: true,
+                            fileName: true,
+                            source: true,
+                            created: true,
+                            modified: true,
+                            error: true,
+                            "results.result": true,
+                            "results.error": true,
+                            "results.warnings": true,
+                        },
                         {sort: {created: "desc"}},
                         callback,
                     ),
@@ -190,21 +222,29 @@ module.exports = function(app) {
                 res.render("Admin", {
                     title,
                     source: cloneModel(source, i18n),
-                    imageImport: imageImport.map(batch =>
-                        cloneModel(batch, i18n),
-                    ),
+                    imageImport: imageImport.map(batch => {
+                        const cloned = cloneModel(batch, i18n);
+                        delete cloned.results;
+                        delete cloned.getFilteredResults;
+                        return cloned;
+                    }),
                     dataImport: dataImport
                         .sort((a, b) => b.created - a.created)
-                        .map(batch => cloneModel(batch, i18n)),
+                        .map(batch => {
+                            const cloned = cloneModel(batch, i18n);
+                            delete cloned.results;
+                            delete cloned.getFilteredResults;
+                            return cloned;
+                        }),
                     numImages,
                     numImagesIndexed,
                     numImagesUpdated,
                     allImagesImported:
                         imageImport.length > 0 &&
-                        imageImport.every(batch => batch.isCompleted),
+                        imageImport.every(batch => batch.isCompleted()),
                     allRecordsImported:
                         dataImport.length > 0 &&
-                        dataImport.every(batch => batch.isCompleted),
+                        dataImport.every(batch => batch.isCompleted()),
                 });
             },
         );

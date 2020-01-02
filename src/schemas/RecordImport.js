@@ -333,6 +333,18 @@ Object.assign(RecordImport.methods, Import.methods, {
             ),
         };
     },
+
+    getFilteredResultsSummary() {
+        const filtered = this.getFilteredResults();
+        return {
+            unprocessed: filtered.unprocessed.length,
+            created: filtered.created.length,
+            changed: filtered.changed.length,
+            deleted: filtered.deleted.length,
+            errors: filtered.errors.length,
+            warnings: filtered.warnings.length,
+        };
+    },
 });
 
 Object.assign(RecordImport.statics, Import.statics, {

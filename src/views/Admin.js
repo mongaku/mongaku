@@ -28,7 +28,7 @@ type Import = {
     _id: string,
     error?: string,
     fileName: string,
-    getFilteredResults: ImportResults,
+    getFilteredResultsSummary: ImportResultsSummary,
     getURL: string,
     getError: string,
     getStateName: string,
@@ -37,21 +37,21 @@ type Import = {
     isCompleted: boolean,
 };
 
-type ImportResults = {
-    models: [],
-    unprocessed: [],
-    created: [],
-    changed: [],
-    deleted: [],
-    errors: [],
-    warnings: [],
+type ImportResultsSummary = {
+    models: number,
+    unprocessed: number,
+    created: number,
+    changed: number,
+    deleted: number,
+    errors: number,
+    warnings: number,
 };
 
 const ImageImport = (
     {batch}: Props & {batch: Import},
     {gettext, format, fixedDate}: Context,
 ) => {
-    const results = batch.getFilteredResults;
+    const results = batch.getFilteredResultsSummary;
     let columns;
 
     if (batch.state === "error") {
@@ -63,9 +63,9 @@ const ImageImport = (
     } else {
         columns = [
             <td key="state">{batch.getStateName}</td>,
-            <td key="models">{results.models.length}</td>,
-            <td key="errors">{results.errors.length}</td>,
-            <td key="warnings">{results.warnings.length}</td>,
+            <td key="models">{results.models}</td>,
+            <td key="errors">{results.errors}</td>,
+            <td key="warnings">{results.warnings}</td>,
         ];
     }
 
@@ -136,7 +136,7 @@ const ImageIndexingProgress = (props: Props, {gettext}: Context) => {
                     <strong>{gettext("Images Indexed:")}</strong>{" "}
                     <strong
                         className={
-                            numImagesUpdated === numImages
+                            numImagesIndexed === numImages
                                 ? "text-success"
                                 : "text-warning"
                         }
@@ -296,7 +296,7 @@ const DataImport = (
     {batch}: Props & {batch: Import},
     {gettext, format, fixedDate}: Context,
 ) => {
-    const results = batch.getFilteredResults;
+    const results = batch.getFilteredResultsSummary;
     let columns;
 
     if (batch.state === "error") {
@@ -317,12 +317,12 @@ const DataImport = (
             batch.state !== "process.completed" && (
                 <td key="state">{batch.getStateName}</td>
             ),
-            <td key="unprocessed">{results.unprocessed.length}</td>,
-            <td key="created">{results.created.length}</td>,
-            <td key="changed">{results.changed.length}</td>,
-            <td key="deleted">{results.deleted.length}</td>,
-            <td key="errors">{results.errors.length}</td>,
-            <td key="warnings">{results.warnings.length}</td>,
+            <td key="unprocessed">{results.unprocessed}</td>,
+            <td key="created">{results.created}</td>,
+            <td key="changed">{results.changed}</td>,
+            <td key="deleted">{results.deleted}</td>,
+            <td key="errors">{results.errors}</td>,
+            <td key="warnings">{results.warnings}</td>,
         ];
     }
 

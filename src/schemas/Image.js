@@ -470,7 +470,7 @@ Image.statics = {
     queueBatchSimilarityUpdate(batchID, callback) {
         this.update(
             {batch: batchID},
-            {needsSimilarIndex: true},
+            {needsSimilarIndex: true, needsSimilarUpdate: true},
             {multi: true},
             err => {
                 /* istanbul ignore if */
