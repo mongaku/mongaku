@@ -15,9 +15,12 @@ const {childContextTypes} = require("./Wrapper.js");
 type Source = {
     _id: string,
     name: string,
+    type: string,
     getURL: string,
+    getAdminURL: string,
     getFullName: string,
     getShortName: string,
+    numRecords: number,
 };
 
 type Sort = {
