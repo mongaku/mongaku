@@ -226,10 +226,35 @@ Image.methods = {
                         score,
                     }));
 
-                    callback();
+                    // Sync the similarity with other images
+                    this.syncSimiliarity(matches, callback);
                 },
             );
         });
+    },
+
+    syncSimiliarity(similarImages, callback) {
+        async.eachLimit(
+            similarImages,
+            4,
+            ({image, score}, callback) => {
+                const hasSimilarity = image.similarImages.some(
+                    ({_id}) => this._id === _id,
+                );
+
+                if (hasSimilarity) {
+                    return process.nextTick(callback);
+                }
+
+                image.similarImages.push({
+                    _id: this._id,
+                    score,
+                });
+
+                image.save(callback);
+            },
+            callback,
+        );
     },
 
     indexSimilarity(callback) {
