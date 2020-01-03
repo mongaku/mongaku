@@ -153,20 +153,20 @@ module.exports = app => {
                     });
                 }
 
-                // Filter out record matches from sources that the user isn't
-                // allowed to see
-                const similarRecords = upload.similarRecords.filter(match =>
-                    match.recordModel.canView(user),
-                );
-
                 upload.loadImages(true, () => {
                     async.eachLimit(
-                        similarRecords,
+                        upload.similarRecords,
                         4,
                         (similar, callback) => {
                             similar.recordModel.loadImages(false, callback);
                         },
                         () => {
+                            // Filter out record matches from sources that the
+                            // user isn't allowed to see
+                            const similarRecords = upload.similarRecords.filter(
+                                match => match.recordModel.canView(user),
+                            );
+
                             const formattedSimilarRecords = similarRecords.map(
                                 match => ({
                                     _id: match._id,
