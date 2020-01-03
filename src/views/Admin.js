@@ -462,8 +462,8 @@ const UploadDataForm = (
 
 UploadDataForm.contextTypes = childContextTypes;
 
-const DataIndexingProgress = (props: Props, {gettext, URL}: Context) => {
-    const {numRecords, numRecordsUpdated, source} = props;
+const DataIndexingProgress = (props: Props, {gettext}: Context) => {
+    const {numRecords, numRecordsUpdated} = props;
 
     return (
         <div
