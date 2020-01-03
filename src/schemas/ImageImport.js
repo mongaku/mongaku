@@ -216,7 +216,7 @@ Object.assign(ImageImport.methods, Import.methods, {
 
         if (hasImageSearch) {
             const Image = models("Image");
-            Image.queueBatchSimilarityUpdate(this._id, callback);
+            Image.queueBatchSimilarityIndex(this._id, callback);
         } else {
             process.nextTick(callback);
         }

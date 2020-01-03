@@ -492,33 +492,21 @@ Image.statics = {
         );
     },
 
-    queueBatchSimilarityUpdate(batchID, callback) {
+    queueBatchSimilarityIndex(batchID, callback) {
         this.update(
             {batch: batchID},
             {needsSimilarIndex: true, needsSimilarUpdate: true},
             {multi: true},
-            err => {
-                /* istanbul ignore if */
-                if (err) {
-                    return callback(err);
-                }
+            callback,
+        );
+    },
 
-                callback();
-                /*
-                // Disable automatically updating the similarity of all other
-                // images every time a new image is added (as it's a very
-                // expensive operation). This will likely lead to worse matches
-                // as we may have matches that only exist in one direction
-                // (A->B) but not the other way around, and thus don't get
-                // identified as part of this process.
-                this.update(
-                    {batch: {$ne: batchID}},
-                    {needsSimilarUpdate: true},
-                    {multi: true},
-                    callback,
-                );
-                */
-            },
+    queueBatchSimilarityUpdate(sourceID, callback) {
+        this.update(
+            {source: sourceID},
+            {needsSimilarUpdate: true},
+            {multi: true},
+            callback,
         );
     },
 };

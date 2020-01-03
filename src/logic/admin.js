@@ -404,6 +404,21 @@ module.exports = function(app) {
             });
         },
 
+        updateImageSimilarity(req, res, next) {
+            const {source, i18n, lang} = req;
+            const Image = models("Image");
+
+            Image.queueBatchSimilarityUpdate(source._id, err => {
+                if (err) {
+                    return next(
+                        new Error(i18n.gettext("Error updating similarity.")),
+                    );
+                }
+
+                res.redirect(source.getAdminURL(lang));
+            });
+        },
+
         routes() {
             const source = (req, res, next) => {
                 const {
@@ -441,6 +456,13 @@ module.exports = function(app) {
                 canEdit,
                 source,
                 this.uploadData,
+            );
+            app.post(
+                "/:type/source/:source/update-similarity",
+                auth,
+                canEdit,
+                source,
+                this.updateImageSimilarity,
             );
         },
     };

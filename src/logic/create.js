@@ -247,7 +247,7 @@ module.exports = function(app: express$Application) {
                         // If new images were added then we need to update
                         // their similarity and the similarity of all other
                         // images, as well.
-                        Image.queueBatchSimilarityUpdate(mockBatch._id, finish);
+                        Image.queueBatchSimilarityIndex(mockBatch._id, finish);
                     });
                 },
             );

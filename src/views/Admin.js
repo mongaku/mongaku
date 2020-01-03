@@ -110,8 +110,8 @@ const ImageImports = (props: Props, {gettext}: Context) => {
 
 ImageImports.contextTypes = childContextTypes;
 
-const ImageIndexingProgress = (props: Props, {gettext}: Context) => {
-    const {numImages, numImagesIndexed, numImagesUpdated} = props;
+const ImageIndexingProgress = (props: Props, {gettext, URL}: Context) => {
+    const {numImages, numImagesIndexed, numImagesUpdated, source} = props;
 
     return (
         <div
@@ -151,25 +151,44 @@ const ImageIndexingProgress = (props: Props, {gettext}: Context) => {
                         "As images get indexed by the simliarity search engine they will become findable via the image search.",
                     )}
                 </p>
-                <p>
-                    <strong>{gettext("Images Similarity Updated:")}</strong>{" "}
-                    <strong
-                        className={
-                            numImagesUpdated === numImages
-                                ? "text-success"
-                                : "text-warning"
-                        }
-                    >
-                        {((numImagesUpdated * 100) / numImages).toFixed(1)}%
-                    </strong>{" "}
-                    <small>
-                        ({numImagesUpdated}/{numImages})
-                    </small>
-                    <br />
-                    {gettext(
-                        "Once all of the images are indexed their similarity records will update, making it possible to find similar records when browsing.",
+                <form
+                    action={URL(
+                        `/${source.type}/source/${
+                            source._id
+                        }/update-similarity`,
                     )}
-                </p>
+                    method="POST"
+                >
+                    <p>
+                        <strong>{gettext("Images Similarity Updated:")}</strong>{" "}
+                        <strong
+                            className={
+                                numImagesUpdated === numImages
+                                    ? "text-success"
+                                    : "text-warning"
+                            }
+                        >
+                            {((numImagesUpdated * 100) / numImages).toFixed(1)}%
+                        </strong>{" "}
+                        <small>
+                            ({numImagesUpdated}/{numImages})
+                        </small>
+                        {numImagesUpdated === numImages && (
+                            <>
+                                {" "}
+                                <input
+                                    type="submit"
+                                    className="btn btn-primary btn-xs"
+                                    value={gettext("Update Similarity")}
+                                />
+                            </>
+                        )}
+                        <br />
+                        {gettext(
+                            "Once all of the images are indexed their similarity records will update, making it possible to find similar records when browsing.",
+                        )}
+                    </p>
+                </form>
             </div>
         </div>
     );
