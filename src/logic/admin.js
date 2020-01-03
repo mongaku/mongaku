@@ -162,7 +162,7 @@ module.exports = function(app) {
                             created: true,
                             modified: true,
                             error: true,
-                            "results.result": true,
+                            "results.model": true,
                             "results.error": true,
                             "results.warnings": true,
                         },
