@@ -149,6 +149,7 @@ module.exports = function(app) {
 
     const adminPage = ({source, i18n}, res, next) => {
         const Image = models("Image");
+        const Record = record(source.type);
 
         async.parallel(
             [
@@ -197,6 +198,12 @@ module.exports = function(app) {
                         {source: source._id, needsSimilarUpdate: false},
                         callback,
                     ),
+                callback => Record.count({source: source._id}, callback),
+                callback =>
+                    Record.count(
+                        {source: source._id, needsSimilarUpdate: false},
+                        callback,
+                    ),
             ],
             (
                 err,
@@ -206,6 +213,8 @@ module.exports = function(app) {
                     numImages,
                     numImagesIndexed,
                     numImagesUpdated,
+                    numRecords,
+                    numRecordsUpdated,
                 ],
             ) => {
                 /* istanbul ignore if */
@@ -239,12 +248,16 @@ module.exports = function(app) {
                     numImages,
                     numImagesIndexed,
                     numImagesUpdated,
+                    numRecords,
+                    numRecordsUpdated,
                     allImagesImported:
                         imageImport.length > 0 &&
-                        imageImport.every(batch => batch.isCompleted()),
+                        imageImport.every(batch => batch.isCompleted()) &&
+                        dataImport.some(batch => batch.isSuccessful()),
                     allRecordsImported:
                         dataImport.length > 0 &&
-                        dataImport.every(batch => batch.isCompleted()),
+                        dataImport.every(batch => batch.isCompleted()) &&
+                        dataImport.some(batch => batch.isSuccessful()),
                 });
             },
         );

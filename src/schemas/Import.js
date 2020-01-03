@@ -52,6 +52,10 @@ Import.methods = {
     },
 
     isCompleted() {
+        return this.isSuccessful() || this.state === "error";
+    },
+
+    isSuccessful() {
         return !!(this.getCurState() && this.getCurState().id === "completed");
     },
 

@@ -20,6 +20,8 @@ type Props = {
     numImages: number,
     numImagesIndexed: number,
     numImagesUpdated: number,
+    numRecords: number,
+    numRecordsUpdated: number,
     allImagesImported: boolean,
     allRecordsImported: boolean,
 };
@@ -460,8 +462,58 @@ const UploadDataForm = (
 
 UploadDataForm.contextTypes = childContextTypes;
 
+const DataIndexingProgress = (props: Props, {gettext, URL}: Context) => {
+    const {numRecords, numRecordsUpdated, source} = props;
+
+    return (
+        <div
+            className={`panel panel-default ${
+                numRecordsUpdated === numRecords
+                    ? "panel-success"
+                    : "panel-warning"
+            }`}
+        >
+            <div className="panel-heading">
+                <h3 className="panel-title">
+                    {gettext("Record Similarity Indexing Progress")}
+                </h3>
+            </div>
+            <div className="panel-body">
+                <p>
+                    <strong>{gettext("Record Similarity Updated:")}</strong>{" "}
+                    <strong
+                        className={
+                            numRecordsUpdated === numRecords
+                                ? "text-success"
+                                : "text-warning"
+                        }
+                    >
+                        {((numRecordsUpdated * 100) / numRecords).toFixed(1)}%
+                    </strong>{" "}
+                    <small>
+                        ({numRecordsUpdated}/{numRecords})
+                    </small>
+                    <br />
+                    {gettext(
+                        "Whenever new data is added or image similarity updated the similarity between records will need to be re-computed. This should be a very fast operation.",
+                    )}
+                </p>
+            </div>
+        </div>
+    );
+};
+
+DataIndexingProgress.contextTypes = childContextTypes;
+
 const Admin = (props: Props, {options}: Context) => {
-    const {title, imageImport, dataImport, source, allImagesImported} = props;
+    const {
+        title,
+        imageImport,
+        dataImport,
+        source,
+        allImagesImported,
+        allRecordsImported,
+    } = props;
     const {hasImages, allowDirectoryUpload} = options.types[source.type];
 
     return (
@@ -478,6 +530,7 @@ const Admin = (props: Props, {options}: Context) => {
                     <ImageIndexingProgress {...props} />
                     <UploadDataForm {...props} />
                     {dataImport.length > 0 && <DataImports {...props} />}
+                    {allRecordsImported && <DataIndexingProgress {...props} />}
                 </>
             ) : (
                 <UploadDataImagesRequired {...props} />
