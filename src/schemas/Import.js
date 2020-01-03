@@ -56,7 +56,7 @@ Import.methods = {
     },
 
     isSuccessful() {
-        return !!(this.getCurState() && this.getCurState().id === "completed");
+        return this.state === "completed";
     },
 
     saveState(state, callback) {
