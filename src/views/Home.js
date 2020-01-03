@@ -142,6 +142,11 @@ const Source = (
         <div>
             <h4>
                 <a href={source.getURL}>{source.getFullName}</a>{" "}
+                {source.private && (
+                    <a href={source.getURL} className="btn btn-success btn-xs">
+                        {gettext("Private")}
+                    </a>
+                )}{" "}
                 {canEdit && (
                     <a
                         href={source.getAdminURL}

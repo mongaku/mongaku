@@ -61,6 +61,7 @@ type Source = {
     getFullName: string,
     getShortName: string,
     numRecords: number,
+    private: boolean,
 };
 
 type Match = {
@@ -340,7 +341,19 @@ const Sources = ({records, sources}: Props, {gettext, getSource}: Context) => (
 
             return (
                 <td key={record._id}>
-                    {source && <a href={source.getURL}>{source.getFullName}</a>}
+                    {source && (
+                        <>
+                            <a href={source.getURL}>{source.getFullName}</a>{" "}
+                            {source.private && (
+                                <a
+                                    href={source.getURL}
+                                    className="btn btn-success btn-xs"
+                                >
+                                    {gettext("Private")}
+                                </a>
+                            )}
+                        </>
+                    )}
                 </td>
             );
         })}

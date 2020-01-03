@@ -21,6 +21,7 @@ type Source = {
     getFullName: string,
     getShortName: string,
     numRecords: number,
+    private: boolean,
 };
 
 type Sort = {

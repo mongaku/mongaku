@@ -134,6 +134,7 @@ export type Source = {
     getFullName: string,
     getShortName: string,
     numRecords: number,
+    private: boolean,
 };
 
 export type Options = {
