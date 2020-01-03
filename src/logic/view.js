@@ -39,8 +39,8 @@ module.exports = function(app: express$Application) {
             }
 
             if (!record.canView(user)) {
-                return res.status(403).send({
-                    error: i18n.gettext("Permission denied"),
+                return res.status(403).render("Error", {
+                    title: i18n.gettext("Permission denied"),
                 });
             }
 
@@ -143,8 +143,8 @@ module.exports = function(app: express$Application) {
                 return res.send(cloneModel(record, i18n));
             }
 
-            res.status(404).send({
-                error: i18n.gettext("Record not found."),
+            res.status(404).render("Error", {
+                title: i18n.gettext("Record not found."),
             });
         });
     };
