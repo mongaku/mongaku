@@ -5,18 +5,26 @@ const urls = require("../lib/urls")(options);
 
 module.exports = app => {
     return {
-        login({i18n}, res) {
+        login({i18n, query}, res) {
             res.render("Login", {
                 title: i18n.gettext("Login"),
+                error: query.error,
             });
         },
 
         loginRedirect(req, res, next) {
-            const {lang, session} = req;
+            const {lang, session, i18n} = req;
 
             passport.authenticate("local", (err, user) => {
                 if (!user) {
-                    return res.redirect(urls.gen(lang, "/login"));
+                    return res.redirect(
+                        urls.gen(
+                            lang,
+                            `/login?error=${encodeURIComponent(
+                                i18n.gettext("Invalid username or password."),
+                            )}`,
+                        ),
+                    );
                 }
 
                 req.login(user, () => {

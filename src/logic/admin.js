@@ -6,7 +6,8 @@ const formidable = require("formidable");
 const csv = require("csv-streamify");
 
 const models = require("../lib/models");
-const record = require("../lib/record");
+const options = require("../lib/options");
+const urls = require("../lib/urls")(options);
 
 const addUser = (
     {email, password, canViewPrivateSources, siteAdmin},
@@ -53,7 +54,7 @@ module.exports = function(app) {
         },
 
         addUser(req, res, next) {
-            const {i18n} = req;
+            const {i18n, lang} = req;
             const {
                 username: email,
                 password,
@@ -71,12 +72,17 @@ module.exports = function(app) {
                 }
 
                 res.redirect(
-                    `/admin?success=${encodeURIComponent(
-                        i18n.format(
-                            i18n.gettext("Created or updated user: %(user)s"),
-                            {user: user.email},
-                        ),
-                    )}`,
+                    urls.gen(
+                        lang,
+                        `/admin?success=${encodeURIComponent(
+                            i18n.format(
+                                i18n.gettext(
+                                    "Created or updated user: %(user)s",
+                                ),
+                                {user: user.email},
+                            ),
+                        )}`,
+                    ),
                 );
             };
 
@@ -92,7 +98,7 @@ module.exports = function(app) {
         },
 
         addUsers(req, res, next) {
-            const {i18n} = req;
+            const {lang, i18n} = req;
 
             let createdOrUpdated = 0;
             const failed = [];
@@ -174,9 +180,12 @@ module.exports = function(app) {
                             }
 
                             res.redirect(
-                                `/admin${
-                                    qs.length > 0 ? "?" + qs.join("&") : ""
-                                }`,
+                                urls.gen(
+                                    lang,
+                                    `/admin${
+                                        qs.length > 0 ? "?" + qs.join("&") : ""
+                                    }`,
+                                ),
                             );
                         },
                     );
