@@ -232,6 +232,12 @@ const Header = (props, {gettext, user, options, URL}: Context) => (
                         const title = options.types[type].name;
                         return <NavLink type={type} title={title} key={type} />;
                     })}
+                    {user &&
+                        user.siteAdmin && (
+                            <li>
+                                <a href={URL("/admin")}>{gettext("Admin")}</a>
+                            </li>
+                        )}
                     {!user && (
                         <li>
                             <a href={URL("/login")}>{gettext("Login")}</a>

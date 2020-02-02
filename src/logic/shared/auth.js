@@ -47,4 +47,14 @@ const canEdit = ({user, params: {type, source}, i18n}, res, next) => {
     next();
 };
 
-module.exports = {auth, canEdit};
+const isAdmin = ({user}, res, next) => {
+    if (!user.siteAdmin) {
+        return res.status(403).render("Error", {
+            title: i18n.gettext("Authorization required."),
+        });
+    }
+
+    next();
+};
+
+module.exports = {auth, canEdit, isAdmin};

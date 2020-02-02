@@ -19,6 +19,7 @@ module.exports = function(app: express$Application) {
 
     // Import all the logic routes
     require("../logic/admin")(app).routes();
+    require("../logic/source-admin")(app).routes();
     require("../logic/create")(app).routes();
     require("../logic/edit")(app).routes();
     require("../logic/home")(app).routes();
