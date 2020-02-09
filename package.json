@@ -21,7 +21,7 @@
         "dev-test": "NODE_ENV=test supervisor -e js,jsx -w build -i node_modules,locales build/tests/server.js",
         "extract-i18n-js": "babel-jsxgettext build/*.js build/*/*.js build/*/*/*.js build/*/*/*/*.js translations/messages.pot",
         "extract-i18n": "npm run extract-i18n-js && git add translations/messages.pot",
-        "update-i18n": "tx pull -a && po2json.js -p translations/de/messages.po > translations/de/messages.json && po2json.js -p translations/it/messages.po > translations/it/messages.json && po2json.js -p translations/ja/messages.po > translations/ja/messages.json",
+        "update-i18n": "po2json.js -p translations/de/messages.po > translations/de/messages.json && po2json.js -p translations/it/messages.po > translations/it/messages.json && po2json.js -p translations/ja/messages.po > translations/ja/messages.json",
         "migrate": "migrate",
         "coverage": "NODE_ENV=test tap --cov --coverage-report=lcov build/tests/*/*.js",
         "test-file": "NODE_ENV=test tap",
