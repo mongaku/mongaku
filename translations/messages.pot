@@ -217,9 +217,6 @@ msgstr ""
 msgid "Zip file has no images in it."
 msgstr ""
 
-msgid ""
-msgstr ""
-
 #: build/schemas/ImageImport.js:74
 msgid "The image is empty."
 msgstr ""
