@@ -52,6 +52,7 @@ const AddUser = (props, {gettext, URL}: Context) => {
                             <input
                                 type="checkbox"
                                 name="canViewPrivateSources"
+                                defaultChecked={true}
                             />{" "}
                             {gettext("Can view private sources")}
                         </label>
@@ -114,6 +115,7 @@ const BulkAddUsers = (props, {gettext, URL}: Context) => {
                             <input
                                 type="checkbox"
                                 name="canViewPrivateSources"
+                                defaultChecked={true}
                             />{" "}
                             {gettext("Can view private sources")}
                         </label>
