@@ -159,6 +159,9 @@ export type Options = {
     types: {
         [type: string]: TypeOptions,
     },
+    converters: {
+        [converter: string]: any,
+    },
 };
 
 // Methods and properties defined in view-methods.js and i18n.js

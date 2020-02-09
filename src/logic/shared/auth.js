@@ -47,7 +47,7 @@ const canEdit = ({user, params: {type, source}, i18n}, res, next) => {
     next();
 };
 
-const isAdmin = ({user}, res, next) => {
+const isAdmin = ({user, i18n}, res, next) => {
     if (!user.siteAdmin) {
         return res.status(403).render("Error", {
             title: i18n.gettext("Authorization required."),

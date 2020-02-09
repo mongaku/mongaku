@@ -17,6 +17,7 @@ const entries = [
     "Login",
     "Record",
     "Search",
+    "SourceAdmin",
     "Upload",
 ];
 

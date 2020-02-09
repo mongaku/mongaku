@@ -1,8 +1,8 @@
 const fs = require("fs");
+const path = require("path");
 const {Readable} = require("stream");
 
 const async = require("async");
-const formidable = require("formidable");
 const csv = require("csv-streamify");
 
 const models = require("../lib/models");
@@ -183,7 +183,7 @@ module.exports = function(app) {
                                 urls.gen(
                                     lang,
                                     `/admin${
-                                        qs.length > 0 ? "?" + qs.join("&") : ""
+                                        qs.length > 0 ? `?${qs.join("&")}` : ""
                                     }`,
                                 ),
                             );
@@ -193,10 +193,77 @@ module.exports = function(app) {
             );
         },
 
+        addSource(req, res, next) {
+            const {i18n, lang} = req;
+            const {
+                _id,
+                name,
+                shortName,
+                url,
+                isPrivate,
+                type,
+                converter,
+            } = req.body;
+
+            const Source = models("Source");
+            const source = new Source({
+                _id,
+                name,
+                shortName,
+                url,
+                private: !!isPrivate,
+                type,
+                converter,
+            });
+
+            // Create directories to hold images
+            try {
+                const dir = source.getDirBase();
+                fs.mkdirSync(dir, {recursive: true});
+                fs.mkdirSync(path.join(dir, "images"), {recursive: true});
+                fs.mkdirSync(path.join(dir, "scaled"), {recursive: true});
+                fs.mkdirSync(path.join(dir, "thumbs"), {recursive: true});
+            } catch (e) {
+                return next(
+                    new Error(
+                        i18n.gettext(
+                            "Error creating source image directories.",
+                        ),
+                    ),
+                );
+            }
+
+            source.save(err => {
+                if (err) {
+                    return next(
+                        new Error(i18n.gettext("Error creating source.")),
+                    );
+                }
+
+                // Update the internal source cache
+                Source.cacheSources(() => {
+                    res.redirect(
+                        urls.gen(
+                            lang,
+                            `/admin?success=${encodeURIComponent(
+                                i18n.format(
+                                    i18n.gettext(
+                                        "New source created: %(source)s",
+                                    ),
+                                    {source: name},
+                                ),
+                            )}`,
+                        ),
+                    );
+                });
+            });
+        },
+
         routes() {
             app.get("/admin", auth, isAdmin, this.admin);
             app.post("/admin/add-user", auth, isAdmin, this.addUser);
             app.post("/admin/add-users", auth, isAdmin, this.addUsers);
+            app.post("/admin/add-source", auth, isAdmin, this.addSource);
         },
     };
 };

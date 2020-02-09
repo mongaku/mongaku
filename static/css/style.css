@@ -242,3 +242,10 @@ pre.json {
     max-height: 200px;
     overflow: auto;
 }
+
+/*
+ * Styling for forms
+ */
+:invalid {
+    border-color: red;
+}

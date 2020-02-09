@@ -432,6 +432,30 @@ module.exports = function(app) {
             });
         },
 
+        updateSource(req, res, next) {
+            const {source, i18n, lang} = req;
+            const {name, shortName, url, isPrivate} = req.body;
+
+            source.name = name;
+            source.shortName = shortName;
+            source.url = url;
+            source.private = !!isPrivate;
+
+            source.save(err => {
+                if (err) {
+                    return next(
+                        new Error(i18n.gettext("Error updating source.")),
+                    );
+                }
+
+                // Update the internal source cache
+                const Source = models("Source");
+                Source.cacheSources(() => {
+                    res.redirect(source.getAdminURL(lang));
+                });
+            });
+        },
+
         routes() {
             const source = (req, res, next) => {
                 const {
@@ -476,6 +500,13 @@ module.exports = function(app) {
                 canEdit,
                 source,
                 this.updateImageSimilarity,
+            );
+            app.post(
+                "/:type/source/:source/update",
+                auth,
+                canEdit,
+                source,
+                this.updateSource,
             );
         },
     };

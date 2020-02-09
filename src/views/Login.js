@@ -11,8 +11,9 @@ type Props = {
 };
 
 class Login extends React.Component<Props> {
-    static contextTypes = childContextTypes;
     context: Context;
+
+    static contextTypes = childContextTypes;
 
     componentDidMount() {
         const {URL} = this.context;

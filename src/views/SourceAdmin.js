@@ -16,6 +16,10 @@ type Props = {
         getURL: string,
         getFullName: string,
         getShortName: string,
+        name: string,
+        shortName: string,
+        url: string,
+        private: boolean,
     },
     numImages: number,
     numImagesIndexed: number,
@@ -505,6 +509,81 @@ const DataIndexingProgress = (props: Props, {gettext}: Context) => {
 
 DataIndexingProgress.contextTypes = childContextTypes;
 
+const UpdateSource = ({source}: Props, {gettext, URL}: Context) => {
+    return (
+        <div className="panel panel-default">
+            <div className="panel-heading">
+                <h3 className="panel-title">{gettext("Update Source")}</h3>
+            </div>
+            <div className="panel-body">
+                <form
+                    action={URL(`/${source.type}/source/${source._id}/update`)}
+                    method="POST"
+                >
+                    <div className="form-group">
+                        <label htmlFor="name">
+                            {gettext("Full Name (required)")}
+                        </label>
+                        <input
+                            type="text"
+                            name="name"
+                            id="name"
+                            placeholder={gettext("e.g. Frick Library")}
+                            defaultValue={source.name}
+                            className="form-control"
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="shortName">
+                            {gettext("Short Name (required)")}
+                        </label>
+                        <input
+                            type="text"
+                            name="shortName"
+                            id="shortName"
+                            placeholder={gettext("e.g. Frick")}
+                            defaultValue={source.shortName}
+                            className="form-control"
+                            minLength="2"
+                            maxLength="8"
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="url">{gettext("URL")}</label>
+                        <input
+                            type="url"
+                            name="url"
+                            id="url"
+                            placeholder="https://..."
+                            defaultValue={source.url}
+                            className="form-control"
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="isPrivate"
+                                defaultChecked={source.private}
+                            />{" "}
+                            {gettext("Private?")}
+                        </label>
+                    </div>
+                    <input
+                        type="submit"
+                        value={gettext("Update Source")}
+                        className="btn btn-primary"
+                    />
+                </form>
+            </div>
+        </div>
+    );
+};
+
+UpdateSource.contextTypes = childContextTypes;
+
 const SourceAdmin = (props: Props, {options}: Context) => {
     const {
         title,
@@ -535,6 +614,7 @@ const SourceAdmin = (props: Props, {options}: Context) => {
             ) : (
                 <UploadDataImagesRequired {...props} />
             )}
+            <UpdateSource {...props} />
         </div>
     );
 };
