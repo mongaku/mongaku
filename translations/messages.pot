@@ -2,556 +2,906 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Report-Msgid-Bugs-To: \n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-08-17 03:51+0000\n"
+"Plural-Forms: nplurals = 2; plural = (n !== 1);\n"
 
-#: logic/admin.js:24
-#: logic/admin.js:62
-msgid "Import not found."
+#: build/lib/default-record-options.js:14
+msgid "Records"
 msgstr ""
 
-#: logic/admin.js:117
-msgid "Error retrieving records."
+#: build/views/Page.js:270
+msgid "Admin"
 msgstr ""
 
-#: logic/admin.js:156
-msgid "Error processing zip file."
+#: build/logic/admin.js:90
+msgid "Error creating or updating user."
 msgstr ""
 
-#: logic/admin.js:163
-msgid "No zip file specified."
+#: build/logic/admin.js:93
+msgid "Created or updated user: %(user)s"
 msgstr ""
 
-#: logic/admin.js:176
-msgid "Error saving zip file."
+#: build/logic/admin.js:117
+msgid "Error parsing usernames and passwords."
 msgstr ""
 
-#: logic/admin.js:195
-msgid "Error processing data files."
+#: build/logic/admin.js:147
+msgid "Created or updated %(num)s users."
 msgstr ""
 
-#: logic/admin.js:205
-msgid "No data files specified."
+#: build/logic/admin.js:153
+msgid "Failed to create or update %(num)s users, including: %(failed)s"
 msgstr ""
 
-#: logic/admin.js:220
-#: logic/admin.js:227
-msgid "Error saving data file."
+#: build/logic/admin.js:200
+msgid "Error creating source image directories."
 msgstr ""
 
-#: logic/admin.js:245
+#: build/logic/admin.js:205
+msgid "Error creating source."
+msgstr ""
+
+#: build/logic/admin.js:210
+msgid "New source created: %(source)s"
+msgstr ""
+
+#: build/tests/options.js:193
+msgid "Not found."
+msgstr ""
+
+#: build/logic/create.js:45
+msgid "Cloning '%(recordTitle)s'"
+msgstr ""
+
+#: build/logic/shared/auth.js:68
 msgid "Authorization required."
 msgstr ""
 
-#: logic/admin.js:261
-#: logic/records.js:26
-msgid "Source not found."
+#: build/logic/create.js:118
+msgid "%(recordName)s: Create New"
 msgstr ""
 
-#: logic/uploads.js:36
-msgid "Error processing image."
-msgstr ""
-
-#: logic/uploads.js:106
-msgid "No image URL specified."
-msgstr ""
-
-#: logic/uploads.js:122
+#: build/logic/uploads.js:134
 msgid "Error processing upload."
 msgstr ""
 
-#: logic/uploads.js:132
-msgid "No image specified."
+#: build/logic/create.js:202
+msgid "Error processing image: %(image)s"
 msgstr ""
 
-#: logic/uploads.js:144
-msgid "Uploaded image not found."
-msgstr ""
-
-#: logic/shared/facets.js:8
-#: views/Edit.jsx:95
-#: views/Record.jsx:215
-#: views/Search.jsx:178
-msgid "Source"
-msgstr ""
-
-#: logic/shared/queries.js:41
-msgid "Query: '%(query)s'"
-msgstr ""
-
-#: logic/shared/queries.js:70
-msgid "Similar to Any Record"
-msgstr ""
-
-#: logic/shared/queries.js:82
-msgid "Similar to an External Record"
-msgstr ""
-
-#: logic/shared/queries.js:114
-msgid "Similar to an Internal Record"
-msgstr ""
-
-#: logic/shared/search.js:28
-#: server/routes.js:34
-msgid "Page Not Found"
-msgstr ""
-
-#: logic/shared/search.js:150
-msgid "Search Results"
-msgstr ""
-
-#: logic/shared/search.js:172
-msgid "All Artworks"
-msgstr ""
-
-#: schemas/ImageImport.js:20
-#: schemas/RecordImport.js:16
-msgid "Awaiting processing..."
-msgstr ""
-
-#: schemas/ImageImport.js:27
-#: schemas/RecordImport.js:23
-msgid "Processing..."
-msgstr ""
-
-#: schemas/ImageImport.js:31
-#: schemas/ImageImport.js:40
-#: schemas/RecordImport.js:49
-#: schemas/RecordImport.js:58
-msgid "Completed."
-msgstr ""
-
-#: schemas/ImageImport.js:45
-msgid "Error opening zip file."
-msgstr ""
-
-#: schemas/ImageImport.js:46
-msgid "Zip file has no images in it."
-msgstr ""
-
-#: schemas/ImageImport.js:47
-msgid ""
-"There was an error processing the image. Perhaps it is malformed in some "
-"way."
-msgstr ""
-
-#: schemas/ImageImport.js:49
-msgid "The image is empty."
-msgstr ""
-
-#: schemas/ImageImport.js:50
-msgid "A new version of the image was uploaded, replacing the old one."
-msgstr ""
-
-#: schemas/ImageImport.js:52
-msgid ""
-"The image is too small to work with the image similarity algorithm. It must "
-"be at least 150px on each side."
-msgstr ""
-
-#: schemas/ImageImport.js:55
-msgid "Error saving image."
-msgstr ""
-
-#: schemas/Import.js:67
-#: views/Admin.jsx:104
-#: views/Admin.jsx:202
-#: views/ImportImages.jsx:74
-#: views/ImportRecords.jsx:133
-msgid "Error: %(error)s"
-msgstr ""
-
-#: schemas/Record.js:28
-msgid "IDs can only contain letters, numbers, underscores, and hyphens."
-msgstr ""
-
-#: schemas/Record.js:77
-msgid "`url` must be properly-formatted URL."
-msgstr ""
-
-#: schemas/Record.js:92
-msgid "Images must be a valid image file name. For example: `image.jpg`."
-msgstr ""
-
-#: schemas/Record.js:341
-msgid "Image file not found: %(fileName)s"
-msgstr ""
-
-#: schemas/Record.js:351
-msgid "Error accessing image data."
-msgstr ""
-
-#: schemas/Record.js:359
-msgid "No images found."
-msgstr ""
-
-#: schemas/Record.js:379
-msgid "There was an error with the data format."
-msgstr ""
-
-#: schemas/Record.js:406
-msgid "Unrecognized field `%(field)s`."
-msgstr ""
-
-#: schemas/Record.js:427
-msgid "`%(field)s` is the wrong type. Expected a %(type)s."
-msgstr ""
-
-#: schemas/Record.js:445
-msgid "`%(field)s` value is the wrong type. Expected a %(type)s."
-msgstr ""
-
-#: schemas/Record.js:498
-msgid "Required field `%(field)s` is empty."
-msgstr ""
-
-#: schemas/Record.js:502
-msgid "Recommended field `%(field)s` is empty."
-msgstr ""
-
-#: schemas/RecordImport.js:27
-msgid "Confirmation required."
-msgstr ""
-
-#: schemas/RecordImport.js:34
-msgid "Importing data..."
-msgstr ""
-
-#: schemas/RecordImport.js:38
-msgid "Awaiting similarity sync..."
-msgstr ""
-
-#: schemas/RecordImport.js:45
-msgid "Syncing similarity..."
-msgstr ""
-
-#: schemas/RecordImport.js:63
-msgid "Data import abandoned."
-msgstr ""
-
-#: schemas/RecordImport.js:64
-msgid "Error reading data from provided data files."
-msgstr ""
-
-#: schemas/RecordImport.js:66
+#: build/schemas/RecordImport.js:83
 msgid "Error saving record."
 msgstr ""
 
-#: schemas/RecordImport.js:67
-msgid "Error deleting existing record."
+#: build/logic/edit.js:43
+msgid "Error removing record."
 msgstr ""
 
-#: schemas/Upload.js:84
-#: views/Upload.jsx:31
-#: views/Upload.jsx:35
-msgid "Uploaded Image"
+#: build/logic/shared/auth.js:36
+msgid "Page not found."
 msgstr ""
 
-#: schemas/types/Dimension.js:338
-msgid "Dimensions must have a unit specified and at least a width or height."
+#: build/logic/edit.js:67
+msgid "Updating '%(recordTitle)s'"
 msgstr ""
 
-#: schemas/types/FixedString.js:122
-msgid "`%(name)s` must be one of the following types: %(types)s."
+#: build/logic/uploads.js:49
+msgid "Error processing image."
 msgstr ""
 
-#: schemas/types/Location.js:96
-msgid "Locations must have a name or city specified."
+#: build/logic/edit.js:227
+msgid "Error processing request."
 msgstr ""
 
-#: schemas/types/YearRange.js:313
-msgid "Dates must have a start or end specified."
+#: build/logic/search.js:28
+msgid "Permission denied."
 msgstr ""
 
-#: views/Admin.jsx:37
-msgid "Upload Images"
+#: build/logic/shared/auth.js:46
+msgid "Source not found."
 msgstr ""
 
-#: views/Admin.jsx:47
-msgid "Upload a Zip file (.zip) of JPG images (.jpg or .jpeg)."
+#: build/logic/source-admin.js:148
+msgid "Import not found."
 msgstr ""
 
-#: views/Admin.jsx:50
-msgid "Names of images should match the names provided in the metadata."
-msgstr ""
-
-#: views/Admin.jsx:53
-msgid ""
-"After you've uploaded a new batch of images they will be processed "
-"immediately but their similarity to other images will be computed in the "
-"background over the subsequent hours and days."
-msgstr ""
-
-#: views/Admin.jsx:68
-#: views/Admin.jsx:164
-msgid "Upload"
-msgstr ""
-
-#: views/Admin.jsx:82
-#: views/Admin.jsx:177
-msgid "File Name"
-msgstr ""
-
-#: views/Admin.jsx:83
-#: views/Admin.jsx:178
-msgid "Last Updated"
-msgstr ""
-
-#: views/Admin.jsx:84
-#: views/Admin.jsx:179
-msgid "Status"
-msgstr ""
-
-#: views/Admin.jsx:85
-#: views/ImportImages.jsx:113
-msgid "Images"
-msgstr ""
-
-#: views/Admin.jsx:86
-#: views/Admin.jsx:184
-#: views/ImportImages.jsx:99
-#: views/ImportRecords.jsx:170
-msgid "Errors"
-msgstr ""
-
-#: views/Admin.jsx:87
-#: views/Admin.jsx:185
-#: views/ImportImages.jsx:106
-#: views/ImportRecords.jsx:177
-msgid "Warnings"
-msgstr ""
-
-#: views/Admin.jsx:127
-msgid "Upload Metadata"
-msgstr ""
-
-#: views/Admin.jsx:143
-msgid "You must upload some images before you can upload any metadata."
-msgstr ""
-
-#: views/Admin.jsx:180
-msgid "Unprocessed"
-msgstr ""
-
-#: views/Admin.jsx:181
-#: views/ImportRecords.jsx:194
-msgid "Created"
-msgstr ""
-
-#: views/Admin.jsx:182
-msgid "Updated"
-msgstr ""
-
-#: views/Admin.jsx:183
-#: views/ImportRecords.jsx:203
-msgid "Deleted"
-msgstr ""
-
-#: views/Admin.jsx:211
-#: views/ImportRecords.jsx:114
-msgid "Finalize Import"
-msgstr ""
-
-#: views/Admin.jsx:234
-msgid "%(name)s Admin Area"
-msgstr ""
-
-#: views/Edit.jsx:68
-#: views/Record.jsx:58
-msgid "End Comparison"
-msgstr ""
-
-#: views/Edit.jsx:88
-#: views/Record.jsx:196
-msgid "Details"
-msgstr ""
-
-#: views/Edit.jsx:163
-#: views/Record.jsx:141
-#: views/Search.jsx:293
-msgid "Previous"
-msgstr ""
-
-#: views/Edit.jsx:174
-#: views/Record.jsx:152
-#: views/Search.jsx:298
-msgid "Next"
-msgstr ""
-
-#: views/Edit.jsx:210
-#: views/Record.jsx:200
-msgid "More information..."
-msgstr ""
-
-#: views/Edit.jsx:231
-#: views/Record.jsx:234
-msgid "Compare Images"
-msgstr ""
-
-#: views/Edit.jsx:236
-#: views/Record.jsx:239
-#: views/Upload.jsx:52
-msgid "Similar Images"
-msgstr ""
-
-#: views/Edit.jsx:261
-#: views/Record.jsx:264
-#: views/Upload.jsx:89
-msgid "Score: %(score)s"
-msgstr ""
-
-#: views/Home.jsx:32
-msgid "Search %(recordCount)s Artworks and %(imageCount)s Images:"
-msgstr ""
-
-#: views/Home.jsx:48
-#: views/Home.jsx:53
-#: views/Page.jsx:138
-#: views/Page.jsx:143
-#: views/Search.jsx:151
-msgid "Search"
-msgstr ""
-
-#: views/Home.jsx:58
-#: views/Page.jsx:125
-msgid "Browse All"
-msgstr ""
-
-#: views/Home.jsx:69
-msgid "Search by Image:"
-msgstr ""
-
-#: views/Home.jsx:70
-msgid "Upload an image to find other similar images."
-msgstr ""
-
-#: views/Home.jsx:76
-msgid "Upload an Image"
-msgstr ""
-
-#: views/Home.jsx:94
-#: views/Home.jsx:121
-msgid "Search by Image"
-msgstr ""
-
-#: views/Home.jsx:104
-msgid "Paste Image URL"
-msgstr ""
-
-#: views/Home.jsx:140
-msgid "Browse by Collection:"
-msgstr ""
-
-#: views/Home.jsx:151
-msgid "%(recordCount)s Artworks, %(imageCount)s Images"
-msgstr ""
-
-#: views/ImportImages.jsx:71
-msgid "Image Import: %(fileName)s"
-msgstr ""
-
-#: views/ImportImages.jsx:77
-#: views/ImportRecords.jsx:136
-msgid "Uploaded: %(date)s"
-msgstr ""
-
-#: views/ImportImages.jsx:79
-#: views/ImportRecords.jsx:138
-msgid "Last Updated: %(date)s"
-msgstr ""
-
-#: views/ImportImages.jsx:87
-#: views/ImportRecords.jsx:151
-msgid "Return to Admin Page"
-msgstr ""
-
-#: views/ImportRecords.jsx:120
-msgid "Abandon Import"
-msgstr ""
-
-#: views/ImportRecords.jsx:130
+#: build/logic/source-admin.js:119
 msgid "Data Import: %(fileName)s"
 msgstr ""
 
-#: views/ImportRecords.jsx:163
-msgid "To Be Processed"
+#: build/logic/source-admin.js:205
+msgid "Image Import: %(fileName)s"
 msgstr ""
 
-#: views/ImportRecords.jsx:185
-msgid "Changed"
+#: build/logic/source-admin.js:294
+msgid "Error retrieving records."
 msgstr ""
 
-#: views/ImportRecords.jsx:186
-msgid "Will Be Changed"
+#: build/logic/source-admin.js:297
+msgid "%(name)s Admin Area"
 msgstr ""
 
-#: views/ImportRecords.jsx:195
-msgid "Will Be Created"
+#: build/logic/source-admin.js:357
+msgid "Error processing zip file."
 msgstr ""
 
-#: views/ImportRecords.jsx:204
-msgid "Will Be Deleted"
+#: build/logic/source-admin.js:363
+msgid "No zip file specified."
 msgstr ""
 
-#: views/ImportResult.jsx:22
-msgid "Show all %(count)s results..."
+#: build/logic/source-admin.js:373
+msgid "Error saving zip file."
 msgstr ""
 
-#: views/Login.jsx:15
-#: views/Login.jsx:35
+#: build/logic/source-admin.js:391
+msgid "Error processing directory."
+msgstr ""
+
+#: build/logic/source-admin.js:395
+msgid "No directory specified."
+msgstr ""
+
+#: build/logic/source-admin.js:403
+msgid "Error saving directory."
+msgstr ""
+
+#: build/logic/source-admin.js:420
+msgid "Error processing data files."
+msgstr ""
+
+#: build/logic/source-admin.js:428
+msgid "No data files specified."
+msgstr ""
+
+#: build/logic/source-admin.js:447
+msgid "Error saving data file."
+msgstr ""
+
+#: build/logic/source-admin.js:462
+msgid "Error updating similarity."
+msgstr ""
+
+#: build/logic/source-admin.js:483
+msgid "Error updating source."
+msgstr ""
+
+#: build/logic/uploads.js:119
+msgid "No image URL specified."
+msgstr ""
+
+#: build/logic/uploads.js:140
+msgid "No image specified."
+msgstr ""
+
+#: build/logic/uploads.js:156
+msgid "Uploaded image not found."
+msgstr ""
+
+#: build/views/Page.js:272
 msgid "Login"
 msgstr ""
 
-#: views/Login.jsx:25
-msgid "Email Address:"
+#: build/logic/users.js:25
+msgid "Invalid username or password."
 msgstr ""
 
-#: views/Login.jsx:30
+#: build/logic/view.js:47
+msgid "Permission denied"
+msgstr ""
+
+#: build/logic/view.js:133
+msgid "Record not found."
+msgstr ""
+
+#: build/schemas/RecordImport.js:22
+msgid "Awaiting processing..."
+msgstr ""
+
+#: build/schemas/RecordImport.js:30
+msgid "Processing..."
+msgstr ""
+
+#: build/schemas/RecordImport.js:72
+msgid "Completed."
+msgstr ""
+
+#: build/schemas/ImageImport.js:65
+msgid "Error opening zip file."
+msgstr ""
+
+#: build/schemas/ImageImport.js:68
+msgid "Zip file has no images in it."
+msgstr ""
+
+msgid ""
+msgstr ""
+
+#: build/schemas/ImageImport.js:74
+msgid "The image is empty."
+msgstr ""
+
+#: build/schemas/ImageImport.js:83
+msgid "Error saving image."
+msgstr ""
+
+#: build/views/SourceAdmin.js:170
+msgid "Error: %(error)s"
+msgstr ""
+
+#: build/schemas/Record.js:453
+msgid "Image file not found: %(fileName)s"
+msgstr ""
+
+#: build/schemas/Record.js:463
+msgid "Error accessing image data."
+msgstr ""
+
+#: build/schemas/Record.js:473
+msgid "No images found."
+msgstr ""
+
+#: build/schemas/Record.js:516
+msgid "There was an error with the data format."
+msgstr ""
+
+#: build/schemas/Record.js:544
+msgid "Unrecognized field `%(field)s`."
+msgstr ""
+
+#: build/schemas/Record.js:664
+msgid "Required field `%(field)s` is empty."
+msgstr ""
+
+#: build/schemas/Record.js:669
+msgid "Recommended field `%(field)s` is empty."
+msgstr ""
+
+#: build/schemas/RecordImport.js:35
+msgid "Confirmation required."
+msgstr ""
+
+#: build/schemas/RecordImport.js:44
+msgid "Importing data..."
+msgstr ""
+
+#: build/schemas/RecordImport.js:49
+msgid "Awaiting similarity sync..."
+msgstr ""
+
+#: build/schemas/RecordImport.js:57
+msgid "Syncing similarity..."
+msgstr ""
+
+#: build/schemas/RecordImport.js:77
+msgid "Data import abandoned."
+msgstr ""
+
+#: build/schemas/RecordImport.js:80
+msgid "Error reading data from provided data files."
+msgstr ""
+
+#: build/schemas/RecordImport.js:86
+msgid "Error deleting existing record."
+msgstr ""
+
+#: build/views/Upload.js:18
+msgid "Uploaded Image"
+msgstr ""
+
+#: build/logic/shared/search.js:39
+msgid "Page Not Found"
+msgstr ""
+
+#: build/tests/options.js:6
+msgid "Architecture"
+msgstr ""
+
+#: build/tests/options.js:11
+msgid "Decorative Arts"
+msgstr ""
+
+#: build/tests/options.js:16
+msgid "Drawing"
+msgstr ""
+
+#: build/tests/options.js:21
+msgid "Fresco"
+msgstr ""
+
+#: build/tests/options.js:26
+msgid "Medal"
+msgstr ""
+
+#: build/tests/options.js:31
+msgid "Miniature"
+msgstr ""
+
+#: build/tests/options.js:36
+msgid "Mosaic"
+msgstr ""
+
+#: build/tests/options.js:41
+msgid "Painting"
+msgstr ""
+
+#: build/tests/options.js:46
+msgid "Photo"
+msgstr ""
+
+#: build/tests/options.js:51
+msgid "Print"
+msgstr ""
+
+#: build/tests/options.js:56
+msgid "Sculpture"
+msgstr ""
+
+#: build/tests/options.js:61
+msgid "Stained Glass"
+msgstr ""
+
+#: build/tests/options.js:72
+msgid "Date, earliest first"
+msgstr ""
+
+#: build/tests/options.js:75
+msgid "Date, latest first"
+msgstr ""
+
+#: build/views/SourceAdmin.js:338
+msgid "URL"
+msgstr ""
+
+#: build/tests/options.js:90
+msgid "Title"
+msgstr ""
+
+#: build/tests/options.js:99
+msgid "Artist"
+msgstr ""
+
+#: build/tests/options.js:102
+msgid "Sample: Andrea del Sarto"
+msgstr ""
+
+#: build/tests/options.js:110
+msgid "Date"
+msgstr ""
+
+#: build/tests/options.js:124
+msgid "Type"
+msgstr ""
+
+#: build/tests/options.js:127
+msgid "Any Type"
+msgstr ""
+
+#: build/tests/options.js:140
+msgid "Medium"
+msgstr ""
+
+#: build/tests/options.js:148
+msgid "Dimensions"
+msgstr ""
+
+#: build/tests/options.js:151
+msgid "Height"
+msgstr ""
+
+#: build/tests/options.js:154
+msgid "Width"
+msgstr ""
+
+#: build/tests/options.js:168
+msgid "Location"
+msgstr ""
+
+#: build/tests/options.js:171
+msgid "Sample: Louvre"
+msgstr ""
+
+#: build/tests/options.js:179
+msgid "Categories"
+msgstr ""
+
+#: build/views/Admin.js:76
+msgid "Add or Update User"
+msgstr ""
+
+#: build/views/Admin.js:47
+msgid "Username (required)"
+msgstr ""
+
+#: build/views/Admin.js:57
+msgid "Password (required)"
+msgstr ""
+
+#: build/views/Admin.js:114
+msgid "Can view private sources"
+msgstr ""
+
+#: build/views/Admin.js:119
+msgid "Admin User"
+msgstr ""
+
+#: build/views/Admin.js:92
+msgid "Bulk Add or Update Users"
+msgstr ""
+
+#: build/views/Admin.js:94
+msgid ""
+"Paste in a CSV list of usernames and passwords separated by endlines, for "
+"example:"
+msgstr ""
+
+#: build/views/Admin.js:101
+msgid "Usernames and Passwords (CSV, required)"
+msgstr ""
+
+#: build/views/Admin.js:121
+msgid "Add or Update Users"
+msgstr ""
+
+#: build/views/Admin.js:227
+msgid "Add Source"
+msgstr ""
+
+#: build/views/Admin.js:151
+msgid "Source ID (required, lowercase letters only)"
+msgstr ""
+
+#: build/views/Admin.js:155
+msgid "e.g. frick"
+msgstr ""
+
+#: build/views/SourceAdmin.js:312
+msgid "Full Name (required)"
+msgstr ""
+
+#: build/views/SourceAdmin.js:316
+msgid "e.g. Frick Library"
+msgstr ""
+
+#: build/views/SourceAdmin.js:324
+msgid "Short Name (required)"
+msgstr ""
+
+#: build/views/SourceAdmin.js:328
+msgid "e.g. Frick"
+msgstr ""
+
+#: build/views/SourceAdmin.js:351
+msgid "Private?"
+msgstr ""
+
+#: build/views/Admin.js:202
+msgid "Data Type"
+msgstr ""
+
+#: build/views/Admin.js:215
+msgid "Data Converter"
+msgstr ""
+
+#: build/views/EditRecord.js:76
+msgid "Remove Image"
+msgstr ""
+
+#: build/views/EditRecord.js:113
+msgid "Add Images"
+msgstr ""
+
+#: build/views/EditRecord.js:210
+msgid "ID"
+msgstr ""
+
+#: build/logic/shared/facets.js:10
+msgid "Source"
+msgstr ""
+
+#: build/views/EditRecord.js:471
+msgid "Show private fields."
+msgstr ""
+
+#: build/views/EditRecord.js:512
+msgid "Update"
+msgstr ""
+
+#: build/views/EditRecord.js:515
+msgid "Create"
+msgstr ""
+
+#: build/views/EditRecord.js:517
+msgid "Clone"
+msgstr ""
+
+#: build/views/EditRecord.js:532
+msgid "Are you sure you wish to delete this?"
+msgstr ""
+
+#: build/views/EditRecord.js:536
+msgid "Delete"
+msgstr ""
+
+#: build/views/EditRecord.js:563
+msgid "Clone Record"
+msgstr ""
+
+#: build/views/SearchForm.js:265
+msgid "Search"
+msgstr ""
+
+#: build/views/Page.js:167
+msgid "Browse All"
+msgstr ""
+
+#: build/views/Page.js:169
+msgid "Create New"
+msgstr ""
+
+#: build/views/Home.js:47
+msgid "Search by Image:"
+msgstr ""
+
+#: build/views/Home.js:47
+msgid "Upload an image to find other similar images."
+msgstr ""
+
+#: build/views/Home.js:53
+msgid "Upload an Image"
+msgstr ""
+
+#: build/views/Home.js:95
+msgid "Search by Image"
+msgstr ""
+
+#: build/views/Home.js:78
+msgid "Paste Image URL"
+msgstr ""
+
+#: build/views/Record.js:326
+msgid "Private"
+msgstr ""
+
+#: build/views/Home.js:135
+msgid "Browse by Collection:"
+msgstr ""
+
+#: build/views/ImportRecords.js:124
+msgid "Uploaded: %(date)s"
+msgstr ""
+
+#: build/views/ImportRecords.js:127
+msgid "Last Updated: %(date)s"
+msgstr ""
+
+#: build/views/ImportRecords.js:137
+msgid "Return to Admin Page"
+msgstr ""
+
+#: build/views/SourceAdmin.js:210
+msgid "Errors"
+msgstr ""
+
+#: build/views/SourceAdmin.js:210
+msgid "Warnings"
+msgstr ""
+
+#: build/views/SourceAdmin.js:50
+msgid "Images"
+msgstr ""
+
+#: build/views/SourceAdmin.js:179
+msgid "Finalize Import"
+msgstr ""
+
+#: build/views/ImportRecords.js:107
+msgid "Abandon Import"
+msgstr ""
+
+#: build/views/ImportRecords.js:139
+msgid "To Be Processed"
+msgstr ""
+
+#: build/views/ImportRecords.js:161
+msgid "Changed"
+msgstr ""
+
+#: build/views/ImportRecords.js:161
+msgid "Will Be Changed"
+msgstr ""
+
+#: build/views/SourceAdmin.js:210
+msgid "Created"
+msgstr ""
+
+#: build/views/ImportRecords.js:170
+msgid "Will Be Created"
+msgstr ""
+
+#: build/views/SourceAdmin.js:210
+msgid "Deleted"
+msgstr ""
+
+#: build/views/ImportRecords.js:179
+msgid "Will Be Deleted"
+msgstr ""
+
+#: build/views/ImportResult.js:21
+msgid "Show all %(count)s results..."
+msgstr ""
+
+#: build/views/Login.js:80
+msgid "Username:"
+msgstr ""
+
+#: build/views/Login.js:88
 msgid "Password:"
 msgstr ""
 
-#: views/Search.jsx:71
-msgid "%(numRecords)s matches."
+#: build/views/Page.js:274
+msgid "Logout"
 msgstr ""
 
-#: views/Search.jsx:77
-msgid "Viewing %(start)s to %(end)s."
+#: build/views/Search.js:242
+msgid "Previous"
 msgstr ""
 
-#: views/Search.jsx:99
-msgid "Sort"
+#: build/views/Search.js:246
+msgid "Next"
 msgstr ""
 
-#: views/Search.jsx:123
-msgid "Query"
+#: build/views/Record.js:298
+msgid "Details"
 msgstr ""
 
-#: views/Search.jsx:135
-msgid "Similarity"
+#: build/views/Record.js:301
+msgid "More information..."
 msgstr ""
 
-#: views/Search.jsx:184
-msgid "Any Source"
+#: build/views/Record.js:746
+msgid "End Comparison"
 msgstr ""
 
-#: views/Search.jsx:211
+#: build/views/Upload.js:57
+msgid "Score: %(score)s"
+msgstr ""
+
+#: build/views/Record.js:410
+msgid "Compare Images"
+msgstr ""
+
+#: build/views/Upload.js:90
+msgid "Similar Images"
+msgstr ""
+
+#: build/views/Record.js:702
+msgid "Close (Esc)"
+msgstr ""
+
+#: build/views/Record.js:705
+msgid "Share"
+msgstr ""
+
+#: build/views/Record.js:708
+msgid "Toggle fullscreen"
+msgstr ""
+
+#: build/views/Record.js:711
+msgid "Zoom in/out"
+msgstr ""
+
+#: build/views/Record.js:726
+msgid "Previous (arrow left)"
+msgstr ""
+
+#: build/views/Record.js:729
+msgid "Next (arrow right)"
+msgstr ""
+
+#: build/views/Search.js:104
 msgid "Show %(count)s more..."
 msgstr ""
 
-#: views/Search.jsx:261
-#: views/Search.jsx:270
+#: build/views/Search.js:155
+msgid "%(numRecords)s matches."
+msgstr ""
+
+#: build/views/Search.js:157
+msgid "Viewing %(start)s to %(end)s."
+msgstr ""
+
+#: build/views/Search.js:187
 msgid "Remove %(query)s"
 msgstr ""
 
-#: views/Search.jsx:280
+#: build/views/Search.js:225
 msgid "No results found. Please refine your query."
 msgstr ""
 
-#: views/Upload.jsx:63
+#: build/views/SearchForm.js:148
+msgid "Filter by source..."
+msgstr ""
+
+#: build/views/SearchForm.js:171
+msgid "Similarity"
+msgstr ""
+
+#: build/views/SearchForm.js:199
+msgid "Filter by image..."
+msgstr ""
+
+#: build/views/SearchForm.js:221
+msgid "Sort"
+msgstr ""
+
+#: build/views/SearchForm.js:255
+msgid "Query"
+msgstr ""
+
+#: build/views/SourceAdmin.js:210
+msgid "File Name"
+msgstr ""
+
+#: build/views/SourceAdmin.js:210
+msgid "Last Updated"
+msgstr ""
+
+#: build/views/SourceAdmin.js:210
+msgid "Status"
+msgstr ""
+
+#: build/views/SourceAdmin.js:73
+msgid "Image Similarity Indexing Progress"
+msgstr ""
+
+#: build/views/SourceAdmin.js:75
+msgid ""
+"After images have been imported into the database they will be indexed by "
+"the image similiarity search engine. This process can take a while (but you "
+"don't need to wait for it to finish before importing any metadata)."
+msgstr ""
+
+#: build/views/SourceAdmin.js:75
+msgid "Images Indexed:"
+msgstr ""
+
+#: build/views/SourceAdmin.js:77
+msgid ""
+"As images get indexed by the simliarity search engine they will become "
+"findable via the image search."
+msgstr ""
+
+#: build/views/SourceAdmin.js:80
+msgid "Images Similarity Updated:"
+msgstr ""
+
+#: build/views/SourceAdmin.js:85
+msgid "Update Similarity"
+msgstr ""
+
+#: build/views/SourceAdmin.js:86
+msgid ""
+"Once all of the images are indexed their similarity records will update, "
+"making it possible to find similar records when browsing."
+msgstr ""
+
+#: build/views/SourceAdmin.js:102
+msgid "Upload Images"
+msgstr ""
+
+#: build/views/SourceAdmin.js:266
+msgid "Upload"
+msgstr ""
+
+#: build/views/SourceAdmin.js:136
+msgid "Upload Directory of Images"
+msgstr ""
+
+#: build/views/SourceAdmin.js:210
+msgid "Unprocessed"
+msgstr ""
+
+#: build/views/SourceAdmin.js:210
+msgid "Updated"
+msgstr ""
+
+#: build/views/SourceAdmin.js:247
+msgid "Upload Metadata"
+msgstr ""
+
+#: build/views/SourceAdmin.js:231
+msgid ""
+"Please upload some images, or wait for the images to finish processing, "
+"before uploading any metadata."
+msgstr ""
+
+#: build/views/SourceAdmin.js:284
+msgid "Record Similarity Indexing Progress"
+msgstr ""
+
+#: build/views/SourceAdmin.js:286
+msgid "Record Similarity Updated:"
+msgstr ""
+
+#: build/views/SourceAdmin.js:288
+msgid ""
+"Whenever new data is added or image similarity updated the similarity "
+"between records will need to be re-computed. This should be a very fast "
+"operation."
+msgstr ""
+
+#: build/views/SourceAdmin.js:353
+msgid "Update Source"
+msgstr ""
+
+#: build/views/Upload.js:76
 msgid "No similar images were found."
+msgstr ""
+
+#: build/logic/shared/queries.js:86
+msgid "Query: '%(query)s'"
+msgstr ""
+
+#: build/logic/shared/queries.js:128
+msgid "Similar to Any Record"
+msgstr ""
+
+#: build/logic/shared/queries.js:142
+msgid "Similar to an External Record"
+msgstr ""
+
+#: build/logic/shared/queries.js:177
+msgid "Similar to an Internal Record"
+msgstr ""
+
+#: build/logic/shared/queries.js:226
+msgid "Has An Image"
+msgstr ""
+
+#: build/logic/shared/queries.js:238
+msgid "Has No Image"
+msgstr ""
+
+#: build/logic/shared/search-page.js:18
+msgid "Error connecting to database."
+msgstr ""
+
+#: build/logic/shared/search.js:180
+msgid "Search Results"
+msgstr ""
+
+#: build/schemas/types/Location.js:73
+msgid "Locations must have a name or city specified."
+msgstr ""
+
+#: build/schemas/types/URL.js:43
+msgid "Field must be properly-formatted URL."
+msgstr ""
+
+#: build/schemas/types/YearRange.js:263
+msgid "Dates must have a start or end specified."
+msgstr ""
+
+#: build/views/shared/Select.js:351
+msgid "Error loading options."
+msgstr ""
+
+#: build/views/shared/Select.js:361
+msgid "Loading..."
+msgstr ""
+
+#: build/views/shared/Select.js:373
+msgid "No results found."
+msgstr ""
+
+#: build/views/shared/Select.js:408
+msgid "Add %(value)s..."
+msgstr ""
+
+#: build/views/shared/Select.js:535
+msgid "Select..."
 msgstr ""
