@@ -9,20 +9,8 @@ const LocationFilter = require("./types/filter/Location.js");
 const NameFilter = require("./types/filter/Name.js");
 const YearRangeFilter = require("./types/filter/YearRange.js");
 
-import type {Context, ModelType} from "./types.js";
+import type {Context, ModelType, Source} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
-
-type Source = {
-    _id: string,
-    name: string,
-    type: string,
-    getURL: string,
-    getAdminURL: string,
-    getFullName: string,
-    getShortName: string,
-    numRecords: number,
-    private: boolean,
-};
 
 type Sort = {
     id: string,

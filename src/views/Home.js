@@ -124,40 +124,21 @@ ImageUploadForms.contextTypes = childContextTypes;
 
 const Source = (
     {type, source}: {type: string, source: SourceType},
-    {options, user, stringNum, gettext}: Context,
+    {options, stringNum}: Context,
 ) => {
     const typeName = options.types[type].name;
     const recordCount = stringNum(source.numRecords);
     const desc = `${recordCount} ${typeName}`;
-    const canEdit =
-        user &&
-        user.getEditableSourcesByType[type] &&
-        user.getEditableSourcesByType[type].includes(source._id);
-
-    if (!canEdit && source.numRecords === 0) {
-        return null;
-    }
 
     return (
-        <div>
-            <h4>
-                <a href={source.getURL}>{source.getFullName}</a>{" "}
-                {source.private && (
-                    <a href={source.getURL} className="btn btn-success btn-xs">
-                        {gettext("Private")}
-                    </a>
-                )}{" "}
-                {canEdit && (
-                    <a
-                        href={source.getAdminURL}
-                        className="btn btn-primary btn-xs"
-                    >
-                        {gettext("Admin")}
-                    </a>
-                )}
-            </h4>
-            <p>{desc}</p>
-        </div>
+        <tr>
+            <td>
+                <h4>
+                    <a href={source.getURL}>{source.getFullName}</a>
+                </h4>
+            </td>
+            <td className="text-right">{desc}</td>
+        </tr>
     );
 };
 
@@ -170,10 +151,12 @@ const Sources = (
     <div>
         <h3>{gettext("Browse by Collection:")}</h3>
 
-        <div className="sources">
-            {sources.map(source => (
-                <Source key={source._id} source={source} type={type} />
-            ))}
+        <div className="table-responsive">
+            <table className="sources table">
+                {sources.map(source => (
+                    <Source key={source._id} source={source} type={type} />
+                ))}
+            </table>
         </div>
     </div>
 );
@@ -184,14 +167,16 @@ const Type = ({type, sources}: Props & {type: string}, {options}: Context) => {
     const sourcesByType = sources.filter(source => source.type === type);
 
     return (
-        <div className="col-sm-8 col-sm-offset-2 upload-box">
-            <SearchForm type={type} />
-            {options.types[type].hasImageSearch && (
-                <ImageUploadForms type={type} />
-            )}
-            {sourcesByType.length > 1 && (
-                <Sources type={type} sources={sourcesByType} />
-            )}
+        <div className="row">
+            <div className="col-xs-12 upload-box">
+                <SearchForm type={type} />
+                {options.types[type].hasImageSearch && (
+                    <ImageUploadForms type={type} />
+                )}
+                {sourcesByType.length > 1 && (
+                    <Sources type={type} sources={sourcesByType} />
+                )}
+            </div>
         </div>
     );
 };
@@ -199,7 +184,7 @@ const Type = ({type, sources}: Props & {type: string}, {options}: Context) => {
 Type.contextTypes = childContextTypes;
 
 const Home = ({sources}: Props, {options}: Context) => (
-    <div>
+    <div style={{maxWidth: 750}}>
         {Object.keys(options.types).map(type => (
             <Type key={type} sources={sources} type={type} />
         ))}

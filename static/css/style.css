@@ -198,29 +198,29 @@
  * Styling for the metadata view.
  */
 
-.table > tbody > tr > th,
-.table > tbody > tr > td {
+.table.metadata > tbody > tr > th,
+.table.metadata > tbody > tr > td {
     border-top: none;
 }
 
-.table > tbody > tr:hover > th:not(.success),
-.table > tbody > tr:hover > td:not(.success) {
+.table.metadata > tbody > tr:hover > th:not(.success),
+.table.metadata > tbody > tr:hover > td:not(.success) {
     background: #fff;
 }
 
-.table > tbody > tr > th {
+.table.metadata > tbody > tr > th {
     white-space: pre;
 }
 
-.table > tbody > tr > td {
+.table.metadata > tbody > tr > td {
     width: 100%;
 }
 
-.table td {
+.table.metadata td {
     white-space: pre-line;
 }
 
-.table td textarea {
+.table.metadata td textarea {
     height: 100px;
 }
 

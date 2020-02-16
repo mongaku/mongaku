@@ -6,7 +6,7 @@ import type {Context} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
 
 type Props = {
-    children?: React.Element<*>,
+    children?: React.Node,
 };
 
 const Logo = (props, {options, STATIC}: Context) => {
@@ -148,16 +148,15 @@ const SearchForm = (props, {gettext, options, URL}: Context) => (
     <form
         action={URL(`/${Object.keys(options.types)[0]}/search`)}
         method="GET"
-        className={"navbar-form navbar-right search form-inline hidden-xs"}
+        className={"navbar-form navbar-right search"}
     >
-        <div className="form-group">
-            <input
-                name="filter"
-                type="text"
-                className="form-control search-query"
-                placeholder={gettext("Search")}
-            />
-        </div>{" "}
+        <input
+            name="filter"
+            type="text"
+            className="form-control search-query"
+            placeholder={gettext("Search")}
+            style={{width: "auto", display: "inline-block"}}
+        />{" "}
         <input
             type="submit"
             className="btn btn-primary"
@@ -205,56 +204,117 @@ const LocaleMenu = (
 
 LocaleMenu.contextTypes = childContextTypes;
 
+const AdminMenu = (props, {URL, gettext}: Context) => (
+    <Dropdown title={gettext("Admin")} href={URL("/admin")}>
+        <li>
+            <a href={URL("/admin/add-user")}>{gettext("Add or Update User")}</a>
+        </li>
+        <li>
+            <a href={URL("/admin/add-users")}>
+                {gettext("Bulk Add or Update Users")}
+            </a>
+        </li>
+        <li>
+            <a href={URL("/admin/add-source")}>
+                {gettext("Add or Update Source")}
+            </a>
+        </li>
+        <li>
+            <a href={URL("/admin/add-sources")}>
+                {gettext("Bulk Add or Update Sources")}
+            </a>
+        </li>
+        <li>
+            <a href={URL("/admin/manage-sources")}>
+                {gettext("Manage Sources")}
+            </a>
+        </li>
+    </Dropdown>
+);
+
+AdminMenu.contextTypes = childContextTypes;
+
+class Navbar extends React.Component<Props, {open: boolean}> {
+    static contextTypes = childContextTypes;
+
+    context: Context;
+
+    constructor(props) {
+        super(props);
+        this.state = {open: false};
+    }
+
+    handleToggle = (e: SyntheticMouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        this.setState({
+            open: !this.state.open,
+        });
+    };
+
+    render() {
+        const {children} = this.props;
+        const {open} = this.state;
+        const {options, URL, gettext} = this.context;
+
+        return (
+            <div className="navbar navbar-default navbar-static-top">
+                <div className="container">
+                    <div className="navbar-header">
+                        <button
+                            type="button"
+                            className="navbar-toggle"
+                            data-toggle="collapse"
+                            data-target="#header-navbar"
+                            onClick={this.handleToggle}
+                        >
+                            <span className="sr-only">
+                                {gettext("Toggle Navigation")}
+                            </span>
+                            <span className="icon-bar" />
+                            <span className="icon-bar" />
+                            <span className="icon-bar" />
+                        </button>
+                        <a className="navbar-brand" href={URL("/")}>
+                            <Logo />
+                            {options.getShortTitle}
+                        </a>
+                    </div>
+
+                    <div
+                        id="header-navbar"
+                        className={open ? "" : "collapse navbar-collapse"}
+                    >
+                        {children}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+
 const Header = (props, {gettext, user, options, URL}: Context) => (
-    <div className="navbar navbar-default navbar-static-top">
-        <div className="container">
-            <div className="navbar-header">
-                <button
-                    type="button"
-                    className="navbar-toggle"
-                    data-toggle="collapse"
-                    data-target="#header-navbar"
-                >
-                    <span className="sr-only">Toggle Navigation</span>
-                    <span className="icon-bar" />
-                    <span className="icon-bar" />
-                    <span className="icon-bar" />
-                </button>
-                <a className="navbar-brand" href={URL("/")}>
-                    <Logo />
-                    {options.getShortTitle}
-                </a>
-            </div>
+    <Navbar>
+        <ul className="nav navbar-nav">
+            {Object.keys(options.types).map(type => {
+                const title = options.types[type].name;
+                return <NavLink type={type} title={title} key={type} />;
+            })}
+            {user && user.siteAdmin && <AdminMenu />}
+            {!user && (
+                <li>
+                    <a href={URL("/login")}>{gettext("Login")}</a>
+                </li>
+            )}
+            {user && (
+                <li>
+                    <a href={URL("/logout")}>{gettext("Logout")}</a>
+                </li>
+            )}
+            {Object.keys(options.locales).length > 1 && <LocaleMenu />}
+        </ul>
 
-            <div id="header-navbar" className="collapse navbar-collapse">
-                <ul className="nav navbar-nav">
-                    {Object.keys(options.types).map(type => {
-                        const title = options.types[type].name;
-                        return <NavLink type={type} title={title} key={type} />;
-                    })}
-                    {user &&
-                        user.siteAdmin && (
-                            <li>
-                                <a href={URL("/admin")}>{gettext("Admin")}</a>
-                            </li>
-                        )}
-                    {!user && (
-                        <li>
-                            <a href={URL("/login")}>{gettext("Login")}</a>
-                        </li>
-                    )}
-                    {user && (
-                        <li>
-                            <a href={URL("/logout")}>{gettext("Logout")}</a>
-                        </li>
-                    )}
-                    {Object.keys(options.locales).length > 1 && <LocaleMenu />}
-                </ul>
-
-                {Object.keys(options.types).length > 1 && <SearchForm />}
-            </div>
-        </div>
-    </div>
+        {Object.keys(options.types).length === 1 && <SearchForm />}
+    </Navbar>
 );
 
 Header.contextTypes = childContextTypes;

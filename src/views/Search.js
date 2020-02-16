@@ -4,7 +4,7 @@ const React = require("react");
 
 const SearchForm = require("./SearchForm.js");
 
-import type {Context} from "./types.js";
+import type {Context, Source} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
 
 type Bucket = {
@@ -22,18 +22,6 @@ type FacetType = {
 type BreadcrumbType = {
     name: string,
     url: string,
-};
-
-type Source = {
-    _id: string,
-    name: string,
-    type: string,
-    getURL: string,
-    getAdminURL: string,
-    getFullName: string,
-    getShortName: string,
-    numRecords: number,
-    private: boolean,
 };
 
 type RecordType = {

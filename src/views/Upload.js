@@ -2,7 +2,7 @@
 
 const React = require("react");
 
-import type {Context} from "./types.js";
+import type {Context, Source} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
 
 type ImageType = {
@@ -22,18 +22,6 @@ type RecordType = {
     getThumbURL: string,
     getTitle: string,
     getURL: string,
-};
-
-type Source = {
-    _id: string,
-    name: string,
-    type: string,
-    getURL: string,
-    getAdminURL: string,
-    getFullName: string,
-    getShortName: string,
-    numRecords: number,
-    private: boolean,
 };
 
 type MatchType = {

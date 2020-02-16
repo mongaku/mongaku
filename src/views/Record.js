@@ -9,7 +9,7 @@ const LocationView = require("./types/view/Location.js");
 const NameView = require("./types/view/Name.js");
 const YearRangeView = require("./types/view/YearRange.js");
 
-import type {Context, ModelType} from "./types.js";
+import type {Context, ModelType, Source} from "./types.js";
 const {childContextTypes} = require("./Wrapper.js");
 
 type ImageType = {
@@ -50,18 +50,6 @@ type RecordType = {
     getValueURLs: {
         [name: string]: string,
     },
-};
-
-type Source = {
-    _id: string,
-    name: string,
-    type: string,
-    getURL: string,
-    getAdminURL: string,
-    getFullName: string,
-    getShortName: string,
-    numRecords: number,
-    private: boolean,
 };
 
 type Match = {
@@ -487,7 +475,7 @@ Similar.contextTypes = childContextTypes;
 
 const RecordDetails = ({record}: {record: RecordType}, {options}: Context) => (
     <td style={{width: "auto", maxWidth: 300}}>
-        <table className="table">
+        <table className="table metadata">
             <thead>
                 <tr className="plain">
                     <th />
@@ -726,7 +714,7 @@ const BookStyleComparison = ({records}: Props, {gettext}: Context) => {
             <br />
             <br />
             <table
-                className="table table-bordered"
+                className="table metadata table-bordered"
                 style={{width: "min-content"}}
             >
                 <thead>

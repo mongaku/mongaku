@@ -9,12 +9,15 @@ module.exports = app => {
     return {
         index({i18n, user}, res) {
             // Only show sources on the homepage that the user is allowed to see
-            const sources = Source.getSourcesByViewable(user).map(source => {
-                const cloned = cloneModel(source, i18n);
-                cloned.numRecords = source.numRecords;
-                cloned.numImages = source.numImages;
-                return cloned;
-            });
+            const sources = Source.getSourcesByViewable(user)
+                .filter(source => source.numRecords > 0)
+                .map(source => {
+                    const cloned = cloneModel(source, i18n);
+                    cloned.numRecords = source.numRecords;
+                    cloned.numImages = source.numImages;
+                    return cloned;
+                })
+                .sort((a, b) => a._id.localeCompare(b._id));
             let recordTotal = 0;
             let imageTotal = 0;
 

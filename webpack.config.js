@@ -8,6 +8,10 @@ const entry = {};
 
 // TODO: Generate this dynamically
 const entries = [
+    "AddSource",
+    "AddSources",
+    "AddUser",
+    "AddUsers",
     "Admin",
     "EditRecord",
     "Error",
@@ -15,6 +19,7 @@ const entries = [
     "ImportImages",
     "ImportRecords",
     "Login",
+    "ManageSources",
     "Record",
     "Search",
     "SourceAdmin",
