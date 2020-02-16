@@ -1,4 +1,3 @@
-const fs = require("fs");
 const path = require("path");
 
 const async = require("async");
@@ -137,14 +136,6 @@ Source.methods = {
         }
 
         return user.canViewPrivateSources || user.canEditSource(this._id);
-    },
-
-    createDirectories() {
-        const dir = this.getDirBase();
-        fs.mkdirSync(dir, {recursive: true});
-        fs.mkdirSync(path.join(dir, "images"), {recursive: true});
-        fs.mkdirSync(path.join(dir, "scaled"), {recursive: true});
-        fs.mkdirSync(path.join(dir, "thumbs"), {recursive: true});
     },
 };
 

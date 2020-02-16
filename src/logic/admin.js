@@ -1,3 +1,5 @@
+const fs = require("fs");
+const path = require("path");
 const {Readable} = require("stream");
 
 const async = require("async");
@@ -71,7 +73,11 @@ const addSource = (
 
     // Create directories to hold images
     try {
-        source.createDirectories();
+        const dir = source.getDirBase();
+        fs.mkdirSync(dir, {recursive: true});
+        fs.mkdirSync(path.join(dir, "images"), {recursive: true});
+        fs.mkdirSync(path.join(dir, "scaled"), {recursive: true});
+        fs.mkdirSync(path.join(dir, "thumbs"), {recursive: true});
     } catch (e) {
         return callback(
             new Error(i18n.gettext("Error creating source image directories.")),
