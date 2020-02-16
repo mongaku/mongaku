@@ -9,44 +9,80 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals = 2; plural = (n !== 1);\n"
 
-#: build/lib/default-record-options.js:14
+#: build/views/ManageSources.js:52
 msgid "Records"
 msgstr ""
 
-#: build/views/Page.js:270
-msgid "Admin"
+#: build/logic/admin.js:73
+msgid "Required field not provided."
 msgstr ""
 
-#: build/logic/admin.js:90
-msgid "Error creating or updating user."
-msgstr ""
-
-#: build/logic/admin.js:93
-msgid "Created or updated user: %(user)s"
-msgstr ""
-
-#: build/logic/admin.js:117
-msgid "Error parsing usernames and passwords."
-msgstr ""
-
-#: build/logic/admin.js:147
-msgid "Created or updated %(num)s users."
-msgstr ""
-
-#: build/logic/admin.js:153
-msgid "Failed to create or update %(num)s users, including: %(failed)s"
-msgstr ""
-
-#: build/logic/admin.js:200
+#: build/logic/admin.js:94
 msgid "Error creating source image directories."
 msgstr ""
 
-#: build/logic/admin.js:205
+#: build/logic/admin.js:99
 msgid "Error creating source."
 msgstr ""
 
-#: build/logic/admin.js:210
+#: build/views/Page.js:235
+msgid "Admin"
+msgstr ""
+
+#: build/views/Page.js:239
+msgid "Add or Update User"
+msgstr ""
+
+#: build/logic/admin.js:141
+msgid "Error creating or updating user."
+msgstr ""
+
+#: build/logic/admin.js:144
+msgid "Created or updated user: %(user)s"
+msgstr ""
+
+#: build/views/Page.js:241
+msgid "Bulk Add or Update Users"
+msgstr ""
+
+#: build/logic/admin.js:177
+msgid "Error parsing usernames and passwords."
+msgstr ""
+
+#: build/logic/admin.js:207
+msgid "Created or updated %(num)s users."
+msgstr ""
+
+#: build/logic/admin.js:213
+msgid "Failed to create or update %(num)s users, including: %(failed)s"
+msgstr ""
+
+#: build/views/Page.js:243
+msgid "Add or Update Source"
+msgstr ""
+
+#: build/logic/admin.js:244
 msgid "New source created: %(source)s"
+msgstr ""
+
+#: build/views/Page.js:245
+msgid "Bulk Add or Update Sources"
+msgstr ""
+
+#: build/logic/admin.js:276
+msgid "Error parsing source data."
+msgstr ""
+
+#: build/logic/admin.js:311
+msgid "Created or updated %(num)s sources."
+msgstr ""
+
+#: build/logic/admin.js:317
+msgid "Failed to create or update %(num)s sources, including: %(failed)s"
+msgstr ""
+
+#: build/views/Page.js:247
+msgid "Manage Sources"
 msgstr ""
 
 #: build/tests/options.js:193
@@ -181,7 +217,7 @@ msgstr ""
 msgid "Uploaded image not found."
 msgstr ""
 
-#: build/views/Page.js:272
+#: build/views/Page.js:340
 msgid "Login"
 msgstr ""
 
@@ -217,8 +253,24 @@ msgstr ""
 msgid "Zip file has no images in it."
 msgstr ""
 
+#: build/schemas/ImageImport.js:71
+msgid ""
+"There was an error processing the image. Perhaps it is malformed in some "
+"way."
+msgstr ""
+
 #: build/schemas/ImageImport.js:74
 msgid "The image is empty."
+msgstr ""
+
+#: build/schemas/ImageImport.js:77
+msgid "A new version of the image was uploaded, replacing the old one."
+msgstr ""
+
+#: build/schemas/ImageImport.js:80
+msgid ""
+"The image is too small to work with the image similarity algorithm. It must "
+"be at least 150px on each side."
 msgstr ""
 
 #: build/schemas/ImageImport.js:83
@@ -227,6 +279,16 @@ msgstr ""
 
 #: build/views/SourceAdmin.js:170
 msgid "Error: %(error)s"
+msgstr ""
+
+#: build/schemas/Record.js:43
+msgid ""
+"IDs can only contain letters, numbers, underscores, parens, periods, and "
+"hyphens."
+msgstr ""
+
+#: build/schemas/Record.js:125
+msgid "Images must be a valid image file name. For example: `image.jpg`."
 msgstr ""
 
 #: build/schemas/Record.js:453
@@ -247,6 +309,14 @@ msgstr ""
 
 #: build/schemas/Record.js:544
 msgid "Unrecognized field `%(field)s`."
+msgstr ""
+
+#: build/schemas/Record.js:575
+msgid "`%(field)s` is the wrong type. Expected a %(type)s."
+msgstr ""
+
+#: build/schemas/Record.js:593
+msgid "`%(field)s` value is the wrong type. Expected a %(type)s."
 msgstr ""
 
 #: build/schemas/Record.js:664
@@ -405,53 +475,11 @@ msgstr ""
 msgid "Categories"
 msgstr ""
 
-#: build/views/Admin.js:76
-msgid "Add or Update User"
-msgstr ""
-
-#: build/views/Admin.js:47
-msgid "Username (required)"
-msgstr ""
-
-#: build/views/Admin.js:57
-msgid "Password (required)"
-msgstr ""
-
-#: build/views/Admin.js:114
-msgid "Can view private sources"
-msgstr ""
-
-#: build/views/Admin.js:119
-msgid "Admin User"
-msgstr ""
-
-#: build/views/Admin.js:92
-msgid "Bulk Add or Update Users"
-msgstr ""
-
-#: build/views/Admin.js:94
-msgid ""
-"Paste in a CSV list of usernames and passwords separated by endlines, for "
-"example:"
-msgstr ""
-
-#: build/views/Admin.js:101
-msgid "Usernames and Passwords (CSV, required)"
-msgstr ""
-
-#: build/views/Admin.js:121
-msgid "Add or Update Users"
-msgstr ""
-
-#: build/views/Admin.js:227
-msgid "Add Source"
-msgstr ""
-
-#: build/views/Admin.js:151
+#: build/views/AddSource.js:51
 msgid "Source ID (required, lowercase letters only)"
 msgstr ""
 
-#: build/views/Admin.js:155
+#: build/views/AddSource.js:55
 msgid "e.g. frick"
 msgstr ""
 
@@ -475,12 +503,48 @@ msgstr ""
 msgid "Private?"
 msgstr ""
 
-#: build/views/Admin.js:202
+#: build/views/AddSources.js:68
 msgid "Data Type"
 msgstr ""
 
-#: build/views/Admin.js:215
+#: build/views/AddSources.js:81
 msgid "Data Converter"
+msgstr ""
+
+#: build/views/AddSources.js:44
+msgid ""
+"Paste in a CSV list of ids, full names, short names, and URLs separated by "
+"endlines, for example:"
+msgstr ""
+
+#: build/views/AddSources.js:51
+msgid "Source IDs, Full Names, Short Names, and URLs (CSV, required)"
+msgstr ""
+
+#: build/views/AddUser.js:47
+msgid "Username (required)"
+msgstr ""
+
+#: build/views/AddUser.js:57
+msgid "Password (required)"
+msgstr ""
+
+#: build/views/AddUsers.js:60
+msgid "Can view private sources"
+msgstr ""
+
+#: build/views/AddUsers.js:65
+msgid "Admin User"
+msgstr ""
+
+#: build/views/AddUsers.js:39
+msgid ""
+"Paste in a CSV list of usernames and passwords separated by endlines, for "
+"example:"
+msgstr ""
+
+#: build/views/AddUsers.js:46
+msgid "Usernames and Passwords (CSV, required)"
 msgstr ""
 
 #: build/views/EditRecord.js:76
@@ -491,7 +555,7 @@ msgstr ""
 msgid "Add Images"
 msgstr ""
 
-#: build/views/EditRecord.js:210
+#: build/views/ManageSources.js:48
 msgid "ID"
 msgstr ""
 
@@ -559,11 +623,7 @@ msgstr ""
 msgid "Paste Image URL"
 msgstr ""
 
-#: build/views/Record.js:326
-msgid "Private"
-msgstr ""
-
-#: build/views/Home.js:135
+#: build/views/Home.js:123
 msgid "Browse by Collection:"
 msgstr ""
 
@@ -639,7 +699,23 @@ msgstr ""
 msgid "Password:"
 msgstr ""
 
-#: build/views/Page.js:274
+#: build/views/ManageSources.js:52
+msgid "Full Name"
+msgstr ""
+
+#: build/views/ManageSources.js:124
+msgid "Public Sources"
+msgstr ""
+
+#: build/views/ManageSources.js:129
+msgid "Private Sources"
+msgstr ""
+
+#: build/views/Page.js:303
+msgid "Toggle Navigation"
+msgstr ""
+
+#: build/views/Page.js:342
 msgid "Logout"
 msgstr ""
 
@@ -657,6 +733,10 @@ msgstr ""
 
 #: build/views/Record.js:301
 msgid "More information..."
+msgstr ""
+
+#: build/views/Record.js:326
+msgid "Private"
 msgstr ""
 
 #: build/views/Record.js:746
@@ -790,12 +870,37 @@ msgstr ""
 msgid "Upload Images"
 msgstr ""
 
+#: build/views/SourceAdmin.js:108
+msgid "Upload a Zip file (.zip) of JPG images (.jpg or .jpeg)."
+msgstr ""
+
+#: build/views/SourceAdmin.js:142
+msgid "Names of images should match the names provided in the metadata."
+msgstr ""
+
+#: build/views/SourceAdmin.js:108
+msgid ""
+"After you've uploaded a new batch of images they will be processed "
+"immediately but their similarity to other images will be computed in the "
+"background over the subsequent hours and days."
+msgstr ""
+
 #: build/views/SourceAdmin.js:266
 msgid "Upload"
 msgstr ""
 
 #: build/views/SourceAdmin.js:136
 msgid "Upload Directory of Images"
+msgstr ""
+
+#: build/views/SourceAdmin.js:142
+msgid "Upload a directory of JPG images (.jpg or .jpeg)."
+msgstr ""
+
+#: build/views/SourceAdmin.js:142
+msgid ""
+"Directory must be a file path on the same system on which this server is "
+"running."
 msgstr ""
 
 #: build/views/SourceAdmin.js:210
@@ -869,6 +974,14 @@ msgstr ""
 
 #: build/logic/shared/search.js:180
 msgid "Search Results"
+msgstr ""
+
+#: build/schemas/types/Dimension.js:342
+msgid "Dimensions must have a unit specified and at least a width or height."
+msgstr ""
+
+#: build/schemas/types/FixedString.js:104
+msgid "`%(name)s` must be one of the following types: %(types)s."
 msgstr ""
 
 #: build/schemas/types/Location.js:73
