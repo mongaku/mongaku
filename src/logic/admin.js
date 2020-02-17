@@ -22,6 +22,8 @@ const addUser = (
             user.password = password;
             user.canViewPrivateSources = !!canViewPrivateSources;
             user.siteAdmin = !!siteAdmin;
+            // Validation is done this way to avoid this error:
+            // https://github.com/Automattic/mongoose/issues/6949
             const error = user.validateSync();
             if (error) {
                 return callback(error);
@@ -61,35 +63,57 @@ const addSource = (
     }
 
     const Source = models("Source");
-    const source = new Source({
-        _id,
-        name,
-        shortName,
-        url,
-        private: !!isPrivate,
-        type,
-        converter,
-    });
 
-    // Create directories to hold images
-    try {
-        const dir = source.getDirBase();
-        fs.mkdirSync(dir, {recursive: true});
-        fs.mkdirSync(path.join(dir, "images"), {recursive: true});
-        fs.mkdirSync(path.join(dir, "scaled"), {recursive: true});
-        fs.mkdirSync(path.join(dir, "thumbs"), {recursive: true});
-    } catch (e) {
-        return callback(
-            new Error(i18n.gettext("Error creating source image directories.")),
-        );
-    }
-
-    source.save(err => {
-        if (err) {
-            return callback(new Error(i18n.gettext("Error creating source.")));
+    Source.findById(_id, (err, source) => {
+        if (source) {
+            source.name = name;
+            source.shortName = shortName;
+            source.url = url || source.url;
+            source.private = !!isPrivate;
+            // Validation is done this way to avoid this error:
+            // https://github.com/Automattic/mongoose/issues/6949
+            const error = source.validateSync();
+            if (error) {
+                return callback(error);
+            }
+            source.save({validateBeforeSave: false}, callback);
+            return;
         }
 
-        return callback();
+        const newSource = new Source({
+            _id,
+            name,
+            shortName,
+            url,
+            private: !!isPrivate,
+            type,
+            converter,
+        });
+
+        // Create directories to hold images
+        try {
+            const dir = newSource.getDirBase();
+            fs.mkdirSync(dir, {recursive: true});
+            fs.mkdirSync(path.join(dir, "images"), {recursive: true});
+            fs.mkdirSync(path.join(dir, "scaled"), {recursive: true});
+            fs.mkdirSync(path.join(dir, "thumbs"), {recursive: true});
+        } catch (e) {
+            return callback(
+                new Error(
+                    i18n.gettext("Error creating source image directories."),
+                ),
+            );
+        }
+
+        newSource.save(err => {
+            if (err) {
+                return callback(
+                    new Error(i18n.gettext("Error creating source.")),
+                );
+            }
+
+            return callback();
+        });
     });
 };
 
