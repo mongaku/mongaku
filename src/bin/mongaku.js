@@ -84,7 +84,7 @@ if (args.v || args.version) {
 } else if (cmd === "start") {
     process.env.NODE_ENV = "production";
 
-    const workers = args.workers || 2;
+    const workers = args.workers || 1;
     const basePath = args.logs || "";
     const stdoutLog = path.resolve(basePath, "mongaku-stdout.log");
     const stderrLog = path.resolve(basePath, "mongaku-stderr.log");
@@ -150,9 +150,6 @@ usage: mongaku <command>
 
 Commands:
     install
-    create admin
-    create user
-    create source
     create index
     convert data
     export images
