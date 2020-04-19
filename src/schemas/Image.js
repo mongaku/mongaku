@@ -181,7 +181,9 @@ Image.methods = {
             // Turn the scores into a % of the # of hits in the original
             // image (this gives a more useful number for display/analysis)
             const matchPercent = score =>
-                maxScore ? Math.round((score / maxScore) * 100) : 100;
+                maxScore
+                    ? Math.max(Math.round((score / maxScore) * 100), 1)
+                    : 100;
 
             // Ignore records with too many matches
             if (matches.length > 50) {
@@ -475,6 +477,7 @@ Image.statics = {
                     image.save(err => {
                         /* istanbul ignore if */
                         if (err) {
+                            console.error(err);
                             return callback(err);
                         }
 
