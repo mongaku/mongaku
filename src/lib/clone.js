@@ -19,9 +19,9 @@ const getArgs = (func: Function): Array<string> => {
     const strFunc = func.toString();
     // First match everything inside the function argument parens.
     const args =
-        strFunc.match(/function\s.*?\(([^)]*)\)/) ||
+        strFunc.match(/^function\s.*?\(([^)]*)\)/) ||
         strFunc.match(/^\(?([^)]*)\)?\s*=>/) ||
-        strFunc.match(/.*?\(([^)]*)\)/);
+        strFunc.match(/^[^)]*\(([^)]*)\)/);
 
     // Split the arguments string into an array comma delimited.
     return (
