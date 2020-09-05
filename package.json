@@ -70,7 +70,7 @@
         "mongoosastic": "4.4.1",
         "mongoose": "5.2.12",
         "mongoose-version": "1.1.0",
-        "morgan": "1.9.0",
+        "morgan": "1.9.1",
         "naught": "1.6.0",
         "parse-dimensions": "0.0.8",
         "passport": "0.4.0",
