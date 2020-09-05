@@ -44,7 +44,6 @@ module.exports = (args, callback) => {
             const relativeFiles = files.map(file =>
                 path.relative(process.cwd(), file),
             );
-            console.log(relativeFiles);
             execFile(
                 jsxgettext,
                 [
