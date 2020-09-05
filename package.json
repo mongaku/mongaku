@@ -66,7 +66,7 @@
         "libxmljs": "0.19.7",
         "lodash.clonedeepwith": "4.5.0",
         "method-override": "3.0.0",
-        "minimist": "1.2.0",
+        "minimist": "1.2.3",
         "mongoosastic": "4.4.1",
         "mongoose": "5.2.12",
         "mongoose-version": "1.1.0",
