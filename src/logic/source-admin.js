@@ -253,7 +253,8 @@ module.exports = function(app) {
                     allImagesImported:
                         imageImport.length > 0 &&
                         imageImport.every(batch => batch.isCompleted()) &&
-                        imageImport.some(batch => batch.isSuccessful()),
+                        imageImport.some(batch => batch.isSuccessful()) ||
+                        dataImport.length > 0,
                     allRecordsImported:
                         dataImport.length > 0 &&
                         dataImport.every(batch => batch.isCompleted()) &&

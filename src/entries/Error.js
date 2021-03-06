@@ -1,3 +1,3 @@
 // @flow
-require("@babel/polyfill");
+require("core-js");
 require("./shared/mount.js")(require("../views/Error.js"));
