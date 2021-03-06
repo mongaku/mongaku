@@ -468,7 +468,7 @@ Image.statics = {
 
                 image.updateSimilarity(err => {
                     /* istanbul ignore if */
-                    if (err) {
+                    if (err && err.type !== "IMAGE_NOT_FOUND") {
                         console.error(err);
                         return callback(err);
                     }
