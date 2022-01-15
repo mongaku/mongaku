@@ -84,7 +84,7 @@
         "request": "2.88.0",
         "serve-favicon": "2.5.0",
         "serve-static": "1.13.2",
-        "shelljs": "0.8.2",
+        "shelljs": "0.8.5",
         "unzip-stream": "0.3.0",
         "valid-url": "1.0.9",
         "webpack-cli": "^3.1.0",
